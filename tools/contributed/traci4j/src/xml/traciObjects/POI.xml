@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2013 ApPeAL Group, Politecnico di Torino This file is 
+	part of TraCI4J. TraCI4J is free software: you can redistribute it and/or 
+	modify it under the terms of the GNU General Public License as published 
+	by the Free Software Foundation, either version 3 of the License, or (at 
+	your option) any later version. TraCI4J is distributed in the hope that it 
+	will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+	of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General 
+	Public License for more details. You should have received a copy of the GNU 
+	General Public License along with TraCI4J. If not, see <http://www.gnu.org/licenses/>. -->
+
+<traciClass>
+	<name>POI</name>
+
+	<javadoc>
+	Represents a POI (Point-of-Interest) in the SUMO environment.
+	@see &lt;a href="http://sumo.dlr.de/wiki/Simulation/Shapes#POI_.28Point_of_interest.29_Definitions"&gt;SUMO documentation&lt;/a&gt;
+	@see &lt;a href="http://sumo.dlr.de/wiki/TraCI/POI_Value_Retrieval"&gt;TraCI documentation&lt;/a&gt;
+	@author Enrico Gueli &amp;lt;enrico.gueli@polito.it&amp;gt;
+	</javadoc>
+
+	<repos>
+	</repos>
+
+	<command>it.polito.appeal.traci.protocol.Constants.CMD_GET_POI_VARIABLE
+	</command>
+	<changeStateCommand>it.polito.appeal.traci.protocol.Constants.CMD_SET_POI_VARIABLE
+	</changeStateCommand>
+
+	<readQueries>
+		<readQuery>
+			<name>ReadType</name>
+			<enum>TYPE</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_TYPE</const>
+			<query>ReadObjectVarQuery.StringQ</query>
+			<returnType>java.lang.String</returnType>
+			<dynamic>false</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadColor</name>
+			<enum>COLOR</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_COLOR</const>
+			<query>ReadObjectVarQuery.ColorQ</query>
+			<returnType>java.awt.Color</returnType>
+			<dynamic>false</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadPosition</name>
+			<enum>POSITION</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_POSITION</const>
+			<query>ReadObjectVarQuery.PositionQ</query>
+			<returnType>java.awt.geom.Point2D</returnType>
+			<dynamic>false</dynamic>
+		</readQuery>
+	</readQueries>
+
+	<changeStateQueries>
+		<changeStateQuery>
+			<name>ChangeColor</name>
+			<query>ChangeColorQuery</query>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_COLOR</const>
+			<affects>
+				<affect>ReadColor</affect>
+			</affects>
+		</changeStateQuery>
+		<changeStateQuery>
+			<name>ChangeType</name>
+			<query>ChangeObjectVarQuery.ChangeStringQ</query>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_TYPE</const>
+			<affects>
+				<affect>ReadType</affect>
+			</affects>
+		</changeStateQuery>
+		<changeStateQuery>
+			<name>ChangePosition</name>
+			<query>ChangePositionQuery</query>
+			<affects>
+				<affect>ReadPosition</affect>
+			</affects>
+		</changeStateQuery>
+	</changeStateQueries>
+</traciClass>

@@ -1,0 +1,9 @@
+NIVissimVehicleClass.o: NIVissimVehicleClass.cpp \
+ /usr/include/stdc-predef.h ../../../../src/config.h \
+ NIVissimVehicleClass.h
+
+/usr/include/stdc-predef.h:
+
+../../../../src/config.h:
+
+NIVissimVehicleClass.h:

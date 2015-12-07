@@ -1,0 +1,1307 @@
+/****************************************************************************/
+/// @file    MSPModel_Striping.cpp
+/// @author  Jakob Erdmann
+/// @author  Michael Behrisch
+/// @date    Mon, 13 Jan 2014
+/// @version $Id: MSPModel_Striping.cpp 19535 2015-12-05 13:47:18Z behrisch $
+///
+// The pedestrian following model (prototype)
+/****************************************************************************/
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2014-2015 DLR (http://www.dlr.de/) and contributors
+/****************************************************************************/
+//
+//   This file is part of SUMO.
+//   SUMO is free software: you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License as published by
+//   the Free Software Foundation, either version 3 of the License, or
+//   (at your option) any later version.
+//
+/****************************************************************************/
+
+// ===========================================================================
+// included modules
+// ===========================================================================
+#ifdef _MSC_VER
+#include <windows_config.h>
+#else
+#include <config.h>
+#endif
+
+#include <math.h>
+#include <algorithm>
+#include <utils/common/RandHelper.h>
+#include <utils/geom/GeomHelper.h>
+#include <utils/options/OptionsCont.h>
+#include <microsim/MSNet.h>
+#include <microsim/MSEdge.h>
+#include <microsim/MSLane.h>
+#include <microsim/MSJunction.h>
+#include <microsim/MSGlobals.h>
+#include <microsim/MSPersonControl.h>
+#include "MSPModel_Striping.h"
+
+
+// ===========================================================================
+// DEBUGGING HELPERS
+// ===========================================================================
+//
+#define DEBUG1 ""
+#define DEBUG2 ""
+#define DEBUGCOND(PEDID) (PEDID == DEBUG1 || PEDID == DEBUG2)
+//#define LOG_ALL 1
+
+void MSPModel_Striping::DEBUG_PRINT(const Obstacles& obs) {
+    for (int i = 0; i < (int)obs.size(); ++i) {
+        std::cout
+                << "(" << obs[i].description
+                << " x=(" << obs[i].xBack << "," << obs[i].xFwd
+                << ") s=" << obs[i].speed
+                << ")   ";
+    }
+    std::cout << "\n";
+}
+
+// ===========================================================================
+// named (internal) constants
+// ===========================================================================
+
+#define FAR_AWAY 10000
+
+
+// ===========================================================================
+// static members
+// ===========================================================================
+
+MSPModel_Striping::WalkingAreaPaths MSPModel_Striping::myWalkingAreaPaths;
+MSPModel_Striping::Pedestrians MSPModel_Striping::noPedestrians;
+
+
+// model parameters (static to simplify access from class PState
+SUMOReal MSPModel_Striping::stripeWidth;
+SUMOReal MSPModel_Striping::dawdling;
+SUMOTime MSPModel_Striping::jamTime;
+const SUMOReal MSPModel_Striping::LOOKAHEAD_SAMEDIR(4.0); // seconds
+const SUMOReal MSPModel_Striping::LOOKAHEAD_ONCOMING(10.0); // seconds
+const SUMOReal MSPModel_Striping::LATERAL_PENALTY(-1.); // meters
+const SUMOReal MSPModel_Striping::OBSTRUCTED_PENALTY(-300000.); // meters
+const SUMOReal MSPModel_Striping::INAPPROPRIATE_PENALTY(-20000.); // meters
+const SUMOReal MSPModel_Striping::ONCOMING_CONFLICT_PENALTY(-1000.); // meters
+const SUMOReal MSPModel_Striping::SQUEEZE(0.7);
+const SUMOReal MSPModel_Striping::BLOCKER_LOOKAHEAD(10.0); // meters
+const SUMOReal MSPModel_Striping::RESERVE_FOR_ONCOMING_FACTOR(0.0);
+const SUMOReal MSPModel_Striping::MAX_WAIT_TOLERANCE(120.); // seconds
+const SUMOReal MSPModel_Striping::LATERAL_SPEED_FACTOR(0.4);
+const SUMOReal MSPModel_Striping::MIN_STARTUP_DIST(0.4); // meters
+
+
+// ===========================================================================
+// MSPModel_Striping method definitions
+// ===========================================================================
+
+MSPModel_Striping::MSPModel_Striping(const OptionsCont& oc, MSNet* net) :
+    myNumActivePedestrians(0) {
+    myCommand = new MovePedestrians(this);
+    net->getBeginOfTimestepEvents()->addEvent(myCommand, net->getCurrentTimeStep() + DELTA_T, MSEventControl::ADAPT_AFTER_EXECUTION);
+    initWalkingAreaPaths(net);
+    // configurable parameters
+    stripeWidth = oc.getFloat("pedestrian.striping.stripe-width");
+    dawdling = oc.getFloat("pedestrian.striping.dawdling");
+
+    jamTime = string2time(oc.getString("pedestrian.striping.jamtime"));
+    if (jamTime <= 0) {
+        jamTime = SUMOTime_MAX;
+    }
+}
+
+
+MSPModel_Striping::~MSPModel_Striping() {
+}
+
+
+PedestrianState*
+MSPModel_Striping::add(MSPerson* person, MSPerson::MSPersonStage_Walking* stage, SUMOTime) {
+    assert(person->getCurrentStageType() == MSTransportable::MOVING_WITHOUT_VEHICLE);
+    const MSLane* lane = getSidewalk(person->getEdge());
+    PState* ped = new PState(person, stage, lane);
+    myActiveLanes[lane].push_back(ped);
+    myNumActivePedestrians++;
+    return ped;
+}
+
+
+bool
+MSPModel_Striping::blockedAtDist(const MSLane* lane, SUMOReal distToCrossing, std::vector<const MSPerson*>* collectBlockers) {
+    const Pedestrians& pedestrians = getPedestrians(lane);
+    for (Pedestrians::const_iterator it_ped = pedestrians.begin(); it_ped != pedestrians.end(); ++it_ped) {
+        const PState& ped = **it_ped;
+        const SUMOReal halfVehicleWidth = 1.0; // @note could get the actual value from the vehicle
+        const SUMOReal leaderBackDist = (ped.myDir == FORWARD
+                                         ? distToCrossing - (ped.myRelX - ped.getLength() - MSPModel::SAFETY_GAP - halfVehicleWidth)
+                                         : (ped.myRelX + ped.getLength() + MSPModel::SAFETY_GAP + halfVehicleWidth) - distToCrossing);
+        //std::cout << SIMTIME << " foe=" << foeLane->getID() << " dir=" << p.myDir << " pX=" << ped.myRelX << " pL=" << ped.getLength() << " fDTC=" << distToCrossing << " lBD=" << leaderBackDist << "\n";
+        if (leaderBackDist >= 0 && leaderBackDist <= BLOCKER_LOOKAHEAD) {
+            // found one pedestrian that is not completely past the crossing point
+            //std::cout << SIMTIME << " blocking pedestrian foeLane=" << lane->getID() << " ped=" << ped.myPerson->getID() << " dir=" << ped.myDir << " pX=" << ped.myRelX << " pL=" << ped.getLength() << " fDTC=" << distToCrossing << " lBD=" << leaderBackDist << "\n";
+            if (collectBlockers == 0) {
+                return true;
+            } else {
+                collectBlockers->push_back(ped.myPerson);
+            }
+        }
+    }
+    if (collectBlockers == 0) {
+        return false;
+    } else {
+        return collectBlockers->size() > 0;
+    }
+}
+
+
+MSPModel_Striping::Pedestrians&
+MSPModel_Striping::getPedestrians(const MSLane* lane) {
+    ActiveLanes::iterator it = myActiveLanes.find(lane);
+    if (it != myActiveLanes.end()) {
+        //std::cout << " found lane=" << lane->getID() << " n=" << it->second.size() << "\n";
+        return (it->second);
+    } else {
+        return noPedestrians;
+    }
+}
+
+
+void
+MSPModel_Striping::cleanupHelper() {
+    myActiveLanes.clear();
+    myNumActivePedestrians = 0;
+    myWalkingAreaPaths.clear(); // need to recompute when lane pointers change
+}
+
+
+int
+MSPModel_Striping::numStripes(const MSLane* lane) {
+    return (int)floor(lane->getWidth() / stripeWidth);
+}
+
+int
+MSPModel_Striping::connectedDirection(const MSLane* from, const MSLane* to) {
+    if (from == 0 || to == 0) {
+        return UNDEFINED_DIRECTION;
+    } else if (MSLinkContHelper::getConnectingLink(*from, *to)) {
+        return FORWARD;
+    } else if (MSLinkContHelper::getConnectingLink(*to, *from)) {
+        return BACKWARD;
+    } else {
+        return UNDEFINED_DIRECTION;
+    }
+}
+
+
+void
+MSPModel_Striping::initWalkingAreaPaths(const MSNet*) {
+    if (myWalkingAreaPaths.size() > 0) {
+        return;
+    }
+    for (size_t i = 0; i < MSEdge::dictSize(); ++i) {
+        const MSEdge* edge = MSEdge::dictionary(i);
+        if (edge->isWalkingArea()) {
+            const MSLane* walkingArea = getSidewalk(edge);
+            // build all possible paths across this walkingArea
+            // gather all incident lanes
+            std::vector<MSLane*> lanes;
+            const MSEdgeVector& incoming = edge->getIncomingEdges();
+            for (int j = 0; j < (int)incoming.size(); ++j) {
+                lanes.push_back(getSidewalk(incoming[j]));
+            }
+            const MSEdgeVector& outgoing = edge->getSuccessors();
+            for (int j = 0; j < (int)outgoing.size(); ++j) {
+                lanes.push_back(getSidewalk(outgoing[j]));
+            }
+            // build all combinations
+            for (int j = 0; j < (int)lanes.size(); ++j) {
+                for (int k = 0; k < (int)lanes.size(); ++k) {
+                    if (j != k) {
+                        // build the walkingArea
+                        const MSLane* from = lanes[j];
+                        const MSLane* to = lanes[k];
+                        const int fromDir = MSLinkContHelper::getConnectingLink(*from, *walkingArea) != 0 ? FORWARD : BACKWARD;
+                        const int toDir = MSLinkContHelper::getConnectingLink(*walkingArea, *to) != 0 ? FORWARD : BACKWARD;
+                        PositionVector shape;
+                        Position fromPos = from->getShape()[fromDir == FORWARD ? -1 : 0];
+                        Position toPos = to->getShape()[toDir == FORWARD ? 0 : -1];
+                        const SUMOReal maxExtent = fromPos.distanceTo2D(toPos) / 4; // prevent sharp corners
+                        const SUMOReal extrapolateBy = MIN2(maxExtent, walkingArea->getWidth() / 2);
+                        // assemble shape
+                        shape.push_back(fromPos);
+                        if (extrapolateBy > POSITION_EPS) {
+                            PositionVector fromShp = from->getShape();
+                            fromShp.extrapolate(extrapolateBy);
+                            shape.push_back_noDoublePos(fromDir == FORWARD ? fromShp.back() : fromShp.front());
+                            PositionVector nextShp = to->getShape();
+                            nextShp.extrapolate(extrapolateBy);
+                            shape.push_back_noDoublePos(toDir == FORWARD ? nextShp.front() : nextShp.back());
+                        }
+                        shape.push_back_noDoublePos(toPos);
+                        if (shape.size() < 2) {
+                            PositionVector fromShp = from->getShape();
+                            fromShp.extrapolate(1.5 * POSITION_EPS); // noDoublePos requires a difference of POSITION_EPS in at least one coordinate
+                            shape.push_back_noDoublePos(fromDir == FORWARD ? fromShp.back() : fromShp.front());
+                            assert(shape.size() == 2);
+                        }
+                        if (fromDir == BACKWARD) {
+                            // will be walking backward on walkingArea
+                            shape = shape.reverse();
+                        }
+                        myWalkingAreaPaths[std::make_pair(from, to)] = WalkingAreaPath(from, walkingArea, to, shape);
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+MSPModel_Striping::NextLaneInfo
+MSPModel_Striping::getNextLane(const PState& ped, const MSLane* currentLane, const MSLane* prevLane) {
+    const MSEdge* currentEdge = &currentLane->getEdge();
+    const MSJunction* junction = ped.myDir == FORWARD ? currentEdge->getToJunction() : currentEdge->getFromJunction();
+    const MSEdge* nextRouteEdge = ped.myStage->getNextRouteEdge();
+    const MSLane* nextRouteLane = getSidewalk(nextRouteEdge);
+    // result values
+    const MSLane* nextLane = nextRouteLane;
+    MSLink* link = 0;
+    int nextDir = UNDEFINED_DIRECTION;
+
+    if (nextRouteLane != 0) {
+        if (currentEdge->isInternal()) {
+            assert(junction == currentEdge->getFromJunction());
+            nextDir = junction == nextRouteEdge->getFromJunction() ? FORWARD : BACKWARD;
+            if DEBUGCOND(ped.myPerson->getID()) {
+                std::cout << "  internal\n";
+            }
+        } else if (currentEdge->isCrossing()) {
+            nextDir = ped.myDir;
+            if (ped.myDir == FORWARD) {
+                nextLane = currentLane->getLinkCont()[0]->getLane();
+            } else {
+                nextLane = currentLane->getLogicalPredecessorLane();
+            }
+            if DEBUGCOND(ped.myPerson->getID()) {
+                std::cout << "  crossing\n";
+            }
+        } else if (currentEdge->isWalkingArea())  {
+            ConstMSEdgeVector crossingRoute;
+            // departPos can be 0 because the direction of the walkingArea does not matter
+            // for the arrivalPos, we need to make sure that the route does not deviate across other junctions
+            const int nextRouteEdgeDir = nextRouteEdge->getFromJunction() == junction ? FORWARD : BACKWARD;
+            const SUMOReal arrivalPos = (nextRouteEdge == ped.myStage->getRoute().back()
+                                         ? ped.myStage->getArrivalPos()
+                                         : (nextRouteEdgeDir == FORWARD ? 0 : nextRouteEdge->getLength()));
+            MSEdgeVector prohibited;
+            prohibited.push_back(&prevLane->getEdge());
+            MSNet::getInstance()->getPedestrianRouter(prohibited).compute(currentEdge, nextRouteEdge, 0, arrivalPos, ped.myStage->getMaxSpeed(), 0, junction, crossingRoute, true);
+            if DEBUGCOND(ped.myPerson->getID()) {
+                std::cout
+                        << "   nre=" << nextRouteEdge->getID()
+                        << "   nreDir=" << nextRouteEdgeDir
+                        << "   aPos=" << arrivalPos
+                        << " crossingRoute=" << toString(crossingRoute)
+                        << "\n";
+            }
+            if (crossingRoute.size() > 1) {
+                const MSEdge* nextEdge = crossingRoute[1];
+                nextLane = getSidewalk(crossingRoute[1]);
+                assert((nextEdge->getFromJunction() == junction || nextEdge->getToJunction() == junction));
+                assert(nextLane != prevLane);
+                nextDir = connectedDirection(currentLane, nextLane);
+                if DEBUGCOND(ped.myPerson->getID()) {
+                    std::cout << " nextDir=" << nextDir << "\n";
+                }
+                assert(nextDir != UNDEFINED_DIRECTION);
+                if (nextDir == FORWARD) {
+                    link = MSLinkContHelper::getConnectingLink(*currentLane, *nextLane);
+                } else if (nextEdge->isCrossing()) {
+                    const MSLane* oppositeWalkingArea = nextLane->getLogicalPredecessorLane();
+                    link = MSLinkContHelper::getConnectingLink(*oppositeWalkingArea, *nextLane);
+                } else {
+                    link = MSLinkContHelper::getConnectingLink(*nextLane, *currentLane);
+                }
+                assert(link != 0);
+            } else {
+                if DEBUGCOND(ped.myPerson->getID()) {
+                    std::cout << SIMTIME
+                              << " no route from '" << (currentEdge == 0 ? "NULL" : currentEdge->getID())
+                              << "' to '" << (nextRouteEdge == 0 ? "NULL" : nextRouteEdge->getID())
+                              << "\n";
+                }
+                WRITE_WARNING("Pedestrian '" + ped.myPerson->getID() + "' could not find route across junction '" + junction->getID() + "', time=" +
+                              time2string(MSNet::getInstance()->getCurrentTimeStep()) + ".");
+                // error indicated by nextDir == UNDEFINED_DIRECTION
+            }
+        } else if (currentEdge == nextRouteEdge) {
+            // strange loop in this route. No need to use walkingArea
+            nextDir = -ped.myDir;
+        } else {
+            // normal edge. by default use next / previous walking area
+            nextDir = ped.myDir;
+            nextLane = getNextWalkingArea(currentLane, ped.myDir, link);
+            if (nextLane != 0) {
+                // walking area found
+                if DEBUGCOND(ped.myPerson->getID()) {
+                    std::cout << "  next walkingArea " << (nextDir == FORWARD ? "forward" : "backward") << "\n";
+                }
+            } else {
+                // walk forward by default
+                nextDir = junction == nextRouteEdge->getToJunction() ? BACKWARD : FORWARD;
+                // try to use a direct link as fallback
+                // direct links only exist if built explicitly. They are used to model tl-controlled links if there are no crossings
+                if (ped.myDir == FORWARD) {
+                    link = MSLinkContHelper::getConnectingLink(*currentLane, *nextRouteLane);
+#ifdef HAVE_INTERNAL_LANES
+                    if (link != 0) {
+                        if DEBUGCOND(ped.myPerson->getID()) {
+                            std::cout << "  direct forward\n";
+                        }
+                        nextLane = MSLinkContHelper::getInternalFollowingLane(currentLane, nextRouteLane);
+                    }
+#endif
+                } else {
+                    link = MSLinkContHelper::getConnectingLink(*nextRouteLane, *currentLane);
+#ifdef HAVE_INTERNAL_LANES
+                    if (link != 0) {
+                        if DEBUGCOND(ped.myPerson->getID()) {
+                            std::cout << "  direct backward\n";
+                        }
+                        nextLane = MSLinkContHelper::getInternalFollowingLane(nextRouteLane, currentLane);
+                    }
+#endif
+                }
+            }
+            if (nextLane == 0) {
+                // no internal lane found
+                nextLane = nextRouteLane;
+                if DEBUGCOND(ped.myPerson->getID()) {
+                    std::cout << SIMTIME << " no next lane found for " << currentLane->getID() << " dir=" << ped.myDir << "\n";
+                }
+            } else if (nextLane->getLength() <= POSITION_EPS) {
+                // internal lane too short
+                nextLane = nextRouteLane;
+            }
+        }
+    }
+    if DEBUGCOND(ped.myPerson->getID()) {
+        std::cout << SIMTIME
+                  << " p=" << ped.myPerson->getID()
+                  << " l=" << currentLane->getID()
+                  << " nl=" << (nextLane == 0 ? "NULL" : nextLane->getID())
+                  << " nrl=" << (nextRouteLane == 0 ? "NULL" : nextRouteLane->getID())
+                  << " d=" << nextDir
+                  << " link=" << (link == 0 ? "NULL" : link->getViaLaneOrLane()->getID())
+                  << " pedDir=" << ped.myDir
+                  << "\n";
+    }
+    return NextLaneInfo(nextLane, link, nextDir);
+}
+
+
+const MSLane*
+MSPModel_Striping::getNextWalkingArea(const MSLane* currentLane, const int dir, MSLink*& link) {
+    if (dir == FORWARD) {
+        const MSLinkCont& links = currentLane->getLinkCont();
+        for (MSLinkCont::const_iterator it = links.begin(); it != links.end(); ++it) {
+            if ((*it)->getLane()->getEdge().isWalkingArea()) {
+                link = *it;
+                return (*it)->getLane();
+            }
+        }
+    } else {
+        const std::vector<MSLane::IncomingLaneInfo>& laneInfos = currentLane->getIncomingLanes();
+        for (std::vector<MSLane::IncomingLaneInfo>::const_iterator it = laneInfos.begin(); it != laneInfos.end(); ++it) {
+            if ((*it).lane->getEdge().isWalkingArea()) {
+                link = (*it).viaLink;
+                return (*it).lane;
+            }
+        }
+    }
+    return 0;
+}
+
+
+MSPModel_Striping::Obstacles
+MSPModel_Striping::getNeighboringObstacles(const Pedestrians& pedestrians, int egoIndex, int stripes) {
+    const PState& ego = *pedestrians[egoIndex];
+    Obstacles obs(stripes, Obstacle(ego.myDir));
+    std::vector<bool> haveBlocker(stripes, false);
+    for (int index = egoIndex + 1; index < (int)pedestrians.size(); index++) {
+        const PState& p = *pedestrians[index];
+        if DEBUGCOND(ego.myPerson->getID()) {
+            std::cout << SIMTIME << " ped=" << ego.myPerson->getID() << "  checking neighbor " << p.myPerson->getID();
+        }
+        if (!p.myWaitingToEnter) {
+            const Obstacle o(p);
+            if DEBUGCOND(ego.myPerson->getID()) {
+                std::cout << " dist=" << ego.distanceTo(o) << std::endl;
+            }
+            if (ego.distanceTo(o) < 0.) {
+                break;
+            }
+            if (ego.distanceTo(o, false) == 0.) {
+                obs[p.stripe()] = o;
+                obs[p.otherStripe()] = o;
+                haveBlocker[p.stripe()] = true;
+                haveBlocker[p.otherStripe()] = true;
+            }
+            if (!haveBlocker[p.stripe()]) {
+                obs[p.stripe()] = o;
+            }
+            if (!haveBlocker[p.otherStripe()]) {
+                obs[p.otherStripe()] = o;
+            }
+        }
+    }
+    if DEBUGCOND(ego.myPerson->getID()) {
+        std::cout << SIMTIME << " ped=" << ego.myPerson->getID() << "  neighObs=";
+        DEBUG_PRINT(obs);
+    }
+    return obs;
+}
+
+
+const MSPModel_Striping::Obstacles&
+MSPModel_Striping::getNextLaneObstacles(NextLanesObstacles& nextLanesObs, const
+                                        MSLane* lane, const MSLane* nextLane, int stripes, SUMOReal nextLength, int nextDir,
+                                        SUMOReal currentLength, int currentDir) {
+    if (nextLanesObs.count(nextLane) == 0) {
+        //std::cout << SIMTIME << " getNextLaneObstacles"
+        //    << " nextLane=" << nextLane->getID()
+        //    << " nextLength=" << nextLength
+        //    << " nextDir=" << nextDir
+        //    << " currentLength=" << currentLength
+        //    << " currentDir=" << currentDir
+        //    << "\n";
+
+        // figure out the which pedestrians are ahead on the next lane
+        const int nextStripes = numStripes(nextLane);
+        Obstacles obs(stripes, Obstacle(nextDir));
+        if (nextStripes < stripes) {
+            int offset = (stripes - nextStripes) / 2;
+            if (currentDir == nextDir) {
+                // for odd stripe number differences there is a bigger offset at the beginning
+                offset += (stripes - nextStripes) % 2;
+            }
+            // some stripes do not continue
+            for (int ii = 0; ii < stripes; ++ii) {
+                if (ii < offset || ii >= nextStripes + offset) {
+                    obs[ii] = Obstacle(nextDir == FORWARD ? 0 : nextLength, 0, "stripeEnd");
+                }
+            }
+        }
+        Pedestrians& pedestrians = getPedestrians(nextLane);
+        if (nextLane->getEdge().isWalkingArea()) {
+            // complex transformation into the coordinate system of the current lane
+            // (pedestrians on next lane may walk at arbitrary angles relative to the current lane)
+            const SUMOReal lateral_offset = (lane->getWidth() - stripeWidth) * 0.5;
+            nextDir = currentDir;
+            // transform pedestrians into the current coordinate system
+            for (int ii = 0; ii < (int)pedestrians.size(); ++ii) {
+                PState& p = *pedestrians[ii];
+                Position relPos =  lane->getShape().transformToVectorCoordinates(p.getPosition(*p.myStage, -1), true);
+                const SUMOReal newY = relPos.y() + lateral_offset;
+                addCloserObstacle(obs, relPos.x(), p.stripe(newY), stripes, p.myPerson->getID(), p.myPerson->getVehicleType().getWidth(), currentDir);
+                addCloserObstacle(obs, relPos.x(), p.otherStripe(newY), stripes, p.myPerson->getID(), p.myPerson->getVehicleType().getWidth(), currentDir);
+            }
+        } else {
+            // simple transformation into the coordinate system of the current lane
+            // (only need to worry about currentDir and nextDir)
+            // XXX consider waitingToEnter on nextLane
+            sort(pedestrians.begin(), pedestrians.end(), by_xpos_sorter(nextDir));
+            for (int ii = 0; ii < (int)pedestrians.size(); ++ii) {
+                const PState& p = *pedestrians[ii];
+                if (p.myWaitingToEnter) {
+                    continue;
+                }
+                SUMOReal newY = p.myRelY;
+                if (nextDir != currentDir) {
+                    newY = nextLane->getWidth() - stripeWidth - newY;
+                }
+                newY += 0.5 * (lane->getWidth() - nextLane->getWidth());
+                const int stripe = p.stripe(newY);
+                if (stripe >= 0 && stripe < stripes) {
+                    obs[stripe] = Obstacle(p);
+                }
+                const int otherStripe = p.otherStripe(newY);
+                if (otherStripe >= 0 && otherStripe < stripes) {
+                    obs[otherStripe] = Obstacle(p);
+                }
+            }
+            for (int ii = 0; ii < stripes; ++ii) {
+                Obstacle& o = obs[ii];
+                if (nextDir == BACKWARD) {
+                    const SUMOReal xfwd = nextLength - o.xBack;
+                    o.xBack = nextLength - o.xFwd;
+                    o.xFwd = xfwd;
+                }
+                if (currentDir == FORWARD) {
+                    o.xFwd += currentLength;
+                    o.xBack += currentLength;
+                } else {
+                    const SUMOReal xfwd = -o.xBack;
+                    o.xBack = -o.xFwd;
+                    o.xFwd = xfwd;
+                }
+            }
+        }
+        nextLanesObs[nextLane] = obs;
+    }
+    return nextLanesObs[nextLane];
+}
+
+
+void
+MSPModel_Striping::addCloserObstacle(Obstacles& obs, SUMOReal x, int stripe, int numStripes, const std::string& id, SUMOReal width, int dir) {
+    if (stripe >= 0 && stripe < numStripes) {
+        if ((dir == FORWARD && x - width / 2. < obs[stripe].xBack) || (dir == BACKWARD && x + width / 2. > obs[stripe].xFwd)) {
+            obs[stripe] = Obstacle(x, 0, id, width);
+        }
+    }
+}
+
+void
+MSPModel_Striping::moveInDirection(SUMOTime currentTime, std::set<MSPerson*>& changedLane, int dir) {
+    for (ActiveLanes::iterator it_lane = myActiveLanes.begin(); it_lane != myActiveLanes.end(); ++it_lane) {
+        const MSLane* lane = it_lane->first;
+        Pedestrians& pedestrians = it_lane->second;
+        //std::cout << SIMTIME << ">>> lane=" << lane->getID() << " numPeds=" << pedestrians.size() << "\n";
+        if (lane->getEdge().isWalkingArea()) {
+            const SUMOReal lateral_offset = (lane->getWidth() - stripeWidth) * 0.5;
+            const SUMOReal minY = stripeWidth * - 0.5 + NUMERICAL_EPS;
+            const SUMOReal maxY = stripeWidth * (numStripes(lane) - 0.5) - NUMERICAL_EPS;
+            const WalkingAreaPath* debugPath = 0;
+            // need to handle each walkingAreaPath seperately and transform
+            // coordinates beforehand
+            std::set<const WalkingAreaPath*, walkingarea_path_sorter> paths;
+            for (Pedestrians::iterator it = pedestrians.begin(); it != pedestrians.end(); ++it) {
+                const PState* p = *it;
+                assert(p->myWalkingAreaPath != 0);
+                if (p->myDir == dir) {
+                    paths.insert(p->myWalkingAreaPath);
+                    if DEBUGCOND(p->myPerson->getID()) {
+                        debugPath = p->myWalkingAreaPath;
+                        std::cout << SIMTIME << " debugging WalkingAreaPath from=" << debugPath->from->getID() << " to=" << debugPath->to->getID() << "\n";
+                    }
+                }
+            }
+            for (std::set<const WalkingAreaPath*, walkingarea_path_sorter>::iterator it = paths.begin(); it != paths.end(); ++it) {
+                const WalkingAreaPath* path = *it;
+                Pedestrians toDelete;
+                Pedestrians transformedPeds;
+                transformedPeds.reserve(pedestrians.size());
+                for (Pedestrians::iterator it_p = pedestrians.begin(); it_p != pedestrians.end(); ++it_p) {
+                    PState* p = *it_p;
+                    if (p->myWalkingAreaPath == path
+                            // opposite direction is already in the correct coordinate system
+                            || (p->myWalkingAreaPath->from == path->to && p->myWalkingAreaPath->to == path->from)) {
+                        transformedPeds.push_back(p);
+                        if (path == debugPath) std::cout << "  ped=" << p->myPerson->getID() << "  relX=" << p->myRelX << " relY=" << p->myRelY << " (untransformed), vecCoord="
+                                                             << path->shape.transformToVectorCoordinates(p->getPosition(*p->myStage, -1)) << "\n";
+                    } else {
+                        const Position relPos = path->shape.transformToVectorCoordinates(p->getPosition(*p->myStage, -1));
+                        const SUMOReal newY = relPos.y() + lateral_offset;
+                        if (relPos != Position::INVALID && newY >= minY && newY <= maxY) {
+                            PState* tp = new PState(*p);
+                            tp->myRelX = relPos.x();
+                            tp->myRelY = newY;
+                            // only an obstacle, speed may be orthogonal to dir
+                            tp->myDir = !dir;
+                            tp->mySpeed = 0;
+                            toDelete.push_back(tp);
+                            transformedPeds.push_back(tp);
+                            if (path == debugPath) {
+                                std::cout << "  ped=" << p->myPerson->getID() << "  relX=" << relPos.x() << " relY=" << newY << " (transformed), vecCoord=" << relPos << "\n";
+                            }
+                        } else {
+                            if (path == debugPath) {
+                                std::cout << "  ped=" << p->myPerson->getID() << "  relX=" << relPos.x() << " relY=" << newY << " (invalid), vecCoord=" << relPos << "\n";
+                            }
+                        }
+                    }
+                }
+                moveInDirectionOnLane(transformedPeds, lane, currentTime, changedLane, dir);
+                // clean up
+                for (Pedestrians::iterator it_p = toDelete.begin(); it_p != toDelete.end(); ++it_p) {
+                    delete *it_p;
+                }
+            };
+
+        } else {
+            moveInDirectionOnLane(pedestrians, lane, currentTime, changedLane, dir);
+        }
+        // advance to the next lane / arrive at destination
+        sort(pedestrians.begin(), pedestrians.end(), by_xpos_sorter(dir));
+        for (Pedestrians::iterator it = pedestrians.begin(); it != pedestrians.end();) {
+            PState* p = *it;
+            if (p->myDir != dir) {
+                ++it;
+            } else if (p->distToLaneEnd() < 0) {
+                // moveToNextLane may trigger re-insertion (for consecutive
+                // walks) so erase must be called first
+                it = pedestrians.erase(it);
+                p->moveToNextLane(currentTime);
+                if (p->myLane != 0) {
+                    changedLane.insert(p->myPerson);
+                    myActiveLanes[p->myLane].push_back(p);
+                } else {
+                    delete p;
+                    myNumActivePedestrians--;
+                }
+            } else {
+                ++it;
+            }
+        }
+    }
+}
+
+
+void
+MSPModel_Striping::moveInDirectionOnLane(Pedestrians& pedestrians, const MSLane* lane, SUMOTime currentTime, std::set<MSPerson*>& changedLane, int dir) {
+    const int stripes = numStripes(lane);
+    Obstacles obs(stripes, Obstacle(dir)); // continously updated
+    NextLanesObstacles nextLanesObs; // continously updated
+    sort(pedestrians.begin(), pedestrians.end(), by_xpos_sorter(dir));
+    for (int ii = 0; ii < (int)pedestrians.size(); ++ii) {
+        PState& p = *pedestrians[ii];
+        //std::cout << SIMTIME << "CHECKING" << p.myPerson->getID() << "\n";
+        Obstacles currentObs = obs;
+        if (p.myDir != dir || changedLane.count(p.myPerson) != 0) {
+            if (!p.myWaitingToEnter) {
+                Obstacle o(p);
+                obs[p.stripe()] = o;
+                obs[p.otherStripe()] = o;
+            }
+            continue;
+        }
+        if DEBUGCOND(p.myPerson->getID()) {
+            std::cout << SIMTIME << " ped=" << p.myPerson->getID() << "  currentObs=";
+            DEBUG_PRINT(currentObs);
+        }
+        const MSLane* nextLane = p.myNLI.lane;
+        const MSLink* link = p.myNLI.link;
+        const SUMOReal dist = p.distToLaneEnd();
+        const SUMOReal speed = p.myStage->getMaxSpeed();
+        if (nextLane != 0 && dist <= LOOKAHEAD_ONCOMING) {
+            const SUMOReal currentLength = (p.myWalkingAreaPath == 0 ? lane->getLength() : p.myWalkingAreaPath->length);
+            const SUMOReal nextLength = nextLane->getLength(); // XXX what to do if nextLane is a walkingArea?
+            const Obstacles& nextObs = getNextLaneObstacles(
+                                           nextLanesObs, lane, nextLane, stripes,
+                                           nextLength, p.myNLI.dir,
+                                           currentLength, dir);
+
+            if DEBUGCOND(p.myPerson->getID()) {
+                std::cout << SIMTIME << " ped=" << p.myPerson->getID() << "  nextObs=";
+                DEBUG_PRINT(nextObs);
+            }
+            p.mergeObstacles(currentObs, nextObs);
+        }
+        if DEBUGCOND(p.myPerson->getID()) {
+            std::cout << SIMTIME << " ped=" << p.myPerson->getID() << "  obsWithNext=";
+            DEBUG_PRINT(currentObs);
+        }
+        p.mergeObstacles(currentObs, getNeighboringObstacles(pedestrians, ii, stripes));
+        if DEBUGCOND(p.myPerson->getID()) {
+            std::cout << SIMTIME << " ped=" << p.myPerson->getID() << "  obsWithNeigh=";
+            DEBUG_PRINT(currentObs);
+        }
+        // check link state
+        if (link != 0
+                // only check close before junction, @todo we should take deceleration into account here
+                && dist - p.getMinGap() < LOOKAHEAD_SAMEDIR * speed
+                && (!link->opened(currentTime, speed, speed, p.getLength(), p.getImpatience(currentTime), speed, 0)
+                    // @todo check for presence of vehicles blocking the path
+                   )) {
+            // prevent movement passed a closed link
+            Obstacles closedLink(stripes, Obstacle(p.myRelX + dir * (dist + NUMERICAL_EPS), 0, "closedLink"));
+            p.mergeObstacles(currentObs, closedLink);
+            if DEBUGCOND(p.myPerson->getID()) {
+                std::cout << SIMTIME << " ped=" << p.myPerson->getID() << "  obsWitTLS=";
+                DEBUG_PRINT(currentObs);
+            }
+            // consider rerouting over another crossing
+            if (p.myWalkingAreaPath != 0) {
+                // @todo actually another path would be needed starting at the current position
+                p.myNLI = getNextLane(p, p.myLane, p.myWalkingAreaPath->from);
+            }
+        }
+        if (&lane->getEdge() == &p.myStage->getDestination() && p.myStage->getDestinationStop() != 0) {
+            Obstacles arrival(stripes, Obstacle(p.myStage->getArrivalPos() + dir * p.getMinGap(), 0, "arrival"));
+            p.mergeObstacles(currentObs, arrival);
+        }
+        p.walk(currentObs, currentTime);
+        if (!p.myWaitingToEnter) {
+            Obstacle o(p);
+            obs[p.stripe()] = o;
+            obs[p.otherStripe()] = o;
+            if (MSGlobals::gCheck4Accidents && p.myWalkingAreaPath == 0 && !p.myAmJammed) {
+                for (int coll = 0; coll < ii; ++coll) {
+                    PState& c = *pedestrians[coll];
+                    if (!c.myWaitingToEnter && c.myWalkingAreaPath == 0 && !c.myAmJammed) {
+                        if (c.stripe() == p.stripe() || p.stripe() == c.otherStripe() || p.otherStripe() == c.stripe() || p.otherStripe() == c.otherStripe()) {
+                            Obstacle cObs(c);
+                            // we check only for real collisions, no min gap violations
+                            if (p.distanceTo(cObs, false) == 0.) {
+                                WRITE_WARNING("Collision of person '" + p.myPerson->getID() + "' and person '" + c.myPerson->getID()
+                                              + "', lane='" + lane->getID() + "', time=" + time2string(currentTime) + ".");
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //std::cout << SIMTIME << p.myPerson->getID() << " lane=" << lane->getID() << " x=" << p.myRelX << "\n";
+    }
+}
+
+
+// ===========================================================================
+// MSPModel_Striping::Obstacle method definitions
+// ===========================================================================
+MSPModel_Striping::Obstacle::Obstacle(int dir) :
+    xFwd(dir* FAR_AWAY),   // far away when seen in dir
+    xBack(dir* FAR_AWAY),   // far away when seen in dir
+    speed(0),
+    description("")
+{}
+
+
+MSPModel_Striping::Obstacle::Obstacle(const PState& ped) :
+    description(ped.myPerson->getID()) {
+    assert(!ped.myWaitingToEnter);
+    xFwd = ped.getMaxX();
+    xBack = ped.getMinX();
+    speed = ped.myDir * ped.mySpeed;
+}
+
+
+// ===========================================================================
+// MSPModel_Striping::PState method definitions
+// ===========================================================================
+
+
+MSPModel_Striping::PState::PState(MSPerson* person, MSPerson::MSPersonStage_Walking* stage, const MSLane* lane):
+    myPerson(person),
+    myStage(stage),
+    myLane(lane),
+    myRelX(stage->getDepartPos()),
+    myRelY(0),
+    myDir(FORWARD),
+    mySpeed(0),
+    myWaitingToEnter(true),
+    myWaitingTime(0),
+    myWalkingAreaPath(0),
+    myAmJammed(false) {
+    const MSEdge* currentEdge = &lane->getEdge();
+    assert(!currentEdge->isWalkingArea());
+    const ConstMSEdgeVector& route = myStage->getRoute();
+    if (route.size() == 1) {
+        // only a single edge, move towards end pos
+        myDir = (myRelX <= myStage->getArrivalPos()) ? FORWARD : BACKWARD;
+    } else {
+        const bool mayStartForward = canTraverse(FORWARD, route);
+        const bool mayStartBackward = canTraverse(BACKWARD, route);
+        if DEBUGCOND(myPerson->getID()) {
+            std::cout << "  initialize dir for " << myPerson->getID() << " forward=" << mayStartForward << " backward=" << mayStartBackward << "\n";
+        }
+        if (mayStartForward && mayStartBackward) {
+            // figure out the best direction via routing
+            ConstMSEdgeVector crossingRoute;
+            MSNet::getInstance()->getPedestrianRouter().compute(currentEdge, route.back(), myRelX, myStage->getArrivalPos(), myStage->getMaxSpeed(), 0, 0, crossingRoute, true);
+            if (crossingRoute.size() > 1) {
+                // route found
+                const MSEdge* nextEdge = crossingRoute[1];
+                if (nextEdge->getFromJunction() == currentEdge->getFromJunction() || nextEdge->getToJunction() == currentEdge->getFromJunction()) {
+                    myDir = BACKWARD;
+                }
+            }
+            if DEBUGCOND(myPerson->getID()) {
+                std::cout << " crossingRoute=" << toString(crossingRoute) << "\n";
+            }
+        } else {
+            myDir = !mayStartBackward ? FORWARD : BACKWARD;
+        }
+    }
+    if (myDir == FORWARD) {
+        // start at the right side of the sidewalk
+        myRelY = stripeWidth * (numStripes(lane) - 1);
+    }
+    if DEBUGCOND(myPerson->getID()) {
+        std::cout << "  added new pedestrian " << myPerson->getID() << " on " << lane->getID() << " myRelX=" << myRelX << " myRelY=" << myRelY << " dir=" << myDir << " route=" << toString(myStage->getRoute()) << "\n";
+    }
+
+    myNLI = getNextLane(*this, lane, 0);
+}
+
+
+SUMOReal
+MSPModel_Striping::PState::getMinX(const bool includeMinGap) const {
+    // @todo speed should have an influence here because faster persons need more space
+    if (myDir == FORWARD) {
+        return myRelX - getLength();
+    }
+    return myRelX - (includeMinGap ? getMinGap() : 0.);
+}
+
+
+SUMOReal
+MSPModel_Striping::PState::getMaxX(const bool includeMinGap) const {
+    // @todo speed should have an influence here because faster persons need more space
+    if (myDir == FORWARD) {
+        return myRelX + (includeMinGap ? getMinGap() : 0.);
+    }
+    return myRelX + getLength();
+}
+
+
+SUMOReal
+MSPModel_Striping::PState::getLength() const {
+    return myPerson->getVehicleType().getLength();
+}
+
+
+SUMOReal
+MSPModel_Striping::PState::getMinGap() const {
+    return myPerson->getVehicleType().getMinGap();
+}
+
+
+int
+MSPModel_Striping::PState::stripe(SUMOReal relY) const {
+    return (int)floor(relY / stripeWidth + 0.5);
+}
+
+
+int
+MSPModel_Striping::PState::otherStripe(SUMOReal relY) const {
+    const int s = stripe(relY);
+    const SUMOReal offset = relY - s * stripeWidth;
+    const SUMOReal threshold = MAX2(NUMERICAL_EPS, stripeWidth - SQUEEZE * myPerson->getVehicleType().getWidth());
+    int result;
+    if (offset > threshold) {
+        result = s + 1;
+    } else if (offset < -threshold) {
+        result = s - 1;
+    } else {
+        result = s;
+    }
+    //std::cout.setf(std::ios::fixed , std::ios::floatfield);
+    //std::cout << std::setprecision(5);
+    //if DEBUGCOND(myPerson->getID()) std::cout << "  otherStripe " << myPerson->getID() << " offset=" << offset << " threshold=" << threshold << " rawResult=" << result << "\n";
+    return result;
+}
+
+int
+MSPModel_Striping::PState::stripe() const {
+    return MIN2(MAX2(0, stripe(myRelY)), numStripes(myLane) - 1);
+}
+
+
+int
+MSPModel_Striping::PState::otherStripe() const {
+    return MIN2(MAX2(0, otherStripe(myRelY)), numStripes(myLane) - 1);
+}
+
+
+SUMOReal
+MSPModel_Striping::PState::distToLaneEnd() const {
+    if (myStage->getNextRouteEdge() == 0) {
+        return myDir * (myStage->getArrivalPos() - myRelX) - POSITION_EPS;
+    } else {
+        const SUMOReal length = myWalkingAreaPath == 0 ? myLane->getLength() : myWalkingAreaPath->length;
+        return myDir == FORWARD ? length - myRelX : myRelX;
+    }
+}
+
+
+bool
+MSPModel_Striping::PState::moveToNextLane(SUMOTime currentTime) {
+    const SUMOReal dist = distToLaneEnd();
+    if (myPerson->getID() == DEBUG1) {
+        std::cout << SIMTIME << " myRelX=" << myRelX << " dist=" << dist << "\n";
+    }
+    if (dist <= 0) {
+        //if (ped.myPerson->getID() == DEBUG1) {
+        //    std::cout << SIMTIME << " addToLane x=" << ped.myRelX << " newDir=" << newDir << " newLane=" << newLane->getID() << " walkingAreaShape=" << walkingAreaShape << "\n";
+        //}
+        //std::cout << " changing to " << newLane->getID() << " myRelY=" << ped.myRelY << " oldStripes=" << numStripes(myLane) << " newStripes=" << numStripes(newLane);
+        //std::cout << " newY=" << ped.myRelY << " myDir=" << ped.myDir << " newDir=" << newDir;
+        const int oldDir = myDir;
+        const MSLane* oldLane = myLane;
+        myLane = myNLI.lane;
+        myDir = myNLI.dir;
+        const bool normalLane = (myLane == 0 || myLane->getEdge().getPurpose() == MSEdge::EDGEFUNCTION_NORMAL);
+        if DEBUGCOND(myPerson->getID()) {
+            std::cout << SIMTIME
+                      << " ped=" << myPerson->getID()
+                      << " moveToNextLane old=" << oldLane->getID()
+                      << " new=" << (myLane == 0 ? "NULL" : myLane->getID())
+                      << " oldDir=" << oldDir
+                      << " newDir=" << myDir
+                      << "\n";
+        }
+        myStage->moveToNextEdge(myPerson, currentTime, normalLane ? 0 : &myLane->getEdge());
+        if (myLane != 0) {
+            assert(myDir != UNDEFINED_DIRECTION);
+            myNLI = getNextLane(*this, myLane, oldLane);
+            assert(myNLI.lane != oldLane); // do not turn around
+            if DEBUGCOND(myPerson->getID()) {
+                std::cout << "    nextLane=" << (myNLI.lane == 0 ? "NULL" : myNLI.lane->getID()) << "\n";
+            }
+            if (myLane->getEdge().isWalkingArea()) {
+                if (myNLI.dir != UNDEFINED_DIRECTION) {
+                    myWalkingAreaPath = &myWalkingAreaPaths[std::make_pair(oldLane, myNLI.lane)];
+                    assert(myWalkingAreaPath->from != 0);
+                    assert(myWalkingAreaPath->to != 0);
+                    assert(myWalkingAreaPath->shape.size() >= 2);
+                    if DEBUGCOND(myPerson->getID()) {
+                        std::cout << "  mWAPath shape=" << myWalkingAreaPath->shape << " length=" << myWalkingAreaPath->length << "\n";
+                    }
+                } else {
+                    // disconnnected route. move to the next edge (arbitrariliy, maintaining current direction)
+                    if (OptionsCont::getOptions().getBool("ignore-route-errors")) {
+                        myStage->moveToNextEdge(myPerson, currentTime, 0);
+                        myLane = myNLI.lane;
+                        assert(myLane != 0);
+                        assert(myLane->getEdge().getPurpose() == MSEdge::EDGEFUNCTION_NORMAL);
+                        myNLI = getNextLane(*this, myLane, oldLane);
+                        myWalkingAreaPath = 0;
+                    } else {
+                        throw ProcessError("Disconnected walk for person '" + myPerson->getID() + "'.");
+                    }
+                }
+            } else {
+                myWalkingAreaPath = 0;
+            }
+            // adapt x to fit onto the new lane
+            if (myDir == BACKWARD) {
+                const SUMOReal newLength = (myWalkingAreaPath == 0 ? myLane->getLength() : myWalkingAreaPath->length);
+                myRelX = newLength + dist;
+            } else {
+                myRelX = -dist;
+            }
+            // adjust to change in direction
+            if (myDir != oldDir) {
+                myRelY = oldLane->getWidth() - stripeWidth - myRelY;
+            }
+            // adjust to differences in sidewalk width
+            myRelY += 0.5 * (myLane->getWidth() - oldLane->getWidth());
+        }
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+void
+MSPModel_Striping::PState::walk(const Obstacles& obs, SUMOTime currentTime) {
+    const int stripes = (int)obs.size();
+    const int sMax =  stripes - 1;
+    assert(stripes == numStripes(myLane));
+    const SUMOReal vMax = myStage->getMaxSpeed();
+    // ultimate goal is to choose the prefered stripe (chosen)
+    const int current = stripe();
+    const int other = otherStripe();
+    // compute utility for all stripes
+    std::vector<SUMOReal> utility(stripes);
+    // penalize lateral movement (may increase jamming)
+    for (int i = 0; i < stripes; ++i) {
+        utility[i] = abs(i - current) * LATERAL_PENALTY;
+    }
+    // compute distances
+    std::vector<SUMOReal> distance(stripes);
+    for (int i = 0; i < stripes; ++i) {
+        distance[i] = distanceTo(obs[i]);
+        if (distance[i] <= 0) {
+            utility[i] += INAPPROPRIATE_PENALTY;
+        }
+    }
+    // forbid stripes which are blocked and also all stripes behind them
+    for (int i = 0; i < stripes; ++i) {
+        if (distanceTo(obs[i], false) <= 0) {
+            if (i < current) {
+                for (int j = 0; j <= i; ++j) {
+                    utility[j] += OBSTRUCTED_PENALTY;
+                }
+            }
+            if (i > current) {
+                for (int j = i; j < stripes; ++j) {
+                    utility[j] += OBSTRUCTED_PENALTY;
+                }
+            }
+            if (i == current) {
+                // staying should always be an option
+                utility[i] += INAPPROPRIATE_PENALTY;
+            }
+        }
+    }
+    // forbid a portion of the leftmost stripes (in walking direction).
+    // lanes with stripes less than 1 / RESERVE_FOR_ONCOMING_FACTOR
+    // may still deadlock in heavy pedestrian traffic
+    const int reserved = (int)floor(stripes * RESERVE_FOR_ONCOMING_FACTOR);
+    if (myDir == FORWARD) {
+        for (int i = 0; i < reserved; ++i) {
+            utility[i] += INAPPROPRIATE_PENALTY;
+        }
+    } else {
+        for (int i = sMax; i > sMax - reserved; --i) {
+            utility[i] += INAPPROPRIATE_PENALTY;
+        }
+    }
+    // adapt utility based on obstacles
+    for (int i = 0; i < stripes; ++i) {
+        if (obs[i].speed < 0) {
+            // penalize evasion to the left
+            if (myDir == FORWARD && i > 0) {
+                utility[i - 1] -= 0.5;
+            } else if (myDir == BACKWARD && i < sMax) {
+                utility[i + 1] -= 0.5;
+            }
+        }
+        // compute expected distance achievable by staying on this stripe for a time horizon
+        const SUMOReal lookAhead = obs[i].speed * myDir >= 0 ? LOOKAHEAD_SAMEDIR : LOOKAHEAD_ONCOMING;
+        const SUMOReal expectedDist = MIN2(vMax * LOOKAHEAD_SAMEDIR, distance[i] + obs[i].speed * myDir * lookAhead);
+        if (DEBUGCOND(myPerson->getID())) {
+            std::cout << " util=" << utility[i] << " exp=" << expectedDist << "\n";
+        }
+        if (expectedDist >= 0) {
+            utility[i] += expectedDist;
+        } else {
+            // let only the distance count
+            utility[i] += ONCOMING_CONFLICT_PENALTY + distance[i];
+        }
+    }
+    // bonus to remain on the rightmost lane (in walking direction) if there
+    // are oncoming
+    if (((myDir == FORWARD && current == sMax)
+            || (myDir == BACKWARD && current == 0))
+            && obs[current].speed * myDir < 0) {
+        utility[current] -= ONCOMING_CONFLICT_PENALTY;
+    }
+    // bonus to leave the leftmost lane (in walking direction) if there
+    // are oncoming
+    if (((myDir == BACKWARD && current == sMax)
+            || (myDir == FORWARD && current == 0))
+            && obs[current].speed * myDir < 0) {
+        utility[current] += ONCOMING_CONFLICT_PENALTY;
+    }
+
+    // select best stripe
+    int chosen = current;
+    for (int i = 0; i < stripes; ++i) {
+        if (utility[chosen] < utility[i]) {
+            chosen = i;
+        }
+    }
+    // compute speed components along both axes
+    const int next = (chosen == current ? current : (chosen < current ? current - 1 : current + 1));
+    const SUMOReal xDist = MIN3(distance[current], distance[other], distance[next]);
+    // XXX preferred gap differs between approaching a standing obstacle or a moving obstacle
+    const SUMOReal preferredGap = NUMERICAL_EPS;
+    SUMOReal xSpeed = MIN2(vMax, MAX2((SUMOReal)0, DIST2SPEED(xDist - preferredGap)));
+    if (DEBUGCOND(myPerson->getID())) {
+        std::cout << " xSpeedPotential=" << xSpeed << "\n";
+    }
+    // avoid tiny steps
+    // XXX pressure from behind?
+    if (mySpeed == 0 && xDist < MIN_STARTUP_DIST) {
+        xSpeed = 0;
+    }
+    if (xSpeed == 0) {
+        if (myWaitingTime > jamTime || myAmJammed) {
+            // squeeze slowly through the crowd ignoring others
+            if (!myAmJammed) {
+                MSNet::getInstance()->getPersonControl().registerJammed();
+                WRITE_WARNING("Person '" + myPerson->getID()
+                              + "' is jammed on edge '" + myStage->getEdge()->getID()
+                              + "', time=" + time2string(MSNet::getInstance()->getCurrentTimeStep()) + ".");
+                myAmJammed = true;
+            }
+            xSpeed = vMax / 4;
+        } else {
+            myAmJammed = false;
+        }
+    }
+    // dawdling
+    const SUMOReal dawdle = MIN2(xSpeed, RandHelper::rand() * vMax * dawdling);
+
+    // XXX ensure that diagonal speed <= vMax
+    // avoid deadlocks on narrow sidewalks
+    //if (oncoming && xSpeed == 0 && myStage->getWaitingTime(currentTime) > TIME2STEPS(ONCOMIN_PATIENCE)) {
+    //    if DEBUGCOND(myPerson->getID()) std::cout << "  stepping asside to resolve oncoming deadlock\n";
+    //    xSpeed = POSITION_EPS; // reset myWaitingTime
+    //     if (myDir == FORWARD && chosen < sMax) {
+    //         chosen += 1;
+    //     } else if (myDir == BACKWARD && chosen > 0) {
+    //         chosen -= 1;
+    //     }
+    //}
+    const SUMOReal maxYSpeed = MAX2(vMax * LATERAL_SPEED_FACTOR, vMax - xSpeed);
+    SUMOReal ySpeed = 0;
+    const SUMOReal yDist = (chosen * stripeWidth) - myRelY;
+    if (fabs(yDist) > NUMERICAL_EPS) {
+        ySpeed = (yDist > 0 ?
+                  MIN2(maxYSpeed, DIST2SPEED(yDist)) :
+                  MAX2(-maxYSpeed, DIST2SPEED(yDist)));
+    }
+    // DEBUG
+    if DEBUGCOND(myPerson->getID()) {
+        std::cout << SIMTIME
+                  << " ped=" << myPerson->getID()
+                  << " edge=" << myStage->getEdge()->getID()
+                  << " x=" << myRelX
+                  << " y=" << myRelY
+                  << " d=" << myDir
+                  << " pvx=" << mySpeed
+                  << " cur=" << current
+                  << " cho=" << chosen
+                  << " oth=" << other
+                  << " nxt=" << next
+                  << " vx=" << xSpeed
+                  << " dawdle=" << dawdle
+                  << " vy=" << ySpeed
+                  << " xd=" << xDist
+                  << " yd=" << yDist
+                  << " vMax=" << myStage->getMaxSpeed()
+                  << " wTime=" << myStage->getWaitingTime(currentTime)
+                  << " jammed=" << myAmJammed
+                  << "\n distance=" << toString(distance)
+                  << " utility=" << toString(utility)
+                  << "\n";
+        DEBUG_PRINT(obs);
+    }
+    myRelX += SPEED2DIST(xSpeed * myDir);
+    myRelY += SPEED2DIST(ySpeed);
+    mySpeed = xSpeed;
+    if (xSpeed > 0) {
+        myWaitingToEnter = false;
+        myWaitingTime = 0;
+    } else {
+        myWaitingTime += DELTA_T;
+    }
+}
+
+
+SUMOReal
+MSPModel_Striping::PState::getImpatience(SUMOTime now) const {
+    return MAX2((SUMOReal)0, MIN2(SUMOReal(1),
+                                  myPerson->getVehicleType().getImpatience()
+                                  + STEPS2TIME(myStage->getWaitingTime(now)) / MAX_WAIT_TOLERANCE));
+}
+
+
+SUMOReal
+MSPModel_Striping::PState::getEdgePos(const MSPerson::MSPersonStage_Walking&, SUMOTime) const {
+    return myRelX;
+}
+
+
+Position
+MSPModel_Striping::PState::getPosition(const MSPerson::MSPersonStage_Walking& stage, SUMOTime) const {
+    if (myLane == 0) {
+        // pedestrian has already finished
+        return Position::INVALID;
+    }
+    const SUMOReal lateral_offset = myRelY + (stripeWidth - myLane->getWidth()) * 0.5;
+    if (myWalkingAreaPath == 0) {
+        return stage.getLanePosition(myLane, myRelX, lateral_offset);
+    } else {
+        return myWalkingAreaPath->shape.positionAtOffset(myRelX, lateral_offset);
+    }
+}
+
+
+SUMOReal
+MSPModel_Striping::PState::getAngle(const MSPerson::MSPersonStage_Walking&, SUMOTime) const {
+    if (myLane == 0) {
+        // pedestrian has already finished
+        return 0;
+    }
+    const PositionVector& shp = myWalkingAreaPath == 0 ? myLane->getShape() : myWalkingAreaPath->shape;
+    SUMOReal angle = shp.rotationAtOffset(myRelX) + (myDir == MSPModel::BACKWARD ? M_PI : 0);
+    if (angle > M_PI) {
+        angle -= 2 * M_PI;
+    }
+    return angle;
+}
+
+
+SUMOTime
+MSPModel_Striping::PState::getWaitingTime(const MSPerson::MSPersonStage_Walking&, SUMOTime) const {
+    return myWaitingTime;
+}
+
+
+SUMOReal
+MSPModel_Striping::PState::getSpeed(const MSPerson::MSPersonStage_Walking&) const {
+    return mySpeed;
+}
+
+
+const MSEdge*
+MSPModel_Striping::PState::getNextEdge(const MSPerson::MSPersonStage_Walking&) const {
+    return myNLI.lane == 0 ? 0 : &myNLI.lane->getEdge();
+}
+
+
+SUMOReal
+MSPModel_Striping::PState::distanceTo(const Obstacle& obs, const bool includeMinGap) const {
+    // check for overlap
+    const SUMOReal maxX = getMaxX(includeMinGap);
+    const SUMOReal minX = getMinX(includeMinGap);
+    if ((obs.xFwd > maxX && obs.xBack < maxX) || (obs.xFwd <= maxX && obs.xFwd > minX)) {
+        return 0.;
+    }
+    const SUMOReal dist = obs.xFwd <= minX ? obs.xFwd - minX : obs.xBack - maxX;
+    return myDir * dist;
+}
+
+
+void
+MSPModel_Striping::PState::mergeObstacles(Obstacles& into, const Obstacles& obs2) {
+    for (int i = 0; i < (int)into.size(); ++i) {
+        if (fabs(distanceTo(obs2[i], false)) < fabs(distanceTo(into[i], false))) {
+            into[i] = obs2[i];
+        }
+    }
+}
+
+
+
+// ===========================================================================
+// MSPModel_Striping::MovePedestrians method definitions
+// ===========================================================================
+//
+
+SUMOTime
+MSPModel_Striping::MovePedestrians::execute(SUMOTime currentTime) {
+    std::set<MSPerson*> changedLane;
+    myModel->moveInDirection(currentTime, changedLane, FORWARD);
+    myModel->moveInDirection(currentTime, changedLane, BACKWARD);
+    // DEBUG
+#ifdef LOG_ALL
+    for (ActiveLanes::const_iterator it_lane = myModel->getActiveLanes().begin(); it_lane != myModel->getActiveLanes().end(); ++it_lane) {
+        const MSLane* lane = it_lane->first;
+        Pedestrians pedestrians = it_lane->second;
+        if (pedestrians.size() == 0) {
+            continue;
+        }
+        sort(pedestrians.begin(), pedestrians.end(), by_xpos_sorter(FORWARD));
+        std::cout << SIMTIME << " lane=" << lane->getID();
+        for (int ii = 0; ii < (int)pedestrians.size(); ++ii) {
+            const PState& p = *pedestrians[ii];
+            std::cout << " (" << p.myPerson->getID() << " " << p.myRelX << "," << p.myRelY << " " << p.myDir << ")";
+        }
+        std::cout << "\n";
+    }
+#endif
+    return DELTA_T;
+}
+

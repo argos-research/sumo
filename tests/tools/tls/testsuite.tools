@@ -1,0 +1,8 @@
+# Tests the transformation from csv in sumo format
+csv2sumo
+
+# Tests the check traffic light system script
+check
+
+# Tests script for coordinating traffic lights
+tlsCoordinator

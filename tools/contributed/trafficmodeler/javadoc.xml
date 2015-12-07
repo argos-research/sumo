@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="javadoc">
+    <target name="javadoc">
+        <javadoc access="private" author="false" classpath="." destdir="doc" nodeprecated="true" nodeprecatedlist="true" noindex="false" nonavbar="false" notree="false" packagenames="tdl,ui.dialogs,enums,interfaces,simulation,ui.filefilters,trafficdefinition,shapes,ui.controls,roadnetwork,ui.propertypanels,helpers,classes,ui" source="1.6" sourcefiles="src/Main.java" sourcepath="src" splitindex="true" use="true" version="false"/>
+    </target>
+</project>

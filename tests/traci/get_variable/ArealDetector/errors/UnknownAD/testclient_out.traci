@@ -1,0 +1,15 @@
+TraCITestClient output file. Date: Tue Dec 16 15:25:24 2014
+
+
+-> Command sent: <SimulationStep2>:
+.. Command acknowledged (2), [description: ]
+
+-> Command sent: <GetVariable>:
+  domID=173 varID=24 objID=xxx
+.. Answered with error to command (173), [description: Areal detector 'xxx' is not known]
+
+-> Command sent: <SimulationStep2>:
+.. Command acknowledged (2), [description: ]
+
+-> Command sent: <Close>:
+.. Command acknowledged (127), [description: ]

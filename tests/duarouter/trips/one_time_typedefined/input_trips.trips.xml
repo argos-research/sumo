@@ -1,0 +1,13 @@
+<trips>
+	<vType id="0" accel="2." decel="2.5" sigma="0.2" length="2" minGap="2" maxSpeed="70"/>
+	<trip depart="0" from="beg" to="rend" type="0"/>
+	<trip depart="0" from="beg" to="rend" type="0"/>
+	<trip depart="0" from="beg" to="rend" type="0"/>
+	<trip depart="0" from="beg" to="rend" type="0"/>
+	<trip depart="0" from="beg" to="rend" type="0"/>
+	<trip depart="0" from="beg" to="rend" type="0"/>
+	<trip depart="0" from="beg" to="rend" type="0"/>
+	<trip depart="0" from="beg" to="rend" type="0"/>
+	<trip depart="0" from="beg" to="rend" type="0"/>
+	<trip depart="0" from="beg" to="rend" type="0"/>
+</trips>

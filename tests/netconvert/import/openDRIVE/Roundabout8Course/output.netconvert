@@ -1,0 +1,38 @@
+Parsing types from 'D:\behr_mi\Projekte\Vabene\trunk\SE\extern\sumoInternal\sumo/data/typemap/opendriveNetconvert.typ.xml'... done.
+Parsing opendrive from 'opendrive.xodr'... done.
+ Import done:
+   14 nodes loaded.
+   6 types loaded.
+   28 edges loaded.
+Removing self-loops... done.
+Removing empty nodes... done.
+   0 nodes removed.
+Moving network to origin... done.
+Computing turning directions... done.
+Sorting nodes' edges... done.
+Computing node shapes... done.
+Computing edge shapes... done.
+Computing node types... done.
+Computing priorities... done.
+Computing approached edges... done.
+Computing approaching lanes... done.
+Dividing of lanes on approached lanes... done.
+Processing turnarounds... done.
+Rechecking of lane endings... done.
+Assigning nodes to traffic lights... done.
+Computing traffic light control information... done.
+Computing node logics... done.
+Computing traffic light logics... done.
+ 0 traffic light(s) computed.
+-----------------------------------------------------
+Summary:
+ Node type statistics:
+  Unregulated junctions       : 0
+  Priority junctions          : 14
+  Right-before-left junctions : 0
+ Network boundaries:
+  Original boundary  : -200.00,-86.66,200.00,86.66
+  Applied offset     : 200.00,86.66
+  Converted boundary : 0.00,0.00,400.00,173.31
+-----------------------------------------------------
+Success.

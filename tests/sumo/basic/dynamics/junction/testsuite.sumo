@@ -1,0 +1,14 @@
+tls
+tls_right_on_red
+priority_junction
+priority_stop
+allway_stop
+
+# test dynamics of a junction that was set to be explicitly unregulated
+unregulated
+
+# test the ApproachingVehicleInformation for accuracy
+approachInformation
+
+# test dynamics on internal lanes
+internalLanes

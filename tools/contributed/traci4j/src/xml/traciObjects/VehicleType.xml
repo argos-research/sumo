@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2013 ApPeAL Group, Politecnico di Torino This file is 
+	part of TraCI4J. TraCI4J is free software: you can redistribute it and/or 
+	modify it under the terms of the GNU General Public License as published 
+	by the Free Software Foundation, either version 3 of the License, or (at 
+	your option) any later version. TraCI4J is distributed in the hope that it 
+	will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+	of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General 
+	Public License for more details. You should have received a copy of the GNU 
+	General Public License along with TraCI4J. If not, see <http://www.gnu.org/licenses/>. -->
+
+<traciClass>
+	<name>VehicleType</name>
+
+	<javadoc>
+	Representation of a class of vehicles in the SUMO environment.
+	@see &lt;a href="http://sumo.dlr.de/wiki/Definition_of_Vehicles,_Vehicle_Types,_and_Routes#Vehicle_Types"&gt;SUMO documentation&lt;/a&gt;
+	@see &lt;a href="http://sumo.dlr.de/wiki/TraCI/VehicleType_Value_Retrieval"&gt;TraCI documentation&lt;/a&gt;
+	@author Enrico Gueli &amp;lt;enrico.gueli@polito.it&amp;gt;
+	</javadoc>
+
+	<repos>
+	</repos>
+
+	<command>it.polito.appeal.traci.protocol.Constants.CMD_GET_VEHICLETYPE_VARIABLE
+	</command>
+	<changeStateCommand>it.polito.appeal.traci.protocol.Constants.CMD_SET_VEHICLETYPE_VARIABLE
+	</changeStateCommand>
+
+	<readQueries>
+		<readQuery>
+			<name>ReadLength</name>
+			<enum>LENGTH</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_LENGTH</const>
+			<query>ReadObjectVarQuery.DoubleQ</query>
+			<returnType>Double</returnType>
+			<dynamic>false</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadAccel</name>
+			<enum>ACCEL</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_ACCEL</const>
+			<query>ReadObjectVarQuery.DoubleQ</query>
+			<returnType>Double</returnType>
+			<dynamic>false</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadDecel</name>
+			<enum>DECEL</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_DECEL</const>
+			<query>ReadObjectVarQuery.DoubleQ</query>
+			<returnType>Double</returnType>
+			<dynamic>false</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadMaxSpeed</name>
+			<enum>MAXSPEED</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_MAXSPEED</const>
+			<query>ReadObjectVarQuery.DoubleQ</query>
+			<returnType>Double</returnType>
+			<dynamic>true</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadMinGap</name>
+			<enum>MINGAP</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_MINGAP</const>
+			<query>ReadObjectVarQuery.DoubleQ</query>
+			<returnType>Double</returnType>
+			<dynamic>true</dynamic>
+		</readQuery>
+	</readQueries>
+
+	<changeStateQueries>
+		<changeStateQuery>
+			<name>ChangeAccel</name>
+			<query>ChangeObjectVarQuery.ChangeDoubleQ</query>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_ACCEL</const>
+			<affects>
+				<affect>ReadAccel</affect>
+			</affects>
+		</changeStateQuery>
+		<changeStateQuery>
+			<name>ChangeDecel</name>
+			<query>ChangeDecelQuery</query>
+			<affects>
+				<affect>ReadDecel</affect>
+			</affects>
+		</changeStateQuery>
+		<changeStateQuery>
+			<name>ChangeMaxSpeed</name>
+			<query>ChangeMaxSpeedQuery</query>
+			<affects>
+				<affect>ReadMaxSpeed</affect>
+			</affects>
+		</changeStateQuery>
+		<changeStateQuery>
+			<name>ChangeMinGap</name>
+			<query>ChangeMinGapQuery</query>
+			<affects>
+				<affect>ReadMinGap</affect>
+			</affects>
+		</changeStateQuery>
+	</changeStateQueries>
+</traciClass>

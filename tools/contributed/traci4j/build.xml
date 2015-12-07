@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="TraCI4J">
+    <property environment="env"/>
+    <property name="junit.output.dir" value="junit"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <path id="TraCI4J.classpath">
+        <pathelement location="target"/>
+    </path>
+    <target name="init">
+        <mkdir dir="target"/>
+        <copy includeemptydirs="false" todir="target">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+                <exclude name="sumo/traci/"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="target">
+            <fileset dir="test/java">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="target"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="target" includeantruntime="false">
+            <src path="src"/>
+            <exclude name="sumo/traci/"/>
+            <classpath refid="TraCI4J.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="target" includeantruntime="false">
+            <src path="test/java"/>
+            <classpath refid="TraCI4J.classpath"/>
+        </javac>
+    </target>
+	
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target name="TraCITest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+        	<batchtest todir="${junit.output.dir}">
+        		<fileset dir="test/java" includes="**/*Test.java"></fileset>
+        	</batchtest>
+            <jvmarg line="-Dit.polito.appeal.traci.sumo_exe=sumo"/>
+            <classpath refid="TraCI4J.classpath"/>
+        </junit>
+    </target>
+    <target name="TraCITest-debug">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+        	<jvmarg value="-Xdebug" />
+        	<jvmarg value="-Xrunjdwp:transport=dt_socket,address=5555,server=y,suspend=y" />
+            <formatter type="xml"/>
+        	<batchtest todir="${junit.output.dir}">
+        		<fileset dir="test/java" includes="**/*Test.java"></fileset>
+        	</batchtest>
+            <jvmarg line="-Dit.polito.appeal.traci.sumo_exe=sumo"/>
+            <classpath refid="TraCI4J.classpath"/>
+        </junit>
+    </target>
+    <target name="junitreport">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
+    </target>
+	
+    <target name="javadoc">
+        <javadoc 
+        	access="public" 
+        	author="true" 
+        	classpathref="TraCI4J.classpath" 
+        	destdir="doc" 
+        	doctitle="TraCI4J Javadoc" 
+        	nodeprecated="false" 
+        	nodeprecatedlist="false" 
+        	noindex="false" 
+        	nonavbar="false" 
+        	notree="false" 
+        	packagenames="it.polito.appeal.traci.*" 
+	    	sourcepath="src/java" 
+	    	splitindex="true" 
+	    	use="true" 
+	    	version="true">
+            <link href="http://java.sun.com/javase/6/docs/api/"/>
+        </javadoc>
+    </target>
+</project>

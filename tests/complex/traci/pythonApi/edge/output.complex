@@ -1,0 +1,37 @@
+Loading configuration... done.
+step 0
+step 1
+step 2
+edges ['1fi', '1o', '1si', '2fi', '2o', '2si', '3fi', '3o', '3si', '4fi', '4o', '4si']
+edge count 12
+examining 2fi
+adaptedTraveltime -1.0
+effort -1.0
+CO2 1904.97775406
+CO 23.3928317774
+HC 0.701641785426
+PMx 0.185285081526
+NOx 3.68172726534
+Fuel 0.759484900622
+Noise 64.5318330666
+meanSpeed 3.1154472965
+occupancy 0.0201207243461
+lastLength 5.0
+traveltime 79.7638272613
+numVeh 1
+haltVeh 0
+vehIds ['horiz']
+personIds ['p0']
+waiting time 0.0
+checking occupancy with unicode id 0.0201207243461
+traveltime after adaption 79.7638272613
+adaptedTraveltime after adaption 42.0
+effort after adaption 1234.0
+max speed after adaption 23.0
+{16: 1}
+step 3
+{16: 1}
+step 4
+{16: 1}
+step 5
+{16: 1}

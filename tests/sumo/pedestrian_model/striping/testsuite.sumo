@@ -1,0 +1,31 @@
+# pedestrians should block vehicle movements while crossing the street
+block_vehicles
+
+# pedestrians should use the correct crossing to reach the destination edge
+use_crossing
+
+# tests related to pedestrians interacting with each other
+pedestrian_interactions
+
+# test for subsecond behavior
+subsecond
+errors
+bugs
+
+# two flows in opposite directions with a change in walking direction
+counterflow_change_direction
+
+# full connectivity among 3 one-way paths
+3_arm_pathing
+
+# no sidewalks, walkingareas nor crossings
+no_sidewalks
+
+# Copy of disconnected_route
+disconnected_route
+
+# instant travel between disconnected points
+beaming
+
+# walking to a busstop
+busstop

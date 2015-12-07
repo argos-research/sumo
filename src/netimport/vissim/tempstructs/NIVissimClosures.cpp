@@ -1,0 +1,100 @@
+/****************************************************************************/
+/// @file    NIVissimClosures.cpp
+/// @author  Daniel Krajzewicz
+/// @author  Michael Behrisch
+/// @date    Sept 2002
+/// @version $Id: NIVissimClosures.cpp 18095 2015-03-17 09:39:00Z behrisch $
+///
+// -------------------
+/****************************************************************************/
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+/****************************************************************************/
+//
+//   This file is part of SUMO.
+//   SUMO is free software: you can redistribute it and/or modify
+//   it under the terms of the GNU General Public License as published by
+//   the Free Software Foundation, either version 3 of the License, or
+//   (at your option) any later version.
+//
+/****************************************************************************/
+
+
+// ===========================================================================
+// included modules
+// ===========================================================================
+#ifdef _MSC_VER
+#include <windows_config.h>
+#else
+#include <config.h>
+#endif
+
+#include <string>
+#include <utils/common/VectorHelper.h>
+#include "NIVissimClosures.h"
+
+#ifdef CHECK_MEMORY_LEAKS
+#include <foreign/nvwa/debug_new.h>
+#endif // CHECK_MEMORY_LEAKS
+
+
+NIVissimClosures::DictType NIVissimClosures::myDict;
+
+NIVissimClosures::NIVissimClosures(const std::string& id,
+                                   int from_node, int to_node,
+                                   std::vector<int>& overEdges)
+    : myID(id), myFromNode(from_node), myToNode(to_node),
+      myOverEdges(overEdges) {}
+
+
+NIVissimClosures::~NIVissimClosures() {}
+
+
+bool
+NIVissimClosures::dictionary(const std::string& id,
+                             int from_node, int to_node,
+                             std::vector<int>& overEdges) {
+    NIVissimClosures* o = new NIVissimClosures(id, from_node, to_node,
+            overEdges);
+    if (!dictionary(id, o)) {
+        delete o;
+        return false;
+    }
+    return true;
+}
+
+
+bool
+NIVissimClosures::dictionary(const std::string& name, NIVissimClosures* o) {
+    DictType::iterator i = myDict.find(name);
+    if (i == myDict.end()) {
+        myDict[name] = o;
+        return true;
+    }
+    return false;
+}
+
+
+NIVissimClosures*
+NIVissimClosures::dictionary(const std::string& name) {
+    DictType::iterator i = myDict.find(name);
+    if (i == myDict.end()) {
+        return 0;
+    }
+    return (*i).second;
+}
+
+
+
+void
+NIVissimClosures::clearDict() {
+    for (DictType::iterator i = myDict.begin(); i != myDict.end(); i++) {
+        delete(*i).second;
+    }
+    myDict.clear();
+}
+
+
+
+/****************************************************************************/
+

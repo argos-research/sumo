@@ -1,0 +1,234 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright (C) 2013 ApPeAL Group, Politecnico di Torino This file is 
+	part of TraCI4J. TraCI4J is free software: you can redistribute it and/or 
+	modify it under the terms of the GNU General Public License as published 
+	by the Free Software Foundation, either version 3 of the License, or (at 
+	your option) any later version. TraCI4J is distributed in the hope that it 
+	will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty 
+	of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General 
+	Public License for more details. You should have received a copy of the GNU 
+	General Public License along with TraCI4J. If not, see <http://www.gnu.org/licenses/>. -->
+
+<traciClass>
+	<name>Vehicle</name>
+
+	<javadoc>
+	Representation of a vehicle in the SUMO environment.
+	@see &lt;a href="http://sumo.dlr.de/wiki/Definition_of_Vehicles,_Vehicle_Types,_and_Routes#Vehicle_Types"&gt;SUMO documentation&lt;/a&gt;
+	@see &lt;a href="http://sumo.dlr.de/wiki/TraCI/Vehicle_Value_Retrieval"&gt;TraCI documentation&lt;/a&gt;
+	@author Enrico Gueli &amp;lt;enrico.gueli@polito.it&amp;gt;
+	</javadoc>
+
+
+	<repos>
+		<repo>Edge</repo>
+		<repo>Lane</repo>
+	</repos>
+
+	<command>it.polito.appeal.traci.protocol.Constants.CMD_GET_VEHICLE_VARIABLE
+	</command>
+	<changeStateCommand>it.polito.appeal.traci.protocol.Constants.CMD_SET_VEHICLE_VARIABLE
+	</changeStateCommand>
+
+	<readQueries>
+		<readQuery>
+			<name>ReadSpeed</name>
+			<enum>SPEED</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_SPEED</const>
+			<query>ReadObjectVarQuery.DoubleQ</query>
+			<returnType>java.lang.Double</returnType>
+			<dynamic>true</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadPosition</name>
+			<enum>POSITION</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_POSITION</const>
+			<query>ReadObjectVarQuery.PositionQ</query>
+			<returnType>java.awt.geom.Point2D</returnType>
+			<dynamic>true</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadLanePosition</name>
+			<enum>LANE_POSITION</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_LANEPOSITION
+			</const>
+			<query>ReadObjectVarQuery.DoubleQ</query>
+			<returnType>java.lang.Double</returnType>
+			<dynamic>true</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadCurrentLaneIndex</name>
+			<enum>LANE_INDEX</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_LANE_INDEX
+			</const>
+			<query>ReadObjectVarQuery.IntegerQ</query>
+			<returnType>java.lang.Integer</returnType>
+			<dynamic>true</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadCurrentLane</name>
+			<enum>LANE_ID</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_LANE_ID</const>
+			<query>ReadObjectVarQuery.LaneQ</query>
+			<returnType>Lane</returnType>
+			<dynamic>true</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadCurrentRoute</name>
+			<enum>CURRENT_ROUTE</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_EDGES</const>
+			<query>RouteQuery</query>
+			<returnType>java.util.List&lt;Edge&gt;</returnType>
+			<dynamic>false</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadCurrentEdge</name>
+			<enum>CURRENT_EDGE</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_ROAD_ID</const>
+			<query>ReadObjectVarQuery.EdgeQ</query>
+			<returnType>Edge</returnType>
+			<dynamic>true</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadCO2Emission</name>
+			<enum>CO2_EMISSION</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_CO2EMISSION
+			</const>
+			<query>ReadObjectVarQuery.DoubleQ</query>
+			<returnType>java.lang.Double</returnType>
+			<dynamic>true</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadCOEmission</name>
+			<enum>CO_EMISSION</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_COEMISSION
+			</const>
+			<query>ReadObjectVarQuery.DoubleQ</query>
+			<returnType>java.lang.Double</returnType>
+			<dynamic>true</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadHCEmission</name>
+			<enum>HC_EMISSION</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_HCEMISSION
+			</const>
+			<query>ReadObjectVarQuery.DoubleQ</query>
+			<returnType>java.lang.Double</returnType>
+			<dynamic>true</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadPMXEmission</name>
+			<enum>PMX_EMISSION</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_PMXEMISSION
+			</const>
+			<query>ReadObjectVarQuery.DoubleQ</query>
+			<returnType>java.lang.Double</returnType>
+			<dynamic>true</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadNOXEmission</name>
+			<enum>NOX_EMISSION</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_NOXEMISSION
+			</const>
+			<query>ReadObjectVarQuery.DoubleQ</query>
+			<returnType>java.lang.Double</returnType>
+			<dynamic>true</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadFuelConsumption</name>
+			<enum>FUEL_CONSUMPTION</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_FUELCONSUMPTION
+			</const>
+			<query>ReadObjectVarQuery.DoubleQ</query>
+			<returnType>java.lang.Double</returnType>
+			<dynamic>true</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadNoiseEmission</name>
+			<enum>NOISE_EMISSION</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_NOISEEMISSION
+			</const>
+			<query>ReadObjectVarQuery.DoubleQ</query>
+			<returnType>java.lang.Double</returnType>
+			<dynamic>true</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadColor</name>
+			<enum>COLOR</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_COLOR</const>
+			<query>ReadObjectVarQuery.ColorQ</query>
+			<returnType>java.awt.Color</returnType>
+			<dynamic>true</dynamic>
+		</readQuery>
+		<readQuery>
+			<name>ReadType</name>
+			<enum>TYPE</enum>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_TYPE</const>
+			<query>ReadObjectVarQuery.StringQ</query>
+			<returnType>java.lang.String</returnType>
+			<dynamic>false</dynamic>
+		</readQuery>
+	</readQueries>
+
+	<changeStateQueries>
+		<changeStateQuery>
+			<name>SetEdgeTravelTime</name>
+			<query>ChangeEdgeTravelTimeQuery</query>
+		</changeStateQuery>
+		<changeStateQuery>
+			<name>Reroute</name>
+			<query>RerouteQuery</query>
+			<affects>
+				<affect>ReadCurrentRoute</affect>
+			</affects>
+		</changeStateQuery>
+		<changeStateQuery>
+			<name>ChangeLaneIndex</name>
+			<query>ChangeLaneIndexQuery</query>
+			<affects>
+				<affect>ReadCurrentLaneIndex</affect>
+			</affects>
+		</changeStateQuery>
+		<changeStateQuery>
+			<name>ChangeColor</name>
+			<query>ChangeColorQuery</query>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_COLOR</const>
+			<affects>
+				<affect>ReadColor</affect>
+			</affects>
+		</changeStateQuery>
+		<changeStateQuery>
+			<name>ChangeTarget</name>
+			<query>ChangeTargetQuery</query>
+			<affects>
+				<affect>ReadCurrentRoute</affect>
+			</affects>
+		</changeStateQuery>
+		<changeStateQuery>
+			<name>ChangeMaxSpeed</name>
+			<query>ChangeMaxSpeedQuery</query>
+			<affects>
+			</affects>
+		</changeStateQuery>
+		<changeStateQuery>
+			<name>ChangeRoute</name>
+			<query>ChangeRouteQuery</query>
+			<affects>
+				<affect>ReadCurrentRoute</affect>
+			</affects>
+		</changeStateQuery>
+		<changeStateQuery>
+			<name>ChangeSpeed</name>
+			<query>ChangeSpeedQuery</query>
+			<affects>
+				<affect>ReadSpeed</affect>
+			</affects>
+		</changeStateQuery>
+		<changeStateQuery>
+			<name>ChangeLaneChangeMode</name>
+			<query>ChangeObjectVarQuery.ChangeIntegerQ</query>
+			<const>it.polito.appeal.traci.protocol.Constants.VAR_LANE_CHANGE_MODE
+			</const>
+		</changeStateQuery>
+	</changeStateQueries>
+</traciClass>
