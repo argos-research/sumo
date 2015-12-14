@@ -6,7 +6,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSEdge.h 18467 2015-05-29 03:50:41Z behrisch $
+/// @version $Id: MSEdge.h 19604 2015-12-13 20:49:24Z behrisch $
 ///
 // A road/street connecting two junctions
 /****************************************************************************/
@@ -62,7 +62,6 @@ class MSPerson;
 class MSJunction;
 class MSEdge;
 class MSContainer;
-
 
 // ===========================================================================
 // class definitions
@@ -187,6 +186,14 @@ public:
         return *myLanes;
     }
 
+    /** @brief Returns this edge's persons set.
+     *  @brief Avoids the creation of new vector as in getSortedPersons
+    	 *
+    	 * @return This edge's persons.
+    	 */
+    inline const std::set<MSTransportable*>& getPersons() const {
+        return myPersons;
+    }
 
     /** @brief Returns this edge's persons sorted by pos
      *
@@ -278,6 +285,27 @@ public:
     }
     /// @}
 
+    /**@brief Sets the crossed edge ids for a crossing edge
+     *
+     */
+    void setCrossingEdges(const std::vector<std::string>& crossingEdges)		{
+        myCrossingEdges.clear();
+        myCrossingEdges.insert(myCrossingEdges.begin(), crossingEdges.begin(), crossingEdges.end());
+    }
+
+    /**@brief Gets the crossed edge ids
+     *@return The list of crossed edge ids in a crossing edge or an empty vector
+     */
+    const std::vector<std::string>& getCrossingEdges() const {
+        return myCrossingEdges;
+    }
+
+    /**@brief Gets the crossed edge ids
+     *@return The list of crossed edge ids in a crossing edge or an empty vector
+     */
+    static const MSEdgeVector& getAllEdges() {
+        return myEdges;
+    }
 
 
     /// @name Access to succeeding/predecessing edges
@@ -301,6 +329,12 @@ public:
         return myPredecessors;
     }
 
+    /** @brief Returns the list of edges that may be reached from this edge
+     * @return Edges that may be reached from this edge
+     */
+    const std::vector<MSEdge*>& getOutgoingEdges() const {
+        return mySuccessors;
+    }
 
     /** @brief Returns the number of edges that may be reached from this edge
      * @return The number of following edges
@@ -703,6 +737,9 @@ protected:
     /// @brief The time of last insertion failure
     mutable SUMOTime myLastFailedInsertionTime;
 
+    /// @brief The crossed edges id for a crossing edge. On not crossing edges it is empty
+    std::vector<std::string> myCrossingEdges;
+
     /// @brief The succeeding edges
     MSEdgeVector mySuccessors;
 
@@ -713,7 +750,7 @@ protected:
     MSJunction* myFromJunction;
     MSJunction* myToJunction;
 
-    /// @brief Persons on the edge (only for drawing)
+    /// @brief Persons on the edge for drawing and pushbutton
     mutable std::set<MSTransportable*> myPersons;
 
     /// @brief Containers on the edge

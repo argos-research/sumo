@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Tue, 22 Jul 2003
-/// @version $Id: GUIDetectorBuilder.h 19497 2015-12-02 21:19:35Z behrisch $
+/// @version $Id: GUIDetectorBuilder.h 19567 2015-12-08 20:30:01Z behrisch $
 ///
 // Builds detectors for guisim
 /****************************************************************************/
@@ -110,7 +110,7 @@ public:
      * @param[in] haltingSpeedThreshold Detector parameter: the speed a vehicle's speed must be below to be assigned as jammed
      * @param[in] jamDistThreshold Detector parameter: the distance between two vehicles in order to not count them to one jam
      */
-    virtual MSDetectorFileOutput* createSingleLaneE2Detector(const std::string& id,
+    virtual MSE2Collector* createSingleLaneE2Detector(const std::string& id,
             DetectorUsage usage, MSLane* lane, SUMOReal pos, SUMOReal length,
             SUMOTime haltingTimeThreshold,
             SUMOReal haltingSpeedThreshold,

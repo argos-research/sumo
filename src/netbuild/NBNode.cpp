@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBNode.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: NBNode.cpp 19604 2015-12-13 20:49:24Z behrisch $
 ///
 // The representation of a single node
 /****************************************************************************/
@@ -312,7 +312,7 @@ void
 NBNode::addTrafficLight(NBTrafficLightDefinition* tlDef) {
     myTrafficLights.insert(tlDef);
     // rail signals receive a temporary traffic light in order to set connection tl-linkIndex
-    if (!isTrafficLight(myType) && myType != NODETYPE_RAIL_SIGNAL) {
+    if (!isTrafficLight(myType) && myType != NODETYPE_RAIL_SIGNAL && myType != NODETYPE_RAIL_CROSSING) {
         myType = NODETYPE_TRAFFIC_LIGHT;
     }
 }
@@ -890,6 +890,18 @@ NBNode::computeLanes2Lanes() {
                     //if (unsatisfied != 0) {
                     //    std::cout << "     still unsatisfied modes from edge=" << incoming->getID() << " toEdge=" << currentOutgoing->getID() << " deadModes=" << getVehicleClassNames(unsatisfied) << "\n";
                     //}
+                }
+            }
+        }
+    }
+    // special case e): rail_crossing
+    // there should only be straight connections here
+    if (myType == NODETYPE_RAIL_CROSSING) {
+        for (EdgeVector::const_iterator i = myIncomingEdges.begin(); i != myIncomingEdges.end(); i++) {
+            const std::vector<NBEdge::Connection> cons = (*i)->getConnections();
+            for (std::vector<NBEdge::Connection>::const_iterator k = cons.begin(); k != cons.end(); ++k) {
+                if (getDirection(*i, (*k).toEdge) != LINKDIR_STRAIGHT) {
+                    (*i)->removeFromConnections((*k).toEdge);
                 }
             }
         }
@@ -1490,6 +1502,9 @@ NBNode::getDirection(const NBEdge* const incoming, const NBEdge* const outgoing,
 LinkState
 NBNode::getLinkState(const NBEdge* incoming, NBEdge* outgoing, int fromlane, int toLane,
                      bool mayDefinitelyPass, const std::string& tlID) const {
+    if (myType == NODETYPE_RAIL_CROSSING && isRailway(incoming->getPermissions())) {
+        return LINKSTATE_MAJOR; // the trains must run on time
+    }
     if (tlID != "") {
         return LINKSTATE_TL_OFF_BLINKING;
     }
@@ -1785,7 +1800,7 @@ NBNode::checkCrossing(EdgeVector candidates) {
             }
             if (!isTLControlled() && edge->getSpeed() > OptionsCont::getOptions().getFloat("crossings.guess.speed-threshold")) {
                 if (gDebugFlag1) {
-                    std::cout << "no crossing added (uncontrolled, edge with speed=" << edge->getSpeed() << ")\n";
+                    std::cout << "no crossing added (uncontrolled, edge with speed > " << edge->getSpeed() << ")\n";
                 }
                 return 0;
             }
@@ -2167,6 +2182,9 @@ NBNode::buildWalkingAreas(int cornerDetail) {
         }
         if (count < 2 && !connectsCrossing) {
             // not relevant for walking
+            if (gDebugFlag1) {
+                std::cout << "    not relevant for walking: count=" << count << " connectsCrossing=" << connectsCrossing << "\n";
+            }
             continue;
         }
         // build shape and connections
@@ -2213,11 +2231,15 @@ NBNode::buildWalkingAreas(int cornerDetail) {
                 wa.shape.push_back_noDoublePos(endCrossingShape[-1]);
             }
         }
-        if (connected.size() == 2 && !connectsCrossing && wa.nextSidewalks.size() == 1 && wa.prevSidewalks.size() == 1) {
+        if (connected.size() == 2 && !connectsCrossing && wa.nextSidewalks.size() == 1 && wa.prevSidewalks.size() == 1
+                && normalizedLanes.size() == 2) {
             // do not build a walkingArea since a normal connection exists
             NBEdge* e1 = *connected.begin();
             NBEdge* e2 = *(++connected.begin());
             if (e1->hasConnectionTo(e2, 0, 0) || e2->hasConnectionTo(e1, 0, 0)) {
+                if (gDebugFlag1) {
+                    std::cout << "    not building a walkingarea since normal connections exist\n";
+                }
                 continue;
             }
         }

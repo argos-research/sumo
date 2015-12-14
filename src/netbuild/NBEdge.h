@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdge.h 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: NBEdge.h 19552 2015-12-07 15:27:51Z namdre $
 ///
 // The representation of a single edge during network building
 /****************************************************************************/
@@ -167,7 +167,7 @@ public:
         /// @brief The id of the traffic light that controls this connection
         std::string tlID;
         /// @brief The index of this connection within the controlling traffic light
-        unsigned int tlLinkNo;
+        int tlLinkNo;
         /// @brief Information about being definitely free to drive (on-ramps)
         bool mayDefinitelyPass;
         /// @brief whether the junction must be kept clear when using this connection

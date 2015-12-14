@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    06.05.2011
-/// @version $Id: NGFrame.cpp 19488 2015-12-02 09:53:19Z namdre $
+/// @version $Id: NGFrame.cpp 19552 2015-12-07 15:27:51Z namdre $
 ///
 // Sets and checks options for netgen
 /****************************************************************************/
@@ -223,6 +223,7 @@ NGFrame::checkOptions() {
                 type != toString(NODETYPE_ZIPPER) &&
                 type != toString(NODETYPE_NOJUNCTION) &&
                 type != toString(NODETYPE_RAIL_SIGNAL) &&
+                type != toString(NODETYPE_RAIL_CROSSING) &&
                 type != toString(NODETYPE_RIGHT_BEFORE_LEFT)) {
             WRITE_ERROR("Only the following junction types are known: " +
                         toString(NODETYPE_TRAFFIC_LIGHT) + ", " +
@@ -234,6 +235,7 @@ NGFrame::checkOptions() {
                         toString(NODETYPE_ZIPPER) + ", " +
                         toString(NODETYPE_NOJUNCTION) + ", " +
                         toString(NODETYPE_RAIL_SIGNAL) + ", " +
+                        toString(NODETYPE_RAIL_CROSSING) + ", " +
                         toString(NODETYPE_RIGHT_BEFORE_LEFT));
             ok = false;
         }

@@ -8,7 +8,7 @@
 /// @author  Michael Behrisch
 /// @author  Sascha Krieg
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBNodeCont.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: NBNodeCont.cpp 19552 2015-12-07 15:27:51Z namdre $
 ///
 // Container for nodes during the netbuilding process
 /****************************************************************************/
@@ -1129,6 +1129,7 @@ NBNodeCont::printBuiltNodesStatistics() const {
             case NODETYPE_PRIORITY_STOP:
             case NODETYPE_TRAFFIC_LIGHT:
             case NODETYPE_TRAFFIC_LIGHT_RIGHT_ON_RED:
+            case NODETYPE_RAIL_CROSSING:
                 ++numPriorityJunctions;
                 break;
             case NODETYPE_RIGHT_BEFORE_LEFT:

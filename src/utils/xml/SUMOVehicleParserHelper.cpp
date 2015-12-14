@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 07.04.2008
-/// @version $Id: SUMOVehicleParserHelper.cpp 19406 2015-11-23 09:02:18Z namdre $
+/// @version $Id: SUMOVehicleParserHelper.cpp 19575 2015-12-09 08:22:14Z behrisch $
 ///
 // Helper methods for parsing vehicle attributes
 /****************************************************************************/
@@ -104,11 +104,7 @@ SUMOVehicleParserHelper::parseFlowAttributes(const SUMOSAXAttributes& attrs, con
     // parse repetition information
     if (attrs.hasAttribute(SUMO_ATTR_PERIOD)) {
         ret->setParameter |= VEHPARS_PERIODFREQ_SET;
-#ifdef HAVE_SUBSECOND_TIMESTEPS
         ret->repetitionOffset = attrs.getSUMOTimeReporting(SUMO_ATTR_PERIOD, id.c_str(), ok);
-#else
-        ret->repetitionOffset = attrs.get<SUMOReal>(SUMO_ATTR_PERIOD, id.c_str(), ok);
-#endif
     }
     if (attrs.hasAttribute(SUMO_ATTR_VEHSPERHOUR)) {
         ret->setParameter |= VEHPARS_PERIODFREQ_SET;

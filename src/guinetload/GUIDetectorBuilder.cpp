@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Tue, 22 Jul 2003
-/// @version $Id: GUIDetectorBuilder.cpp 19497 2015-12-02 21:19:35Z behrisch $
+/// @version $Id: GUIDetectorBuilder.cpp 19567 2015-12-08 20:30:01Z behrisch $
 ///
 // Builds detectors for guisim
 /****************************************************************************/
@@ -86,7 +86,7 @@ GUIDetectorBuilder::createInstantInductLoop(const std::string& id,
 }
 
 
-MSDetectorFileOutput*
+MSE2Collector*
 GUIDetectorBuilder::createSingleLaneE2Detector(const std::string& id,
         DetectorUsage usage, MSLane* lane, SUMOReal pos, SUMOReal length,
         SUMOTime haltingTimeThreshold,

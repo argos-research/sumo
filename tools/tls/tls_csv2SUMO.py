@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2009-08-01
-@version $Id: tls_csv2SUMO.py 18728 2015-08-26 07:55:27Z namdre $
+@version $Id: tls_csv2SUMO.py 19576 2015-12-09 08:34:49Z namdre $
 
 Converts a csv-tls-description into one SUMO can read as additional file.
 Format of the csv-file:
@@ -114,6 +114,10 @@ for tlsFile in allTLS:
 
         pass
 
+    if len(defs) > 0:
+        links2index[-1] = len(defs)
+        defs.append(['g'] * len(defs[0]))
+
     if key is not None:
         allMinTimes.append(minTimes)
         allMaxTimes.append(maxTimes)
@@ -171,9 +175,10 @@ for keyIndex, key in enumerate(allKeys):
                 linkMap[tl_c[2]] = l[2]
                 laneMap[tl_c[2]] = (li, lo)
         if laneMap[tl_c[2]] == None:
-            print >> sys.stderr, "Error: No link definition for connection (%s, %s)!" % (
+            print >> sys.stderr, "Warning: No link definition for connection (%s, %s)!. Using 'g' by default" % (
                 li.getID(), lo.getID())
-            sys.exit()
+            linkMap[tl_c[2]] = -1
+            laneMap[tl_c[2]] = (li, lo)
 
     nodes = set()
     for l in laneMap:

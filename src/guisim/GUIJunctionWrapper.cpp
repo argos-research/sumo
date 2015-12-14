@@ -6,7 +6,7 @@
 /// @author  Laura Bieker
 /// @author  Andreas Gaubatz
 /// @date    Mon, 1 Jul 2003
-/// @version $Id: GUIJunctionWrapper.cpp 19488 2015-12-02 09:53:19Z namdre $
+/// @version $Id: GUIJunctionWrapper.cpp 19552 2015-12-07 15:27:51Z namdre $
 ///
 // }
 /****************************************************************************/
@@ -205,6 +205,8 @@ GUIJunctionWrapper::getColorValue(const GUIVisualizationSettings& s) const {
                     return 10;
                 case NODETYPE_TRAFFIC_LIGHT_RIGHT_ON_RED:
                     return 11;
+                case NODETYPE_RAIL_CROSSING:
+                    return 12;
             }
         default:
             assert(false);

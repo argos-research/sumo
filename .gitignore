@@ -1,1 +1,22 @@
+# svn stuff
 .svn
+
+# c++ stuff
+*.slo
+*.lo
+*.o
+*.obj
+
+*.lai
+*.la
+*.a
+*.lib
+
+*.Po
+
+# vim
+*.swp
+
+#eclipse
+.project
+.cproject

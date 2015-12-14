@@ -5,7 +5,7 @@
 /// @author  Axel Wegener
 /// @author  Michael Behrisch
 /// @date    2006-01-24
-/// @version $Id: SUMOVehicleParameter.h 19525 2015-12-04 11:08:33Z namdre $
+/// @version $Id: SUMOVehicleParameter.h 19575 2015-12-09 08:22:14Z behrisch $
 ///
 // Structure representing possible vehicle parameter
 /****************************************************************************/
@@ -441,11 +441,7 @@ public:
     /// @brief The number of times the vehicle was already inserted
     int repetitionsDone;
     /// @brief The time offset between vehicle reinsertions
-#ifdef HAVE_SUBSECOND_TIMESTEPS
     SUMOTime repetitionOffset;
-#else
-    SUMOReal repetitionOffset;
-#endif
     /// @brief The probability for emitting a vehicle per second
     SUMOReal repetitionProbability;
     /// @brief The time at which the flow ends (only needed when using repetitionProbability)

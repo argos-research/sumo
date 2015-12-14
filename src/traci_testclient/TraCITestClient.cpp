@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2008/04/07
-/// @version $Id: TraCITestClient.cpp 19362 2015-11-17 10:21:50Z namdre $
+/// @version $Id: TraCITestClient.cpp 19605 2015-12-14 10:20:25Z namdre $
 ///
 /// A test execution class
 /****************************************************************************/
@@ -682,4 +682,12 @@ TraCITestClient::testAPI() {
     //answerLog << "    getIDCount: " << vehicle.getIDCount() << "\n";
     answerLog << "  simulation:\n";
     answerLog << "    getCurrentTime: " << simulation.getCurrentTime() << "\n";
+    answerLog << "  gui:\n";
+    try {
+        answerLog << "    setScheme: \n";
+        gui.setSchema("View #0", "real world"); 
+        answerLog << "    getScheme: " << gui.getSchema("View #0") << "\n";
+    } catch (tcpip::SocketException& e) {
+        answerLog << "    no support for gui commands\n";
+    }
 }

@@ -2,7 +2,7 @@
 /// @file    NWWriter_Amitran.cpp
 /// @author  Michael Behrisch
 /// @date    13.03.2014
-/// @version $Id: NWWriter_Amitran.cpp 19488 2015-12-02 09:53:19Z namdre $
+/// @version $Id: NWWriter_Amitran.cpp 19552 2015-12-07 15:27:51Z namdre $
 ///
 // Exporter writing networks using the Amitran format
 /****************************************************************************/
@@ -111,6 +111,9 @@ NWWriter_Amitran::writeNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
                 break;
             case NODETYPE_RAIL_SIGNAL:
                 device << "\" type=\"railSignal";
+                break;
+            case NODETYPE_RAIL_CROSSING:
+                device << "\" type=\"railCrossing";
                 break;
             case NODETYPE_DEAD_END:
             case NODETYPE_DEAD_END_DEPRECATED:

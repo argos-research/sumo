@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLEdgeControlBuilder.cpp 19497 2015-12-02 21:19:35Z behrisch $
+/// @version $Id: NLEdgeControlBuilder.cpp 19604 2015-12-13 20:49:24Z behrisch $
 ///
 // Interface for building edges
 /****************************************************************************/
@@ -135,7 +135,9 @@ NLEdgeControlBuilder::buildEdge(const std::string& id, const MSEdge::EdgeBasicFu
     return new MSEdge(id, myCurrentNumericalEdgeID++, function, streetName, edgeType, priority);
 }
 
-
+void NLEdgeControlBuilder::addCrossingEdges(const std::vector<std::string>& crossingEdges) {
+    myActiveEdge->setCrossingEdges(crossingEdges);
+}
 
 /****************************************************************************/
 

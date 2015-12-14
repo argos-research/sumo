@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Friedemann Wesner
 /// @date    Sept 2002
-/// @version $Id: MSSimpleTrafficLightLogic.h 19173 2015-10-27 08:47:27Z behrisch $
+/// @version $Id: MSSimpleTrafficLightLogic.h 19567 2015-12-08 20:30:01Z behrisch $
 ///
 // A fixed traffic light logic
 /****************************************************************************/
@@ -78,8 +78,6 @@ public:
     /// @brief Destructor
     ~MSSimpleTrafficLightLogic();
 
-
-
     /// @name Switching and setting current rows
     /// @{
 
@@ -87,7 +85,7 @@ public:
      * @return The time of the next switch
      * @see MSTrafficLightLogic::trySwitch
      */
-    SUMOTime trySwitch();
+    virtual SUMOTime trySwitch();
     /// @}
 
 

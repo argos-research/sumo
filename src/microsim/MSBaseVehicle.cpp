@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Mon, 8 Nov 2010
-/// @version $Id: MSBaseVehicle.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: MSBaseVehicle.cpp 19567 2015-12-08 20:30:01Z behrisch $
 ///
 // A base class for vehicle implementations
 /****************************************************************************/
@@ -382,6 +382,8 @@ SUMOReal
 MSBaseVehicle::getImpatience() const {
     return MAX2((SUMOReal)0, MIN2((SUMOReal)1, getVehicleType().getImpatience() +
                                   (MSGlobals::gTimeToGridlock > 0 ? (SUMOReal)getWaitingTime() / MSGlobals::gTimeToGridlock : 0)));
+//    Alternavite to avoid time to teleport effect on the simulation. No effect if time to teleport is -1
+//    return MAX2((SUMOReal)0, MIN2((SUMOReal)1, getVehicleType().getImpatience()));
 }
 
 

@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(sumo, 0.25.0)
+AC_INIT(sumo, svn)
 AC_CONFIG_SRCDIR(src/sumo_main.cpp)
 AC_CANONICAL_SYSTEM
 
@@ -83,14 +83,6 @@ if test x$enable_double_precision != xno; then
 else
     AC_DEFINE([SUMOReal], [float], [defines the precision of floats])
     ac_disabled="$ac_disabled DoublePrecision"
-fi
-
-AC_ARG_ENABLE([subsecond], [AS_HELP_STRING([--disable-subsecond],[Disable subsecond timesteps.])])
-if test x$enable_subsecond != xno; then
-    AC_DEFINE(HAVE_SUBSECOND_TIMESTEPS, 1, [Undefine for disabling subsecond timesteps.])
-    ac_enabled="$ac_enabled Subsecond"
-else
-    ac_disabled="$ac_disabled Subsecond"
 fi
 
 AC_DEFINE([POSITION_EPS], [(SUMOReal)0.1], [defines the epsilon to use on position comparison])

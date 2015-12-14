@@ -4,9 +4,10 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2010-02-18
-@version $Id: inductive_loop.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: inductive_loop.py 19567 2015-12-08 20:30:01Z behrisch $
 
-Library for reading and storing PoIs.
+Library for reading and storing Inductive Loop detector representations and 
+ measurements.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
 Copyright (C) 2010-2015 DLR (http://www.dlr.de/) and contributors
@@ -19,7 +20,6 @@ the Free Software Foundation; either version 3 of the License, or
 """
 
 from xml.sax import handler, parse
-from .. import color
 
 
 class InductiveLoop:

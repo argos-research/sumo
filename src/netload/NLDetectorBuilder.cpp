@@ -7,7 +7,7 @@
 /// @author  Christian Roessel
 /// @author  Jakob Erdmann
 /// @date    Mon, 15 Apr 2002
-/// @version $Id: NLDetectorBuilder.cpp 19497 2015-12-02 21:19:35Z behrisch $
+/// @version $Id: NLDetectorBuilder.cpp 19567 2015-12-08 20:30:01Z behrisch $
 ///
 // Builds detectors for microsim
 /****************************************************************************/
@@ -344,7 +344,7 @@ NLDetectorBuilder::buildRouteProbe(const std::string& id, const std::string& edg
 
 
 // -------------------
-MSDetectorFileOutput*
+MSE2Collector*
 NLDetectorBuilder::buildSingleLaneE2Det(const std::string& id,
                                         DetectorUsage usage,
                                         MSLane* lane, SUMOReal pos, SUMOReal length,
@@ -390,7 +390,7 @@ NLDetectorBuilder::createInstantInductLoop(const std::string& id,
 }
 
 
-MSDetectorFileOutput*
+MSE2Collector*
 NLDetectorBuilder::createSingleLaneE2Detector(const std::string& id,
         DetectorUsage usage, MSLane* lane, SUMOReal pos, SUMOReal length,
         SUMOTime haltingTimeThreshold, SUMOReal haltingSpeedThreshold, SUMOReal jamDistThreshold) {

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Fri, 29.04.2005
-/// @version $Id: SUMOTime.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: SUMOTime.cpp 19575 2015-12-09 08:22:14Z behrisch $
 ///
 // Variables, methods, and tools for internal time representation
 /****************************************************************************/
@@ -36,9 +36,7 @@
 // ===========================================================================
 // type definitions
 // ===========================================================================
-#ifdef HAVE_SUBSECOND_TIMESTEPS
 SUMOTime DELTA_T = 1000;
-#endif
 
 
 // ===========================================================================

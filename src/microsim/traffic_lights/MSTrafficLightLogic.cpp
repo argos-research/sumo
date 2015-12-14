@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSTrafficLightLogic.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: MSTrafficLightLogic.cpp 19552 2015-12-07 15:27:51Z namdre $
 ///
 // The parent class for traffic light logics
 /****************************************************************************/
@@ -180,7 +180,7 @@ MSTrafficLightLogic::~MSTrafficLightLogic() {
 
 // ----------- Handling of controlled links
 void
-MSTrafficLightLogic::addLink(MSLink* link, MSLane* lane, unsigned int pos) {
+MSTrafficLightLogic::addLink(MSLink* link, MSLane* lane, int pos) {
     // !!! should be done within the loader (checking necessary)
     myLinks.reserve(pos + 1);
     while (myLinks.size() <= pos) {

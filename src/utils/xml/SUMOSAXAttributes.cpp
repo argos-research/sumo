@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Fri, 30 Mar 2007
-/// @version $Id: SUMOSAXAttributes.cpp 18239 2015-04-20 11:37:12Z behrisch $
+/// @version $Id: SUMOSAXAttributes.cpp 19575 2015-12-09 08:22:14Z behrisch $
 ///
 // Encapsulated SAX-Attributes
 /****************************************************************************/
@@ -62,7 +62,6 @@ SUMOSAXAttributes::SUMOSAXAttributes(const std::string& objectType):
 SUMOTime
 SUMOSAXAttributes::getSUMOTimeReporting(int attr, const char* objectid,
                                         bool& ok, bool report) const {
-#ifdef HAVE_SUBSECOND_TIMESTEPS
     if (!hasAttribute(attr)) {
         if (report) {
             emitUngivenError(getName(attr), objectid);
@@ -83,16 +82,12 @@ SUMOSAXAttributes::getSUMOTimeReporting(int attr, const char* objectid,
     }
     ok = false;
     return (SUMOTime) - 1;
-#else
-    return get<int>(attr, objectid, ok, report);
-#endif
 }
 
 
 SUMOTime
 SUMOSAXAttributes::getOptSUMOTimeReporting(int attr, const char* objectid,
         bool& ok, SUMOTime defaultValue, bool report) const {
-#ifdef HAVE_SUBSECOND_TIMESTEPS
     if (!hasAttribute(attr)) {
         return defaultValue;
     }
@@ -109,9 +104,6 @@ SUMOSAXAttributes::getOptSUMOTimeReporting(int attr, const char* objectid,
     }
     ok = false;
     return (SUMOTime) - 1;
-#else
-    return getOpt<int>(attr, objectid, ok, defaultValue, report);
-#endif
 }
 
 

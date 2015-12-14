@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Sascha Krieg
 /// @date    Tue, 29.05.2005
-/// @version $Id: NBOwnTLDef.h 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: NBOwnTLDef.h 19604 2015-12-13 20:49:24Z behrisch $
 ///
 // A traffic light logics which must be computed (only nodes/edges are given)
 /****************************************************************************/
@@ -119,6 +119,11 @@ public:
     void setSinglePhase() {
         myHaveSinglePhase = true;
     }
+
+    /// @brief add an additional pedestrian phase if there are crossings that did not get green yet
+    static void addPedestrianScramble(NBTrafficLightLogic* logic, unsigned int noLinksAll,
+                                      SUMOTime greenTime, SUMOTime yellowTime,
+                                      const std::vector<NBNode::Crossing>& crossings, const EdgeVector& fromEdges, const EdgeVector& toEdges);
 
     /// @brief add 1 or 2 phases depending on the presence of pedestrian crossings
     static std::string addPedestrianPhases(NBTrafficLightLogic* logic, SUMOTime greenTime,

@@ -108,9 +108,28 @@ am__v_AR_1 =
 libmicrosimtls_a_AR = $(AR) $(ARFLAGS)
 libmicrosimtls_a_LIBADD =
 am_libmicrosimtls_a_OBJECTS = MSActuatedTrafficLightLogic.$(OBJEXT) \
+	MSAgentbasedTrafficLightLogic.$(OBJEXT) \
 	MSOffTrafficLightLogic.$(OBJEXT) MSRailSignal.$(OBJEXT) \
-	MSSimpleTrafficLightLogic.$(OBJEXT) MSTLLogicControl.$(OBJEXT) \
-	MSTrafficLightLogic.$(OBJEXT)
+	MSPhaseDefinition.$(OBJEXT) \
+	MSPhasedTrafficLightLogic.$(OBJEXT) MSPushButton.$(OBJEXT) \
+	MSRailCrossing.$(OBJEXT) MSSimpleTrafficLightLogic.$(OBJEXT) \
+	MSSOTLE2Sensors.$(OBJEXT) MSSOTLPolicyDesirability.$(OBJEXT) \
+	MSSOTLPolicy5DFamilyStimulus.$(OBJEXT) \
+	MSSOTLPolicy5DStimulus.$(OBJEXT) \
+	MSSOTLPolicy3DStimulus.$(OBJEXT) MSSOTLPolicy.$(OBJEXT) \
+	MSSOTLMarchingPolicy.$(OBJEXT) \
+	MSSOTLCongestionPolicy.$(OBJEXT) MSSOTLPhasePolicy.$(OBJEXT) \
+	MSSOTLPlatoonPolicy.$(OBJEXT) MSSOTLRequestPolicy.$(OBJEXT) \
+	MSSOTLPolicyBasedTrafficLightLogic.$(OBJEXT) \
+	MSSOTLPhaseTrafficLightLogic.$(OBJEXT) \
+	MSSOTLPlatoonTrafficLightLogic.$(OBJEXT) \
+	MSSOTLRequestTrafficLightLogic.$(OBJEXT) \
+	MSSOTLSensors.$(OBJEXT) MSSOTLTrafficLightLogic.$(OBJEXT) \
+	MSSOTLWaveTrafficLightLogic.$(OBJEXT) \
+	MSSOTLHiLevelTrafficLightLogic.$(OBJEXT) \
+	MSSwarmTrafficLightLogic.$(OBJEXT) \
+	MSDeterministicHiLevelTrafficLightLogic.$(OBJEXT) \
+	MSTLLogicControl.$(OBJEXT) MSTrafficLightLogic.$(OBJEXT)
 libmicrosimtls_a_OBJECTS = $(am_libmicrosimtls_a_OBJECTS)
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
@@ -263,10 +282,10 @@ OTOOL64 =
 PACKAGE = sumo
 PACKAGE_BUGREPORT = 
 PACKAGE_NAME = sumo
-PACKAGE_STRING = sumo 0.25.0
+PACKAGE_STRING = sumo svn
 PACKAGE_TARNAME = sumo
 PACKAGE_URL = 
-PACKAGE_VERSION = 0.25.0
+PACKAGE_VERSION = svn
 PATH_SEPARATOR = :
 PKG_CONFIG = /usr/bin/pkg-config
 PKG_CONFIG_LIBDIR = 
@@ -278,7 +297,7 @@ SED = /usr/bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = strip
-VERSION = 0.25.0
+VERSION = svn
 XERCES_CFLAGS = 
 XERCES_LDFLAGS = 
 XERCES_LIBS = -lxerces-c
@@ -341,12 +360,37 @@ top_builddir = ../../..
 top_srcdir = ../../..
 noinst_LIBRARIES = libmicrosimtls.a
 libmicrosimtls_a_SOURCES = \
-MSActuatedTrafficLightLogic.cpp \
-MSActuatedTrafficLightLogic.h \
-MSPhaseDefinition.h \
+MSActuatedTrafficLightLogic.cpp MSActuatedTrafficLightLogic.h \
+MSAgentbasedTrafficLightLogic.cpp MSAgentbasedTrafficLightLogic.h \
 MSOffTrafficLightLogic.cpp MSOffTrafficLightLogic.h \
 MSRailSignal.cpp MSRailSignal.h \
+MSPhaseDefinition.cpp MSPhaseDefinition.h \
+MSPhasedTrafficLightLogic.cpp MSPhasedTrafficLightLogic.h \
+MSPushButton.cpp MSPushButton.h \
+MSRailCrossing.cpp MSRailCrossing.h \
 MSSimpleTrafficLightLogic.cpp MSSimpleTrafficLightLogic.h \
+MSSOTLDefinitions.h \
+MSSOTLE2Sensors.cpp MSSOTLE2Sensors.h \
+MSSOTLPolicyDesirability.cpp MSSOTLPolicyDesirability.h \
+MSSOTLPolicy5DFamilyStimulus.cpp MSSOTLPolicy5DFamilyStimulus.h \
+MSSOTLPolicy5DStimulus.cpp MSSOTLPolicy5DStimulus.h \
+MSSOTLPolicy3DStimulus.cpp MSSOTLPolicy3DStimulus.h \
+MSSOTLPolicy.cpp MSSOTLPolicy.h \
+MSSOTLMarchingPolicy.cpp MSSOTLMarchingPolicy.h \
+MSSOTLCongestionPolicy.cpp MSSOTLCongestionPolicy.h \
+MSSOTLPhasePolicy.cpp MSSOTLPhasePolicy.h \
+MSSOTLPlatoonPolicy.cpp MSSOTLPlatoonPolicy.h \
+MSSOTLRequestPolicy.cpp MSSOTLRequestPolicy.h \
+MSSOTLPolicyBasedTrafficLightLogic.cpp MSSOTLPolicyBasedTrafficLightLogic.h \
+MSSOTLPhaseTrafficLightLogic.cpp MSSOTLPhaseTrafficLightLogic.h \
+MSSOTLPlatoonTrafficLightLogic.cpp MSSOTLPlatoonTrafficLightLogic.h \
+MSSOTLRequestTrafficLightLogic.cpp MSSOTLRequestTrafficLightLogic.h \
+MSSOTLSensors.cpp MSSOTLSensors.h \
+MSSOTLTrafficLightLogic.cpp MSSOTLTrafficLightLogic.h \
+MSSOTLWaveTrafficLightLogic.cpp MSSOTLWaveTrafficLightLogic.h \
+MSSOTLHiLevelTrafficLightLogic.cpp MSSOTLHiLevelTrafficLightLogic.h \
+MSSwarmTrafficLightLogic.cpp MSSwarmTrafficLightLogic.h \
+MSDeterministicHiLevelTrafficLightLogic.cpp MSDeterministicHiLevelTrafficLightLogic.h \
 MSTLLogicControl.cpp MSTLLogicControl.h \
 MSTrafficLightLogic.cpp MSTrafficLightLogic.h
 
@@ -399,9 +443,35 @@ distclean-compile:
 	-rm -f *.tab.c
 
 include ./$(DEPDIR)/MSActuatedTrafficLightLogic.Po
+include ./$(DEPDIR)/MSAgentbasedTrafficLightLogic.Po
+include ./$(DEPDIR)/MSDeterministicHiLevelTrafficLightLogic.Po
 include ./$(DEPDIR)/MSOffTrafficLightLogic.Po
+include ./$(DEPDIR)/MSPhaseDefinition.Po
+include ./$(DEPDIR)/MSPhasedTrafficLightLogic.Po
+include ./$(DEPDIR)/MSPushButton.Po
+include ./$(DEPDIR)/MSRailCrossing.Po
 include ./$(DEPDIR)/MSRailSignal.Po
+include ./$(DEPDIR)/MSSOTLCongestionPolicy.Po
+include ./$(DEPDIR)/MSSOTLE2Sensors.Po
+include ./$(DEPDIR)/MSSOTLHiLevelTrafficLightLogic.Po
+include ./$(DEPDIR)/MSSOTLMarchingPolicy.Po
+include ./$(DEPDIR)/MSSOTLPhasePolicy.Po
+include ./$(DEPDIR)/MSSOTLPhaseTrafficLightLogic.Po
+include ./$(DEPDIR)/MSSOTLPlatoonPolicy.Po
+include ./$(DEPDIR)/MSSOTLPlatoonTrafficLightLogic.Po
+include ./$(DEPDIR)/MSSOTLPolicy.Po
+include ./$(DEPDIR)/MSSOTLPolicy3DStimulus.Po
+include ./$(DEPDIR)/MSSOTLPolicy5DFamilyStimulus.Po
+include ./$(DEPDIR)/MSSOTLPolicy5DStimulus.Po
+include ./$(DEPDIR)/MSSOTLPolicyBasedTrafficLightLogic.Po
+include ./$(DEPDIR)/MSSOTLPolicyDesirability.Po
+include ./$(DEPDIR)/MSSOTLRequestPolicy.Po
+include ./$(DEPDIR)/MSSOTLRequestTrafficLightLogic.Po
+include ./$(DEPDIR)/MSSOTLSensors.Po
+include ./$(DEPDIR)/MSSOTLTrafficLightLogic.Po
+include ./$(DEPDIR)/MSSOTLWaveTrafficLightLogic.Po
 include ./$(DEPDIR)/MSSimpleTrafficLightLogic.Po
+include ./$(DEPDIR)/MSSwarmTrafficLightLogic.Po
 include ./$(DEPDIR)/MSTLLogicControl.Po
 include ./$(DEPDIR)/MSTrafficLightLogic.Po
 

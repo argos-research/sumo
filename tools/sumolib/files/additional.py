@@ -3,7 +3,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2013-05-06
-@version $Id: additional.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: additional.py 19567 2015-12-08 20:30:01Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -22,7 +22,6 @@ def write(name, elements):
     fdo.write(
         '<additional xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/additional_file.xsd">\n')
     for e in elements:
-        fdo.write(e.toXML())
-        fdo.write("\n")
+        fdo.write("%s\n" % e.toXML())
     fdo.write("</additional>\n")
     fdo.close()

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLEdgeControlBuilder.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: NLEdgeControlBuilder.h 19567 2015-12-08 20:30:01Z behrisch $
 ///
 // Interface for building edges
 /****************************************************************************/
@@ -128,6 +128,11 @@ public:
     virtual MSEdge* buildEdge(const std::string& id, const MSEdge::EdgeBasicFunction function,
                               const std::string& streetName, const std::string& edgeType, const int priority);
 
+    /** @brief add the crossingEdges in a crossing edge if present
+     *
+     * @param[in] the vector of crossed edges id
+     */
+    virtual void addCrossingEdges(const std::vector<std::string>&);
 
 protected:
     /// @brief A running number for lane numbering

@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdgeCont.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: NBEdgeCont.cpp 19574 2015-12-09 07:53:46Z namdre $
 ///
 // Storage for edges, including some functionality operating on multiple edges
 /****************************************************************************/
@@ -756,7 +756,7 @@ NBEdgeCont::recheckPostProcessConnections() {
         NBEdge* from = retrievePossiblySplit((*i).from, true);
         NBEdge* to = retrievePossiblySplit((*i).to, false);
         if (from != 0 && to != 0) {
-            if (!from->addLane2LaneConnection((*i).fromLane, to, (*i).toLane, NBEdge::L2L_USER, false, (*i).mayDefinitelyPass, (*i).keepClear, (*i).contPos)) {
+            if (!from->addLane2LaneConnection((*i).fromLane, to, (*i).toLane, NBEdge::L2L_USER, true, (*i).mayDefinitelyPass, (*i).keepClear, (*i).contPos)) {
                 WRITE_WARNING("Could not insert connection between '" + (*i).from + "' and '" + (*i).to + "' after build.");
             }
         }

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSLink.h 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: MSLink.h 19552 2015-12-07 15:27:51Z namdre $
 ///
 // A connnection between lanes
 /****************************************************************************/
@@ -196,6 +196,11 @@ public:
      * approaching (dummy values otherwise)
      * @note used for visualisation of link items */
     ApproachingVehicleInformation getApproaching(const SUMOVehicle* veh) const;
+
+    /// @brief return all approaching vehicles
+    const std::map<const SUMOVehicle*, ApproachingVehicleInformation>& getApproaching() const {
+        return myApproachingVehicles;
+    }
 
     /** @brief Returns the information whether the link may be passed
      *

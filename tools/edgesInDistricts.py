@@ -5,7 +5,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2007-07-26
-@version $Id: edgesInDistricts.py 19541 2015-12-05 16:45:04Z behrisch $
+@version $Id: edgesInDistricts.py 19604 2015-12-13 20:49:24Z behrisch $
 
 Parsing a number of networks and taz (district) files with shapes
 this script writes a taz file with all the edges which are inside
@@ -170,4 +170,3 @@ if __name__ == "__main__":
     if options.verbose:
         print("Writing results")
     reader.writeResults(options)
-

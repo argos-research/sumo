@@ -114,9 +114,6 @@
 /* Define to 1 if you have the <string.h> header file. */
 #define HAVE_STRING_H 1
 
-/* Undefine for disabling subsecond timesteps. */
-#define HAVE_SUBSECOND_TIMESTEPS 1
-
 /* Define to 1 if you have the <sys/select.h> header file. */
 #define HAVE_SYS_SELECT_H 1
 
@@ -173,7 +170,7 @@
 #define PACKAGE_NAME "sumo"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "sumo 0.25.0"
+#define PACKAGE_STRING "sumo svn"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "sumo"
@@ -182,7 +179,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.25.0"
+#define PACKAGE_VERSION "svn"
 
 /* defines the epsilon to use on position comparison */
 #define POSITION_EPS (SUMOReal)0.1
@@ -220,7 +217,7 @@
 /* #undef TM_IN_SYS_TIME */
 
 /* Version number of package */
-#define VERSION "0.25.0"
+#define VERSION "svn"
 
 /* Defined if auto-generated version.h is unavailable. */
 /* #undef VERSION_STRING */

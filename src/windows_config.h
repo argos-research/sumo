@@ -7,7 +7,7 @@
 /// @author  Felix Brack
 /// @author  Jakob Erdmann
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: windows_config.h 19546 2015-12-06 20:20:11Z behrisch $
+/// @version $Id: windows_config.h 19575 2015-12-09 08:22:14Z behrisch $
 ///
 // The general windows configuration file
 /****************************************************************************/
@@ -65,7 +65,7 @@
 #define GEO_OUTPUT_ACCURACY 6
 
 /* Define if auto-generated version.h should be used. */
-//#define HAVE_VERSION_H 1
+#define HAVE_VERSION_H 1
 
 /* Version number of package */
 #ifndef HAVE_VERSION_H
@@ -78,9 +78,6 @@
 /* Definition for the character function of Xerces  */
 #define XERCES3_SIZE_t XMLSize_t //Xerces >= 3.0
 //#define XERCES3_SIZE_t unsigned int //Xerces < 3.0
-
-/* Define in order to enable subsecond timesteps. */
-#define HAVE_SUBSECOND_TIMESTEPS 1
 
 /* define to use nvwa for memory leak checking */
 //#define CHECK_MEMORY_LEAKS 1

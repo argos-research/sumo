@@ -8,7 +8,7 @@
 /// @author  Michael Behrisch
 /// @author  Sascha Krieg
 /// @date    Sept 2002
-/// @version $Id: MSTLLogicControl.cpp 18213 2015-04-16 11:55:42Z behrisch $
+/// @version $Id: MSTLLogicControl.cpp 19552 2015-12-07 15:27:51Z namdre $
 ///
 // A class that stores and controls tls and switching of their programs
 /****************************************************************************/
@@ -227,7 +227,7 @@ MSTLLogicControl::TLSLogicVariants::executeOnSwitchActions() const {
 
 
 void
-MSTLLogicControl::TLSLogicVariants::addLink(MSLink* link, MSLane* lane, unsigned int pos) {
+MSTLLogicControl::TLSLogicVariants::addLink(MSLink* link, MSLane* lane, int pos) {
     for (std::map<std::string, MSTrafficLightLogic*>::iterator i = myVariants.begin(); i != myVariants.end(); ++i) {
         (*i).second->addLink(link, lane, pos);
     }

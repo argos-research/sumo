@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Friedemann Wesner
 /// @date    Sept 2002
-/// @version $Id: MSTLLogicControl.h 19173 2015-10-27 08:47:27Z behrisch $
+/// @version $Id: MSTLLogicControl.h 19552 2015-12-07 15:27:51Z namdre $
 ///
 // A class that stores and controls tls and switching of their programs
 /****************************************************************************/
@@ -141,7 +141,7 @@ public:
 
 
         void executeOnSwitchActions() const;
-        void addLink(MSLink* link, MSLane* lane, unsigned int pos);
+        void addLink(MSLink* link, MSLane* lane, int pos);
 
 
 

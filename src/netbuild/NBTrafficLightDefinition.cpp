@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBTrafficLightDefinition.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: NBTrafficLightDefinition.cpp 19604 2015-12-13 20:49:24Z behrisch $
 ///
 // The base class for traffic light logic definitions
 /****************************************************************************/
@@ -206,6 +206,7 @@ NBTrafficLightDefinition::collectEdges() {
             WRITE_WARNING("Unreachable edge '" + edge->getID() + "' within tlLogic '" + getID() + "'");
         }
     }
+
 }
 
 
@@ -391,6 +392,7 @@ NBTrafficLightDefinition::getIncomingEdges() const {
 void
 NBTrafficLightDefinition::collectAllLinks() {
     myControlledLinks.clear();
+    int tlIndex = 0;
     // build the list of links which are controled by the traffic light
     for (EdgeVector::iterator i = myIncomingEdges.begin(); i != myIncomingEdges.end(); i++) {
         NBEdge* incoming = *i;
@@ -403,8 +405,11 @@ NBTrafficLightDefinition::collectAllLinks() {
                     if (el.toEdge != 0 && el.toLane >= (int) el.toEdge->getNumLanes()) {
                         throw ProcessError("Connection '" + incoming->getID() + "_" + toString(j) + "->" + el.toEdge->getID() + "_" + toString(el.toLane) + "' yields in a not existing lane.");
                     }
-                    int tlIndex = (int)myControlledLinks.size();
-                    myControlledLinks.push_back(NBConnection(incoming, el.fromLane, el.toEdge, el.toLane, tlIndex));
+                    if (incoming->getToNode()->getType() != NODETYPE_RAIL_CROSSING || !isRailway(incoming->getPermissions())) {
+                        myControlledLinks.push_back(NBConnection(incoming, el.fromLane, el.toEdge, el.toLane, tlIndex++));
+                    } else {
+                        myControlledLinks.push_back(NBConnection(incoming, el.fromLane, el.toEdge, el.toLane, -1));
+                    }
                 }
             }
         }

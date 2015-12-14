@@ -2,7 +2,7 @@
 /// @file    GNEJunction.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEJunction.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GNEJunction.cpp 19552 2015-12-07 15:27:51Z namdre $
 ///
 // A class for visualizing and editing junctions in netedit (adapted from
 // GUIJunctionWrapper)
@@ -544,6 +544,8 @@ GNEJunction::getColorValue(const GUIVisualizationSettings& s, bool bubble) const
                     return 10;
                 case NODETYPE_TRAFFIC_LIGHT_RIGHT_ON_RED:
                     return 11;
+                case NODETYPE_RAIL_CROSSING:
+                    return 12;
             }
         default:
             assert(false);

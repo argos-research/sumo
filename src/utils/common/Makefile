@@ -265,10 +265,10 @@ OTOOL64 =
 PACKAGE = sumo
 PACKAGE_BUGREPORT = 
 PACKAGE_NAME = sumo
-PACKAGE_STRING = sumo 0.25.0
+PACKAGE_STRING = sumo svn
 PACKAGE_TARNAME = sumo
 PACKAGE_URL = 
-PACKAGE_VERSION = 0.25.0
+PACKAGE_VERSION = svn
 PATH_SEPARATOR = :
 PKG_CONFIG = /usr/bin/pkg-config
 PKG_CONFIG_LIBDIR = 
@@ -280,7 +280,7 @@ SED = /usr/bin/sed
 SET_MAKE = 
 SHELL = /bin/sh
 STRIP = strip
-VERSION = 0.25.0
+VERSION = svn
 XERCES_CFLAGS = 
 XERCES_LDFLAGS = 
 XERCES_LIBS = -lxerces-c
@@ -363,7 +363,7 @@ SysUtils.h SysUtils.cpp \
 ToString.h TplConvert.h UtilExceptions.h \
 ValueRetriever.h ValueSource.h \
 ValueTimeLine.h VectorHelper.h \
-WrappingCommand.h
+WrappingCommand.h SwarmDebug.h
 
 all: all-am
 

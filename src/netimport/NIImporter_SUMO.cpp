@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_SUMO.cpp 19523 2015-12-04 11:00:56Z behrisch $
+/// @version $Id: NIImporter_SUMO.cpp 19563 2015-12-08 12:53:19Z namdre $
 ///
 // Importer for networks stored in SUMO format
 /****************************************************************************/
@@ -538,7 +538,8 @@ NIImporter_SUMO::addJunction(const SUMOSAXAttributes& attrs) {
             node->setCustomLaneShape(it->first, it->second);
         }
     }
-    if (type == NODETYPE_RAIL_SIGNAL) {
+    if (type == NODETYPE_RAIL_SIGNAL || type == NODETYPE_RAIL_CROSSING) {
+        // both types of nodes come without a tlLogic
         myRailSignals.insert(id);
     }
 }

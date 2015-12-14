@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_GUI.cpp 18921 2015-09-24 08:10:25Z namdre $
+/// @version $Id: TraCIServerAPI_GUI.cpp 19605 2015-12-14 10:20:25Z namdre $
 ///
 // APIs for getting/setting GUI values via TraCI
 /****************************************************************************/
@@ -91,9 +91,8 @@ TraCIServerAPI_GUI::processGet(TraCIServer& server, tcpip::Storage& inputStorage
                 tempMsg.writeDouble(v->getChanger().getYPos());
                 break;
             case VAR_VIEW_SCHEMA: {
-                FXComboBox& c = v->getColoringSchemesCombo();
                 tempMsg.writeUnsignedByte(TYPE_STRING);
-                tempMsg.writeString((std::string)c.getItem(c.getCurrentItem()).text());
+                tempMsg.writeString(v->getVisualisationSettings()->name);
                 break;
             }
             case VAR_VIEW_BOUNDARY: {

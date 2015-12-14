@@ -2,7 +2,7 @@
 /// @file    GNETLSEditor.cpp
 /// @author  Jakob Erdmann
 /// @date    May 2011
-/// @version $Id: GNETLSEditor.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GNETLSEditor.cpp 19554 2015-12-07 21:36:49Z behrisch $
 ///
 // The Widget for modifying traffic lights
 /****************************************************************************/
@@ -388,7 +388,6 @@ GNETLSEditor::onCmdPhaseSwitch(FXObject*, FXSelector, void*) {
 long
 GNETLSEditor::onCmdPhaseCreate(FXObject*, FXSelector, void*) {
     myHaveModifications = true;
-    const unsigned int numLinks = myEditedDef->getLogic()->getNumLinks();
     // allows insertion at first position by deselecting via arrow keys
     unsigned int newIndex = myPhaseTable->getSelStartRow() + 1;
     unsigned int oldIndex = MAX2(0, myPhaseTable->getSelStartRow());

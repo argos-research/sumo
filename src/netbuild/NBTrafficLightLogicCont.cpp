@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBTrafficLightLogicCont.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: NBTrafficLightLogicCont.cpp 19552 2015-12-07 15:27:51Z namdre $
 ///
 // A container for traffic light definitions and built programs
 /****************************************************************************/
@@ -289,7 +289,7 @@ NBTrafficLightLogicCont::setTLControllingInformation(const NBEdgeCont& ec, const
     // handle rail signals which are not instantiated as normal definitions
     for (std::map<std::string, NBNode*>::const_iterator it = nc.begin(); it != nc.end(); it ++) {
         NBNode* n = it->second;
-        if (n->getType() == NODETYPE_RAIL_SIGNAL) {
+        if (n->getType() == NODETYPE_RAIL_SIGNAL || n->getType() == NODETYPE_RAIL_CROSSING) {
             NBOwnTLDef dummy(n->getID(), n, 0, TLTYPE_STATIC);
             dummy.setParticipantsInformation();
             dummy.setTLControllingInformation(ec);

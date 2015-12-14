@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: MSPerson.h 19388 2015-11-19 21:33:01Z behrisch $
+/// @version $Id: MSPerson.h 19604 2015-12-13 20:49:24Z behrisch $
 ///
 // The class for modelling person-movements
 /****************************************************************************/
@@ -410,6 +410,9 @@ public:
 
     /// @brief return the list of internal edges if this person is walking and the pedestrian model allows it
     const std::string& getNextEdge() const;
+
+    /// @brief returns the next edge ptr if this person is walking and the pedestrian model allows it
+    const MSEdge* getNextEdgePtr() const;
 
 private:
     /// @brief Invalidated copy constructor.

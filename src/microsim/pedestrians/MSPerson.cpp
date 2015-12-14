@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: MSPerson.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: MSPerson.cpp 19604 2015-12-13 20:49:24Z behrisch $
 ///
 // The class for modelling person-movements
 /****************************************************************************/
@@ -525,15 +525,31 @@ MSPerson::routeOutput(OutputDevice& os) const {
 
 const std::string&
 MSPerson::getNextEdge() const {
+//    if (getCurrentStageType() == MOVING_WITHOUT_VEHICLE) {
+//        MSPersonStage_Walking* walkingStage =  dynamic_cast<MSPersonStage_Walking*>(*myStep);
+//        assert(walkingStage != 0);
+//        const MSEdge* nextEdge = walkingStage->getPedestrianState()->getNextEdge(*walkingStage);
+//        if (nextEdge != 0) {
+//            return nextEdge->getID();
+//        }
+//    }
+//    return StringUtils::emptyString;
+    const MSEdge* nextEdge = getNextEdgePtr();
+    if (nextEdge != 0) {
+        return nextEdge->getID();
+    }
+    return StringUtils::emptyString;
+}
+
+const MSEdge*
+MSPerson::getNextEdgePtr() const {
     if (getCurrentStageType() == MOVING_WITHOUT_VEHICLE) {
         MSPersonStage_Walking* walkingStage =  dynamic_cast<MSPersonStage_Walking*>(*myStep);
         assert(walkingStage != 0);
-        const MSEdge* nextEdge = walkingStage->getPedestrianState()->getNextEdge(*walkingStage);
-        if (nextEdge != 0) {
-            return nextEdge->getID();
-        }
+        return walkingStage->getPedestrianState()->getNextEdge(*walkingStage);
+
     }
-    return StringUtils::emptyString;
+    return 0;
 }
 /****************************************************************************/
 

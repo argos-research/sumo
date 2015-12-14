@@ -5,7 +5,7 @@
 /// @author  Christian Roessel
 /// @author  Michael Behrisch
 /// @date    Mon, 15 Apr 2002
-/// @version $Id: NLDetectorBuilder.h 19497 2015-12-02 21:19:35Z behrisch $
+/// @version $Id: NLDetectorBuilder.h 19604 2015-12-13 20:49:24Z behrisch $
 ///
 // Builds detectors for microsim
 /****************************************************************************/
@@ -36,7 +36,7 @@
 #include <string>
 #include <microsim/output/MSCrossSection.h>
 #include <microsim/traffic_lights/MSTLLogicControl.h>
-
+#include <microsim/output/MSE2Collector.h>
 
 // ===========================================================================
 // class declarations
@@ -366,7 +366,7 @@ public:
      * @param[in] haltingSpeedThreshold Detector parameter: the speed a vehicle's speed must be below to be assigned as jammed
      * @param[in] jamDistThreshold Detector parameter: the distance between two vehicles in order to not count them to one jam
      */
-    virtual MSDetectorFileOutput* createSingleLaneE2Detector(const std::string& id,
+    virtual MSE2Collector* createSingleLaneE2Detector(const std::string& id,
             DetectorUsage usage, MSLane* lane, SUMOReal pos, SUMOReal length,
             SUMOTime haltingTimeThreshold,
             SUMOReal haltingSpeedThreshold,
@@ -447,10 +447,10 @@ public:
      * @param[in] jamDistThreshold Detector parameter: the distance between two vehicles in order to not count them to one jam
      * @todo Check whether this method is really needful
      */
-    MSDetectorFileOutput* buildSingleLaneE2Det(const std::string& id,
-            DetectorUsage usage, MSLane* lane, SUMOReal pos, SUMOReal length,
-            SUMOTime haltingTimeThreshold, SUMOReal haltingSpeedThreshold,
-            SUMOReal jamDistThreshold);
+    MSE2Collector* buildSingleLaneE2Det(const std::string& id,
+                                        DetectorUsage usage, MSLane* lane, SUMOReal pos, SUMOReal length,
+                                        SUMOTime haltingTimeThreshold, SUMOReal haltingSpeedThreshold,
+                                        SUMOReal jamDistThreshold);
 
 
     /** @brief Builds an e2 detector that continues on preceeding lanes

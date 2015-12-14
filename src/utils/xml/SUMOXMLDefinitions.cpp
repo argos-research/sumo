@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Sept 2002
-/// @version $Id: SUMOXMLDefinitions.cpp 19525 2015-12-04 11:08:33Z namdre $
+/// @version $Id: SUMOXMLDefinitions.cpp 19604 2015-12-13 20:49:24Z behrisch $
 ///
 // Definitions of elements and attributes known by SUMO
 /****************************************************************************/
@@ -476,6 +476,8 @@ StringBijection<int>::Entry SUMOXMLDefinitions::attrs[] = {
     { "shapeStartNotForPrinting", GNE_ATTR_SHAPE_START},
     { "shapeEndNotForPrinting", GNE_ATTR_SHAPE_END},
 
+    { "targetLanes",   SUMO_ATTR_TARGETLANE },
+
     { "",               SUMO_ATTR_NOTHING }
 };
 
@@ -485,6 +487,7 @@ StringBijection<SumoXMLNodeType>::Entry SUMOXMLDefinitions::sumoNodeTypeValues[]
     {"traffic_light_unregulated", NODETYPE_TRAFFIC_LIGHT_NOJUNCTION},
     {"traffic_light_right_on_red", NODETYPE_TRAFFIC_LIGHT_RIGHT_ON_RED},
     {"rail_signal",         NODETYPE_RAIL_SIGNAL},
+    {"rail_crossing",       NODETYPE_RAIL_CROSSING},
     {"priority",            NODETYPE_PRIORITY},
     {"priority_stop",       NODETYPE_PRIORITY_STOP},
     {"right_before_left",   NODETYPE_RIGHT_BEFORE_LEFT},
@@ -553,6 +556,15 @@ StringBijection<TrafficLightType>::Entry SUMOXMLDefinitions::trafficLightTypesVa
     { "static", TLTYPE_STATIC },
     { "rail", TLTYPE_RAIL },
     { "actuated", TLTYPE_ACTUATED },
+    { "agentbased", TLTYPE_AGENT },
+    { "sotl_phase", TLTYPE_SOTL_PHASE },
+    { "sotl_platoon", TLTYPE_SOTL_PLATOON },
+    { "sotl_request", TLTYPE_SOTL_REQUEST },
+    { "sotl_wave", TLTYPE_SOTL_WAVE },
+    { "sotl_marching", TLTYPE_SOTL_MARCHING },
+    { "swarm", TLTYPE_SWARM_BASED },
+    { "deterministic", TLTYPE_HILVL_DETERMINISTIC },
+    { "<invalid>", TLTYPE_INVALID } //< must be the last one
 };
 
 
@@ -598,7 +610,7 @@ StringBijection<LinkDirection> SUMOXMLDefinitions::LinkDirections(
     SUMOXMLDefinitions::linkDirectionValues, LINKDIR_NODIR);
 
 StringBijection<TrafficLightType> SUMOXMLDefinitions::TrafficLightTypes(
-    SUMOXMLDefinitions::trafficLightTypesVales, TLTYPE_ACTUATED);
+    SUMOXMLDefinitions::trafficLightTypesVales, TLTYPE_INVALID);
 
 StringBijection<LaneChangeModel> SUMOXMLDefinitions::LaneChangeModels(
     SUMOXMLDefinitions::laneChangeModelValues, LCM_JE2013);

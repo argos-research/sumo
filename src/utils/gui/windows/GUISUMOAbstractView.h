@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUISUMOAbstractView.h 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GUISUMOAbstractView.h 19605 2015-12-14 10:20:25Z namdre $
 ///
 // The base class for a view
 /****************************************************************************/
@@ -198,6 +198,10 @@ public:
     void showToolTips(bool val);
     virtual bool setColorScheme(const std::string&) {
         return true;
+    }
+
+    GUIVisualizationSettings* getVisualisationSettings() const {
+        return myVisualizationSettings;
     }
 
     void remove(GUIDialog_EditViewport*) {
