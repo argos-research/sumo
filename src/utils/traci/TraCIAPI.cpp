@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    30.05.2012
-/// @version $Id: TraCIAPI.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: TraCIAPI.cpp 19605 2015-12-14 10:20:25Z namdre $
 ///
 // C++ TraCI client API implementation
 /****************************************************************************/
@@ -53,7 +53,7 @@ TraCIAPI::TraCIAPI()
     : edge(*this), gui(*this), inductionloop(*this),
       junction(*this), lane(*this), multientryexit(*this), poi(*this),
       polygon(*this), route(*this), simulation(*this), trafficlights(*this),
-      vehicletype(*this),
+      vehicletype(*this), vehicle(*this),
       mySocket(0) {}
 #ifdef _MSC_VER
 #pragma warning(default: 4355)
@@ -435,8 +435,7 @@ void
 TraCIAPI::simulationStep(SUMOTime time) {
     send_commandSimulationStep(time);
     tcpip::Storage inMsg;
-    std::string acknowledgement;
-    check_resultState(inMsg, CMD_SIMSTEP2, false, &acknowledgement);
+    check_resultState(inMsg, CMD_SIMSTEP2);
 }
 
 
@@ -611,8 +610,11 @@ TraCIAPI::GUIScope::setOffset(const std::string& viewID, SUMOReal x, SUMOReal y)
 void
 TraCIAPI::GUIScope::setSchema(const std::string& viewID, const std::string& schemeName) const {
     tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_STRING);
     content.writeString(schemeName);
     myParent.send_commandSetValue(CMD_SET_GUI_VARIABLE, VAR_VIEW_SCHEMA, viewID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_GUI_VARIABLE);
 }
 
 void
@@ -1533,6 +1535,110 @@ TraCIAPI::VehicleTypeScope::setColor(const std::string& typeID, const TraCIColor
     content.writeUnsignedByte(c.b);
     content.writeUnsignedByte(c.a);
     myParent.send_commandSetValue(CMD_SET_VEHICLETYPE_VARIABLE, VAR_COLOR, typeID, content);
+}
+
+
+
+
+
+// ---------------------------------------------------------------------------
+// TraCIAPI::VehicleScope-methods
+// ---------------------------------------------------------------------------
+std::vector<std::string>
+TraCIAPI::VehicleScope::getIDList() const {
+    return myParent.getStringVector(CMD_GET_VEHICLE_VARIABLE, ID_LIST, "");
+}
+
+unsigned int
+TraCIAPI::VehicleScope::getIDCount() const {
+    return myParent.getInt(CMD_GET_VEHICLE_VARIABLE, ID_COUNT, "");
+}
+
+SUMOReal
+TraCIAPI::VehicleScope::getSpeed(const std::string& typeID) const {
+    return myParent.getDouble(CMD_GET_VEHICLE_VARIABLE, VAR_SPEED, typeID);
+}
+
+TraCIAPI::TraCIPosition
+TraCIAPI::VehicleScope::getPosition(const std::string& typeID) const {
+    return myParent.getPosition(CMD_GET_VEHICLE_VARIABLE, VAR_POSITION, typeID);
+}
+
+SUMOReal
+TraCIAPI::VehicleScope::getAngle(const std::string& typeID) const {
+    return myParent.getDouble(CMD_GET_VEHICLE_VARIABLE, VAR_ANGLE, typeID);
+}
+
+std::string
+TraCIAPI::VehicleScope::getRoadID(const std::string& typeID) const {
+    return myParent.getString(CMD_GET_VEHICLE_VARIABLE, VAR_ROAD_ID, typeID);
+}
+
+std::string
+TraCIAPI::VehicleScope::getLaneID(const std::string& typeID) const {
+    return myParent.getString(CMD_GET_VEHICLE_VARIABLE, VAR_LANE_ID, typeID);
+}
+
+unsigned int
+TraCIAPI::VehicleScope::getLaneIndex(const std::string& typeID) const {
+    return myParent.getInt(CMD_GET_VEHICLE_VARIABLE, VAR_LANE_INDEX, typeID);
+}
+
+std::string
+TraCIAPI::VehicleScope::getTypeID(const std::string& typeID) const {
+    return myParent.getString(CMD_GET_VEHICLE_VARIABLE, VAR_TYPE, typeID);
+}
+
+std::string
+TraCIAPI::VehicleScope::getRouteID(const std::string& typeID) const {
+    return myParent.getString(CMD_GET_VEHICLE_VARIABLE, VAR_ROAD_ID, typeID);
+}
+
+unsigned int
+TraCIAPI::VehicleScope::getRouteIndex(const std::string& typeID) const {
+    return myParent.getInt(CMD_GET_VEHICLE_VARIABLE, VAR_ROUTE_INDEX, typeID);
+}
+
+std::vector<std::string>
+TraCIAPI::VehicleScope::getEdges(const std::string& typeID) const {
+    return myParent.getStringVector(CMD_GET_VEHICLE_VARIABLE, VAR_EDGES, typeID);
+}
+
+TraCIAPI::TraCIColor
+TraCIAPI::VehicleScope::getColor(const std::string& typeID) const {
+    return myParent.getColor(CMD_GET_VEHICLE_VARIABLE, VAR_COLOR, typeID);
+}
+
+SUMOReal
+TraCIAPI::VehicleScope::getLanePosition(const std::string& typeID) const {
+    return myParent.getDouble(CMD_GET_VEHICLE_VARIABLE, VAR_LANEPOSITION, typeID);
+}
+
+
+
+
+void
+TraCIAPI::VehicleScope::moveTo(const std::string& typeID, const std::string& laneID, SUMOReal position) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_COMPOUND);
+    content.writeInt(2);
+    content.writeUnsignedByte(TYPE_STRING);
+    content.writeString(laneID);
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(position);
+    myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_MOVE_TO, typeID, content);
+}
+
+void
+TraCIAPI::VehicleScope::slowDown(const std::string& typeID, SUMOReal speed, int duration) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_COMPOUND);
+    content.writeInt(2);
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(speed);
+    content.writeUnsignedByte(TYPE_INTEGER);
+    content.writeInt(duration);
+    myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, CMD_SLOWDOWN, typeID, content);
 }
 
 

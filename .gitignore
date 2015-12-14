@@ -17,6 +17,12 @@
 # vim
 *.swp
 
-#eclipse
+# eclipse
 .project
 .cproject
+
+# binaries
+bin
+
+# etc
+*.log
