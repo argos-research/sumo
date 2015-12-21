@@ -3,7 +3,7 @@
 @file    route2trips.py
 @author  Jakob Erdmann
 @date    2015-08-05
-@version $Id: route2sel.py 19535 2015-12-05 13:47:18Z behrisch $
+@version $Id: route2sel.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This script converts SUMO routes into an edge selection
 
@@ -17,6 +17,7 @@ the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
 from __future__ import print_function
+from __future__ import absolute_import
 import sys
 from optparse import OptionParser
 from sumolib.output import parse_fast

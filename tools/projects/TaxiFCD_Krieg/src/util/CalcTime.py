@@ -5,7 +5,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-04-17
-@version $Id: CalcTime.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: CalcTime.py 19649 2015-12-17 21:05:20Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -17,6 +17,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 from time import gmtime
 from time import strftime
@@ -32,7 +34,7 @@ simDate = mktime((2007, 7, 18, 0, 0, 0, 2, 199, 1))
 
 def getSecsInTime(time=85460):
     """calculates the Hour:Minutes:Seconds of the given time in seconds."""
-    print strftime(formatTime, gmtime(time))
+    print(strftime(formatTime, gmtime(time)))
 
 
 def getDateFromDepart(time):
@@ -44,7 +46,7 @@ def getTimeInSecs(date):
     """calculates the depart time in seconds of the given date (date should be same as simDate)"""
     result = (int)(mktime(strptime(date, format)) - simDate)
     if result < 0:
-        print "WARNING: calculated time is negative"
+        print("WARNING: calculated time is negative")
     return result
 
 

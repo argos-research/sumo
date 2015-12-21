@@ -2,7 +2,7 @@
 @file    __init__.py
 @author  Michael Behrisch
 @date    2015-12-02
-@version $Id: __init__.py 19475 2015-12-01 11:42:08Z behrisch $
+@version $Id: __init__.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This file imports all webWizard dependencies.
 
@@ -15,5 +15,6 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 
-import SimpleWebSocketServer
+from . import SimpleWebSocketServer

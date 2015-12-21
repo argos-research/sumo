@@ -3,7 +3,7 @@
 @author  Jakob Erdmann
 @author  Laura Bieker
 @date    2014-02-13
-@version $Id: gpx.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: gpx.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This module includes functions for converting SUMO's fcd-output into
 GPX format (http://en.wikipedia.org/wiki/GPS_eXchange_Format)
@@ -17,6 +17,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 from collections import defaultdict
 
 

@@ -3,7 +3,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2013-01-15
-@version $Id: omnet.py 19091 2015-10-15 10:48:45Z namdre $
+@version $Id: omnet.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This module includes functions for converting SUMO's fcd-output into
 data files read by OMNET.
@@ -18,6 +18,7 @@ the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
 from __future__ import print_function
+from __future__ import absolute_import
 import datetime
 import sumolib.output
 import sumolib.net

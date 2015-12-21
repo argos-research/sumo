@@ -3,7 +3,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2012-12-04
-@version $Id: color.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: color.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Library for reading and encoding of colors.
 
@@ -16,6 +16,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 
 from xml.sax import handler, parse
 

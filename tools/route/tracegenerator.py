@@ -3,7 +3,7 @@
 @file    tracemapper.py
 @author  Michael Behrisch
 @date    2013-10-23
-@version $Id: tracegenerator.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: tracegenerator.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This script tries to generate traces for routes in a sumo network.
 
@@ -18,6 +18,7 @@ the Free Software Foundation; either version 3 of the License, or
 """
 
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 import sys
 from optparse import OptionParser

@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2010-03-11
-@version $Id: patchTrafficLights.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: patchTrafficLights.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This script patches the traffic lights of an input network for the gaming mode.
 
@@ -17,6 +17,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 import re
 import sys
 from optparse import OptionParser
@@ -41,13 +43,13 @@ for line in open(options.netfile):
         m = re.search('state="([^"]+)"', line)
         if m and len(m.group(1)) == 16:
             skip = True
-            print >> out, """      <phase duration="%s" state="rrrrrrrrrrrrrrrr"/>
+            print("""      <phase duration="%s" state="rrrrrrrrrrrrrrrr"/>
       <phase duration="10000" state="rrrrGGggrrrrGGgg"/>
    </tlLogic>
 
    <tlLogic id="%s" type="static" programID="1" offset="0">
       <phase duration="%s" state="rrrrrrrrrrrrrrrr"/>
-      <phase duration="10000" state="GGggrrrrGGggrrrr"/>""" % (options.switch, tlid, options.switch)
+      <phase duration="10000" state="GGggrrrrGGggrrrr"/>""" % (options.switch, tlid, options.switch), file=out)
     m = re.search('<tlLogic id="([^"]+)"', line)
     if m:
         tlid = m.group(1)

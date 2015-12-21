@@ -5,7 +5,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2011-03-04
-@version $Id: runner.py 18723 2015-08-25 17:54:20Z behrisch $
+@version $Id: runner.py 19631 2015-12-16 21:01:33Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -18,6 +18,7 @@ the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
 
+from __future__ import print_function
 import os
 import subprocess
 import sys
@@ -37,22 +38,22 @@ sumoProcess = subprocess.Popen(
     "%s -S -Q -c sumo.sumocfg --remote-port %s" % (sumoBinary, PORT), shell=True, stdout=sys.stdout)
 traci.init(PORT)
 for step in range(3):
-    print "step", step
+    print("step", step)
     traci.simulationStep()
 time.sleep(1)  # give the gui a chance to draw itself
-print "views", traci.gui.getIDList()
+print("views", traci.gui.getIDList())
 viewID = traci.gui.DEFAULT_VIEW
-print "examining", viewID
-print "zoom", traci.gui.getZoom(viewID)
-print "offset", traci.gui.getOffset(viewID)
-print "schema", traci.gui.getSchema(viewID)
-print "visible boundary", traci.gui.getBoundary(viewID)
+print("examining", viewID)
+print("zoom", traci.gui.getZoom(viewID))
+print("offset", traci.gui.getOffset(viewID))
+print("schema", traci.gui.getSchema(viewID))
+print("visible boundary", traci.gui.getBoundary(viewID))
 
 traci.gui.subscribe(viewID)
-print traci.gui.getSubscriptionResults(viewID)
+print(traci.gui.getSubscriptionResults(viewID))
 for step in range(3, 6):
-    print "step", step
+    print("step", step)
     traci.simulationStep()
-    print traci.gui.getSubscriptionResults(viewID)
+    print(traci.gui.getSubscriptionResults(viewID))
 traci.gui.screenshot(viewID, "test.png")
 traci.close()

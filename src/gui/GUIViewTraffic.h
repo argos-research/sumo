@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUIViewTraffic.h 18983 2015-10-01 12:40:07Z namdre $
+/// @version $Id: GUIViewTraffic.h 19617 2015-12-15 16:42:53Z behrisch $
 ///
 // A view on the simulation; this view is a microscopic one
 /****************************************************************************/
@@ -49,6 +49,7 @@
 class GUINet;
 class GUISUMOViewParent;
 class GUIVehicle;
+class GUIVideoEncoder;
 class MSRoute;
 
 
@@ -102,6 +103,18 @@ public:
     long onCmdCloseEdge(FXObject*, FXSelector, void*);
     long onCmdAddRerouter(FXObject*, FXSelector, void*);
 
+    /** @brief Adds a frame to a video snapshot which will be initialized if neccessary
+     */
+    void saveFrame(const std::string& destFile, FXColor* buf);
+
+    /** @brief Ends a video snapshot
+     */
+    void endSnapshot();
+
+    /** @brief Checks whether it is time for a snapshot
+     */
+    void checkSnapshots();
+
 protected:
     int doPaintGL(int mode, const Boundary& bound);
 
@@ -109,6 +122,10 @@ protected:
 
 private:
     int myTrackedID;
+
+#ifdef HAVE_FFMPEG
+    GUIVideoEncoder* myCurrentVideo;
+#endif
 
 protected:
     GUIViewTraffic() { }

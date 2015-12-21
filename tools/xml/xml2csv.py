@@ -6,7 +6,7 @@
 @author  Michael Behrisch
 @author  Laura Bieker
 @date    2013-12-08
-@version $Id: xml2csv.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: xml2csv.py 19655 2015-12-18 15:59:37Z behrisch $
 
 Convert hierarchical xml files to csv. This only makes sense if the hierarchy has low depth.
 
@@ -21,6 +21,7 @@ the Free Software Foundation; either version 3 of the License, or
 """
 
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 import sys
 import socket
@@ -138,7 +139,7 @@ class CSVWriter(NestingHandler):
         self.haveUnsavedValues = False
         self.outfiles = {}
         self.rootDepth = 1 if options.split else 0
-        for root in attrFinder.depthTags.iterkeys():
+        for root in attrFinder.depthTags:
             if len(attrFinder.depthTags) == 1:
                 if not options.output:
                     options.output = os.path.splitext(options.source)[0]

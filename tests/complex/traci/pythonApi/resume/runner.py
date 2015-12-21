@@ -4,7 +4,7 @@
 @author  Laura Bieker
 @author  Michael Behrisch
 @date    2014-08-28
-@version $Id: runner.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: runner.py 19631 2015-12-16 21:01:33Z behrisch $
 
 Python resume test.
 
@@ -18,9 +18,10 @@ the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
 
-import subprocess
+from __future__ import print_function
 import os
 import sys
+import subprocess
 
 
 if 'SUMO_HOME' in os.environ:

@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUIApplicationWindow.cpp 19603 2015-12-13 20:22:53Z behrisch $
+/// @version $Id: GUIApplicationWindow.cpp 19625 2015-12-16 10:31:42Z behrisch $
 ///
 // The main window of the SUMO-gui.
 /****************************************************************************/
@@ -1493,6 +1493,10 @@ GUIApplicationWindow::setStatusBarText(const std::string& text) {
 void
 GUIApplicationWindow::updateTimeLCD(SUMOTime time) {
     time -= DELTA_T; // synchronize displayed time with netstate output
+    if (time < 0) {
+        myLCDLabel->setText("-------------");
+        return;
+    }
     if (myAmGaming) {
         // show time counting backwards
         time = myRunThread->getSimEndTime() - time;

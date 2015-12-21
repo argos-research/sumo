@@ -5,7 +5,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2007-02-21
-@version $Id: createRoundaboutConnections.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: createRoundaboutConnections.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This script reads in the network given as
  first parameter and generates additional connections for roundabouts.
@@ -19,6 +19,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 
 import os
@@ -48,9 +50,9 @@ def writeConnections(net):
 
 
 if len(sys.argv) < 2:
-    print "Usage: " + sys.argv[0] + " <net>"
+    print("Usage: " + sys.argv[0] + " <net>")
     sys.exit()
-print "Reading net..."
+print("Reading net...")
 net = sumolib.net.readNet(sys.argv[1])
-print "Writing connections..."
+print("Writing connections...")
 writeConnections(net)

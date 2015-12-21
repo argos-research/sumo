@@ -7,7 +7,7 @@ A script for converting SUMO's fcd-output into files readable by PHEM and commun
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2013-01-15
-@version $Id: traceExporter.py 19535 2015-12-05 13:47:18Z behrisch $
+@version $Id: traceExporter.py 19649 2015-12-17 21:05:20Z behrisch $
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
 Copyright (C) 2013-2015 DLR (http://www.dlr.de/) and contributors
@@ -20,6 +20,7 @@ the Free Software Foundation; either version 3 of the License, or
 """
 
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 import sys
 import random

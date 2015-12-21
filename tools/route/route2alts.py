@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    11.09.2009
-@version $Id: route2alts.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: route2alts.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Counts possible routes for all depart/arrival edges.
 Builds route alternatives assigning the so determined probabilities to use a route.
@@ -20,6 +20,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 import sys
 import optparse
 import array
@@ -34,7 +36,7 @@ class RouteCounter(handler.ContentHandler):
         self._odRoutes = {}
 
     def startElement(self, name, attrs):
-        if attrs.has_key("edges"):
+        if "edges" in attrs:
             route = attrs["edges"]
             edges = route.split(" ")
             od = (edges[0], edges[-1])
@@ -100,16 +102,16 @@ class RoutePatcher(handler.ContentHandler):
 
 
 if len(sys.argv) < 3:
-    print "Usage: route2alts.py <INPUT_FILE> <OUTPUT_FILE>"
+    print("Usage: route2alts.py <INPUT_FILE> <OUTPUT_FILE>")
     sys.exit()
 # count occurences
-print "Counting alternatives occurences..."
+print("Counting alternatives occurences...")
 parser = make_parser()
 counter = RouteCounter()
 parser.setContentHandler(counter)
 parser.parse(sys.argv[1])
 # build alternatives
-print "Building alternatives..."
+print("Building alternatives...")
 out = open(sys.argv[2], "w")
 parser = make_parser()
 parser.setContentHandler(RoutePatcher(counter, out))

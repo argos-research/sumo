@@ -3,7 +3,7 @@
 /// @author  Gianfilippo Slager
 /// @author  Federico Caselli
 /// @date    Feb 2010
-/// @version $Id: MSSOTLPhasePolicy.h 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSSOTLPhasePolicy.h 19610 2015-12-14 21:03:17Z behrisch $
 ///
 // The class for SOTL Phase logics
 /****************************************************************************/
@@ -46,7 +46,7 @@ public:
     MSSOTLPhasePolicy(MSSOTLPolicyDesirability* desirabilityAlgorithm,
                       const std::map<std::string, std::string>& parameters);
 
-    bool canRelease(int elapsed, bool thresholdPassed, bool pushButtonPressed,
+    bool canRelease(SUMOTime elapsed, bool thresholdPassed, bool pushButtonPressed,
                     const MSPhaseDefinition* stage, int vehicleCount);
 protected:
     void init();

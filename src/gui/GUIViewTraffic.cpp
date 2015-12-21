@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUIViewTraffic.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GUIViewTraffic.cpp 19650 2015-12-18 08:34:31Z behrisch $
 ///
 // A view on the simulation; this view is a microscopic one
 /****************************************************************************/
@@ -30,6 +30,10 @@
 #include <windows_config.h>
 #else
 #include <config.h>
+#endif
+
+#ifdef HAVE_FFMPEG
+#include <utils/gui/div/GUIVideoEncoder.h>
 #endif
 
 #include <iostream>
@@ -93,7 +97,11 @@ GUIViewTraffic::GUIViewTraffic(
     GUINet& net, FXGLVisual* glVis,
     FXGLCanvas* share) :
     GUISUMOAbstractView(p, app, parent, net.getVisualisationSpeedUp(), glVis, share),
-    myTrackedID(-1) {}
+    myTrackedID(-1)
+#ifdef HAVE_FFMPEG
+    , myCurrentVideo(0)
+#endif
+    {}
 
 
 GUIViewTraffic::~GUIViewTraffic() {
@@ -337,6 +345,7 @@ GUIViewTraffic::onCmdCloseEdge(FXObject*, FXSelector, void*) {
     return 1;
 }
 
+
 long
 GUIViewTraffic::onCmdAddRerouter(FXObject*, FXSelector, void*) {
     GUILane* lane = getLaneUnderCursor();
@@ -347,5 +356,45 @@ GUIViewTraffic::onCmdAddRerouter(FXObject*, FXSelector, void*) {
     }
     return 1;
 }
+
+
+void
+GUIViewTraffic::saveFrame(const std::string& destFile, FXColor* buf) {
+#ifdef HAVE_FFMPEG
+    if (myCurrentVideo == 0) {
+        myCurrentVideo = new GUIVideoEncoder(destFile.c_str(), getWidth(), getHeight(), myApp->getDelay());
+    }
+    myCurrentVideo->writeFrame((uint8_t*)buf);
+#else
+    UNUSED_PARAMETER(destFile);
+    UNUSED_PARAMETER(buf);
+#endif
+}
+
+
+void
+GUIViewTraffic::endSnapshot() {
+#ifdef HAVE_FFMPEG
+    if (myCurrentVideo != 0) {
+        delete myCurrentVideo;
+        myCurrentVideo = 0;
+    }
+#endif
+}
+
+
+void
+GUIViewTraffic::checkSnapshots() {
+    GUISUMOAbstractView::checkSnapshots();
+#ifdef HAVE_FFMPEG
+    if (myCurrentVideo != 0) {
+        std::string error = makeSnapshot("");
+        if (error != "") {
+            WRITE_WARNING(error);
+        }
+    }
+#endif
+}
+
 
 /****************************************************************************/

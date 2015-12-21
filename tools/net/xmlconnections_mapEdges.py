@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2009-08-01
-@version $Id: xmlconnections_mapEdges.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: xmlconnections_mapEdges.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Reads edge id replacements from "edgemap.txt"; the format of this file is
  <OLD_EDGE_ID>-><NEW_EDGE_ID>
@@ -22,11 +22,13 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import sys
 
 if len(sys.argv) < 2:
-    print "Usage: " + sys.argv[0] + " <CONNECTIONS>"
+    print("Usage: " + sys.argv[0] + " <CONNECTIONS>")
     sys.exit()
 
 # read map

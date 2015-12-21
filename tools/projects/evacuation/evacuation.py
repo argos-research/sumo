@@ -5,7 +5,7 @@
 @author  Martin Taraz
 @author  Michael Behrisch
 @date    2015-09-09
-@version $Id: evacuation.py 19537 2015-12-05 14:48:01Z behrisch $
+@version $Id: evacuation.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Starts the creation of an Evacuation Scenario
 
@@ -24,6 +24,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import os
 import sys

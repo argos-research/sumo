@@ -3,7 +3,7 @@
 @file    vehicle2flow.py
 @author  Michael Behrisch
 @date    2012-11-15
-@version $Id: vehicle2flow.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: vehicle2flow.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This script replaces all vehicle definitions in a route file by
 flow definitions, adding an XML ntity for the repeat interval for
@@ -18,6 +18,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 import sys
 import os
 import re

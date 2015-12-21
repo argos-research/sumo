@@ -3,7 +3,7 @@
 /// @author  Alessio Bonfietti
 /// @author  Riccardo Belletti
 /// @date    Feb 2014
-/// @version $Id: MSSOTLCongestionPolicy.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSSOTLCongestionPolicy.cpp 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // The class for SOTL Congestion logics
 /****************************************************************************/
@@ -39,9 +39,9 @@ MSSOTLCongestionPolicy::MSSOTLCongestionPolicy(
 
 }
 
-size_t MSSOTLCongestionPolicy::decideNextPhase(int elapsed,
-        const MSPhaseDefinition* stage, size_t currentPhaseIndex,
-        size_t phaseMaxCTS, bool thresholdPassed, bool pushButtonPressed, int vehicleCount) {
+int MSSOTLCongestionPolicy::decideNextPhase(SUMOTime elapsed,
+        const MSPhaseDefinition* stage, int currentPhaseIndex,
+        int /* phaseMaxCTS */, bool thresholdPassed, bool pushButtonPressed, int vehicleCount) {
     if (stage->isCommit()) {
         // decide which chain to activate. Gotta work on this
         return currentPhaseIndex;
@@ -53,7 +53,6 @@ size_t MSSOTLCongestionPolicy::decideNextPhase(int elapsed,
     }
 
     if (stage->isDecisional()) {
-
         if (canRelease(elapsed, thresholdPassed, pushButtonPressed, stage, vehicleCount)) {
             return currentPhaseIndex + 1;
         }
@@ -62,7 +61,7 @@ size_t MSSOTLCongestionPolicy::decideNextPhase(int elapsed,
     return currentPhaseIndex;
 }
 
-bool MSSOTLCongestionPolicy::canRelease(int elapsed, bool thresholdPassed, bool pushButtonPressed,
-                                        const MSPhaseDefinition* stage, int vehicleCount) {
+bool MSSOTLCongestionPolicy::canRelease(SUMOTime elapsed, bool /* thresholdPassed */, bool /* pushButtonPressed */,
+                                        const MSPhaseDefinition* stage, int /* vehicleCount */) {
     return (elapsed >= stage->minDuration);
 }

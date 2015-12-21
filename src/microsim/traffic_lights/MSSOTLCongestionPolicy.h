@@ -3,7 +3,7 @@
 /// @author  Alessio Bonfietti
 /// @author  Riccardo Belletti
 /// @date    Feb 2014
-/// @version $Id: MSSOTLCongestionPolicy.h 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSSOTLCongestionPolicy.h 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // The class for SOTL Congestion logics
 /****************************************************************************/
@@ -48,11 +48,11 @@ public:
     MSSOTLCongestionPolicy(MSSOTLPolicyDesirability* desirabilityAlgorithm,
                            const std::map<std::string, std::string>& parameters);
 
-    size_t decideNextPhase(int elapsed, const MSPhaseDefinition* stage,
-                           size_t currentPhaseIndex, size_t phaseMaxCTS, bool thresholdPassed, bool pushButtonPressed,
+    int decideNextPhase(SUMOTime elapsed, const MSPhaseDefinition* stage,
+                           int currentPhaseIndex, int phaseMaxCTS, bool thresholdPassed, bool pushButtonPressed,
                            int vehicleCount);
 
-    bool canRelease(int elapsed, bool thresholdPassed, bool pushButtonPressed,
+    bool canRelease(SUMOTime elapsed, bool thresholdPassed, bool pushButtonPressed,
                     const MSPhaseDefinition* stage, int vehicleCount);
 
 };

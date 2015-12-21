@@ -2,7 +2,7 @@
 /// @file    MSDeterministicHiLevelTrafficLightLogic.h
 /// @author  Riccardo Belletti
 /// @date    Mar 2014
-/// @version $Id: MSDeterministicHiLevelTrafficLightLogic.h 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSDeterministicHiLevelTrafficLightLogic.h 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // The class for deterministic high level traffic light logic
 /****************************************************************************/
@@ -53,8 +53,8 @@ public:
      * @param[in] delay The time to wait before the first switch
      * @param[in] parameters Parameters defined for the tll
      */
-    MSDeterministicHiLevelTrafficLightLogic(MSTLLogicControl& tlcontrol, const string& id,
-                                            const string& subid, const Phases& phases, unsigned int step,
+    MSDeterministicHiLevelTrafficLightLogic(MSTLLogicControl& tlcontrol, const std::string& id,
+                                            const std::string& subid, const Phases& phases, unsigned int step,
                                             SUMOTime delay,
                                             const std::map<std::string, std::string>& parameters);
 
@@ -97,7 +97,7 @@ protected:
     /*
      * This member has to contain the switching logic for SOTL policies
      */
-    size_t decideNextPhase();
+    int decideNextPhase();
 
     bool canRelease();
 
@@ -120,7 +120,7 @@ protected:
      */
     void decidePolicy();
 
-    void choosePolicy(double mean_vSpeed_in, double mean_vSpeed_out);
+    void choosePolicy(SUMOReal mean_vSpeed_in, SUMOReal mean_vSpeed_out);
 
 
 };

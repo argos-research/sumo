@@ -5,7 +5,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2007-07-26
-@version $Id: districtMapper.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: districtMapper.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Maps the geometry of the districts of two networks by calculating 
 translation and scale parameters from junctions which have been 
@@ -20,6 +20,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 import math
 from xml.sax import make_parser, handler
 from optparse import OptionParser
@@ -73,7 +75,7 @@ class DistrictMapper(handler.ContentHandler):
         if name == 'taz':
             self._haveDistrict = True
             self._currentID = attrs['id']
-            if attrs.has_key('shape'):
+            if 'shape' in attrs:
                 self._shape = attrs['shape']
         elif name == 'shape' and self._haveDistrict:
             self._parsingDistrictShape = True
@@ -147,12 +149,12 @@ if __name__ == "__main__":
             "Error! Providing two networks and junction lists is mandatory")
     parser = make_parser()
     if options.verbose:
-        print "Reading net#1"
+        print("Reading net#1")
     reader1 = JunctionPositionsReader()
     parser.setContentHandler(reader1)
     parser.parse(options.netfile1)
     if options.verbose:
-        print "Reading net#2"
+        print("Reading net#2")
     reader2 = JunctionPositionsReader()
     parser.setContentHandler(reader2)
     parser.parse(options.netfile2)

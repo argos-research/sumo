@@ -1,11 +1,13 @@
 """
 @author  Daniel.Krajzewicz@dlr.de
 @date    2014-09-01
-@version $Id: basic_rilsanet2x2.py 19604 2015-12-13 20:49:24Z behrisch $
+@version $Id: basic_rilsanet2x2.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Copyright (C) 2014 DLR/TS, Germany
 All rights reserved
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 
 from . import *
@@ -57,7 +59,7 @@ class Scenario_BasicRiLSANet2x2(Scenario):
         self.netName = self.fullPath(self.NET_FILE)
         # network
         if fileNeedsRebuild(self.fullPath(self.NET_FILE), "netconvert"):
-            print "Network in '%s' needs to be rebuild" % self.fullPath(self.NET_FILE)
+            print("Network in '%s' needs to be rebuild" % self.fullPath(self.NET_FILE))
             # , Lane(dirs="l", disallowed="pedestrian")]
             lanes = [Lane(dirs="s", allowed="pedestrian"), Lane(
                 dirs="rs", disallowed="pedestrian")]
@@ -182,4 +184,4 @@ class Scenario_BasicRiLSANet2x2(Scenario):
             self.fullPath(self.NET_FILE), self.sandboxPath(self.NET_FILE))
         shutil.copy(
             self.fullPath(self.TLS_FILE), self.sandboxPath(self.TLS_FILE))
-        print "Huah"
+        print("Huah")

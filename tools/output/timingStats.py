@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2010-10-15
-@version $Id: timingStats.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: timingStats.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This script executes a config repeatedly and measures the execution time,
  computes the mean values and deviation.
@@ -18,6 +18,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import sys
 import subprocess
@@ -45,4 +47,4 @@ for run in range(options.repeat):
     td = datetime.now() - before
     elapsed.append(td.microseconds + 1000000 * td.seconds)
 a = numpy.array(elapsed)
-print "%.4f %.4f" % (a.mean() / 1000, a.std() / 1000)
+print("%.4f %.4f" % (a.mean() / 1000, a.std() / 1000))

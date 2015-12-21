@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    08.05.2007
-/// @version $Id: MSOffTrafficLightLogic.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MSOffTrafficLightLogic.cpp 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // A traffic lights logic which represents a tls in an off-mode
 /****************************************************************************/
@@ -89,7 +89,7 @@ MSOffTrafficLightLogic::rebuildPhase() {
 
 
 // ------------ Static Information Retrieval
-unsigned int
+int
 MSOffTrafficLightLogic::getPhaseNumber() const {
     return 0;
 }
@@ -102,13 +102,13 @@ MSOffTrafficLightLogic::getPhases() const {
 
 
 const MSPhaseDefinition&
-MSOffTrafficLightLogic::getPhase(unsigned int) const {
+MSOffTrafficLightLogic::getPhase(int) const {
     return *myPhaseDefinition[0];
 }
 
 
 // ------------ Dynamic Information Retrieval
-unsigned int
+int
 MSOffTrafficLightLogic::getCurrentPhaseIndex() const {
     return 0;
 }

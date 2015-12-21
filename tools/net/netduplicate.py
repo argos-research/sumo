@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2013-04-01
-@version $Id: netduplicate.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: netduplicate.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Reads a sumo network and duplication descriptors (prefix:x-offset:y-offset)
 and creates a disconnected network of duplicates.
@@ -18,6 +18,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import sys
 import os
@@ -104,7 +106,7 @@ def main():
     options.connection_files = ",".join(conns)
     options.tllogic_files = ",".join(tlls)
     if sumolib.call(netconvert, options) != 0:
-        print >> sys.stderr, "Something went wrong, check '%s'!" % tmpDir
+        print("Something went wrong, check '%s'!" % tmpDir, file=sys.stderr)
     else:
         shutil.rmtree(tmpDir)
 

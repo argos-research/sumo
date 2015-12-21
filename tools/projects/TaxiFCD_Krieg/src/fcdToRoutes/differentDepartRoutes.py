@@ -6,7 +6,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-08-30
-@version $Id: differentDepartRoutes.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: differentDepartRoutes.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Reads taxi routes and create several new routeFile with different depart times for each route.
 
@@ -19,6 +19,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import util.Path as path
 
@@ -27,10 +29,10 @@ taxiDict = {}
 
 
 def main():
-    print "start program"
+    print("start program")
     readRouteFile()
     writeRoutes()
-    print "end"
+    print("end")
 
 
 def readRouteFile():
@@ -52,7 +54,7 @@ def writeRoutes():
     """Writes the collected values in a Sumo-Routes-File"""
 
     for i in range(-13, 15, 2):
-        print i
+        print(i)
 
         outputFile = open(path.taxiRoutesDiffDepart + str(i) + ".rou.xml", 'w')
 

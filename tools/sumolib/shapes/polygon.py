@@ -4,7 +4,7 @@
 @author  Melanie Knocke
 @author  Michael Behrisch
 @date    2012-12-04
-@version $Id: polygon.py 18951 2015-09-25 09:26:15Z behrisch $
+@version $Id: polygon.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Library for reading and storing polygons.
 
@@ -17,6 +17,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 
 from xml.sax import handler, parse
 from .. import color

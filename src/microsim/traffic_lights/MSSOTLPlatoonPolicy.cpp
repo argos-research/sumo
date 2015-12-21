@@ -3,7 +3,7 @@
 /// @author  Gianfilippo Slager
 /// @author  Federico Caselli
 /// @date    Feb 2010
-/// @version $Id: MSSOTLPlatoonPolicy.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSSOTLPlatoonPolicy.cpp 19610 2015-12-14 21:03:17Z behrisch $
 ///
 // The class for SOTL Platoon logics
 /****************************************************************************/
@@ -39,7 +39,7 @@ MSSOTLPlatoonPolicy::MSSOTLPlatoonPolicy(MSSOTLPolicyDesirability* desirabilityA
     init();
 }
 
-bool MSSOTLPlatoonPolicy::canRelease(int elapsed, bool thresholdPassed, bool pushButtonPressed,
+bool MSSOTLPlatoonPolicy::canRelease(SUMOTime elapsed, bool thresholdPassed, bool pushButtonPressed,
                                      const MSPhaseDefinition* stage, int vehicleCount) {
 //  DBG(std::ostringstream str; str << "invoked MSTLPlatoonPolicy::canRelease()"; WRITE_MESSAGE(str.str()););
     DBG(

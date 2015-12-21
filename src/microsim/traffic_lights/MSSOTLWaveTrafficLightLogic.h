@@ -3,7 +3,7 @@
 /// @author  Riccardo Belletti
 /// @author  Anna Chiara Bellini
 /// @date    Sep 2013
-/// @version $Id: MSSOTLWaveTrafficLightLogic.h 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSSOTLWaveTrafficLightLogic.h 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // The class for SOTL Platoon logics
 /****************************************************************************/
@@ -81,7 +81,7 @@ private:
     /*
      * @brief Counts the vehicles on the green lanes of this phase
      */
-    unsigned int countVehicles();
+    int countVehicles();
 
 };
 

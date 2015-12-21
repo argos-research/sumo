@@ -2,7 +2,7 @@
 /// @file    MSSOTLPolicyStimulus.cpp
 /// @author  Riccardo Belletti
 /// @date    Mar 2014
-/// @version $Id: MSSOTLPolicy3DStimulus.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSSOTLPolicy3DStimulus.cpp 19612 2015-12-15 08:14:49Z behrisch $
 ///
 // The class for Swarm-based low-level policy
 /****************************************************************************/
@@ -19,7 +19,7 @@
 
 #include "MSSOTLPolicy3DStimulus.h"
 
-MSSOTLPolicy3DStimulus::MSSOTLPolicy3DStimulus(string keyPrefix,
+MSSOTLPolicy3DStimulus::MSSOTLPolicy3DStimulus(std::string keyPrefix,
         const std::map<std::string, std::string>& parameters) :
     MSSOTLPolicy5DStimulus(keyPrefix, parameters) {
 

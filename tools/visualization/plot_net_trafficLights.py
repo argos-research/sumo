@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2013-10-28
-@version $Id: plot_net_trafficLights.py 18095 2015-03-17 09:39:00Z behrisch $
+@version $Id: plot_net_trafficLights.py 19649 2015-12-17 21:05:20Z behrisch $
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
 Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
@@ -15,6 +15,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import os
 import subprocess
@@ -53,10 +55,10 @@ def main(args=None):
     options, remaining_args = optParser.parse_args(args=args)
 
     if options.net == None:
-        print "Error: a network to load must be given."
+        print("Error: a network to load must be given.")
         return 1
     if options.verbose:
-        print "Reading network from '%s'" % options.net
+        print("Reading network from '%s'" % options.net)
     net = sumolib.net.readNet(options.net)
 
     tlsn = {}

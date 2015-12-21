@@ -6,7 +6,7 @@
 @author  Yun-Pang Floetteroed
 @author  Michael Behrisch
 @date    2008-03-10
-@version $Id: one-shot.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: one-shot.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This script does multiple sumo runs with different rerouting intervals.
 
@@ -20,6 +20,7 @@ the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 import sys
 import subprocess

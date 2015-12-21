@@ -8,7 +8,7 @@
 /// @author  Robbin Blokpoel
 /// @author  Jakob Erdmann
 /// @date    Mon Feb 03 2014 10:13 CET
-/// @version $Id: MSE2Collector.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSE2Collector.cpp 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // An areal (along a single lane) detector
 /****************************************************************************/
@@ -440,35 +440,35 @@ MSE2Collector::getCurrentVehicleNumber() const {
     return (unsigned) myKnownVehicles.size();
 }
 
-unsigned
-MSE2Collector::getEstimatedCurrentVehicleNumber(double speedThreshold) const {
+int
+MSE2Collector::getEstimatedCurrentVehicleNumber(SUMOReal speedThreshold) const {
 
     SUMOReal distance = 0;
-    double thresholdSpeed = myLane->getSpeedLimit() / speedThreshold;
+    SUMOReal thresholdSpeed = myLane->getSpeedLimit() / speedThreshold;
 
     int count = 0;
     for (std::list<SUMOVehicle*>::const_iterator it = myKnownVehicles.begin();
             it != myKnownVehicles.end(); it++) {
         MSVehicle* veh = static_cast<MSVehicle*>(*it);
-        double acceleration = veh->getAcceleration();
+        SUMOReal acceleration = veh->getAcceleration();
         if (distance == 0) {
             distance = veh->getPositionOnLane();
         }
         if (veh->getPositionOnLane() < distance) {
             distance = veh->getPositionOnLane();
         }
-        double carLenght = veh->getVehicleType().getLengthWithGap();
-        double vel = veh->getSpeed();
-        double realDistance = myLane->getLength() - distance; // the closer vehicle get to the light the greater is the distance
+        SUMOReal carLength = veh->getVehicleType().getLengthWithGap();
+        SUMOReal vel = veh->getSpeed();
+        SUMOReal realDistance = myLane->getLength() - distance; // the closer vehicle get to the light the greater is the distance
         if (vel <= thresholdSpeed || acceleration > 0) { //TODO speed less than half of the maximum speed for the lane NEED TUNING
-            count = (realDistance / carLenght) + 1;
+            count = (int)(realDistance / carLength) + 1;
         }
     }
 
     return count;
 }
 
-double
+SUMOReal
 MSE2Collector::getEstimateQueueLength() const {
 
     if (myKnownVehicles.empty()) {
@@ -476,7 +476,7 @@ MSE2Collector::getEstimateQueueLength() const {
     }
 
     SUMOReal distance = 0;
-    double realDistance = 0;
+    SUMOReal realDistance = 0;
     bool flowing =  true;
     for (std::list<SUMOVehicle*>::const_iterator it = myKnownVehicles.begin();
             it != myKnownVehicles.end(); it++) {
@@ -487,11 +487,11 @@ MSE2Collector::getEstimateQueueLength() const {
         if (veh->getPositionOnLane() < distance) {
             distance = veh->getPositionOnLane();
         }
-        double carLenght = veh->getVehicleType().getLengthWithGap();
-        double vel = veh->getSpeed();
-        //	double distanceTemp = myLane->getLength() - distance;
+        SUMOReal carLength = veh->getVehicleType().getLengthWithGap();
+        SUMOReal vel = veh->getSpeed();
+        //	SUMOReal distanceTemp = myLane->getLength() - distance;
         if (vel <= 0.5) {
-            realDistance = distance - carLenght;
+            realDistance = distance - carLength;
             flowing = false;
         }
         DBG(

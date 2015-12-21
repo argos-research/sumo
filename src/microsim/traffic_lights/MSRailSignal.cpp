@@ -3,7 +3,7 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Jan 2015
-/// @version $Id: MSRailSignal.cpp 19412 2015-11-24 13:04:53Z namdre $
+/// @version $Id: MSRailSignal.cpp 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // A rail signal logic
 /****************************************************************************/
@@ -232,7 +232,7 @@ MSRailSignal::updateCurrentPhase() {
 
 
 // ------------ Static Information Retrieval
-unsigned int
+int
 MSRailSignal::getPhaseNumber() const {
     return 0;
 }
@@ -243,12 +243,12 @@ MSRailSignal::getPhases() const {
 }
 
 const MSPhaseDefinition&
-MSRailSignal::getPhase(unsigned int) const {
+MSRailSignal::getPhase(int) const {
     return myCurrentPhase;
 }
 
 // ------------ Dynamic Information Retrieval
-unsigned int
+int
 MSRailSignal::getCurrentPhaseIndex() const {
     return 0;
 }

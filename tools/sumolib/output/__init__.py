@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2011-06-23
-@version $Id: __init__.py 18547 2015-07-08 09:17:17Z behrisch $
+@version $Id: __init__.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Python interface to SUMO especially for parsing output files.
 
@@ -18,6 +18,7 @@ the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
 from __future__ import print_function
+from __future__ import absolute_import
 import sys
 import re
 import xml.dom

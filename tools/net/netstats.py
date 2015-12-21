@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-08-13
-@version $Id: netstats.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: netstats.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Prints some information about a given network
 
@@ -17,28 +17,29 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import string
 import sys
-import StringIO
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import sumolib.net
 
 
 def renderHTML(values):
-    print "<html><body>"
-    print "<h1>" + values["netname"] + "</h1></br>"
+    print("<html><body>")
+    print("<h1>" + values["netname"] + "</h1></br>")
     # network
-    print "<h2>Network</h2></br>"
+    print("<h2>Network</h2></br>")
     # edges
-    print "<h2>Edges</h2></br>"
-    print "Edge number: " + str(values["edgeNumber"]) + "</br>"
-    print "Edgelength sum: " + str(values["edgeLengthSum"]) + "</br>"
-    print "Lanelength sum: " + str(values["laneLengthSum"]) + "</br>"
+    print("<h2>Edges</h2></br>")
+    print("Edge number: " + str(values["edgeNumber"]) + "</br>")
+    print("Edgelength sum: " + str(values["edgeLengthSum"]) + "</br>")
+    print("Lanelength sum: " + str(values["laneLengthSum"]) + "</br>")
     # nodes
-    print "<h2>Nodes</h2></br>"
-    print "Node number: " + str(values["nodeNumber"]) + "</br>"
-    print "</body></html>"
+    print("<h2>Nodes</h2></br>")
+    print("Node number: " + str(values["nodeNumber"]) + "</br>")
+    print("</body></html>")
 
 
 def renderPNG(values):
@@ -49,9 +50,9 @@ def renderPNG(values):
 
 
 if len(sys.argv) < 2:
-    print "Usage: " + sys.argv[0] + " <net>"
+    print("Usage: " + sys.argv[0] + " <net>")
     sys.exit()
-print "Reading net..."
+print("Reading net...")
 net = sumolib.net.readNet(sys.argv[1])
 
 values = {}

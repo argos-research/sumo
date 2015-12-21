@@ -6,7 +6,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-05-13
-@version $Id: VelocityCurve.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: VelocityCurve.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Shows a velocity time-variation curve for a given Taxi or for the hole day all average values.
 
@@ -19,6 +19,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 from pylab import *
 from analysis.Taxi import *
@@ -29,14 +31,14 @@ WEE = True  # =withoutEmptyEdges decide which analysis file should be used
 
 
 def main():
-    print "start program"
+    print("start program")
 
     taxiId = '154_2'
     interval = 900
     plotCurve(interval)
 
     show()
-    print "end"
+    print("end")
 
 
 def plotCurve(interval=10, taxiId=None):

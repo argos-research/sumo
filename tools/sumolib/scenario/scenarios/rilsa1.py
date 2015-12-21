@@ -1,11 +1,12 @@
 """
 @author  Daniel.Krajzewicz@dlr.de
 @date    2014-09-01
-@version $Id: rilsa1.py 19604 2015-12-13 20:49:24Z behrisch $
+@version $Id: rilsa1.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Copyright (C) 2014 DLR/TS, Germany
 All rights reserved
 """
+from __future__ import absolute_import
 
 
 from . import *

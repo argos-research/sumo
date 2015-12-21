@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2008-03-19
-@version $Id: route2trips.py 18237 2015-04-20 10:43:52Z namdre $
+@version $Id: route2trips.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This script converts SUMO routes back into SUMO trips which serve
 as input to one of the routing applications.
@@ -21,6 +21,7 @@ the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
 from __future__ import print_function
+from __future__ import absolute_import
 import sys
 import datetime
 
@@ -44,14 +45,14 @@ class RouteReader(handler.ContentHandler):
         if name == 'vehicle':
             self._vehicleAttrs = dict(attrs)
             self._vID = attrs['id']
-            if attrs.has_key('route'):
+            if 'route' in attrs:
                 self._routeString = self._routes[attrs['route']]
                 del self._vehicleAttrs['route']
         elif name == 'route':
             if not self._vID:
                 self._routeID = attrs['id']
             self._routeString = ''
-            if attrs.has_key('edges'):
+            if 'edges' in attrs:
                 self._routeString = attrs['edges']
         elif name == 'vType':
             # XXX does not handle child elements
@@ -59,7 +60,7 @@ class RouteReader(handler.ContentHandler):
                   file=self.outfile)
         elif name == 'routes':
             print("""<?xml version="1.0"?>
-<!-- generated on %s by $Id: route2trips.py 18237 2015-04-20 10:43:52Z namdre $ -->
+<!-- generated on %s by $Id: route2trips.py 19649 2015-12-17 21:05:20Z behrisch $ -->
 <trips>""" % datetime.datetime.now(), file=self.outfile)
 
     def endElement(self, name):

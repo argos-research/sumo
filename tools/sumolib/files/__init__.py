@@ -4,7 +4,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2012-12-04
-@version $Id: __init__.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: __init__.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This file includes all file descriptions.
 
@@ -17,6 +17,6 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 
-import additional
-import selection
+from . import additional, selection

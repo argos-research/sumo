@@ -9,7 +9,7 @@
 /// @author  Christoph Sommer
 /// @author  Mario Krumnow
 /// @date    Mon, 05 Mar 2001
-/// @version $Id: MSLane.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: MSLane.cpp 19651 2015-12-18 08:50:54Z behrisch $
 ///
 // Representation of a lane in the micro simulation
 /****************************************************************************/
@@ -85,9 +85,9 @@ MSLane::DictType MSLane::myDict;
 // ===========================================================================
 MSLane::MSLane(const std::string& id, SUMOReal maxSpeed, SUMOReal length, MSEdge* const edge,
                unsigned int numericalID, const PositionVector& shape, SUMOReal width,
-               SVCPermissions permissions) :
+               SVCPermissions permissions, int index) :
     Named(id),
-    myShape(shape), myNumericalID(numericalID),
+    myNumericalID(numericalID), myShape(shape), myIndex(index),
     myVehicles(), myLength(length), myWidth(width), myEdge(edge), myMaxSpeed(maxSpeed),
     myPermissions(permissions),
     myLogicalPredecessorLane(0),

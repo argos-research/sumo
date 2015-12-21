@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2009-08-01
-@version $Id: xmledges_applyOffset.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: xmledges_applyOffset.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Applies a given offset to edges given in an xml-edge-file.
 The results are written into <XMLEDGES>.mod.xml.
@@ -19,11 +19,12 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import os
 import string
 import sys
-import StringIO
 from xml.sax import saxutils, make_parser, handler
 
 
@@ -67,7 +68,7 @@ class XMLNodesReader(handler.ContentHandler):
 
 
 if len(sys.argv) < 4:
-    print "Usage: " + sys.argv[0] + " <XMLEDGES> <X-OFFSET> <Y-OFFSET>"
+    print("Usage: " + sys.argv[0] + " <XMLEDGES> <X-OFFSET> <Y-OFFSET>")
     sys.exit()
 parser = make_parser()
 reader = XMLNodesReader(

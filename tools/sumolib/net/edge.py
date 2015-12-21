@@ -6,7 +6,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2011-11-28
-@version $Id: edge.py 18183 2015-04-01 10:38:53Z behrisch $
+@version $Id: edge.py 19632 2015-12-16 21:44:21Z behrisch $
 
 This file contains a Python-representation of a single edge.
 
@@ -19,7 +19,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
-from connection import Connection
+from .connection import Connection
 
 
 class Edge:

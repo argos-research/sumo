@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Oct/Nov 2003
-/// @version $Id: GUITLLogicPhasesTrackerWindow.cpp 19173 2015-10-27 08:47:27Z behrisch $
+/// @version $Id: GUITLLogicPhasesTrackerWindow.cpp 19650 2015-12-18 08:34:31Z behrisch $
 ///
 // A window displaying the phase diagram of a tl-logic
 /****************************************************************************/
@@ -366,9 +366,9 @@ GUITLLogicPhasesTrackerWindow::drawValues(GUITLLogicPhasesTrackerPanel& caller) 
         SUMOReal x2 = x + a;
 
         // go through the links
-        for (unsigned int j = 0; j < (unsigned int) myTLLogic->getLinks().size(); ++j) {
+        for (int j = 0; j < (int) myTLLogic->getLinks().size(); ++j) {
             // determine the current link's color
-            LinkState state = (*pi).getSignalState(j);
+            LinkState state = pi->getSignalState(j);
             // draw the bar (red is drawn as a line)
             GLHelper::setColor(getLinkColor(state));
             switch (state) {

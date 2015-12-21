@@ -3,7 +3,7 @@
 /// @author  Gianfilippo Slager
 /// @author  Federico Caselli
 /// @date    Mar 2010
-/// @version $Id: MSSwarmTrafficLightLogic.h 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSSwarmTrafficLightLogic.h 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // The class for Swarm-based logics
 /****************************************************************************/
@@ -42,7 +42,7 @@
 template<class T>
 class CircularBuffer {
 public:
-    CircularBuffer(unsigned short size) :
+    CircularBuffer(int size) :
         m_size(size), m_currentIndex(0), m_firstTime(true) {
         m_buffer = new T[m_size];
     }
@@ -64,8 +64,8 @@ public:
         insert(value);
     }
 
-    T at(const unsigned short index) const {
-        unsigned short idx = (m_currentIndex - 1 - index + m_size) % m_size;
+    T at(const int index) const {
+        int idx = (m_currentIndex - 1 - index + m_size) % m_size;
         return m_buffer[idx];
     }
 
@@ -77,7 +77,7 @@ public:
         return at(size() - 1);
     }
 
-    unsigned short size() const {
+    int size() const {
         if (m_firstTime) {
             return m_currentIndex;
         }
@@ -91,8 +91,8 @@ public:
 
 private:
     T* m_buffer;
-    unsigned short m_size;
-    unsigned short m_currentIndex;
+    int m_size;
+    int m_currentIndex;
     bool m_firstTime;
 
     inline void insert(const T& value) {
@@ -117,8 +117,8 @@ public:
      * @param[in] delay The time to wait before the first switch
      * @param[in] parameters Parameters defined for the tll
      */
-    MSSwarmTrafficLightLogic(MSTLLogicControl& tlcontrol, const string& id,
-                             const string& subid, const Phases& phases, unsigned int step,
+    MSSwarmTrafficLightLogic(MSTLLogicControl& tlcontrol, const std::string& id,
+                             const std::string& subid, const Phases& phases, unsigned int step,
                              SUMOTime delay,
                              const std::map<std::string, std::string>& parameters);
 
@@ -132,43 +132,30 @@ public:
      */
     void init(NLDetectorBuilder& nb) throw(ProcessError);
 
-    int getMaxCongestionDuration() {
+    SUMOTime getMaxCongestionDuration() {
         return TplConvert::_2int(getParameter("MAX_CONGESTION_DUR", "120").c_str());
     }
-    /*void setMaxCongestionDuration(unsigned int val) {
-     max_congestion_duration = val;
-     }*/
 
     SUMOReal getPheroMaxVal() {
         return TplConvert::_2SUMOReal(getParameter("PHERO_MAXVAL", "10").c_str());
     }
-    /*void setPheroMaxVal(SUMOReal val) {
-     phero_maxval = val;
-     }*/
+
     SUMOReal getBetaNo() {
         return TplConvert::_2SUMOReal(getParameter("BETA_NO", "0.99").c_str());
     }
-    /*void setBetaNo(SUMOReal val) {
-     beta_no = val;
-     }*/
+
     SUMOReal getGammaNo() {
         return TplConvert::_2SUMOReal(getParameter("GAMMA_NO", "1.0").c_str());
     }
-    /*void setGammaNo(SUMOReal val) {
-     gamma_no = val;
-     }*/
+
     SUMOReal getBetaSp() {
         return TplConvert::_2SUMOReal(getParameter("BETA_SP", "0.99").c_str());
     }
-    /*void setBetaSp(SUMOReal val) {
-     beta_sp = val;
-     }*/
+
     SUMOReal getGammaSp() {
         return TplConvert::_2SUMOReal(getParameter("GAMMA_SP", "1.0").c_str());
     }
-    /*void setGammaSp(SUMOReal val) {
-     gamma_sp = val;
-     }*/
+
     SUMOReal getChangePlanProbability() {
         return TplConvert::_2SUMOReal(getParameter("CHANGE_PLAN_PROBABILITY", "0.003").c_str());
     }
@@ -237,7 +224,7 @@ protected:
      * This member has to contain the switching logic for SOTL policies
      */
 
-    size_t decideNextPhase();
+    int decideNextPhase();
 
     bool canRelease();
 
@@ -361,14 +348,14 @@ protected:
 
         SUMOReal sum_avg_tmp = 0;
 
-        for (int i = 0; i < phero_values.size(); i++) {
+        for (int i = 0; i < (int)phero_values.size(); i++) {
             sum_avg_tmp += phero_values[i];
         }
 
         SUMOReal mean = sum_avg_tmp / phero_values.size();
 
         SUMOReal sum_dev_tmp = 0;
-        for (int i = 0; i < phero_values.size(); i++) {
+        for (int i = 0; i < (int)phero_values.size(); i++) {
             sum_dev_tmp += pow(phero_values[i] - mean, 2);
         }
 
@@ -388,14 +375,14 @@ protected:
         }
 
         SUMOReal sum_avg_tmp = 0;
-        for (int i = 0; i < phero_values.size(); i++) {
+        for (int i = 0; i < (int)phero_values.size(); i++) {
             sum_avg_tmp += phero_values[i];
         }
         SUMOReal mean = sum_avg_tmp / phero_values.size();
 
         SUMOReal sum_dev_tmp = 0;
 
-        for (int i = 0; i < phero_values.size(); i++) {
+        for (int i = 0; i < (int)phero_values.size(); i++) {
             sum_dev_tmp += pow(phero_values[i] - mean, 2);
         }
 
@@ -412,13 +399,13 @@ protected:
     bool allowLine(MSLane*);
 
     bool logData;
-    ofstream swarmLogFile;
+    std::ofstream swarmLogFile;
     /**
      * \brief When true, indicates that the current policy MUST be changed.\n
      * It's used to force the exit from the congestion policy
      */
     bool mustChange;
-    unsigned int congestion_steps;
+    SUMOTime congestion_steps;
 
     /**
      * \brief Map to check if a lane was already controlled during the elaboration of eta.

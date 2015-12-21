@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2010-02-20
-@version $Id: circlePolygon.py 19535 2015-12-05 13:47:18Z behrisch $
+@version $Id: circlePolygon.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Approximates a list of circles by polygons.
 
@@ -19,6 +19,7 @@ the Free Software Foundation; either version 3 of the License, or
 """
 
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 import sys
 import math

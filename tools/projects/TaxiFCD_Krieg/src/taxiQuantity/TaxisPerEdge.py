@@ -6,7 +6,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-04-08
-@version $Id: TaxisPerEdge.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: TaxisPerEdge.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Counts for every edge in the given FCD-file the number of Taxis which used this edge.
 After that this information can be visualized with an script called mpl_dump_onNet from Daniel.
@@ -21,6 +21,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import util.Path as path
 
@@ -29,10 +31,10 @@ edgeList = {}
 
 
 def main():
-    print "start program"
+    print("start program")
     countTaxisForEachEdge()
     writeOutput()
-    print "end"
+    print("end")
 
 
 def countTaxisForEachEdge():
@@ -44,9 +46,9 @@ def countTaxisForEachEdge():
         edgeList[words[1]].add(words[4])
 
     for k in edgeList:
-        print k
-        print len(edgeList[k])
-    print len(edgeList)
+        print(k)
+        print(len(edgeList[k]))
+    print(len(edgeList))
 
 
 def writeOutput():

@@ -5,7 +5,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2007-07-26
-@version $Id: edgesInDistricts.py 19604 2015-12-13 20:49:24Z behrisch $
+@version $Id: edgesInDistricts.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Parsing a number of networks and taz (district) files with shapes
 this script writes a taz file with all the edges which are inside
@@ -21,6 +21,7 @@ the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
 from __future__ import print_function
+from __future__ import absolute_import
 import sys
 import collections
 from optparse import OptionParser

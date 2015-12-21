@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLJunctionControlBuilder.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: NLJunctionControlBuilder.cpp 19618 2015-12-15 16:54:49Z behrisch $
 ///
 // Builder of microsim-junctions and tls
 /****************************************************************************/
@@ -417,7 +417,7 @@ NLJunctionControlBuilder::initTrafficLightLogic(const std::string& id, const std
 
 
 void
-NLJunctionControlBuilder::addPhase(SUMOTime duration, const std::string& state, int minDuration, int maxDuration, bool transient_notdecisional, bool commit) throw() {
+NLJunctionControlBuilder::addPhase(SUMOTime duration, const std::string& state, SUMOTime minDuration, SUMOTime maxDuration, bool transient_notdecisional, bool commit) throw() {
     // build and add the phase definition to the list
     myActivePhases.push_back(new MSPhaseDefinition(duration, minDuration, maxDuration, state, transient_notdecisional, commit));
     // add phase duration to the absolute duration
@@ -425,7 +425,7 @@ NLJunctionControlBuilder::addPhase(SUMOTime duration, const std::string& state, 
 }
 
 void
-NLJunctionControlBuilder::addPhase(SUMOTime duration, const std::string& state, int minDuration, int maxDuration, bool transient_notdecisional, bool commit, MSPhaseDefinition::LaneIdVector& targetLanes) throw() {
+NLJunctionControlBuilder::addPhase(SUMOTime duration, const std::string& state, SUMOTime minDuration, SUMOTime maxDuration, bool transient_notdecisional, bool commit, MSPhaseDefinition::LaneIdVector& targetLanes) throw() {
     // build and add the phase definition to the list
     myActivePhases.push_back(new MSPhaseDefinition(duration, minDuration, maxDuration, state, transient_notdecisional, commit, targetLanes));
     // add phase duration to the absolute duration

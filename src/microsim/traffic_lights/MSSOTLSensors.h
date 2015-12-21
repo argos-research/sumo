@@ -3,7 +3,7 @@
 /// @author  Gianfilippo Slager
 /// @author  Anna Chiara Bellini
 /// @date    Feb 2010
-/// @version $Id: MSSOTLSensors.h 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSSOTLSensors.h 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // The base abstract class for SOTL sensors
 /****************************************************************************/
@@ -40,7 +40,7 @@ class MSSOTLSensors {
 protected:
     const MSTrafficLightLogic::Phases* myPhases;
     std::string tlLogicID;
-    size_t currentStep;
+    int currentStep;
 
 protected :
     /**
@@ -49,14 +49,14 @@ protected :
     * Built sensors has to be collected and associated properly to the respective MSLane for retrieval using MSSOTLSensors::countVehicles(std::string)
     * See extension classes for further specifications on sensor building
     */
-    virtual void buildSensorForLane(MSLane* lane, NLDetectorBuilder& nb);
+    virtual void buildSensorForLane(MSLane* lane, NLDetectorBuilder& nb) = 0;
     /**
     * \brief This function member has to be extended to properly build a sensor for a specific output lane
     * Sensors has to be constrained on lane dimension
     * Built sensors has to be collected and associated properly to the respective MSLane for retrieval using MSSOTLSensors::countVehicles(std::string)
     * See extension classes for further specifications on sensor building
     */
-    virtual void buildSensorForOutLane(MSLane* lane, NLDetectorBuilder& nb);
+    virtual void buildSensorForOutLane(MSLane* lane, NLDetectorBuilder& nb) = 0;
 
 public:
     /*
@@ -67,7 +67,7 @@ public:
     /*
     *
     */
-    ~MSSOTLSensors();
+    virtual ~MSSOTLSensors();
 
     /**
     * \brief This function member has to be extended to properly build sensors for the input lanes
@@ -75,14 +75,14 @@ public:
     * Built sensors has to be collected and associated properly to theirs MSLane for retrieval using MSSOTLSensors::countVehicles(std::string)
     * See extension classes for further specifications on sensor building
     */
-    virtual void buildSensors(MSTrafficLightLogic::LaneVectorVector controlledLanes, NLDetectorBuilder& nb);
+    virtual void buildSensors(MSTrafficLightLogic::LaneVectorVector controlledLanes, NLDetectorBuilder& nb) = 0;
     /**
     * \brief This function member has to be extended to properly build sensors for the output lanes
     * Sensors has to be constrained on lane dimension
     * Built sensors has to be collected and associated properly to theirs MSLane for retrieval using MSSOTLSensors::countVehicles(std::string)
     * See extension classes for further specifications on sensor building
     */
-    virtual void buildOutSensors(MSTrafficLightLogic::LaneVectorVector controlledLanes, NLDetectorBuilder& nb);
+    virtual void buildOutSensors(MSTrafficLightLogic::LaneVectorVector controlledLanes, NLDetectorBuilder& nb) = 0;
 
     /*
      * Returns the number of vehicles currently approaching the
@@ -90,10 +90,7 @@ public:
      * Vehicles are effectively counted or guessed in the space from the sensor.
      * @param[in] lane The lane to count vehicles
      */
-    virtual unsigned int countVehicles(MSLane* lane) {
-        UNUSED_PARAMETER(lane);
-        return 0;
-    }
+    virtual int countVehicles(MSLane* lane) = 0;
 
     /*
      * Returns the number of vehicles currently approaching the
@@ -101,10 +98,7 @@ public:
      * Vehicles are effectively counted or guessed in the space from the sensor.
      * @param[in] laneId The lane to count vehicles by ID
      */
-    virtual unsigned int countVehicles(std::string laneId) {
-        UNUSED_PARAMETER(laneId);
-        return 0;
-    }
+    virtual int countVehicles(std::string laneId) = 0;
 
     /*
      * Returns the average speed of vehicles currently approaching the
@@ -112,10 +106,7 @@ public:
      * Vehicles speed is effectively sensed or guessed in the space from the sensor.
      * @param[in] lane The lane to count vehicles
      */
-    virtual double meanVehiclesSpeed(MSLane* lane) {
-        UNUSED_PARAMETER(lane);
-        return 0;
-    }
+    virtual SUMOReal meanVehiclesSpeed(MSLane* lane) = 0;
 
     /*
      * Returns the average speed of vehicles currently approaching the
@@ -123,19 +114,13 @@ public:
      * Vehicles speed is effectively sensed or guessed in the space from the sensor.
      * @param[in] laneId The lane to count vehicles by ID
      */
-    virtual double meanVehiclesSpeed(std::string laneId) {
-        UNUSED_PARAMETER(laneId);
-        return 0;
-    }
+    virtual SUMOReal meanVehiclesSpeed(std::string laneId) = 0;
 
     /*
     * @param[in] laneId The lane given by Id
     * @return The maximum speed allowed for the given laneId
     */
-    virtual double getMaxSpeed(std::string laneId) {
-        UNUSED_PARAMETER(laneId);
-        return 0;
-    }
+    virtual SUMOReal getMaxSpeed(std::string laneId) = 0;
 
     /*
      * @brief Indicate which lane has given green

@@ -7,7 +7,7 @@
 @author  Jakob Erdmann
 @author  Yun-Pang Floetteroed
 @date    2008-02-13
-@version $Id: duaIterate.py 19535 2015-12-05 13:47:18Z behrisch $
+@version $Id: duaIterate.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Run duarouter and sumo alternating to perform a dynamic user assignment.
 Based on the Perl script dua_iterate.pl.
@@ -22,6 +22,7 @@ the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 import sys
 import subprocess

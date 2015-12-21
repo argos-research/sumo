@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2007-10-25
-@version $Id: inputs.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: inputs.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This script is to retrieve the assignment parameters, the OD districts and the matrix from the input files. 
 Moreover, the link travel time for district connectors will be estimated.
@@ -18,6 +18,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import print_function
 
 # read the analyzed matrix
 
@@ -29,7 +30,7 @@ def getMatrix(net, verbose, matrix, matrixSum, demandscale=None):
     Pshort_EffCells = 0
     periodList = []
     if verbose:
-        print 'matrix:', str(matrix)
+        print('matrix:', str(matrix))
     odpairs = 0
     origins = 0
     dest = 0
@@ -82,15 +83,15 @@ def getMatrix(net, verbose, matrix, matrixSum, demandscale=None):
     smallDemandRatio = float(smallDemandNum) / float(Pshort_EffCells)
 
     if verbose:
-        print 'Number of zones:', zones
-        print 'Number of origins:', origins
-        print 'Number of destinations:', dest
-        print 'begintime:', begintime
-        print 'currentMatrixSum:', currentMatrixSum
-        print 'Effective O-D Cells:', Pshort_EffCells
-        print 'number of start Vertices:', net.getstartCounts()
-        print 'number of end Vertices):', net.getendCounts()
-        print 'smallDemandRatio):', smallDemandRatio
+        print('Number of zones:', zones)
+        print('Number of origins:', origins)
+        print('Number of destinations:', dest)
+        print('begintime:', begintime)
+        print('currentMatrixSum:', currentMatrixSum)
+        print('Effective O-D Cells:', Pshort_EffCells)
+        print('number of start Vertices:', net.getstartCounts())
+        print('number of end Vertices):', net.getendCounts())
+        print('smallDemandRatio):', smallDemandRatio)
 
     return matrixPshort, startVertices, endVertices, currentMatrixSum, begintime, assignPeriod, Pshort_EffCells, matrixSum, smallDemandRatio
 

@@ -6,7 +6,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2009-06-30
-@version $Id: test.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: test.py 19649 2015-12-17 21:05:20Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -18,6 +18,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 from evaluator import *
 from plotter import *
@@ -31,9 +33,9 @@ compareData('data\\000', 'data\\002', 'data\\000vs002')
 compareData('data\\001', 'data\\003', 'data\\001vs003')
 
 
-print getSaturationFlow()
-print getMinTravelTime()
-print getAvgGreenTime(6, 6)
+print(getSaturationFlow())
+print(getMinTravelTime())
+print(getAvgGreenTime(6, 6))
 
 
 filename = "data\\001.dat"

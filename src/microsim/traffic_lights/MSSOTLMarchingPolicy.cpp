@@ -4,7 +4,7 @@
 /// @author  Riccardo Belletti
 /// @author  Federico Caselli
 /// @date    Feb 2014
-/// @version $Id: MSSOTLMarchingPolicy.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSSOTLMarchingPolicy.cpp 19610 2015-12-14 21:03:17Z behrisch $
 ///
 // The class for SOTL Marching logics
 /****************************************************************************/
@@ -42,8 +42,8 @@ MSSOTLMarchingPolicy::MSSOTLMarchingPolicy(
     init();
 }
 
-bool MSSOTLMarchingPolicy::canRelease(int elapsed, bool thresholdPassed, bool pushButtonPressed,
-                                      const MSPhaseDefinition* stage, int vehicleCount) {
+bool MSSOTLMarchingPolicy::canRelease(SUMOTime elapsed, bool /* thresholdPassed */, bool pushButtonPressed,
+                                      const MSPhaseDefinition* stage, int /* vehicleCount */) {
     if (elapsed >= stage->minDuration && pushButtonLogic(elapsed, pushButtonPressed, stage)) {
         return true;
     }

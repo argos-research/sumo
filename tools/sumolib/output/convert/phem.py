@@ -4,7 +4,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2013-01-15
-@version $Id: phem.py 18826 2015-09-10 21:13:31Z behrisch $
+@version $Id: phem.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This module includes functions for converting SUMO's fcd-output into
 data files read by PHEM.
@@ -19,6 +19,7 @@ the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
 from __future__ import print_function
+from __future__ import absolute_import
 import math
 import sumolib
 
@@ -52,7 +53,7 @@ def fcd2dri(inpFCD, outSTRM, ignored):
         if q.vehicle:
             for v in q.vehicle:
                 percSlope = math.sin(float(v.slope)) * 100.
-                print("%s,%s,%s" % (
+                print("%s,%.3f,%s" % (
                     sumolib._intTime(q.time), float(v.speed) * 3.6, percSlope), file=outSTRM)
 
 
@@ -108,7 +109,7 @@ def fcd2fzp(inpFCD, outSTRM, further):
                 sid = sIDm.g(v.edge)
                 percSlope = math.sin(float(v.slope)) * 100.
                 if outSTRM != None:
-                    print("%s,%s,%s,%s,%s,%s,%s,%s" % (
+                    print("%s,%s,%s,%s,%.3f,%s,%s,%s" % (
                         sumolib._intTime(q.time), float(v.x), float(v.y),
                         vid, float(v.speed) * 3.6, percSlope, vtid, sid), file=outSTRM)
     return vIDm, vtIDm

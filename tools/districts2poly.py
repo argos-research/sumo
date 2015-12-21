@@ -3,7 +3,7 @@
 @file    districts2poly.py
 @author  Jakob Erdmann
 @date    2015-07-31
-@version $Id: districts2poly.py 18908 2015-09-23 08:50:48Z namdre $
+@version $Id: districts2poly.py 19649 2015-12-17 21:05:20Z behrisch $
 
 From a sumo network and a taz (district) file, this script colors each district
 with a unique color (by creating a colored polygon for each edge in that
@@ -19,6 +19,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 import sys
 import os
 import itertools

@@ -2,7 +2,7 @@
 /// @file    MSPushButton.h
 /// @author  Federico Caselli
 /// @date    May 2015
-/// @version $Id: MSPushButton.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSPushButton.cpp 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // The class for a PushButton
 /****************************************************************************/
@@ -49,7 +49,7 @@ bool MSPedestrianPushButton::m_crossingEdgeMapLoaded = false;
 
 MSPedestrianPushButton::MSPedestrianPushButton(const MSEdge* walkingEdge, const MSEdge* crossingEdge)
     : MSPushButton(walkingEdge, crossingEdge) {
-    assert(walkingEdge->isWalkingArea() || (walkingEdge->getPermissions() & SVC_PEDESTRIAN != 0));
+    assert(walkingEdge->isWalkingArea() || ((walkingEdge->getPermissions() & SVC_PEDESTRIAN) != 0));
     assert(crossingEdge->isCrossing());
 }
 

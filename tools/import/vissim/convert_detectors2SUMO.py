@@ -4,7 +4,7 @@
 @file    convert_detectors2SUMO.py
 @author  Lukas Grohmann <Lukas.Grohmann@ait.ac.at>
 @date    Aug 14 2015
-@version $Id: convert_detectors2SUMO.py 18763 2015-09-01 18:46:39Z behrisch $
+@version $Id: convert_detectors2SUMO.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Parses induction loops and travel time measurements from a VISSIM .inpx file
 and writes converted information to a given .add.xml file.
@@ -19,6 +19,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import argparse
 from xml.dom import minidom
@@ -292,7 +294,7 @@ def get_conn_verb_rel(conn_tab, from_to_tab):
                 else:
                     conn_link_d[link["_link"][0]] = [conn['via']]
             else:
-                print ("from: " + conn['from'] + "to: " + conn['to'])
+                print("from: " + conn['from'] + "to: " + conn['to'])
     return link_conn_d, conn_link_d
 
 

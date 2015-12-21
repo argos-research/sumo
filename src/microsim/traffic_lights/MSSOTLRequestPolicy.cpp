@@ -3,7 +3,7 @@
 /// @author  Gianfilippo Slager
 /// @author  Anna Chiara Bellini
 /// @date    Apr 2013
-/// @version $Id: MSSOTLRequestPolicy.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSSOTLRequestPolicy.cpp 19610 2015-12-14 21:03:17Z behrisch $
 ///
 // The class for SOTL Request logics
 /****************************************************************************/
@@ -39,8 +39,8 @@ MSSOTLRequestPolicy::MSSOTLRequestPolicy(
 
 }
 
-bool MSSOTLRequestPolicy::canRelease(int elapsed, bool thresholdPassed,  bool pushButtonPressed,
-                                     const MSPhaseDefinition* stage, int vehicleCount) {
+bool MSSOTLRequestPolicy::canRelease(SUMOTime elapsed, bool thresholdPassed,  bool /* pushButtonPressed */,
+                                     const MSPhaseDefinition* /* stage */, int /* vehicleCount */) {
     if (elapsed >= getMinDecisionalPhaseDuration()) {
         return thresholdPassed;
     }

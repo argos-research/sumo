@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2011
-@version $Id: wix.py 19535 2015-12-05 13:47:18Z behrisch $
+@version $Id: wix.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Builds the installer based on the nightly zip.
 
@@ -17,6 +17,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 import optparse
 import subprocess
 import zipfile

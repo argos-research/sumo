@@ -3,7 +3,7 @@
 /// @author  Alessio Bonfietti
 /// @author  Riccardo Belletti
 /// @date    Feb 2014
-/// @version $Id: MSSOTLPolicyBasedTrafficLightLogic.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSSOTLPolicyBasedTrafficLightLogic.cpp 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // The class for SOTL Congestion logics
 /****************************************************************************/
@@ -47,7 +47,7 @@ MSSOTLPolicyBasedTrafficLightLogic::~MSSOTLPolicyBasedTrafficLightLogic(void) {
 
 }
 
-size_t MSSOTLPolicyBasedTrafficLightLogic::decideNextPhase() {
+int MSSOTLPolicyBasedTrafficLightLogic::decideNextPhase() {
 
     DBG(
         std::ostringstream str; str << "\n" << time2string(MSNet::getInstance()->getCurrentTimeStep()) << " " << getID() << "invoked MSSOTLPolicyBasedTrafficLightLogic::decideNextPhase()"; WRITE_MESSAGE(str.str());)

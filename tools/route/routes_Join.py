@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    11.09.2009
-@version $Id: routes_Join.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: routes_Join.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Joins routes belonging to two networks.
 A map file with the following syntax is read first:
@@ -28,10 +28,11 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 import os
 import string
 import sys
-import StringIO
 from xml.sax import saxutils, make_parser, handler
 
 
@@ -131,7 +132,7 @@ def writeVehicle(fdo, route, conts1, conts2, replacements):
 
 
 if len(sys.argv) < 6:
-    print "Usage: " + sys.argv[0] + " <prefix#1> <routes#1> <prefix#2> <routes#2> <mapfile>"
+    print("Usage: " + sys.argv[0] + " <prefix#1> <routes#1> <prefix#2> <routes#2> <mapfile>")
     sys.exit()
 # read mapping
 mmap = {}
@@ -144,16 +145,16 @@ for line in fd:
 fd.close()
 # read routes
 parser = make_parser()
-print "Reading routes#1"
+print("Reading routes#1")
 routes1 = RoutesReader(sys.argv[1], mmap)
 parser.setContentHandler(routes1)
 parser.parse(sys.argv[2])
-print "Reading routes#2"
+print("Reading routes#2")
 routes2 = RoutesReader(sys.argv[3], mmap)
 parser.setContentHandler(routes2)
 parser.parse(sys.argv[4])
 
-print "Processing routes#1"
+print("Processing routes#1")
 fdo = open("joined.rou.xml", "w")
 fdo.write("<routes>\n")
 for r in routes1._routes:
@@ -161,7 +162,7 @@ for r in routes1._routes:
         continue
         # skip, starts at a replaced edge
     writeVehicle(fdo, r, routes1, routes2, mmap)
-print "Processing routes#2"
+print("Processing routes#2")
 for r in routes2._routes:
     if r.firstEdge() in mmap:
         continue

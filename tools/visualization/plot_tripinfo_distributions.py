@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Laura Bieker
 @date    2013-11-11
-@version $Id: plot_tripinfo_distributions.py 18095 2015-03-17 09:39:00Z behrisch $
+@version $Id: plot_tripinfo_distributions.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This script plots measures from the tripinfo output, classified into bins
 matplotlib (http://matplotlib.org/) has to be installed for this purpose
@@ -19,6 +19,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import os
 import subprocess
@@ -58,7 +60,7 @@ def main(args=None):
     options, remaining_args = optParser.parse_args(args=args)
 
     if options.tripinfos == None:
-        print "Error: at least one tripinfo file must be given"
+        print("Error: at least one tripinfo file must be given")
         sys.exit(1)
 
     minV = options.minV
@@ -67,7 +69,7 @@ def main(args=None):
     values = {}
     for f in files:
         if options.verbose:
-            print "Reading '%s'..." % f
+            print("Reading '%s'..." % f)
         nums = sumolib.output.parse_sax__asList(
             f, "tripinfo", [options.measure])
         fvp = sumolib.output.toList(nums, options.measure)

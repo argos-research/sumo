@@ -2,7 +2,7 @@
 /// @file    NWWriter_OpenDrive.h
 /// @author  Daniel Krajzewicz
 /// @date    Tue, 04.05.2011
-/// @version $Id: NWWriter_OpenDrive.h 19443 2015-11-26 14:16:12Z namdre $
+/// @version $Id: NWWriter_OpenDrive.h 19620 2015-12-16 06:45:09Z namdre $
 ///
 // Exporter writing networks using the openDRIVE format
 /****************************************************************************/
@@ -68,8 +68,8 @@ protected:
 
     static std::string getLaneType(SVCPermissions permissions);
 
-    /// @brief get the left border of the leftmost lane
-    static PositionVector getLeftBorder(const NBEdge* edge);
+    /// @brief get the left border of the given lane (the leftmost one by default)
+    static PositionVector getLeftLaneBorder(const NBEdge* edge, int laneIndex=-1);
 };
 
 

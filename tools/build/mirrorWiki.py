@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2011-10-20
-@version $Id: mirrorWiki.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: mirrorWiki.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Mirrors wiki-documentation.
 
@@ -31,6 +31,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 import urllib
 import os
 import sys
@@ -101,7 +103,7 @@ if __name__ == "__main__":
         b = p.find("/wiki/")
         e = p.find("\"", b)
         name = p[b + 6:e]
-        print "Fetching %s" % name
+        print("Fetching %s" % name)
         c = readParseEditPage(name)
         if name.find("/") > 0:
             try:
@@ -116,7 +118,7 @@ if __name__ == "__main__":
         fd.close()
 
     for i in images:
-        print "Fetching image %s" % i
+        print("Fetching image %s" % i)
         if i.find(":") >= 0:
             f = urllib.urlopen("http://sumo.dlr.de/wiki/%s" % i)
             c = f.read()

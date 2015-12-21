@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-07-10
-@version $Id: statisticsElements.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: statisticsElements.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This script is to define classes, functions, parse-reader and output files/format for
 - calculating network performances
@@ -20,6 +20,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 
 import string
 from xml.sax import saxutils, make_parser, handler
@@ -133,7 +134,7 @@ class VehInformationReader(handler.ContentHandler):
 
 
 def getStatisticsOutput(assignments, outputfile):
-    foutveh = file(outputfile, 'w')
+    foutveh = open(outputfile, 'w')
     foutveh.write(
         'average vehicular travel time(s) = the sum of all vehicular travel times / the number of vehicles\n')
     foutveh.write(
@@ -166,7 +167,7 @@ def getStatisticsOutput(assignments, outputfile):
 
 
 def getSignificanceTestOutput(assignments, tTest, tValueAvg, hValues, outputfile):
-    foutSGtest = file(outputfile, 'w')
+    foutSGtest = open(outputfile, 'w')
     if tTest:
         foutSGtest.write(
             'The significances of the performance averages among the used assignment models are examined with the t test.\n')

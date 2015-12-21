@@ -3,7 +3,7 @@
 /// @author  Gianfilippo Slager
 /// @author  Anna Chiara Bellini
 /// @date    Apr 2013
-/// @version $Id: MSSOTLRequestTrafficLightLogic.h 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSSOTLRequestTrafficLightLogic.h 19612 2015-12-15 08:14:49Z behrisch $
 ///
 // The class for SOTL Request logics
 /****************************************************************************/
@@ -31,8 +31,6 @@
 
 #include "MSSOTLTrafficLightLogic.h"
 
-using namespace std;
-
 class MSSOTLRequestTrafficLightLogic: public MSSOTLTrafficLightLogic {
 public:
     /**
@@ -45,7 +43,7 @@ public:
      * @param[in] delay The time to wait before the first switch
      */
     MSSOTLRequestTrafficLightLogic(MSTLLogicControl& tlcontrol,
-                                   const string& id, const string& subid, const Phases& phases,
+                                   const std::string& id, const std::string& subid, const Phases& phases,
                                    unsigned int step, SUMOTime delay,
                                    const std::map<std::string, std::string>& parameters) throw();
 
@@ -59,7 +57,7 @@ public:
      * @param[in] delay The time to wait before the first switch
      */
     MSSOTLRequestTrafficLightLogic(MSTLLogicControl& tlcontrol,
-                                   const string& id, const string& subid, const Phases& phases,
+                                   const std::string& id, const std::string& subid, const Phases& phases,
                                    unsigned int step, SUMOTime delay,
                                    const std::map<std::string, std::string>& parameters,
                                    MSSOTLSensors* sensors) throw();

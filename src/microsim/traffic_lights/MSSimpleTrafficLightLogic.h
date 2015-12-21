@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Friedemann Wesner
 /// @date    Sept 2002
-/// @version $Id: MSSimpleTrafficLightLogic.h 19567 2015-12-08 20:30:01Z behrisch $
+/// @version $Id: MSSimpleTrafficLightLogic.h 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // A fixed traffic light logic
 /****************************************************************************/
@@ -97,7 +97,7 @@ public:
      * @return The number of this tls program's phases
      * @see MSTrafficLightLogic::getPhaseNumber
      */
-    unsigned int getPhaseNumber() const;
+    int getPhaseNumber() const;
 
 
     /** @brief Returns the phases of this tls program
@@ -119,7 +119,7 @@ public:
      * @return The definition of the phase at the given position
      * @see MSTrafficLightLogic::getPhase
      */
-    const MSPhaseDefinition& getPhase(unsigned int givenstep) const;
+    const MSPhaseDefinition& getPhase(int givenstep) const;
 
     /** @brief Returns the type of the logic as a string
      * @return The type of the logic
@@ -138,7 +138,7 @@ public:
      * @return The index of the current phase within the tls
      * @see MSTrafficLightLogic::getCurrentPhaseIndex
      */
-    unsigned int getCurrentPhaseIndex() const;
+    int getCurrentPhaseIndex() const;
 
 
     /** @brief Returns the definition of the current phase
@@ -193,7 +193,7 @@ public:
 
     /** @brief Replaces the phases and set the phase index
      */
-    void setPhases(const Phases& phases, unsigned int index);
+    void setPhases(const Phases& phases, int index);
     /// @}
 
 

@@ -6,7 +6,7 @@
 @author  Michael Behrisch
 @author  Laura Bieker
 @date    2013-12-08
-@version $Id: csv2xml.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: csv2xml.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Convert csv files to selected xml input files for SUMO
 
@@ -21,6 +21,7 @@ the Free Software Foundation; either version 3 of the License, or
 """
 
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 import sys
 import csv

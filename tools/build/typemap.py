@@ -3,7 +3,7 @@
 @file    typemap.py
 @author  Michael Behrisch
 @date    2015-07-06
-@version $Id: typemap.py 18756 2015-08-31 19:16:33Z behrisch $
+@version $Id: typemap.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This script rebuilds "../../src/netimport/typemap.h", the file 
 representing the default typemaps.
@@ -20,6 +20,7 @@ the Free Software Foundation; either version 3 of the License, or
 """
 
 from __future__ import print_function
+from __future__ import absolute_import
 import sys
 from os.path import dirname, exists, getmtime, join
 

@@ -4,7 +4,7 @@
 @author  Karol Stosiek
 @author  Michael Behrisch
 @date    2011-10-26
-@version $Id: connections.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: connections.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Operations and classes necessary to operate on SUMO connections.
 
@@ -17,6 +17,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 
 import logging
 import xml.dom.minidom

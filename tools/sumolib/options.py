@@ -3,7 +3,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2012-03-15
-@version $Id: options.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: options.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Provides utility functions for dealing with program options
 
@@ -18,6 +18,7 @@ the Free Software Foundation; either version 3 of the License, or
 """
 
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 import sys
 import subprocess
@@ -53,7 +54,7 @@ class OptionReader(handler.ContentHandler):
         self.opts = []
 
     def startElement(self, name, attrs):
-        if attrs.has_key('value'):
+        if 'value' in attrs:
             self.opts.append(
                 Option(name, attrs['value'], attrs.get('type'), attrs.get('help')))
 

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLJunctionControlBuilder.h 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: NLJunctionControlBuilder.h 19618 2015-12-15 16:54:49Z behrisch $
 ///
 // Builder of microsim-junctions and tls
 /****************************************************************************/
@@ -191,7 +191,7 @@ public:
      * @param[in] transient_notdecisional Specifies if this is a transient phase (true) or a decisional one (false)
      * @param[in] commit Specifies if this is a commit phase
      */
-    void addPhase(SUMOTime duration, const std::string& state, int minDuration, int maxDuration, bool transient_notdecisional, bool commit) throw();
+    void addPhase(SUMOTime duration, const std::string& state, SUMOTime minDuration, SUMOTime maxDuration, bool transient_notdecisional, bool commit) throw();
 
 
     /** @brief Adds a phase to the currently built traffic lights logic
@@ -204,7 +204,7 @@ public:
      * @param[in] commit Specifies if this is a commit phase
      * @param[in] targetLanes A reference to the vector containing targeted sensor lanes for this phase, given by lane id
      */
-    void addPhase(SUMOTime duration, const std::string& state, int minDuration, int maxDuration, bool transient_notdecisional, bool commit, MSPhaseDefinition::LaneIdVector& targetLanes) throw();
+    void addPhase(SUMOTime duration, const std::string& state, SUMOTime minDuration, SUMOTime maxDuration, bool transient_notdecisional, bool commit, MSPhaseDefinition::LaneIdVector& targetLanes) throw();
 
 
     /** @brief Returns a previously build tls logic

@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2010-03-06
-@version $Id: randomTrips.py 19495 2015-12-02 12:36:28Z behrisch $
+@version $Id: randomTrips.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Generates random trips for the given network.
 
@@ -20,6 +20,7 @@ the Free Software Foundation; either version 3 of the License, or
 """
 
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 import sys
 import random
@@ -303,13 +304,13 @@ def main(options):
             else:
                 fouttrips.write('    <trip id="%s" depart="%.2f" from="%s" to="%s" %s%s/>\n' % (
                     label, depart, source_edge.getID(), sink_edge.getID(), via, options.tripattrs))
-        except Exception, exc:
+        except Exception as exc:
             print(exc, file=sys.stderr)
         return idx + 1
 
     with open(options.tripfile, 'w') as fouttrips:
         fouttrips.write("""<?xml version="1.0"?>
-<!-- generated on %s by $Id: randomTrips.py 19495 2015-12-02 12:36:28Z behrisch $
+<!-- generated on %s by $Id: randomTrips.py 19649 2015-12-17 21:05:20Z behrisch $
   options: %s
 -->
 <trips>

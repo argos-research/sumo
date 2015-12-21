@@ -5,7 +5,7 @@
 @author  Laura Bieker
 @author  Michael Behrisch
 @date    2007-02-21
-@version $Id: netextract.py 19535 2015-12-05 13:47:18Z behrisch $
+@version $Id: netextract.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This script reads in the network given as
  first parameter and extracts nodes and edges 
@@ -25,6 +25,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 
 import os
@@ -85,13 +87,13 @@ def writeConnections(net):
 
 
 if len(sys.argv) < 2:
-    print "Usage: " + sys.argv[0] + " <net>"
+    print("Usage: " + sys.argv[0] + " <net>")
     sys.exit()
-print "Reading net..."
+print("Reading net...")
 net = sumolib.net.readNet(sys.argv[1])
-print "Writing nodes..."
+print("Writing nodes...")
 writeNodes(net)
-print "Writing edges..."
+print("Writing edges...")
 writeEdges(net)
-print "Writing connections..."
+print("Writing connections...")
 writeConnections(net)

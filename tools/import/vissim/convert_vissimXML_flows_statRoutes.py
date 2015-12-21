@@ -4,7 +4,7 @@
 @file    convert_vissimXML_flows_statRoutes.py
 @author  Lukas Grohmann <Lukas.Grohmann@ait.ac.at>
 @date    Jun 09 2015
-@version $Id: convert_vissimXML_flows_statRoutes.py 18763 2015-09-01 18:46:39Z behrisch $
+@version $Id: convert_vissimXML_flows_statRoutes.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Parses flows and static routes from a VISSIM .inpx file
 and writes converted information to a given .rou.xml file.
@@ -19,6 +19,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 # TODO: usage doc.ref
 # FIXME: better split in 2 ?
 

@@ -3,7 +3,7 @@
 /// @author  Riccardo Belletti
 /// @author  Anna Chiara Bellini
 /// @date    Sep 2013
-/// @version $Id: MSSOTLWaveTrafficLightLogic.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSSOTLWaveTrafficLightLogic.cpp 19650 2015-12-18 08:34:31Z behrisch $
 ///
 // The class for SOTL Platoon logics
 /****************************************************************************/
@@ -77,11 +77,10 @@ bool MSSOTLWaveTrafficLightLogic::canRelease() throw() {
     return false;
 }
 
-unsigned int MSSOTLWaveTrafficLightLogic::countVehicles() {
-
+int MSSOTLWaveTrafficLightLogic::countVehicles() {
     std::string state = getCurrentPhaseDef().getState();
     int vehicles = 0;
-    for (int i = 0; i < getLaneVectors().size(); i++) {
+    for (int i = 0; i < (int)getLaneVectors().size(); i++) {
         if (i > 0
                 && ((getLaneVectors()[i][0]->getID()).compare(
                         getLaneVectors()[i - 1][0]->getID()) == 0)) {

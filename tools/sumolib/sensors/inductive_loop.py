@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2010-02-18
-@version $Id: inductive_loop.py 19567 2015-12-08 20:30:01Z behrisch $
+@version $Id: inductive_loop.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Library for reading and storing Inductive Loop detector representations and 
  measurements.
@@ -18,6 +18,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 
 from xml.sax import handler, parse
 

@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIEdgeControlBuilder.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: GUIEdgeControlBuilder.h 19614 2015-12-15 09:47:56Z namdre $
 ///
 // Derivation of NLEdgeControlBuilder which builds gui-edges
 /****************************************************************************/
@@ -77,13 +77,15 @@ public:
      * @param[in] shape The shape of the lane
      * @param[in] width The width of the lane
      * @param[in] permissions Encoding of vehicle classes that may drive on this lane
+     * @param[in] index The index of this lane within its parent edge
      * @see SUMOVehicleClass
      * @see MSLane
      */
     virtual MSLane* addLane(const std::string& id,
                             SUMOReal maxSpeed, SUMOReal length,
                             const PositionVector& shape, SUMOReal width,
-                            SVCPermissions permissions);
+                            SVCPermissions permissions,
+                            int index);
 
 
 

@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2007-10-25
-@version $Id: mpl_dump_twoAgainst.py 18095 2015-03-17 09:39:00Z behrisch $
+@version $Id: mpl_dump_twoAgainst.py 19649 2015-12-17 21:05:20Z behrisch $
 
 
 This script reads two dump files and plots one of the values
@@ -21,6 +21,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 from matplotlib import rcParams
 from pylab import *
@@ -109,26 +111,26 @@ optParser.add_option("--ylim", dest="ylim", type="string",  default="",
 (options, args) = optParser.parse_args()
 # check set options
 if not options.show and not options.output:
-    print "Neither show (--show) not write (--output <FILE>)? Exiting..."
+    print("Neither show (--show) not write (--output <FILE>)? Exiting...")
     exit()
 
 
 parser = make_parser()
 # read dump1
 if options.verbose:
-    print "Reading dump1..."
+    print("Reading dump1...")
 weights1 = WeightsReader(options.value)
 parser.setContentHandler(weights1)
 parser.parse(options.dump1)
 # read dump2
 if options.verbose:
-    print "Reading dump2..."
+    print("Reading dump2...")
 weights2 = WeightsReader(options.value)
 parser.setContentHandler(weights2)
 parser.parse(options.dump2)
 # plot
 if options.verbose:
-    print "Processing data..."
+    print("Processing data...")
 # set figure size
 if not options.show:
     rcParams['backend'] = 'Agg'
@@ -194,9 +196,9 @@ else:
                     (min, max) = updateMinMax(
                         min, max, weights2._edge2value[t][edge])
      # plot
-print "data range: " + str(min) + " - " + str(max)
+print("data range: " + str(min) + " - " + str(max))
 if options.verbose:
-    print "Plotting..."
+    print("Plotting...")
 if options.time_coloring and iterable(c):
     for i in range(0, len(c)):
         plot(xs[i], ys[i], '.', color=c[i], mfc=c[i])

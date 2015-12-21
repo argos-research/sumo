@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSTrafficLightLogic.cpp 19552 2015-12-07 15:27:51Z namdre $
+/// @version $Id: MSTrafficLightLogic.cpp 19650 2015-12-18 08:34:31Z behrisch $
 ///
 // The parent class for traffic light logics
 /****************************************************************************/
@@ -77,9 +77,9 @@ MSTrafficLightLogic::SwitchCommand::execute(SUMOTime t) {
     }
     //
     const bool isActive = myTLControl.isActive(myTLLogic);
-    size_t step1 = myTLLogic->getCurrentPhaseIndex();
+    int step1 = myTLLogic->getCurrentPhaseIndex();
     SUMOTime next = myTLLogic->trySwitch();
-    size_t step2 = myTLLogic->getCurrentPhaseIndex();
+    int step2 = myTLLogic->getCurrentPhaseIndex();
     if (step1 != step2) {
         if (isActive) {
             // execute any action connected to this tls
@@ -183,13 +183,13 @@ void
 MSTrafficLightLogic::addLink(MSLink* link, MSLane* lane, int pos) {
     // !!! should be done within the loader (checking necessary)
     myLinks.reserve(pos + 1);
-    while (myLinks.size() <= pos) {
+    while ((int)myLinks.size() <= pos) {
         myLinks.push_back(LinkVector());
     }
     myLinks[pos].push_back(link);
     //
     myLanes.reserve(pos + 1);
-    while (myLanes.size() <= pos) {
+    while ((int)myLanes.size() <= pos) {
         myLanes.push_back(LaneVector());
     }
     myLanes[pos].push_back(lane);

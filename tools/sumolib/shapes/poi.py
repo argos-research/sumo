@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Melanie Knocke
 @date    2010-02-18
-@version $Id: poi.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: poi.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Library for reading and storing PoIs.
 
@@ -18,6 +18,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 
 from xml.sax import handler, parse
 from .. import color
@@ -68,8 +69,8 @@ class PoIReader(handler.ContentHandler):
     def startElement(self, name, attrs):
         if name == 'poi':
             c = color.decodeXML(attrs['color'])
-            if not attrs.has_key('lane'):
-                if not attrs.has_key('x'):
+            if 'lane' not in attrs:
+                if 'x' not in attrs:
                     poi = PoI(attrs['id'], attrs['type'], float(attrs['layer']), c, float(
                         attrs['lon']), float(attrs['lat']), lonLat=True)
                 else:

@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2007-02-21
-@version $Id: visum_convertRoutes.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: visum_convertRoutes.py 19649 2015-12-17 21:05:20Z behrisch $
 
 This script converts given VISUM-routes for a given SUMO-network.
 
@@ -19,6 +19,7 @@ the Free Software Foundation; either version 3 of the License, or
 """
 
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 import string
 import sys

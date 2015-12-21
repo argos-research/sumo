@@ -5,7 +5,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2011-03-04
-@version $Id: runner.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: runner.py 19631 2015-12-16 21:01:33Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -18,6 +18,7 @@ the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
 
+from __future__ import print_function
 import os
 import subprocess
 import sys
@@ -34,24 +35,24 @@ sumoProcess = subprocess.Popen(
     "%s -S -Q -c sumo.sumocfg --remote-port %s" % (sumoBinary, PORT), shell=True, stdout=sys.stdout)
 traci.init(PORT)
 for step in range(3):
-    print "step", step
+    print("step", step)
     traci.simulationStep()
 polygonID = "0"
-print "adding", polygonID
+print("adding", polygonID)
 traci.polygon.add(
     polygonID, ((1, 1), (1, 10), (10, 10)), (1, 2, 3, 4), True, "test")
 
-print "polygons", traci.polygon.getIDList()
-print "polygon count", traci.polygon.getIDCount()
-print "examining", polygonID
-print "shape", traci.polygon.getShape(polygonID)
-print "type", traci.polygon.getType(polygonID)
-print "color", traci.polygon.getColor(polygonID)
+print("polygons", traci.polygon.getIDList())
+print("polygon count", traci.polygon.getIDCount())
+print("examining", polygonID)
+print("shape", traci.polygon.getShape(polygonID))
+print("type", traci.polygon.getType(polygonID))
+print("color", traci.polygon.getColor(polygonID))
 
 traci.polygon.subscribe(polygonID)
-print traci.polygon.getSubscriptionResults(polygonID)
+print(traci.polygon.getSubscriptionResults(polygonID))
 for step in range(3, 6):
-    print "step", step
+    print("step", step)
     traci.simulationStep()
-    print traci.polygon.getSubscriptionResults(polygonID)
+    print(traci.polygon.getSubscriptionResults(polygonID))
 traci.close()

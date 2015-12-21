@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Friedemann Wesner
 /// @date    Sept 2002
-/// @version $Id: MSTrafficLightLogic.h 19567 2015-12-08 20:30:01Z behrisch $
+/// @version $Id: MSTrafficLightLogic.h 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // The parent class for traffic light logics
 /****************************************************************************/
@@ -223,7 +223,7 @@ public:
     /** @brief Returns the number of phases
      * @return The number of this tls program's phases
      */
-    virtual unsigned int getPhaseNumber() const = 0;
+    virtual int getPhaseNumber() const = 0;
 
 
     /** @brief Returns the phases of this tls program
@@ -236,7 +236,7 @@ public:
      * @param[in] givenstep The index of the phase within the plan
      * @return The definition of the phase at the given position
      */
-    virtual const MSPhaseDefinition& getPhase(unsigned int givenstep) const = 0;
+    virtual const MSPhaseDefinition& getPhase(int givenstep) const = 0;
 
     /** @brief Returns the type of the logic as a string
      * @return The type of the logic
@@ -252,7 +252,7 @@ public:
     /** @brief Returns the current index within the program
      * @return The index of the current phase within the tls
      */
-    virtual unsigned int getCurrentPhaseIndex() const = 0;
+    virtual int getCurrentPhaseIndex() const = 0;
 
 
     /** @brief Returns the definition of the current phase

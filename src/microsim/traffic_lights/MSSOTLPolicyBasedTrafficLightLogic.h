@@ -3,7 +3,7 @@
 /// @author  Alessio Bonfietti
 /// @author  Riccardo Belletti
 /// @date    Feb 2014
-/// @version $Id: MSSOTLPolicyBasedTrafficLightLogic.h 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSSOTLPolicyBasedTrafficLightLogic.h 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // The class for SOTL Policy-based logics
 /****************************************************************************/
@@ -93,7 +93,7 @@ public:
     }
     /// @}
 
-//	virtual bool canRelease(int elapsed, bool thresholdPassed, const MSPhaseDefinition* stage, int vehicleCount) throw ()=0;
+//	virtual bool canRelease(SUMOTime elapsed, bool thresholdPassed, const MSPhaseDefinition* stage, int vehicleCount) throw ()=0;
 
 protected:
 
@@ -105,7 +105,7 @@ protected:
     /*
      * This member has to contain the switching logic for SOTL policies
      */
-    size_t decideNextPhase();
+    int decideNextPhase();
 
 private:
     MSSOTLPolicy* myPolicy;

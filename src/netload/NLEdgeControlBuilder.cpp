@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLEdgeControlBuilder.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: NLEdgeControlBuilder.cpp 19614 2015-12-15 09:47:56Z namdre $
 ///
 // Interface for building edges
 /****************************************************************************/
@@ -84,8 +84,8 @@ MSLane*
 NLEdgeControlBuilder::addLane(const std::string& id,
                               SUMOReal maxSpeed, SUMOReal length,
                               const PositionVector& shape, SUMOReal width,
-                              SVCPermissions permissions) {
-    MSLane* lane = new MSLane(id, maxSpeed, length, myActiveEdge, myCurrentNumericalLaneID++, shape, width, permissions);
+                              SVCPermissions permissions, int index) {
+    MSLane* lane = new MSLane(id, maxSpeed, length, myActiveEdge, myCurrentNumericalLaneID++, shape, width, permissions, index);
     myLaneStorage->push_back(lane);
     return lane;
 }

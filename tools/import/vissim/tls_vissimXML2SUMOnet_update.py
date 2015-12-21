@@ -5,7 +5,7 @@
 @author  Lukas Grohmann <Lukas.Grohmann@ait.ac.at>
 @author  Gerald Richter <Gerald.Richter@ait.ac.at>
 @date    Jun 11 2015
-@version $Id: tls_vissimXML2SUMOnet_update.py 18763 2015-09-01 18:46:39Z behrisch $
+@version $Id: tls_vissimXML2SUMOnet_update.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Converts a VISSIM-tls-description into a SUMO-tls-description and writes
 the appended information to a copy of the given sumo.net file
@@ -22,6 +22,7 @@ the Free Software Foundation; either version 3 of the License, or
 # TODO: usage doc.ref
 
 from __future__ import print_function
+from __future__ import absolute_import
 
 import os
 import argparse

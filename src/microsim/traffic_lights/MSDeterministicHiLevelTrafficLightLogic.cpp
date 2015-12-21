@@ -2,7 +2,7 @@
 /// @file    MSDeterministicHiLevelTrafficLightLogic.cpp
 /// @author  Riccardo Belletti
 /// @date    Mar 2014
-/// @version $Id: MSDeterministicHiLevelTrafficLightLogic.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSDeterministicHiLevelTrafficLightLogic.cpp 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // The class for deterministic high level traffic light logic
 /****************************************************************************/
@@ -76,7 +76,7 @@ throw(ProcessError) {
 
 }
 
-size_t MSDeterministicHiLevelTrafficLightLogic::decideNextPhase() {
+int MSDeterministicHiLevelTrafficLightLogic::decideNextPhase() {
 
     DBG(
         MsgHandler::getMessageInstance()->inform("\n" + time2string(MSNet::getInstance()->getCurrentTimeStep()) + " MSDeterministicHiLevelTrafficLightLogic decideNextPhase()"); std::ostringstream dnp; dnp << (MSNet::getInstance()->getCurrentTimeStep()) << " MSDeterministicHiLevelTrafficLightLogic::decideNextPhase:: " << "tlsid=" << getID() << " getCurrentPhaseDef().getState()=" << getCurrentPhaseDef().getState() << " is commit?" << getCurrentPhaseDef().isCommit(); MsgHandler::getMessageInstance()->inform(dnp.str());)
@@ -103,7 +103,7 @@ SUMOReal MSDeterministicHiLevelTrafficLightLogic::getMeanSpeedForInputLanes() {
     SUMOReal vSpeedInTot = 0;
     for (MSLaneID_set::iterator laneIterator = inputLanes.begin();
             laneIterator != inputLanes.end(); laneIterator++) {
-        string laneId = *laneIterator;
+        std::string laneId = *laneIterator;
         SUMOReal maxSpeed = getSensors()->meanVehiclesSpeed(laneId);
         if (maxSpeed > -1) {
             vSpeedInTot += (13.89 - maxSpeed) * 10. / 13.89;
@@ -121,7 +121,7 @@ SUMOReal MSDeterministicHiLevelTrafficLightLogic::getMeanSpeedForOutputLanes() {
     SUMOReal vSpeedOutTot = 0;
     for (MSLaneID_set::iterator laneIterator = outputLanes.begin();
             laneIterator != outputLanes.end(); laneIterator++) {
-        string laneId = *laneIterator;
+        std::string laneId = *laneIterator;
         SUMOReal maxSpeed = getSensors()->meanVehiclesSpeed(laneId);
         if (maxSpeed > -1) {
             vSpeedOutTot += (13.89 - maxSpeed) * 10. / 13.89;
@@ -134,8 +134,8 @@ SUMOReal MSDeterministicHiLevelTrafficLightLogic::getMeanSpeedForOutputLanes() {
 
 void MSDeterministicHiLevelTrafficLightLogic::decidePolicy() {
     // Decide if it is the case to check for another plan
-    double mean_vSpeed_in = getMeanSpeedForInputLanes();
-    double mean_vSpeed_out = getMeanSpeedForOutputLanes();
+    SUMOReal mean_vSpeed_in = getMeanSpeedForInputLanes();
+    SUMOReal mean_vSpeed_out = getMeanSpeedForOutputLanes();
     MSSOTLPolicy* oldPolicy = getCurrentPolicy();
     choosePolicy(mean_vSpeed_in, mean_vSpeed_out);
     MSSOTLPolicy* newPolicy = getCurrentPolicy();
@@ -152,20 +152,20 @@ void MSDeterministicHiLevelTrafficLightLogic::decidePolicy() {
 }
 
 void MSDeterministicHiLevelTrafficLightLogic::choosePolicy(
-    double mean_vSpeed_in, double mean_vSpeed_out) {
+    SUMOReal mean_vSpeed_in, SUMOReal mean_vSpeed_out) {
 
     int index_maxStimulus = 0;
-    double maxStimulus = -1;
+    SUMOReal maxStimulus = -1;
     // Compute simulus for each policy
     for (unsigned int i = 0; i < getPolicies().size(); i++) {
-        double stimulus = getPolicies()[i]->computeDesirability(mean_vSpeed_in,
+        SUMOReal stimulus = getPolicies()[i]->computeDesirability(mean_vSpeed_in,
                           mean_vSpeed_out);
         if (stimulus > maxStimulus) {
             maxStimulus = stimulus;
             index_maxStimulus = i;
         }
         DBG(
-            ostringstream so_str; so_str << " policy " << getPolicies()[i]->getName() << " stimulus " << stimulus; WRITE_MESSAGE("MSDeterministicHiLevelTrafficLightLogic::choosePolicy::" + so_str.str());)
+            std::ostringstream so_str; so_str << " policy " << getPolicies()[i]->getName() << " stimulus " << stimulus; WRITE_MESSAGE("MSDeterministicHiLevelTrafficLightLogic::choosePolicy::" + so_str.str());)
 
     }
     activate(getPolicies()[index_maxStimulus]);

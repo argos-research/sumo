@@ -3,7 +3,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2012-05-08
-@version $Id: miscutils.py 18502 2015-06-24 12:23:42Z behrisch $
+@version $Id: miscutils.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Common utility functions
 
@@ -16,6 +16,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 import sys
 import time
 import os

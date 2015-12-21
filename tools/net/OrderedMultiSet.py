@@ -3,7 +3,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2011-10-04
-@version $Id: OrderedMultiSet.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: OrderedMultiSet.py 19649 2015-12-17 21:05:20Z behrisch $
 
 multi set with insertion-order iteration
 based on OrderedSet by Raymond Hettinger (c) , MIT-License
@@ -18,6 +18,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 
 import collections
 KEY, PREV, NEXT = range(3)

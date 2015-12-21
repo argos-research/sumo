@@ -3,7 +3,7 @@
 @file    routeStats.py
 @author  Jakob Erdmann
 @date    2014-12-18
-@version $Id: routeDiffStats.py 18756 2015-08-31 19:16:33Z behrisch $
+@version $Id: routeDiffStats.py 19649 2015-12-17 21:05:20Z behrisch $
 
 compute statistics for two sets of routes (for the same set of vehicles)
 
@@ -16,6 +16,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import os
 import sys
@@ -72,7 +74,7 @@ def main():
         lengthDiffStats.add(
             lengths2[vehicle.id] - lengths1[vehicle.id], vehicle.id)
 
-    print lengthDiffStats
+    print(lengthDiffStats)
 
     if options.hist_output is not None:
         with open(options.hist_output, 'w') as f:

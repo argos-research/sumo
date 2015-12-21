@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2009-08-01
-@version $Id: osmBuild.py 19535 2015-12-05 13:47:18Z behrisch $
+@version $Id: osmBuild.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Builds a sumo network and polygons from a downloaded area from OpenStreetMap.
 
@@ -18,6 +18,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 
 import os
 import sys

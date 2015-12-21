@@ -2,7 +2,7 @@
 /// @file    GNETLSEditor.cpp
 /// @author  Jakob Erdmann
 /// @date    May 2011
-/// @version $Id: GNETLSEditor.cpp 19554 2015-12-07 21:36:49Z behrisch $
+/// @version $Id: GNETLSEditor.cpp 19608 2015-12-14 15:17:17Z namdre $
 ///
 // The Widget for modifying traffic lights
 /****************************************************************************/
@@ -405,8 +405,9 @@ GNETLSEditor::onCmdPhaseCreate(FXObject*, FXSelector, void*) {
 long
 GNETLSEditor::onCmdPhaseDelete(FXObject*, FXSelector, void*) {
     myHaveModifications = true;
+    const int newRow = MAX2((int)0, (int)myPhaseTable->getCurrentRow() - 1);
     myEditedDef->getLogic()->deletePhase(myPhaseTable->getCurrentRow());
-    initPhaseTable(0);
+    initPhaseTable(newRow);
     myPhaseTable->setFocus();
     return 1;
 }

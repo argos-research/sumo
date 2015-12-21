@@ -6,7 +6,7 @@
 @author  Laura Bieker
 @author  Jakob Erdmann
 @date    2014-01-23
-@version $Id: protobuf2xml.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: protobuf2xml.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Convert protobuf files to selected xml input files for SUMO
 
@@ -21,6 +21,7 @@ the Free Software Foundation; either version 3 of the License, or
 """
 
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 import sys
 import struct

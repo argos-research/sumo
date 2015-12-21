@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: GUIEdge.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GUIEdge.cpp 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // A road/street connecting two junctions (gui-version)
 /****************************************************************************/
@@ -292,8 +292,6 @@ GUIEdge::drawGL(const GUIVisualizationSettings& s) const {
 #ifdef HAVE_INTERNAL
 void
 GUIEdge::drawMesoVehicles(const GUIVisualizationSettings& s) const {
-    const GUIVisualizationTextSettings& nameSettings = s.vehicleName;
-    const SUMOReal exaggeration = s.vehicleSize.getExaggeration(s);
     GUIMEVehicleControl* vehicleControl = GUINet::getGUIInstance()->getGUIMEVehicleControl();
     if (vehicleControl != 0) {
         // draw the meso vehicles
@@ -310,7 +308,6 @@ GUIEdge::drawMesoVehicles(const GUIVisualizationSettings& s) const {
                 if (laneIndex < segment->numQueues()) {
                     // make a copy so we don't have to worry about synchronization
                     queue = segment->getQueue(laneIndex);
-                    const SUMOReal avgCarSize = segment->getBruttoOccupancy() / segment->getCarNumber();
                     const size_t queueSize = queue.size();
                     SUMOReal vehiclePosition = segmentOffset + length;
                     // draw vehicles beginning with the leader at the end of the segment

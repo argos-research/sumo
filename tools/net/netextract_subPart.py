@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2007-02-21
-@version $Id: netextract_subPart.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: netextract_subPart.py 19649 2015-12-17 21:05:20Z behrisch $
 
 
 This script reads in the network given as first parameter.
@@ -23,6 +23,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 
 import os
@@ -63,9 +65,9 @@ def writeEdges(net, file):
 
 
 if len(sys.argv) < 4:
-    print "Usage: " + sys.argv[0] + " <net> <prefix> <nodes>"
+    print("Usage: " + sys.argv[0] + " <net> <prefix> <nodes>")
     sys.exit()
-print "Reading net..."
+print("Reading net...")
 net = sumolib.net.readNet(sys.argv[1])
 
 edges = set()
@@ -90,7 +92,7 @@ for e in edges:
 for n in nodes:
     net.addNode(n._id, n._coord)
 
-print "Writing nodes..."
+print("Writing nodes...")
 writeNodes(net, sys.argv[2] + "_nodes.nod.xml")
-print "Writing edges..."
+print("Writing edges...")
 writeEdges(net, sys.argv[2] + "_edges.edg.xml")

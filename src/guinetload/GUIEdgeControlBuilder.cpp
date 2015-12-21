@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIEdgeControlBuilder.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: GUIEdgeControlBuilder.cpp 19614 2015-12-15 09:47:56Z namdre $
 ///
 // Derivation of NLEdgeControlBuilder which build gui-edges
 /****************************************************************************/
@@ -62,8 +62,9 @@ GUIEdgeControlBuilder::addLane(const std::string& id,
                                SUMOReal maxSpeed, SUMOReal length,
                                const PositionVector& shape,
                                SUMOReal width,
-                               SVCPermissions permissions) {
-    MSLane* lane = new GUILane(id, maxSpeed, length, myActiveEdge, myCurrentNumericalLaneID++, shape, width, permissions, (int)myLaneStorage->size());
+                               SVCPermissions permissions,
+                               int index) {
+    MSLane* lane = new GUILane(id, maxSpeed, length, myActiveEdge, myCurrentNumericalLaneID++, shape, width, permissions, index);
     myLaneStorage->push_back(lane);
     return lane;
 }

@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Friedemann Wesner
 /// @date    Sept 2002
-/// @version $Id: MSSimpleTrafficLightLogic.cpp 19173 2015-10-27 08:47:27Z behrisch $
+/// @version $Id: MSSimpleTrafficLightLogic.cpp 19650 2015-12-18 08:34:31Z behrisch $
 ///
 // A fixed traffic light logic
 /****************************************************************************/
@@ -101,9 +101,9 @@ MSSimpleTrafficLightLogic::trySwitch() {
 
 
 // ------------ Static Information Retrieval
-unsigned int
+int
 MSSimpleTrafficLightLogic::getPhaseNumber() const {
-    return (unsigned int) myPhases.size();
+    return (int) myPhases.size();
 }
 
 
@@ -120,14 +120,14 @@ MSSimpleTrafficLightLogic::getPhases() {
 
 
 const MSPhaseDefinition&
-MSSimpleTrafficLightLogic::getPhase(unsigned int givenStep) const {
-    assert(myPhases.size() > givenStep);
+MSSimpleTrafficLightLogic::getPhase(int givenStep) const {
+    assert((int)myPhases.size() > givenStep);
     return *myPhases[givenStep];
 }
 
 
 // ------------ Dynamic Information Retrieval
-unsigned int
+int
 MSSimpleTrafficLightLogic::getCurrentPhaseIndex() const {
     return myStep;
 }
@@ -208,8 +208,8 @@ MSSimpleTrafficLightLogic::changeStepAndDuration(MSTLLogicControl& tlcontrol,
 
 
 void
-MSSimpleTrafficLightLogic::setPhases(const Phases& phases, unsigned int step) {
-    assert(step < phases.size());
+MSSimpleTrafficLightLogic::setPhases(const Phases& phases, int step) {
+    assert(step < (int)phases.size());
     deletePhases();
     myPhases = phases;
     myStep = step;

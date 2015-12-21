@@ -3,7 +3,7 @@
 @file    polygon.py
 @author  Michael Behrisch
 @date    2011-03-16
-@version $Id: polygon.py 18106 2015-03-19 08:08:16Z behrisch $
+@version $Id: polygon.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Python implementation of the TraCI interface.
 
@@ -16,6 +16,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 import struct
 import traci
 import traci.constants as tc
@@ -112,8 +113,7 @@ def setType(polygonID, polygonType):
     """
     traci._beginMessage(
         tc.CMD_SET_POLYGON_VARIABLE, tc.VAR_TYPE, polygonID, 1 + 4 + len(polygonType))
-    traci._message.string += struct.pack("!Bi",
-                                         tc.TYPE_STRING, len(polygonType)) + str(polygonType)
+    traci._message.packString(polygonType)
     traci._sendExact()
 
 
@@ -146,8 +146,7 @@ def add(polygonID, shape, color, fill=False, polygonType="", layer=0):
     traci._beginMessage(tc.CMD_SET_POLYGON_VARIABLE, tc.ADD, polygonID, 1 + 4 + 1 + 4 +
                         len(polygonType) + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 1 + 4 + 1 + 1 + len(shape) * (8 + 8))
     traci._message.string += struct.pack("!Bi", tc.TYPE_COMPOUND, 5)
-    traci._message.string += struct.pack("!Bi",
-                                         tc.TYPE_STRING, len(polygonType)) + str(polygonType)
+    traci._message.packString(polygonType)
     traci._message.string += struct.pack("!BBBBB", tc.TYPE_COLOR, int(
         color[0]), int(color[1]), int(color[2]), int(color[3]))
     traci._message.string += struct.pack("!BB", tc.TYPE_UBYTE, int(fill))

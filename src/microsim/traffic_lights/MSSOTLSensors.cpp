@@ -2,7 +2,7 @@
 /// @file    MSSOTLSensors.cpp
 /// @author  Gianfilippo Slager
 /// @date    Feb 2010
-/// @version $Id: MSSOTLSensors.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSSOTLSensors.cpp 19610 2015-12-14 21:03:17Z behrisch $
 ///
 // The base abstract class for SOTL sensors
 /****************************************************************************/
@@ -25,26 +25,6 @@ MSSOTLSensors::MSSOTLSensors(std::string tlLogicID, const MSTrafficLightLogic::P
 
 //MSSOTLSensors does not handle directly any data structure
 MSSOTLSensors::~MSSOTLSensors() {}
-
-void
-MSSOTLSensors::buildSensors(MSTrafficLightLogic::LaneVectorVector controlledLanes, NLDetectorBuilder& nb) {
-    assert(0);
-}
-
-void
-MSSOTLSensors::buildSensorForLane(MSLane* lane, NLDetectorBuilder& nb) {
-    assert(0);
-}
-
-void
-MSSOTLSensors::buildOutSensors(MSTrafficLightLogic::LaneVectorVector controlledLanes, NLDetectorBuilder& nb) {
-    assert(0);
-}
-
-void
-MSSOTLSensors::buildSensorForOutLane(MSLane* lane, NLDetectorBuilder& nb) {
-    assert(0);
-}
 
 
 /****************************************************************************/

@@ -3,7 +3,7 @@
 @file    transportationTestProblems.py
 @author  Michael Behrisch
 @date    2015-02-24
-@version $Id: transportationTestProblems.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: transportationTestProblems.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Create a network and trips for inputs found at http://www.bgu.ac.il/~bargera/tntp/.
 
@@ -18,6 +18,7 @@ the Free Software Foundation; either version 3 of the License, or
 """
 
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 import sys
 import subprocess

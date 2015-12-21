@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: MSLink.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: MSLink.cpp 19614 2015-12-15 09:47:56Z namdre $
 ///
 // A connnection between lanes
 /****************************************************************************/
@@ -657,8 +657,9 @@ const MSLane*
 MSLink::getInternalLaneBefore() const {
 #ifdef HAVE_INTERNAL_LANES
     return myInternalLaneBefore;
-#endif
+#else
     return 0;
+#endif
 }
 
 
@@ -697,7 +698,10 @@ MSLink::getZipperSpeed(const MSVehicle* ego, const SUMOReal dist, SUMOReal vSafe
         if (    // ignore vehicles that arrive after us (unless they are ahead and we could easily brake for them)
             ((avi.arrivalTime > arrivalTime) && !couldBrakeForLeader(dist, avi.dist, ego, foe)) ||
             // also ignore vehicles that are behind us and are able to brake for us
-            couldBrakeForLeader(avi.dist, dist, foe, ego)) {
+            couldBrakeForLeader(avi.dist, dist, foe, ego) ||
+            // resolve ties by lane index
+            (avi.arrivalTime == arrivalTime && avi.dist == dist && ego->getLane()->getIndex() < foe->getLane()->getIndex()))
+        {
             //if (gDebugFlag1) std::cout
             //    << "    ignoring foe=" << foe->getID()
             //        << " foeAT=" << avi.arrivalTime

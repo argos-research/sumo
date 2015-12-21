@@ -4,7 +4,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2012-11-15
-@version $Id: route2poly.py 18584 2015-08-03 06:28:51Z namdre $
+@version $Id: route2poly.py 19649 2015-12-17 21:05:20Z behrisch $
 
 From a sumo network and a route file, this script generates a polygon (polyline) for every route
 which can be loaded with sumo-gui for visualization
@@ -18,6 +18,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 import sys
 import os
 import itertools

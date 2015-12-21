@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILane.h 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GUILane.h 19614 2015-12-15 09:47:56Z namdre $
 ///
 // Representation of a lane in the micro simulation (gui-version)
 /****************************************************************************/
@@ -303,9 +303,6 @@ private:
 
     /// @brief Quarter of lane width, for speed-up
     SUMOReal myQuarterLaneWidth;
-
-    /// The lane index
-    unsigned int myIndex;
 
 #ifdef HAVE_OSG
     osg::Geometry* myGeom;

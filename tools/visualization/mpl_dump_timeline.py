@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2007-10-25
-@version $Id: mpl_dump_timeline.py 18095 2015-03-17 09:39:00Z behrisch $
+@version $Id: mpl_dump_timeline.py 19649 2015-12-17 21:05:20Z behrisch $
 
 
 This script reads the value of designated edges from
@@ -21,6 +21,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 from matplotlib import rcParams
 from pylab import *
@@ -94,7 +96,7 @@ optParser.add_option("--ylim", dest="ylim", type="string",  default="",
 (options, args) = optParser.parse_args()
 # check set options
 if not options.show and not options.output:
-    print "Neither show (--show) not write (--output <FILE>)? Exiting..."
+    print("Neither show (--show) not write (--output <FILE>)? Exiting...")
     exit()
 
 
@@ -103,14 +105,14 @@ parser = make_parser()
 weights = []
 for dump in options.dumps.split(','):
     if options.verbose:
-        print "Reading %s..." % dump
+        print("Reading %s..." % dump)
     cweights = WeightsReader(options.value, options.edges.split(','))
     weights.append(cweights)
     parser.setContentHandler(cweights)
     parser.parse(dump)
 # plot
 if options.verbose:
-    print "Processing data..."
+    print("Processing data...")
 # set figure size
 if not options.show:
     rcParams['backend'] = 'Agg'
@@ -142,8 +144,8 @@ for dump in weights:
         cs.append(colors[index])
         index = index + 1
      # plot
-print "data x-range: " + str(xmin) + " - " + str(xmax)
-print "data y-range: " + str(ymin) + " - " + str(ymax)
+print("data x-range: " + str(xmin) + " - " + str(xmax))
+print("data y-range: " + str(ymin) + " - " + str(ymax))
 for i in range(0, len(cs)):
     plot(xss[i], yss[i], color=cs[i], )
 # set axes

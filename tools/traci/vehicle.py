@@ -9,7 +9,7 @@
 @author  Laura Bieker
 @author  Daniel Krajzewicz
 @date    2011-03-09
-@version $Id: vehicle.py 18756 2015-08-31 19:16:33Z behrisch $
+@version $Id: vehicle.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Python implementation of the TraCI interface.
 
@@ -22,6 +22,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 import struct
 import traci
 import traci.constants as tc

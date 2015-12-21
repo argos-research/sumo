@@ -3,7 +3,7 @@
 @file    person.py
 @author  Jakob Erdmann
 @date    2015-02-06
-@version $Id: person.py 18335 2015-05-04 14:43:47Z namdre $
+@version $Id: person.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Python implementation of the TraCI interface.
 
@@ -16,6 +16,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 import struct
 import traci
 import traci.constants as tc

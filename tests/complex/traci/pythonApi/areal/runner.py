@@ -5,7 +5,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2011-03-04
-@version $Id: runner.py 18307 2015-04-27 20:39:09Z behrisch $
+@version $Id: runner.py 19631 2015-12-16 21:01:33Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -18,6 +18,7 @@ the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
 
+from __future__ import print_function
 import os
 import subprocess
 import sys
@@ -34,24 +35,24 @@ sumoProcess = subprocess.Popen(
     "%s -c sumo.sumocfg --remote-port %s" % (sumoBinary, PORT), shell=True, stdout=sys.stdout)
 traci.init(PORT)
 for step in range(4):
-    print "step", step
+    print("step", step)
     traci.simulationStep()
-print "areals", traci.areal.getIDList()
-print "areal count", traci.areal.getIDCount()
+print("areals", traci.areal.getIDList())
+print("areal count", traci.areal.getIDCount())
 detID = "det0"
-print "examining", detID
-print "pos", traci.areal.getPosition(detID)
-print "length", traci.areal.getLength(detID)
-print "lane", traci.areal.getLaneID(detID)
-print "vehNum", traci.areal.getLastStepVehicleNumber(detID)
-print "meanSpeed", traci.areal.getLastStepMeanSpeed(detID)
-print "vehIDs", traci.areal.getLastStepVehicleIDs(detID)
-print "occupancy", traci.areal.getLastStepOccupancy(detID)
+print("examining", detID)
+print("pos", traci.areal.getPosition(detID))
+print("length", traci.areal.getLength(detID))
+print("lane", traci.areal.getLaneID(detID))
+print("vehNum", traci.areal.getLastStepVehicleNumber(detID))
+print("meanSpeed", traci.areal.getLastStepMeanSpeed(detID))
+print("vehIDs", traci.areal.getLastStepVehicleIDs(detID))
+print("occupancy", traci.areal.getLastStepOccupancy(detID))
 
 traci.areal.subscribe(detID)
-print traci.areal.getSubscriptionResults(detID)
+print(traci.areal.getSubscriptionResults(detID))
 for step in range(3, 6):
-    print "step", step
+    print("step", step)
     traci.simulationStep()
-    print traci.areal.getSubscriptionResults(detID)
+    print(traci.areal.getSubscriptionResults(detID))
 traci.close()

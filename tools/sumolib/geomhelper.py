@@ -4,7 +4,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2013-02-25
-@version $Id: geomhelper.py 18756 2015-08-31 19:16:33Z behrisch $
+@version $Id: geomhelper.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Some helper functions for geometrical computations.
 
@@ -17,6 +17,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 import math
 
 INVALID_DISTANCE = -1

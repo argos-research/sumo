@@ -4,7 +4,7 @@
 @file    traciToHex.py
 @author  Michael Behrisch
 @date    2010-09-08
-@version $Id: traciToHex.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: traciToHex.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Converts all testclient.prog inputs to hexadecimal values.
 
@@ -19,6 +19,7 @@ the Free Software Foundation; either version 3 of the License, or
 """
 
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 import sys
 

@@ -5,7 +5,7 @@ A module for building a demand.
 @file    demand.py
 @author  Daniel Krajzewicz
 @date    2013-10-10
-@version $Id: demand.py 19604 2015-12-13 20:49:24Z behrisch $
+@version $Id: demand.py 19649 2015-12-17 21:05:20Z behrisch $
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
 Copyright (C) 2013 DLR (http://www.dlr.de/) and contributors
@@ -16,6 +16,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 import random
 import sumolib
 import os
@@ -162,8 +164,8 @@ class Demand:
         fdo.write("</routes>")
         fdo.close()
         duarouter = sumolib.checkBinary("duarouter")
-        print "netName > %s" % netName
-        print "routesName > %s" % routesName
+        print("netName > %s" % netName)
+        print("routesName > %s" % routesName)
         # aeh, implicitly setting --no-warnings is not nice, is it?; and the
         # need to dump generated vtypes to a temporary file as well
         retCode = subprocess.call([duarouter, "-v", "-n", netName,  "-t", fdo.name, "-o", routesName,

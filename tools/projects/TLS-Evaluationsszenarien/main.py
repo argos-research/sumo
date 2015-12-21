@@ -6,7 +6,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2009-06-30
-@version $Id: main.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: main.py 19649 2015-12-17 21:05:20Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -18,6 +18,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import subprocess
 import sys
@@ -107,8 +109,8 @@ for ini in range(1, 5):
                         greenWE = GSum / ((vehphNS * 1.0 / vehphWE) + 1)
                         greenNS = GSum / ((vehphWE * 1.0 / vehphNS) + 1)
 
-                    print greenWE
-                    print greenNS
+                    print(greenWE)
+                    print(greenNS)
 
                     changePhaseDurations(os.path.join('sumoConfig', 'one_intersection', 'cross.net.xml'), int(
                         round(greenWE)), intergreenLength, int(round(greenNS)), intergreenLength)
@@ -139,11 +141,11 @@ for ini in range(1, 5):
                     [greenWE, greenNS] = getAvgGreenTime(
                         intergreenLength, intergreenLength)
 
-                print vehphWE, " <-> ", flowWE, " (q = ", qWE, ")"
-                print vehphNS, " <-> ", flowNS, " (q = ", qNS, ")"
+                print(vehphWE, " <-> ", flowWE, " (q = ", qWE, ")")
+                print(vehphNS, " <-> ", flowNS, " (q = ", qNS, ")")
 
-                print >> avgDelayFile, flowWE, flowNS, qWE, qNS, getAvgDelayWE(
-                ), getAvgDelayNS(), getAvgDelay(), greenWE, greenNS
+                print(flowWE, flowNS, qWE, qNS, getAvgDelayWE(
+                ), getAvgDelayNS(), getAvgDelay(), greenWE, greenNS, file=avgDelayFile)
 
     avgDelayFile.close()
 

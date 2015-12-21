@@ -6,7 +6,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-04-07
-@version $Id: SeparateVLSArea.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: SeparateVLSArea.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Separates from an FCD-File (from Nürnberg) all routes which belongs to the VLS-Area and saves them in a new file. 
 
@@ -19,15 +19,17 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import util.Path as path
 import util.Reader as reader
 
 
 def main():
-    print "start"
+    print("start")
     generateVLS_FCD_File()
-    print"end"
+    print("end")
 
 
 def generateVLS_FCD_File():

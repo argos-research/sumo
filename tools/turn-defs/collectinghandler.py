@@ -3,7 +3,7 @@
 @file    collectinghandler.py
 @author  Karol Stosiek
 @date    2011-10-26
-@version $Id: collectinghandler.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: collectinghandler.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Handler for loggers from logging module. Collects all log messages.
 
@@ -16,6 +16,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 
 import logging
 

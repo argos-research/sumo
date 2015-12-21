@@ -3,7 +3,7 @@
 /// @author  Gianfilippo Slager
 /// @author  Anna Chiara Bellini
 /// @date    Apr 2013
-/// @version $Id: MSSOTLRequestPolicy.h 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSSOTLRequestPolicy.h 19612 2015-12-15 08:14:49Z behrisch $
 ///
 // The class for SOTL Request logics
 /****************************************************************************/
@@ -31,7 +31,6 @@
 
 #include "MSSOTLPolicy.h"
 
-using namespace std;
 /**
  * @class MSSOTLRequestPolicy
  * @brief Class for low-level request policy.
@@ -46,15 +45,11 @@ public:
     MSSOTLRequestPolicy(MSSOTLPolicyDesirability* desirabilityAlgorithm,
                         const std::map<std::string, std::string>& parameters);
 
-    bool canRelease(int elapsed, bool thresholdPassed,  bool pushButtonPressed,
+    bool canRelease(SUMOTime elapsed, bool thresholdPassed,  bool pushButtonPressed,
                     const MSPhaseDefinition* stage, int vehicleCount);
 
     int getMinDecisionalPhaseDuration() {
-        std::ostringstream key;
-        key << "MIN_DECISIONAL_PHASE_DUR";
-        std::ostringstream def;
-        def << "5000";
-        return (int) s2f(getParameter(key.str(), def.str()));
+        return TplConvert::_2int(getParameter("MIN_DECISIONAL_PHASE_DUR", "5000").c_str());
     }
 
 };

@@ -5,7 +5,7 @@
 @author  Karol Stosiek
 @author  Michael Behrisch
 @date    2007-10-25
-@version $Id: generateTLSE3Detectors.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: generateTLSE3Detectors.py 19649 2015-12-17 21:05:20Z behrisch $
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
 Copyright (C) 2009-2015 DLR (http://www.dlr.de/) and contributors
@@ -16,6 +16,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import logging
 import optparse
@@ -83,7 +85,7 @@ if __name__ == "__main__":
 
     (options, args) = option_parser.parse_args()
     if not options.net_file:
-        print "Missing arguments"
+        print("Missing arguments")
         option_parser.print_help()
         exit()
 

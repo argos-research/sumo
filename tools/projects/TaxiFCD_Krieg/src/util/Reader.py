@@ -5,7 +5,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-04-18
-@version $Id: Reader.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: Reader.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Contains reader modules which are needed frequently
 
@@ -18,6 +18,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 
 import util.Path as path
 from analysis.Taxi import *

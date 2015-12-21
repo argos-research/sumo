@@ -3,7 +3,7 @@
 @file    runInternalTests.py
 @author  Michael Behrisch
 @date    2012-03-29
-@version $Id: runInternalTests.py 19013 2015-10-05 11:25:51Z behrisch $
+@version $Id: runInternalTests.py 19647 2015-12-17 16:13:12Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -55,16 +55,18 @@ def runInternal(suffix, args, out=sys.stdout, guiTests=False, console=False):
     env["GUISIM_BINARY"] = os.path.join(root, "..", "bin", "meso-gui" + suffix)
     env["MAROUTER_BINARY"] = os.path.join(
         root, "..", "bin", "marouter" + suffix)
+    apps = "sumo.internal,sumo.meso,complex.meso,duarouter.astar,duarouter.chrouter"
     ttBin = 'texttest.py'
     if os.name == "posix":
         if subprocess.call(['which', 'texttest']) == 0:
             ttBin = 'texttest'
+        if subprocess.call(['which', 'python3']) == 0:
+            apps += ',complex.python3,tools.python3'
     elif haveTextTestLib:
         if console:
             ttBin = 'texttestc.py'
         else:
             ttBin += "w"
-    apps = "sumo.internal,sumo.meso,complex.meso,duarouter.astar,duarouter.chrouter"
     if guiTests:
         apps = "sumo.gui"
     subprocess.call("%s %s -a %s" % (ttBin, args, apps), env=os.environ,

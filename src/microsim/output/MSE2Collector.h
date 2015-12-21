@@ -7,7 +7,7 @@
 /// @author  Robbin Blokpoel
 /// @author  Jakob Erdmann
 /// @date    Mon Feb 03 2014 14:13 CET
-/// @version $Id: MSE2Collector.h 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSE2Collector.h 19623 2015-12-16 09:30:37Z behrisch $
 ///
 // An areal (along a single lane) detector
 /****************************************************************************/
@@ -231,10 +231,10 @@ public:
     void reset();
 
     /** @brief Returns an estimate of the number of vehicles currently on the detector */
-    unsigned getEstimatedCurrentVehicleNumber(double speedThreshold) const;
+    int getEstimatedCurrentVehicleNumber(SUMOReal speedThreshold) const;
 
     /** @brief Returns an estimate of the lenght of the queue of vehicles currently stopped on the detector */
-    double getEstimateQueueLength() const;
+    SUMOReal getEstimateQueueLength() const;
 
     /// @name Methods returning current values
     /// @{

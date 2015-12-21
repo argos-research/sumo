@@ -2,7 +2,7 @@
 /// @file    MSRailCrossing.cpp
 /// @author  Jakob Erdmann
 /// @date    Dez 2015
-/// @version $Id: MSRailCrossing.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSRailCrossing.cpp 19651 2015-12-18 08:50:54Z behrisch $
 ///
 // A rail signal logic
 /****************************************************************************/
@@ -54,8 +54,8 @@ MSRailCrossing::MSRailCrossing(MSTLLogicControl& tlcontrol,
                                const std::map<std::string, std::string>& parameters) :
     MSSimpleTrafficLightLogic(tlcontrol, id, subid, Phases(), 0, DELTA_T, parameters),
     // XXX make this configurable
-    myMinGreenTime(TIME2STEPS(5)),
     mySecurityGap(TIME2STEPS(15)),
+    myMinGreenTime(TIME2STEPS(5)),
     /// XXX compute reasonable time depending on link length
     myYellowTime(TIME2STEPS(5)) {
     // dummy phase, used to avoid crashing in MSTrafficLightLogic::setTrafficLightSignals()

@@ -3,7 +3,7 @@
 @file    generateBidiDistricts.py
 @author  Jakob Erdmann
 @date    2015-07-31
-@version $Id: generateBidiDistricts.py 19535 2015-12-05 13:47:18Z behrisch $
+@version $Id: generateBidiDistricts.py 19649 2015-12-17 21:05:20Z behrisch $
 
 Generate a taz (district) file which groups edges in opposite directions
 belonging to the same road. For each edge, a taz is created which contains this edge
@@ -21,12 +21,14 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 import sys
 import os
 from optparse import OptionParser
 
 from sumolib.net import readNet
 from sumolib import geomhelper
+from functools import reduce
 
 
 def parse_args():

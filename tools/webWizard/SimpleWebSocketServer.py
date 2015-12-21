@@ -2,7 +2,7 @@
 @file    SimpleWebSocketServer.py
 @author  Dave Pallot
 @date    2013
-@version $Id: SimpleWebSocketServer.py 19475 2015-12-01 11:42:08Z behrisch $
+@version $Id: SimpleWebSocketServer.py 19649 2015-12-17 21:05:20Z behrisch $
 
 A web socket server implementation to be used by the osm server.py
 Originally distributed under the MIT license at
@@ -17,6 +17,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 import SocketServer
 import hashlib
 import base64
@@ -259,7 +260,7 @@ class WebSocket(object):
                     self.request = HTTPRequest(self.headerbuffer)
 
                     # handshake rfc 6455
-                    if self.request.headers.has_key('Sec-WebSocket-Key'.lower()):
+                    if 'Sec-WebSocket-Key'.lower() in self.request.headers:
                         key = self.request.headers['Sec-WebSocket-Key'.lower()]
                         hStr = HANDSHAKE_STR % {
                             'acceptstr':  base64.b64encode(hashlib.sha1(key + GUID_STR).digest())}
