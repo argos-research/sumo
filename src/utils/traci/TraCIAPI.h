@@ -695,7 +695,8 @@ public:
 	SUMOReal getWaitingTime(const std::string& typeID) const;
 
 	void moveTo(const std::string& typeID, const std::string& laneID, SUMOReal position) const;
-	void slowDown(const std::string& typeID, SUMOReal speed, int duration) const ;
+	void slowDown(const std::string& typeID, SUMOReal speed, int duration) const;
+	void setSpeed(const std::string& typeID, SUMOReal speed) const;
 
     private:
         /// @brief invalidated copy constructor

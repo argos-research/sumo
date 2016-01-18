@@ -1641,6 +1641,14 @@ TraCIAPI::VehicleScope::slowDown(const std::string& typeID, SUMOReal speed, int 
     myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, CMD_SLOWDOWN, typeID, content);
 }
 
+void
+TraCIAPI::VehicleScope::setSpeed(const std::string& typeID, SUMOReal speed) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(speed);
+    myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_SPEED, typeID, content);
+}
+
 
 
 /****************************************************************************/
