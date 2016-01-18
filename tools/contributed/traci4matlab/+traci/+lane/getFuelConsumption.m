@@ -6,7 +6,7 @@ function FuelConsumption = getFuelConsumption(laneID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getFuelConsumption.m 20 2015-03-02 16:52:32Z afacostag $
 
 import traci.constants
 FuelConsumption = traci.lane.getUniversal(constants.VAR_FUELCONSUMPTION, laneID);

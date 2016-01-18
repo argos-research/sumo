@@ -6,7 +6,7 @@ function COEmission = getCOEmission(laneID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getCOEmission.m 20 2015-03-02 16:52:32Z afacostag $
 
 import traci.constants
 COEmission = traci.lane.getUniversal(constants.VAR_COEMISSION, laneID);

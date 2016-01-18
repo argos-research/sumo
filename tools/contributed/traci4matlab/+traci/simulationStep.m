@@ -10,7 +10,7 @@ function responses = simulationStep(timeStep)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: simulationStep.m 24 2015-06-25 22:33:59Z afacostag $
 
 
 global message edgeSubscriptionResults guiSubscriptionResults ...

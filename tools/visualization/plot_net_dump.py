@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Laura Bieker
 @date    2013-10-14
-@version $Id: plot_net_dump.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: plot_net_dump.py 19694 2016-01-08 14:27:55Z namdre $
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
 Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
@@ -29,6 +29,7 @@ import sumolib
 from sumolib.visualization import helpers
 
 import matplotlib.pyplot as plt
+import matplotlib
 
 
 class WeightsReader(ContentHandler):
@@ -177,8 +178,8 @@ def main(args=None):
         helpers.plotNet(net, colors, widths, options)
 
         # drawing the legend, at least for the colors
-        sm = matplotlib.cm.ScalarMappable(cmap=get_cmap(
-            options.colormap), norm=plt.normalize(vmin=minColorValue, vmax=maxColorValue))
+        sm = plt.cm.ScalarMappable(cmap=matplotlib.cm.get_cmap(
+            options.colormap), norm=matplotlib.colors.Normalize(vmin=minColorValue, vmax=maxColorValue))
         # "fake up the array of the scalar mappable. Urgh..." (pelson, http://stackoverflow.com/questions/8342549/matplotlib-add-colorbar-to-a-sequence-of-line-plots)
         sm._A = []
         plt.colorbar(sm)

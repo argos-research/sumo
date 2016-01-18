@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Sascha Krieg
 /// @date    Sept 2002
-/// @version $Id: NBConnection.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: NBConnection.h 19698 2016-01-11 11:27:52Z namdre $
 ///
 // The class holds a description of a connection between two edges
 /****************************************************************************/
@@ -120,6 +120,9 @@ public:
     bool operator!=(const NBConnection& c) const {
         return !(*this == c);
     }
+
+    /// Output operator
+    friend std::ostream& operator<<(std::ostream& os, const NBConnection& c);
 
     const static int InvalidTlIndex;
     const static NBConnection InvalidConnection;

@@ -6,7 +6,7 @@ function phase = getPhase(tlsID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getPhase.m 20 2015-03-02 16:52:32Z afacostag $
 
 import traci.constants
 phase = traci.trafficlights.getUniversal(constants.TL_CURRENT_PHASE, tlsID);

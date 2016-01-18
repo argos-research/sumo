@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2013-08-16
-@version $Id: runner.py 19243 2015-11-02 15:32:47Z namdre $
+@version $Id: runner.py 19665 2015-12-23 23:28:07Z behrisch $
 
 import sumo network then export to the given format and import again
 and check for idempotency with the original sumo network
@@ -19,6 +19,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 
 
 import sys

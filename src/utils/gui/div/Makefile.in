@@ -228,6 +228,7 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+FFMPEG_LIBS = @FFMPEG_LIBS@
 FGREP = @FGREP@
 FOX_CONFIG = @FOX_CONFIG@
 FOX_LDFLAGS = @FOX_LDFLAGS@
@@ -349,10 +350,10 @@ GUIParam_PopupMenu.cpp GUIParam_PopupMenu.h \
 GUIParameterTableItem.h \
 GUIParameterTableWindow.cpp GUIParameterTableWindow.h \
 GUISelectedStorage.cpp GUISelectedStorage.h \
-GUIUserIO.cpp GUIUserIO.h \
-GLHelper.cpp GLHelper.h
+GUIUserIO.cpp GUIUserIO.h GUIVideoEncoder.h \
+GLHelper.cpp GLHelper.h \
+GLObjectValuePassConnector.h
 
-EXTRA_DIST = GLObjectValuePassConnector.h
 all: all-am
 
 .SUFFIXES:

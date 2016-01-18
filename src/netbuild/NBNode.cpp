@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBNode.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: NBNode.cpp 19703 2016-01-11 13:18:51Z namdre $
 ///
 // The representation of a single node
 /****************************************************************************/
@@ -632,7 +632,12 @@ NBNode::needsCont(const NBEdge* fromE, const NBEdge* otherFromE,
     }
     if (c.tlID != "" && !bothLeft) {
         assert(myTrafficLights.size() > 0);
-        return (c.contPos != NBEdge::UNSPECIFIED_CONTPOS) || (*myTrafficLights.begin())->needsCont(fromE, toE, otherFromE, otherToE);
+        for (std::set<NBTrafficLightDefinition*>::const_iterator it = myTrafficLights.begin(); it != myTrafficLights.end(); ++it) {
+            if ((*it)->needsCont(fromE, toE, otherFromE, otherToE)) {
+                return true;
+            }
+        }
+        return false;
     }
     if (fromE->getJunctionPriority(this) > 0 && otherFromE->getJunctionPriority(this) > 0) {
         return mustBrake(fromE, toE, c.fromLane, c.toLane, false);
@@ -652,7 +657,7 @@ NBNode::computeLogic(const NBEdgeCont& ec, OptionsCont& oc) {
         removeTrafficLights();
         for (std::set<NBTrafficLightDefinition*>::const_iterator i = trafficLights.begin(); i != trafficLights.end(); ++i) {
             (*i)->setParticipantsInformation();
-            (*i)->setTLControllingInformation(ec);
+            (*i)->setTLControllingInformation();
         }
         return;
     }
@@ -1202,6 +1207,10 @@ NBNode::removeEdge(NBEdge* edge, bool removeFromConnections) {
             for (i = myAllEdges.begin(); i != myAllEdges.end(); ++i) {
                 (*i)->removeFromConnections(edge);
             }
+        }
+        // invalidate controlled connections for loaded traffic light plans
+        for (std::set<NBTrafficLightDefinition*>::iterator i = myTrafficLights.begin(); i != myTrafficLights.end(); ++i) {
+            (*i)->replaceRemoved(edge, -1, 0, -1);
         }
     }
 }

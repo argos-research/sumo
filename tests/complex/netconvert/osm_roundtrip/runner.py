@@ -6,7 +6,7 @@
 @author  Laura Bieker
 @author  Michael Behrisch
 @date    2011-05-27
-@version $Id: runner.py 18105 2015-03-19 07:39:56Z behrisch $
+@version $Id: runner.py 19665 2015-12-23 23:28:07Z behrisch $
 
 import osm network 
 then import the built network again and check for idempotency
@@ -20,6 +20,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 
 
 import sys

@@ -7,7 +7,7 @@
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: inter_palmas_actuated.m 29 2015-10-13 13:21:27Z afacostag $
 
 clear all
 close all
@@ -20,7 +20,7 @@ import traci.constants
 % scenarioPath = [scenarioPath '\inter_palmas'];
 cd(scenarioPath);
 
-system(['sumo-gui -c ' './inter_palmas_actuated.sumocfg&']);
+system(['sumo-gui -c ' './inter_palmas_actuated.sumocfg &']);
 
 SIM_STEPS = [1 3600];
 beginTime = SIM_STEPS(1);
@@ -60,8 +60,7 @@ tlsSwitch = 0;
 subscribedTo10 = 0;
 pedsInSim = {};
 
-% main loop. do something every simulation step until no more vehicles are
-% loaded or running
+% main loop.
 for i = 1: duration
     traci.simulationStep();
     

@@ -9,7 +9,7 @@ function distanceRoad = getDistanceRoad(edgeID1, pos1, edgeID2, pos2, isDriving)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getDistanceRoad.m 20 2015-03-02 16:52:32Z afacostag $
 
 import traci.constants
 global message

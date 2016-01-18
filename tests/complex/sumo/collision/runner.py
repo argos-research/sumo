@@ -3,7 +3,7 @@
 @file    runner.py
 @author  Michael Behrisch
 @date    2010-09-06
-@version $Id: runner.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: runner.py 19667 2015-12-23 23:33:40Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -15,6 +15,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import os
 import subprocess
@@ -26,7 +28,7 @@ for dep1 in range(10):
     for dep2 in range(10):
         for stop in range(1, 10):
             routes = open("input_routes.rou.xml", 'w')
-            print >> routes, """
+            print("""
 <routes>
     <route id="left" edges="1i 4o 4i 2o 2i 3o 3i 1o 1i"/>
     <vehicle id="l" route="left" depart="%s"/>
@@ -34,7 +36,7 @@ for dep1 in range(10):
     <vehicle id="v" route="vertical" depart="%s">
         <stop lane="4o_0" endPos="%s"/>
     </vehicle>
-</routes>""" % (dep1, dep2, stop)
+</routes>""" % (dep1, dep2, stop), file=routes)
             routes.close()
             subprocess.call(
                 [sumoBinary] + sys.argv[1:], shell=(os.name == "nt"), stdout=sys.stdout, stderr=sys.stderr)

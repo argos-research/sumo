@@ -5,7 +5,7 @@ function laneID = getLaneID(loopID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getLaneID.m 20 2015-03-02 16:52:32Z afacostag $
 
 import traci.constants
 laneID = traci.inductionloop.getUniversal(constants.VAR_LANE_ID, loopID);

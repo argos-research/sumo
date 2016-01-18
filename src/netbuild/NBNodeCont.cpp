@@ -8,7 +8,7 @@
 /// @author  Michael Behrisch
 /// @author  Sascha Krieg
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBNodeCont.cpp 19552 2015-12-07 15:27:51Z namdre $
+/// @version $Id: NBNodeCont.cpp 19689 2016-01-07 14:33:43Z namdre $
 ///
 // Container for nodes during the netbuilding process
 /****************************************************************************/
@@ -884,6 +884,9 @@ NBNodeCont::guessTLs(OptionsCont& oc, NBTrafficLightLogicCont& tlc) {
         // check which nodes should be controlled
         for (std::map<std::string, NBNode*>::const_iterator i = myNodes.begin(); i != myNodes.end(); ++i) {
             NBNode* node = i->second;
+            if (find(ncontrolled.begin(), ncontrolled.end(), node) != ncontrolled.end()) {
+                continue;
+            }
             const EdgeVector& incoming = node->getIncomingEdges();
             const EdgeVector& outgoing = node->getOutgoingEdges();
             if (!node->isTLControlled() && incoming.size() > 1 && !node->geometryLike()) {

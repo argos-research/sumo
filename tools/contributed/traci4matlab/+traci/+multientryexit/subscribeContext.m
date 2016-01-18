@@ -19,7 +19,7 @@ function subscribeContext(detID, domain, dist, varargin)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: subscribeContext.m 20 2015-03-02 16:52:32Z afacostag $
 
 global detSubscriptionResults
 import traci.constants

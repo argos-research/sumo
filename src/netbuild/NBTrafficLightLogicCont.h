@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBTrafficLightLogicCont.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: NBTrafficLightLogicCont.h 19701 2016-01-11 12:29:03Z namdre $
 ///
 // A container for traffic light definitions and built programs
 /****************************************************************************/
@@ -138,22 +138,20 @@ public:
      * Goes through all stored definitions and calls "NBTrafficLightDefinition::compute"
      *  for each. Stores the result using "insert".
      *
-     * @param[in] ec The edge container used during the computation
      * @param[in] oc Options used during the computation
      * @return The number of computed tls and programs
      * @see NBTrafficLightDefinition::compute
      */
-    std::pair<unsigned int, unsigned int> computeLogics(NBEdgeCont& ec, OptionsCont& oc);
+    std::pair<unsigned int, unsigned int> computeLogics(OptionsCont& oc);
 
 
     /** @brief Computes a specific traffic light logic (using by NETEDIT)
      *
-     * @param[in] ec The edge container used during the computation
      * @param[in] oc Options used during the computation
      * @return whether the logic was computed successfully
      * @see NBTrafficLightDefinition::compute
      */
-    bool computeSingleLogic(NBEdgeCont& ec, OptionsCont& oc, NBTrafficLightDefinition* def);
+    bool computeSingleLogic(OptionsCont& oc, NBTrafficLightDefinition* def);
 
 
     /** @brief Replaces occurences of the removed edge in incoming/outgoing edges of all definitions

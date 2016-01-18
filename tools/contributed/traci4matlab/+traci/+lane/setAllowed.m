@@ -1,5 +1,4 @@
 function setAllowed(laneID, allowedClasses)
-import traci.constants
 %setAllowed Set the allowed vehicle classes in the lane.
 %   setAllowed(LANEID,ALLOWEDCLASSES) Sets a list of allowed vehicle 
 %   classes contained in a cell array of strings. Setting an empty list 
@@ -8,8 +7,9 @@ import traci.constants
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: setAllowed.m 29 2015-10-13 13:21:27Z afacostag $
 
+import traci.constants
 global message
 traci.beginMessage(constants.CMD_SET_LANE_VARIABLE, constants.LANE_ALLOWED,...
 laneID, 1+4+sum(cellfun('length', allowedClasses))+4*length(allowedClasses));

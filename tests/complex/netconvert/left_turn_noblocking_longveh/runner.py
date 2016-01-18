@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2011-05-23
-@version $Id: runner.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: runner.py 19665 2015-12-23 23:28:07Z behrisch $
 
 call jtrrouter twice and check that the output differs
 
@@ -18,6 +18,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import sys
 import os

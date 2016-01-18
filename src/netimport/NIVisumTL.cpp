@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Thr, 08 May 2003
-/// @version $Id: NIVisumTL.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: NIVisumTL.cpp 19699 2016-01-11 11:53:55Z namdre $
 ///
 // Intermediate class for storing visum traffic lights during their import
 /****************************************************************************/
@@ -34,6 +34,7 @@
 #include <utils/options/OptionsCont.h>
 #include <netbuild/NBLoadedTLDef.h>
 #include <netbuild/NBTrafficLightLogicCont.h>
+#include <netbuild/NBEdgeCont.h>
 #include "NIVisumTL.h"
 
 #ifdef CHECK_MEMORY_LEAKS
@@ -80,11 +81,11 @@ NIVisumTL::getSignalGroup(const std::string& name) {
 
 
 void
-NIVisumTL::build(NBTrafficLightLogicCont& tlc) {
+NIVisumTL::build(NBEdgeCont& ec, NBTrafficLightLogicCont& tlc) {
     for (std::vector<NBNode*>::iterator ni = myNodes.begin(); ni != myNodes.end(); ni++) {
         NBNode* node = (*ni);
         TrafficLightType type = SUMOXMLDefinitions::TrafficLightTypes.get(OptionsCont::getOptions().getString("tls.default-type"));
-        NBLoadedTLDef* def = new NBLoadedTLDef(node->getID(), node, myOffset, type);
+        NBLoadedTLDef* def = new NBLoadedTLDef(ec, node->getID(), node, myOffset, type);
         tlc.insert(def);
         def->setCycleDuration((unsigned int) myCycleTime);
         // signalgroups

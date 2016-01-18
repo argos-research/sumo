@@ -175,7 +175,7 @@ am__DEPENDENCIES_1 =
 @WITH_GUI_TRUE@	../foreign/tcpip/libtcpip.a $(MEM_LIBS) \
 @WITH_GUI_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
 @WITH_GUI_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
-@WITH_GUI_TRUE@	$(am__DEPENDENCIES_1)
+@WITH_GUI_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
 AM_V_lt = $(am__v_lt_@AM_V@)
 am__v_lt_ = $(am__v_lt_@AM_DEFAULT_V@)
 am__v_lt_0 = --silent
@@ -291,6 +291,7 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+FFMPEG_LIBS = @FFMPEG_LIBS@
 FGREP = @FGREP@
 FOX_CONFIG = @FOX_CONFIG@
 FOX_LDFLAGS = @FOX_LDFLAGS@
@@ -468,7 +469,7 @@ EXTRA_DIST = netedit64.ico tlslogo.cpp
 @WITH_GUI_TRUE@../utils/iodevices/libiodevices.a \
 @WITH_GUI_TRUE@../foreign/tcpip/libtcpip.a \
 @WITH_GUI_TRUE@$(MEM_LIBS) \
-@WITH_GUI_TRUE@$(XERCES_LIBS) \
+@WITH_GUI_TRUE@$(XERCES_LIBS) $(FFMPEG_LIBS) \
 @WITH_GUI_TRUE@$(FOX_LDFLAGS) $(XERCES_LDFLAGS) $(PROJ_LDFLAGS) $(GDAL_LDFLAGS) $(X_LDFLAGS)
 
 all: all-am

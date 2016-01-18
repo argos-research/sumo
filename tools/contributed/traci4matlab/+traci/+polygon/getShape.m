@@ -8,7 +8,7 @@ function shape = getShape(polygonID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getShape.m 20 2015-03-02 16:52:32Z afacostag $
 
 import traci.constants
 shape = traci.polygon.getUniversal(constants.VAR_SHAPE, polygonID);

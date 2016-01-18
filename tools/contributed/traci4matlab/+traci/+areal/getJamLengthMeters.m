@@ -7,7 +7,7 @@ function JamLengthMeters = getJamLengthMeters(detID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getJamLengthMeters.m 20 2015-03-02 16:52:32Z afacostag $
 
 import traci.constants
 JamLengthMeters = traci.areal.getUniversal(constants.JAM_LENGTH_METERS, detID);

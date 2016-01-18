@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Fri, 19 Jul 2002
-/// @version $Id: NIImporter_VISUM.cpp 18590 2015-08-03 11:17:45Z namdre $
+/// @version $Id: NIImporter_VISUM.cpp 19699 2016-01-11 11:53:55Z namdre $
 ///
 // A VISUM network importer
 /****************************************************************************/
@@ -205,7 +205,7 @@ NIImporter_VISUM::load() {
     }
     // build traffic lights
     for (NIVisumTL_Map::iterator j = myTLS.begin(); j != myTLS.end(); j++) {
-        j->second->build(myNetBuilder.getTLLogicCont());
+        j->second->build(myNetBuilder.getEdgeCont(), myNetBuilder.getTLLogicCont());
     }
     // build district shapes
     for (std::map<NBDistrict*, PositionVector>::const_iterator k = myDistrictShapes.begin(); k != myDistrictShapes.end(); ++k) {

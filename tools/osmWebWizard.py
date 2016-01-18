@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2014-14-10
-@version $Id: osmWebWizard.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: osmWebWizard.py 19682 2016-01-06 12:49:48Z laemmel $
 
 Browser GUI for OSMget, OSMbuild, optionally randomTrips and SUMO GUI
 
@@ -379,8 +379,8 @@ if __name__ == "__main__":
             [sumolib.checkBinary("sumo"), "-c", builder.files["config"]])
     else:
         if not args.remote:
-            webbrowser.open(
-                os.path.join(os.path.dirname(os.path.abspath(__file__)), "webWizard", "index.html"))
+		webbrowser.open("file://"+
+				os.path.join(os.path.dirname(os.path.abspath(__file__)), "webWizard", "index.html"))
 
         server = SimpleWebSocketServer(
             args.address, args.port, OSMImporterWebSocket)

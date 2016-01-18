@@ -11,7 +11,7 @@
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: traci_test2.m 29 2015-10-13 13:21:27Z afacostag $
 
 clear all
 close all
@@ -35,7 +35,7 @@ if ~exist(scenarioPath, 'file')
 end
 
 try
-	system(['sumo-gui -c ' scenarioPath '&']);
+	system(['sumo-gui -c ' scenarioPath ' &']);
 catch err
 end
 
@@ -57,6 +57,9 @@ else
 end
 
 subscribedToTestVeh = 0;
+contextSubsToTestVeh = 0;
+moveToVTDTested = 0;
+trackingTestVeh = 0;
 
 import traci.constants
 
@@ -222,8 +225,8 @@ programPointer = length(PROGRAM);
 % MinExpectedNumber = traci.simulation.getMinExpectedNumber();
 
 %% GUI SET COMMANDS
-% traci.gui.setZoom('View #0', 1000);
-% traci.gui.setOffset('View #0',  523.7211,  525.9342);
+traci.gui.setZoom('View #0', 1000);
+traci.gui.setOffset('View #0',  523.7211,  525.9342);
 traci.gui.setSchema('View #0',  'real world');
 % traci.gui.setBoundary('View #0', 386.95, 485.88, 651.64, 589.01);
 
@@ -267,7 +270,6 @@ traci.gui.setSchema('View #0',  'real world');
 % traci.vehicle.add('myvehicle','down');
 % traci.vehicle.remove('myvehicle');
 % traci.gui.trackVehicle('View #0', 'myvehicle');
-% traci.vehicle.moveToVTD('right_10','2o',0,608,509);
 
 %% VEHICLE TYPE COMMANDS
 
@@ -326,12 +328,39 @@ while traci.simulation.getMinExpectedNumber()>0
     % Subscribe to the vehicle with the id contained in the variable "testVehicle" 
 	% when it is loaded in the network
     if ismember(testVehicle,vehicles)
-        if ~subscribedToTestVeh
-            traci.vehicle.subscribe(testVehicle);
-            subscribedToTestVeh = 1;
+%         if ~subscribedToTestVeh
+%             traci.vehicle.subscribe(testVehicle);
+%             subscribedToTestVeh = 1;
+%         end
+        
+%         if ~contextSubsToTestVeh
+%             traci.vehicle.subscribeContext(testVehicle,constants.CMD_GET_VEHICLE_VARIABLE,...
+%                 20, {'0x40', '0x42','0x43','0x5b','0x51','0x56','0x7a'});
+%             subscribedToTestVeh = 1;
+%         end
+        
+%         testVehicleHandle = traci.vehicle.getSubscriptionResults(testVehicle);
+%         testVehicleHandle = {testVehicleHandle(constants.VAR_ROAD_ID) testVehicleHandle(constants.VAR_LANEPOSITION)};
+        if step == 100
+            testVehDecel = traci.vehicle.getDecel(testVehicle)
+            traci.vehicle.setDecel(testVehicle, 5);
         end
-        testVehicleHandle = traci.vehicle.getSubscriptionResults(testVehicle);
-        testVehicleHandle = {testVehicleHandle(constants.VAR_ROAD_ID) testVehicleHandle(constants.VAR_LANEPOSITION)};
+        if step > 100
+            testVehDecel = traci.vehicle.getDecel(testVehicle)
+        end
+        
+        if  ~trackingTestVeh
+            traci.gui.trackVehicle('View #0', testVehicle);
+            trackingTestVeh = 1;
+        end
+        
+        if ~moveToVTDTested
+            traci.vehicle.moveToVTD('right_10','2o',0,608,509,0);
+            moveToVTDTested = 1;
+        end
+        
+        
+        
     end
     
     %% GETSUBSCRIPTIONRESULTS COMMANDS: Note that you have to create the required detectors in the cross.det.xml file
@@ -451,10 +480,6 @@ while traci.simulation.getMinExpectedNumber()>0
     % traci.edge.setMaxSpeed('1i',5);
     
     %% GUI COMMANDS
-    vehiclesInNetwork = traci.vehicle.getIDList();
-%     if  ~isempty(find(ismember(vehiclesInNetwork,testVehicle), 1))
-%         traci.gui.trackVehicle('View #0', testVehicle);
-%     end
     
     % guizoom = traci.gui.getZoom()
     % offset = traci.gui.getOffset()

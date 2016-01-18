@@ -9,7 +9,7 @@
 /// @author  Christoph Sommer
 /// @author  Mario Krumnow
 /// @date    Mon, 05 Mar 2001
-/// @version $Id: MSLane.cpp 19651 2015-12-18 08:50:54Z behrisch $
+/// @version $Id: MSLane.cpp 19711 2016-01-12 11:37:12Z namdre $
 ///
 // Representation of a lane in the micro simulation
 /****************************************************************************/
@@ -751,7 +751,7 @@ MSLane::handleCollision(SUMOTime timestep, const std::string& stage, MSVehicle* 
                 // synchroneous lane change maneuver
                 return false;
             }
-            WRITE_WARNING("Teleporting vehicle '" + collider->getID() + "'; collision with '"
+            WRITE_WARNING("Teleporting vehicle '" + collider->getID() + "'; collision with vehicle '"
                           + victim->getID() + "', lane='" + getID() + "', gap=" + toString(gap)
                           + ", time=" + time2string(MSNet::getInstance()->getCurrentTimeStep()) + " stage=" + stage + ".");
             MSNet::getInstance()->getVehicleControl().registerCollision();
@@ -1693,6 +1693,7 @@ MSLane::by_connections_to_sorter::operator()(const MSEdge* const e1, const MSEdg
 void
 MSLane::saveState(OutputDevice& out) {
     out.openTag(SUMO_TAG_LANE);
+    out.writeAttr("id", getID()); // using "id" instead of SUMO_ATTR_ID makes the value only show up in xml state
     out.openTag(SUMO_TAG_VIEWSETTINGS_VEHICLES);
     out.writeAttr(SUMO_ATTR_VALUE, myVehicles);
     out.closeTag();

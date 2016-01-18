@@ -211,7 +211,7 @@ DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = ${SHELL} /run/media/alex/brain/KIA4SM/sumo/svn/missing aclocal-1.15
 ALLOCA = 
 AMTAR = $${TAR-tar}
-AM_CPPFLAGS = -I/run/media/alex/brain/KIA4SM/sumo/svn/./src -I/usr/include/fox-1.6  -I/usr/local/include -I/usr/include 
+AM_CPPFLAGS = -I/run/media/alex/brain/KIA4SM/sumo/svn/./src  -I/usr/include/ffmpeg -I/usr/local/include -I/usr/include/fox-1.6  -I/usr/local/include -I/usr/include 
 AM_CXXFLAGS = 
 AM_DEFAULT_VERBOSITY = 1
 AR = ar
@@ -223,7 +223,7 @@ CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
 CPP = gcc -E
-CPPFLAGS = 
+CPPFLAGS =  -I/usr/include/ffmpeg -I/usr/local/include
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
@@ -239,6 +239,7 @@ ECHO_N = -n
 ECHO_T = 
 EGREP = /usr/bin/grep -E
 EXEEXT = 
+FFMPEG_LIBS = -lavformat -lavcodec -lavutil -lswscale
 FGREP = /usr/bin/grep -F
 FOX_CONFIG = /usr/bin/fox-config
 FOX_LDFLAGS = -lFOX-1.6 -lX11 -lXext -lfreetype -lXft -lXcursor -lXrender -lXrandr -lXfixes -lXi -lGL -lGLU -ldl -lpthread -lrt -ljpeg -lpng -ltiff -lz -lbz2 -lGLU -lGL

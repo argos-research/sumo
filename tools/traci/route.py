@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Lena Kalleske
 @date    2008-10-09
-@version $Id: route.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: route.py 19662 2015-12-23 23:20:53Z behrisch $
 
 Python implementation of the TraCI interface.
 
@@ -96,9 +96,7 @@ def add(routeID, edges):
     """
     traci._beginMessage(tc.CMD_SET_ROUTE_VARIABLE, tc.ADD, routeID,
                         1 + 4 + sum(map(len, edges)) + 4 * len(edges))
-    traci._message.string += struct.pack("!Bi", tc.TYPE_STRINGLIST, len(edges))
-    for e in edges:
-        traci._message.string += struct.pack("!i", len(e)) + str(e)
+    traci._message.packStringList(edges)
     traci._sendExact()
 
 

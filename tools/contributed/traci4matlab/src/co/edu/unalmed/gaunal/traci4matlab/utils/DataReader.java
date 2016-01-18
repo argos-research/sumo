@@ -6,7 +6,7 @@
  * Copyright 2015 Universidad Nacional de Colombia,
  * Politecnico Jaime Isaza Cadavid.
  * Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
- * $Id$
+ * $Id: DataReader.java 26 2015-06-25 22:45:10Z afacostag $
  */
 
 package co.edu.unalmed.gaunal.traci4matlab.utils;

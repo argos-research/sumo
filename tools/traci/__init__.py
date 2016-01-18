@@ -7,7 +7,7 @@
 @author  Daniel Krajzewicz
 @author  Jakob Erdmann
 @date    2008-10-09
-@version $Id: __init__.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: __init__.py 19662 2015-12-23 23:20:53Z behrisch $
 
 Python implementation of the TraCI interface.
 
@@ -87,6 +87,11 @@ class Message:
 
     def packString(self, s, pre=constants.TYPE_STRING):
         self.string += struct.pack("!Bi", pre, len(s)) + s.encode("latin1")
+
+    def packStringList(self, l):
+        self.string += struct.pack("!Bi", constants.TYPE_STRINGLIST, len(l))
+        for s in l:
+            self.string += struct.pack("!i", len(s)) + s.encode("latin1")
 
 
 class Storage:

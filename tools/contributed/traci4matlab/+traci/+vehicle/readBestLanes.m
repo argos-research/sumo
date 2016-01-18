@@ -5,7 +5,7 @@ function lanes = readBestLanes(result)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: readBestLanes.m 20 2015-03-02 16:52:32Z afacostag $
 
 result.read(5);
 nbLanes = result.readInt(); % Length

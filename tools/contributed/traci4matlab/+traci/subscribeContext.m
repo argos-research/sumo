@@ -5,7 +5,7 @@ function subscribeContext(cmdID, subscriptionBegin, subscriptionEnd, objID, doma
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: subscribeContext.m 20 2015-03-02 16:52:32Z afacostag $
 
 global message
 global loopSubscriptionResults laneSubscriptionResults vehSubscriptionResults ...

@@ -6,7 +6,7 @@ function position = getPosition(vehID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getPosition.m 22 2015-04-13 14:20:57Z afacostag $
 
 import traci.constants
 position = traci.vehicle.getUniversal(constants.VAR_POSITION, vehID);

@@ -4,7 +4,7 @@
 @author  Laura Bieker
 @author  Michael Behrisch
 @date    2014-08-28
-@version $Id: runner.py 19631 2015-12-16 21:01:33Z behrisch $
+@version $Id: runner.py 19666 2015-12-23 23:30:55Z behrisch $
 
 Python resume test.
 
@@ -19,6 +19,7 @@ the Free Software Foundation; either version 3 of the License, or
 """
 
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 import sys
 import subprocess

@@ -7,6 +7,6 @@ import traci.constants
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getNOxEmission.m 20 2015-03-02 16:52:32Z afacostag $
 
 NOxEmission = traci.edge.getUniversal(constants.VAR_NOXEMISSION, edgeID);

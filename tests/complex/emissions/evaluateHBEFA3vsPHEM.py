@@ -5,7 +5,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2013-01-14
-@version $Id: evaluateHBEFA3vsPHEM.py 18546 2015-07-08 09:08:01Z bieker $
+@version $Id: evaluateHBEFA3vsPHEM.py 19664 2015-12-23 23:26:35Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -17,6 +17,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import sys
 import os

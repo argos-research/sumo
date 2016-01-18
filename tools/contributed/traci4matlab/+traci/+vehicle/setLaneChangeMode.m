@@ -10,7 +10,7 @@ function setLaneChangeMode(vehID, lcm)
 %   $Id$
 
 import traci.constants
-traci.sendIntCmd(constants.CMD_SET_VEHICLE_VARIABLE, constants.VAR_LANECHANGEMODE, vehID, lcm);
+traci.sendIntCmd(constants.CMD_SET_VEHICLE_VARIABLE, constants.VAR_LANECHANGE_MODE, vehID, lcm);
 
 
 

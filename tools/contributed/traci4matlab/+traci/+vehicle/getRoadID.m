@@ -6,7 +6,7 @@ function roadID = getRoadID(vehID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getRoadID.m 22 2015-04-13 14:20:57Z afacostag $
 
 import traci.constants
 roadID = traci.vehicle.getUniversal(constants.VAR_ROAD_ID, vehID);

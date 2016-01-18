@@ -16,16 +16,11 @@ end
 
 import traci.constants
 global message
-traci.beginMessage(constants.CMD_GET_VEHICLE_VARIABLE, '0x68',...
+traci.beginMessage(constants.CMD_GET_VEHICLE_VARIABLE, constants.VAR_LEADER,...
     vehID, 1+8);
 message.string = [message.string uint8(sscanf(constants.TYPE_DOUBLE,'%x'))...
     traci.packInt64(dist)];
-    
-result = traci.checkResult(constants.CMD_GET_VEHICLE_VARIABLE, '0x68', vehID);
 
-result.readInt();
-result.read(1);
-vehicleID = result.readString();
-result.read(1);
-dist = result.readDouble();
+[vehicleID, dist] = traci.vehicle.readLeader(traci.checkResult(...
+    constants.CMD_GET_VEHICLE_VARIABLE, constants.VAR_LEADER, vehID));
     

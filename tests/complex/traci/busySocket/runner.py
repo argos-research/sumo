@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2011-03-02
-@version $Id: runner.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: runner.py 19666 2015-12-23 23:30:55Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -16,6 +16,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import os
 import subprocess
@@ -52,7 +54,7 @@ while not step > 100:
     traci.simulationStep()
     vehs = traci.vehicle.getIDList()
     if vehs.index("horiz") < 0 or len(vehs) > 1:
-        print "Something is false"
+        print("Something is false")
     step += 1
 traci.close()
 sys.stdout.flush()

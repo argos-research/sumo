@@ -3,7 +3,7 @@
 @file    runner.py
 @author  Michael Behrisch
 @date    2010-10-26
-@version $Id: runner.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: runner.py 19667 2015-12-23 23:33:40Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -15,6 +15,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 
 import os
 import subprocess

@@ -7,7 +7,7 @@ function drivingDistance2D = getDrivingDistance2D(vehID, x, y)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getDrivingDistance2D.m 20 2015-03-02 16:52:32Z afacostag $
 
 import traci.constants
 global message

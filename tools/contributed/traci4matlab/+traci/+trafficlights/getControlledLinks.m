@@ -8,7 +8,7 @@ function controlledLinks = getControlledLinks(tlsID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getControlledLinks.m 20 2015-03-02 16:52:32Z afacostag $
 
 import traci.constants
 controlledLinks = traci.trafficlights.getUniversal(constants.TL_CONTROLLED_LINKS, tlsID);

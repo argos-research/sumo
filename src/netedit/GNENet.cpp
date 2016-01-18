@@ -2,7 +2,7 @@
 /// @file    GNENet.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNENet.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GNENet.cpp 19701 2016-01-11 12:29:03Z namdre $
 ///
 // A visual container for GNE-network-components such as GNEEdge and GNEJunction.
 // GNE components wrap netbuild-components and supply visualisation and editing
@@ -717,8 +717,8 @@ GNENet::computeJunction(GNEJunction* junction) {
     for (std::set<NBTrafficLightDefinition*>::iterator it = tldefs.begin(); it != tldefs.end(); it++) {
         NBTrafficLightDefinition* def = *it;
         def->setParticipantsInformation();
-        def->setTLControllingInformation(ec);
-        tllCont.computeSingleLogic(ec, oc, def);
+        def->setTLControllingInformation();
+        tllCont.computeSingleLogic(oc, def);
     }
 
     // @todo compute connections etc...

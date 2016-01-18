@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2008-03-25
-@version $Id: routecompare.py 19655 2015-12-18 15:59:37Z behrisch $
+@version $Id: routecompare.py 19660 2015-12-23 21:35:31Z behrisch $
 
 This script compares two route sets by calculating
 a similarity for any two routes based on the number of common edges
@@ -283,7 +283,8 @@ if options.districts:
     parser.setContentHandler(DistrictReader(sources, sinks, edges))
     parser.parse(options.districts)
     for routes, routeMatrix in [(routes1, routeMatrix1), (routes2, routeMatrix2)]:
-        for routeID, route in routes.iteritems():
+        for routeID in routes:
+            route = routes[routeID]
             source = sources[route[0]]
             sink = sinks[route[-1]]
             if not source in routeMatrix:
@@ -304,7 +305,8 @@ for source in routeMatrix1:
         if options.verbose:
             print("Warning! No routes starting at %s in second route set" % source)
         continue
-    for sink, routeIDs1 in routeMatrix1[source].iteritems():
+    for sink in routeMatrix1[source]:
+        routeIDs1 = routeMatrix1[source][sink]
         if not sink in routeMatrix2[source]:
             if options.verbose:
                 print("Warning! No routes starting at %s and ending at %s in second route set" % (source, sink))

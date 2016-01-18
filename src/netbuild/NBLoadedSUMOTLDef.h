@@ -3,7 +3,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mar 2011
-/// @version $Id: NBLoadedSUMOTLDef.h 18279 2015-04-23 09:27:34Z namdre $
+/// @version $Id: NBLoadedSUMOTLDef.h 19701 2016-01-11 12:29:03Z namdre $
 ///
 // A complete traffic light logic loaded from a sumo-net. (opted to reimplement
 // since NBLoadedTLDef is quite vissim specific)
@@ -71,9 +71,8 @@ public:
     ~NBLoadedSUMOTLDef();
 
     /** @brief Informs edges about being controlled by a tls
-     * @param[in] ec The container of edges
      */
-    void setTLControllingInformation(const NBEdgeCont& ec) const;
+    void setTLControllingInformation() const;
 
     /** @brief Replaces occurences of the removed edge in incoming/outgoing edges of all definitions
      * @param[in] removed The removed edge
@@ -142,14 +141,15 @@ protected:
     void collectEdges();
 
     /** @brief Computes the traffic light logic finally in dependence to the type
-     * @param[in] ec The edge container
      * @param[in] brakingTime Duration a vehicle needs for braking in front of the tls in seconds
      * @return The computed logic
      */
-    NBTrafficLightLogic* myCompute(const NBEdgeCont& ec,
-                                   unsigned int brakingTimeSeconds);
+    NBTrafficLightLogic* myCompute(unsigned int brakingTimeSeconds);
 
     bool amInvalid() const;
+
+    /* initialize myNeedsContRelation and set myNeedsContRelationReady to true */
+    void initNeedsContRelation() const;
 
 private:
 
@@ -159,14 +159,18 @@ private:
     /// @brief The original nodes for which the loaded logic is valid
     std::set<NBNode*> myOriginalNodes;
 
-    /** @brief Informs edges about being controlled by a tls */
-    void setTLControllingInformation() const;
-
     /// @brief repair the plan if controlled nodes received pedestrian crossings
     void patchIfCrossingsAdded();
 
     /// @brief set of edges with shifted lane indices (to avoid shifting twice)
     std::set<NBEdge*> myShifted;
+
+    /** @brief Collects the edges for each tlIndex
+     * @param[out] fromEdges The from-edge for each controlled tlIndex
+     * @param[out] toEdges The to-edge for each controlled tlIndex
+     * @param[out] fromLanes The from-lanes for each controlled tlIndex
+     */
+    void collectEdgeVectors(EdgeVector& fromEdges, EdgeVector& toEdges, std::vector<int>& fromLanes) const;
 
 private:
     /// @brief class for identifying connections

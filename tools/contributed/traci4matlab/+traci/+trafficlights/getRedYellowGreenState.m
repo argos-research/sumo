@@ -8,7 +8,7 @@ function redYellowGreenState = getRedYellowGreenState(tlsID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getRedYellowGreenState.m 20 2015-03-02 16:52:32Z afacostag $
 
 import traci.constants
 redYellowGreenState = traci.trafficlights.getUniversal(constants.TL_RED_YELLOW_GREEN_STATE, tlsID);

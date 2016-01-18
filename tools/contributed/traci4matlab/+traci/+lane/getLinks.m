@@ -7,7 +7,7 @@ function links = getLinks(laneID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getLinks.m 22 2015-04-13 14:20:57Z afacostag $
 
 import traci.constants
 links = traci.lane.getUniversal(constants.LANE_LINKS, laneID);

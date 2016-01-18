@@ -6,7 +6,7 @@
 @author  Laura Bieker
 @author  Jakob Erdmann
 @date    2011-03-17
-@version $Id: lane.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: lane.py 19662 2015-12-23 23:20:53Z behrisch $
 
 Python implementation of the TraCI interface.
 
@@ -343,10 +343,7 @@ def setAllowed(laneID, allowedClasses):
         allowedClasses = [allowedClasses]
     traci._beginMessage(tc.CMD_SET_LANE_VARIABLE, tc.LANE_ALLOWED, laneID,
                         1 + 4 + sum(map(len, allowedClasses)) + 4 * len(allowedClasses))
-    traci._message.string += struct.pack("!Bi",
-                                         tc.TYPE_STRINGLIST, len(allowedClasses))
-    for c in allowedClasses:
-        traci._message.string += struct.pack("!i", len(c)) + str(c)
+    traci._message.packStringList(allowedClasses)
     traci._sendExact()
 
 
@@ -359,10 +356,7 @@ def setDisallowed(laneID, disallowedClasses):
         disallowedClasses = [disallowedClasses]
     traci._beginMessage(tc.CMD_SET_LANE_VARIABLE, tc.LANE_DISALLOWED, laneID,
                         1 + 4 + sum(map(len, disallowedClasses)) + 4 * len(disallowedClasses))
-    traci._message.string += struct.pack("!Bi",
-                                         tc.TYPE_STRINGLIST, len(disallowedClasses))
-    for c in disallowedClasses:
-        traci._message.string += struct.pack("!i", len(c)) + str(c)
+    traci._message.packStringList(disallowedClasses)
     traci._sendExact()
 
 

@@ -4,7 +4,7 @@ function links = readLinks(result)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: readLinks.m 20 2015-03-02 16:52:32Z afacostag $
 
 result.read(5) % Type Compound, Length
 nbLinks = result.readInt();

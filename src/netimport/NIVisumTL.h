@@ -2,7 +2,7 @@
 /// @file    NIVisumTL.h
 /// @author  Daniel Krajzewicz
 /// @date    Wed, 07 May 2003
-/// @version $Id: NIVisumTL.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: NIVisumTL.h 19699 2016-01-11 11:53:55Z namdre $
 ///
 // Intermediate class for storing visum traffic lights during their import
 /****************************************************************************/
@@ -38,6 +38,7 @@
 #include <utils/common/SUMOTime.h>
 
 class NBTrafficLightLogicCont;
+class NBEdgeCont;
 
 
 // ===========================================================================
@@ -169,7 +170,7 @@ public:
     SignalGroup& getSignalGroup(const std::string& name);
 
     /// @brief build the traffic light and add it to the given container
-    void build(NBTrafficLightLogicCont& tlc);
+    void build(NBEdgeCont& ec, NBTrafficLightLogicCont& tlc);
 
 private:
     /// @brief The name of traffic light

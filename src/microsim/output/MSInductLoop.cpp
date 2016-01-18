@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    2004-11-23
-/// @version $Id: MSInductLoop.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MSInductLoop.cpp 19742 2016-01-18 07:31:28Z namdre $
 ///
 // An unextended detector measuring at a fixed position on a fixed lane.
 /****************************************************************************/
@@ -79,6 +79,22 @@ MSInductLoop::reset() {
     myDismissedVehicleNumber = 0;
     myLastVehicleDataCont = myVehicleDataCont;
     myVehicleDataCont.clear();
+}
+
+
+bool 
+MSInductLoop::notifyEnter(SUMOVehicle& veh, Notification reason) {
+    if (reason == NOTIFICATION_DEPARTED ||
+            reason == NOTIFICATION_TELEPORT ||
+            reason == NOTIFICATION_PARKING ||
+            reason == NOTIFICATION_LANE_CHANGE) {
+        const SUMOReal front = veh.getPositionOnLane();
+        const SUMOReal back = front - veh.getVehicleType().getLength();
+        if (front >= myPosition && back < myPosition) {
+            myVehiclesOnDet.insert(std::make_pair(&veh, STEPS2TIME(MSNet::getInstance()->getCurrentTimeStep())));
+        }
+    }
+    return true;
 }
 
 
@@ -307,12 +323,12 @@ MSInductLoop::collectVehiclesOnDet(SUMOTime tMS) const {
     SUMOReal t = STEPS2TIME(tMS);
     std::vector<VehicleData> ret;
     for (VehicleDataCont::const_iterator i = myVehicleDataCont.begin(); i != myVehicleDataCont.end(); ++i) {
-        if ((*i).leaveTimeM >= t) {
+        if ((*i).entryTimeM >= t) {
             ret.push_back(*i);
         }
     }
     for (VehicleDataCont::const_iterator i = myLastVehicleDataCont.begin(); i != myLastVehicleDataCont.end(); ++i) {
-        if ((*i).leaveTimeM >= t) {
+        if ((*i).entryTimeM >= t) {
             ret.push_back(*i);
         }
     }

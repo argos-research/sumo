@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2004-11-23
-/// @version $Id: MSInductLoop.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MSInductLoop.h 19742 2016-01-18 07:31:28Z namdre $
 ///
 // An unextended detector measuring at a fixed position on a fixed lane.
 /****************************************************************************/
@@ -104,6 +104,17 @@ public:
 
     /// @name Methods inherited from MSMoveReminder
     /// @{
+    /** @brief Checks whether the reminder is activated by a vehicle entering the lane
+     *
+     * Lane change means in this case that the vehicle changes to the lane
+     *  the reminder is placed at.
+     *
+     * @param[in] veh The entering vehicle.
+     * @param[in] reason how the vehicle enters the lane
+     * @return True if vehicle enters the induction loop
+     * @see Notification
+     */
+    bool notifyEnter(SUMOVehicle& veh, Notification reason);
 
     /** @brief Checks whether the vehicle shall be counted and/or shall still touch this MSMoveReminder
      *

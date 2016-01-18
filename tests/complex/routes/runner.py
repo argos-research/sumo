@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2015-02-03
-@version $Id: runner.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: runner.py 19666 2015-12-23 23:30:55Z behrisch $
 
 This script is a test runner for the route input tests.
 
@@ -19,6 +19,7 @@ the Free Software Foundation; either version 3 of the License, or
 """
 
 from __future__ import print_function
+from __future__ import absolute_import
 import os
 import subprocess
 import sys
@@ -45,7 +46,7 @@ class PassThroughOptionParser(OptionParser):
         while rargs:
             try:
                 OptionParser._process_args(self, largs, rargs, values)
-            except (BadOptionError, AmbiguousOptionError), e:
+            except (BadOptionError, AmbiguousOptionError) as e:
                 largs.append(e.opt_str)
 
 

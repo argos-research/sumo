@@ -182,7 +182,8 @@ am__DEPENDENCIES_3 = ./netload/libnetload.a ./microsim/libmicrosim.a \
 @WITH_GUI_TRUE@	./foreign/polyfonts/libpolyfonts.a \
 @WITH_GUI_TRUE@	./gui/GUIManipulator.o \
 @WITH_GUI_TRUE@	./gui/GUITLLogicPhasesTrackerWindow.o \
-@WITH_GUI_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+@WITH_GUI_TRUE@	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+@WITH_GUI_TRUE@	$(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
 am__v_P_0 = false
@@ -325,6 +326,7 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+FFMPEG_LIBS = @FFMPEG_LIBS@
 FGREP = @FGREP@
 FOX_CONFIG = @FOX_CONFIG@
 FOX_LDFLAGS = @FOX_LDFLAGS@
@@ -515,7 +517,7 @@ $(XERCES_LDFLAGS) $(GDAL_LDFLAGS) $(PROJ_LDFLAGS)
 @WITH_GUI_TRUE@./foreign/polyfonts/libpolyfonts.a \
 @WITH_GUI_TRUE@./gui/GUIManipulator.o \
 @WITH_GUI_TRUE@./gui/GUITLLogicPhasesTrackerWindow.o \
-@WITH_GUI_TRUE@$(OSG_LIBS) \
+@WITH_GUI_TRUE@$(OSG_LIBS) $(FFMPEG_LIBS) \
 @WITH_GUI_TRUE@$(sumo_LDFLAGS) $(GDAL_LDFLAGS) $(X_LDFLAGS)
 
 SUBDIRS = foreign utils microsim router od marouter $(INTERNAL_DIRS) \

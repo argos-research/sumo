@@ -13,7 +13,7 @@ function ContextSubscriptionResults = getContextSubscriptionResults(personID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getContextSubscriptionResults.m 25 2015-06-25 22:38:10Z afacostag $
 
 global personSubscriptionResults
 if isempty(personSubscriptionResults)

@@ -7,7 +7,7 @@
 /// @author  Felix Brack
 /// @author  Jakob Erdmann
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: windows_config.h 19575 2015-12-09 08:22:14Z behrisch $
+/// @version $Id: windows_config.h 19683 2016-01-07 09:30:31Z behrisch $
 ///
 // The general windows configuration file
 /****************************************************************************/
@@ -45,9 +45,6 @@
 
 /* Define for dynamic Fox linkage */
 #define FOXDLL 1
-
-/* Define if FOX toolkit is present. */
-#define HAVE_FOX 1
 
 /* defines the precision of floats */
 #define SUMOReal double

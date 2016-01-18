@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Sascha Krieg
 /// @date    Tue, 29.05.2005
-/// @version $Id: NBOwnTLDef.h 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: NBOwnTLDef.h 19701 2016-01-11 12:29:03Z namdre $
 ///
 // A traffic light logics which must be computed (only nodes/edges are given)
 /****************************************************************************/
@@ -107,10 +107,9 @@ public:
 
 
     /** @brief Informs edges about being controlled by a tls
-     * @param[in] ec The container of edges
      * @see NBTrafficLightDefinition::setTLControllingInformation
      */
-    void setTLControllingInformation(const NBEdgeCont& ec) const;
+    void setTLControllingInformation() const;
     /// @}
 
 
@@ -148,13 +147,11 @@ protected:
     /// @{
 
     /** @brief Computes the traffic light logic finally in dependence to the type
-     * @param[in] ec The edge container
      * @param[in] brakingTime Duration a vehicle needs for braking in front of the tls
      * @return The computed logic
      * @see NBTrafficLightDefinition::myCompute
      */
-    NBTrafficLightLogic* myCompute(const NBEdgeCont& ec,
-                                   unsigned int brakingTimeSeconds);
+    NBTrafficLightLogic* myCompute(unsigned int brakingTimeSeconds);
 
 
     /** @brief Collects the nodes participating in this traffic light

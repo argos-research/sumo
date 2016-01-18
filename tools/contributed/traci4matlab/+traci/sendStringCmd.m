@@ -4,7 +4,7 @@ function sendStringCmd(cmdID, varID, objID, value)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: sendStringCmd.m 20 2015-03-02 16:52:32Z afacostag $
 
 global message
 import traci.constants

@@ -6,7 +6,7 @@ function pmxEmission = getPmxEmission(edgeID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getPmxEmission.m 20 2015-03-02 16:52:32Z afacostag $
 
 import traci.constants
 pmxEmission = traci.edge.getUniversal(constants.VAR_PMXEMISSION, edgeID);

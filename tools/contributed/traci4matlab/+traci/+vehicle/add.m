@@ -11,7 +11,7 @@ function add(vehID, routeID, varargin)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: add.m 29 2015-10-13 13:21:27Z afacostag $
 
 import traci.constants
 global message
@@ -20,7 +20,7 @@ p = inputParser;
 p.FunctionName = 'vehicle.add';
 p.addRequired('vehID',@ischar)
 p.addRequired('routeID',@ischar)
-p.addOptional('depart', -2, @isnumeric)   % -2 = DEPART_NOW
+p.addOptional('depart', -3, @isnumeric)   % -3 = DEPART_NOW
 p.addOptional('pos', 0, @isnumeric)
 p.addOptional('speed', 0, @isnumeric)
 p.addOptional('lane', 0, @isnumeric)

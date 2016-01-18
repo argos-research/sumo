@@ -7,22 +7,24 @@ function close()
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: close.m 29 2015-10-13 13:21:27Z afacostag $
 
 global connections message
 import traci.constants
 
-% Build the close command
-command = uint8(sscanf(constants.CMD_CLOSE,'%x'));
-message.queue = [message.queue command]; 
-message.string = [message.string uint8(1+1) command];
-
-% Send the close command
-traci.sendExact();
-
 % Close and clear the tcp object
-if isKey(connections,'')
-	activeConnection = connections('');
-    activeConnection.socket.close();
-    clear connections('')
+if ~isempty(connections)
+    if isKey(connections,'') && ~isempty(connections(''))
+        % Build the close command
+        command = uint8(sscanf(constants.CMD_CLOSE,'%x'));
+        message.queue = [message.queue command];
+        message.string = [message.string uint8(1+1) command];
+        
+        % Send the close command
+        traci.sendExact();
+        
+        activeConnection = connections('');
+        activeConnection.socket.close();
+        connections('') = [];
+    end
 end

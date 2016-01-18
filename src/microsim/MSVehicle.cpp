@@ -12,7 +12,7 @@
 /// @author  Axel Wegener
 /// @author  Christoph Sommer
 /// @date    Mon, 05 Mar 2001
-/// @version $Id: MSVehicle.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: MSVehicle.cpp 19709 2016-01-12 07:37:28Z namdre $
 ///
 // Representation of a vehicle in the micro simulation
 /****************************************************************************/
@@ -1848,7 +1848,7 @@ MSVehicle::enterLaneAtInsertion(MSLane* enteredLane, SUMOReal pos, SUMOReal spee
     MSLane* clane = enteredLane;
     while (leftLength > 0) {
         clane = clane->getLogicalPredecessorLane();
-        if (clane == 0) {
+        if (clane == 0 || clane == myLane) {
             break;
         }
         myFurtherLanes.push_back(clane);

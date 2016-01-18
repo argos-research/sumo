@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    20 Nov 2001
-/// @version $Id: NBNetBuilder.cpp 19403 2015-11-21 22:35:45Z namdre $
+/// @version $Id: NBNetBuilder.cpp 19701 2016-01-11 12:29:03Z namdre $
 ///
 // Instance responsible for building networks
 /****************************************************************************/
@@ -379,7 +379,7 @@ NBNetBuilder::compute(OptionsCont& oc,
     PROGRESS_DONE_MESSAGE();
     //
     PROGRESS_BEGIN_MESSAGE("Computing traffic light logics");
-    std::pair<unsigned int, unsigned int> numbers = myTLLCont.computeLogics(myEdgeCont, oc);
+    std::pair<unsigned int, unsigned int> numbers = myTLLCont.computeLogics(oc);
     PROGRESS_DONE_MESSAGE();
     std::string progCount = "";
     if (numbers.first != numbers.second) {

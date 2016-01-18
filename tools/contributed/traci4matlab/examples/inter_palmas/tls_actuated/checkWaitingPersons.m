@@ -5,7 +5,7 @@ function [activeRequest, numPeds] = checkWaitingPersons(WALKINGAREAS, CROSSINGS)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: checkWaitingPersons.m 25 2015-06-25 22:38:10Z afacostag $
 
 % check both sides of the crossing
 for i = 1:length(WALKINGAREAS)

@@ -110,7 +110,6 @@ libmicrosimtls_a_LIBADD =
 am_libmicrosimtls_a_OBJECTS = MSActuatedTrafficLightLogic.$(OBJEXT) \
 	MSAgentbasedTrafficLightLogic.$(OBJEXT) \
 	MSOffTrafficLightLogic.$(OBJEXT) MSRailSignal.$(OBJEXT) \
-	MSPhaseDefinition.$(OBJEXT) \
 	MSPhasedTrafficLightLogic.$(OBJEXT) MSPushButton.$(OBJEXT) \
 	MSRailCrossing.$(OBJEXT) MSSimpleTrafficLightLogic.$(OBJEXT) \
 	MSSOTLE2Sensors.$(OBJEXT) MSSOTLPolicyDesirability.$(OBJEXT) \
@@ -246,6 +245,7 @@ ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+FFMPEG_LIBS = @FFMPEG_LIBS@
 FGREP = @FGREP@
 FOX_CONFIG = @FOX_CONFIG@
 FOX_LDFLAGS = @FOX_LDFLAGS@
@@ -364,7 +364,7 @@ MSActuatedTrafficLightLogic.cpp MSActuatedTrafficLightLogic.h \
 MSAgentbasedTrafficLightLogic.cpp MSAgentbasedTrafficLightLogic.h \
 MSOffTrafficLightLogic.cpp MSOffTrafficLightLogic.h \
 MSRailSignal.cpp MSRailSignal.h \
-MSPhaseDefinition.cpp MSPhaseDefinition.h \
+MSPhaseDefinition.h \
 MSPhasedTrafficLightLogic.cpp MSPhasedTrafficLightLogic.h \
 MSPushButton.cpp MSPushButton.h \
 MSRailCrossing.cpp MSRailCrossing.h \
@@ -446,7 +446,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSAgentbasedTrafficLightLogic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSDeterministicHiLevelTrafficLightLogic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSOffTrafficLightLogic.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSPhaseDefinition.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSPhasedTrafficLightLogic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSPushButton.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSRailCrossing.Po@am__quote@

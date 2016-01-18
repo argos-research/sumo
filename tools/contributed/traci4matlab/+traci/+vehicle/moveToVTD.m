@@ -1,18 +1,18 @@
-function moveToVTD(vehID, edgeID, lane, x, y)
+function moveToVTD(vehID, edgeID, lane, x, y, angle)
 %moveToVTD Commands the vehicle to move to the specified position.
 %   moveToVTD(VEHID,EDGEID,LANE,X,Y) 
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: moveToVTD.m 29 2015-10-13 13:21:27Z afacostag $
 
 import traci.constants
 global message
 
 traci.beginMessage(constants.CMD_SET_VEHICLE_VARIABLE, constants.VAR_MOVE_TO_VTD,...
-    vehID,1+4+1+4+length(edgeID)+1+4+1+8+1+8);
+    vehID,1+4+1+4+length(edgeID)+1+4+1+8+1+8+1+8);
 message.string = [message.string uint8(sscanf(constants.TYPE_COMPOUND,'%x')) ...
-    traci.packInt32(4)];
+    traci.packInt32(5)];
 message.string = [message.string uint8(sscanf(constants.TYPE_STRING,'%x')) ...
     traci.packInt32(length(edgeID)) uint8(edgeID)];
 message.string = [message.string uint8(sscanf(constants.TYPE_INTEGER,'%x')) ...
@@ -21,4 +21,6 @@ message.string = [message.string uint8(sscanf(constants.TYPE_DOUBLE,'%x')) ...
     traci.packInt64(x)];
 message.string = [message.string uint8(sscanf(constants.TYPE_DOUBLE,'%x')) ...
     traci.packInt64(y)];
+message.string = [message.string uint8(sscanf(constants.TYPE_DOUBLE,'%x')) ...
+    traci.packInt64(angle)];
 traci.sendExact();

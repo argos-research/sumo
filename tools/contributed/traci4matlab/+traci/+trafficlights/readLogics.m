@@ -4,7 +4,7 @@ function logics = readLogics(result)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: readLogics.m 20 2015-03-02 16:52:32Z afacostag $
 
 result.readLength();
 nbLogics = result.readInt();    % Number of logics

@@ -182,7 +182,8 @@ sumo_gui_DEPENDENCIES = ./gui/libgui.a \
 	./foreign/polyfonts/libpolyfonts.a \
 	./gui/GUIManipulator.o \
 	./gui/GUITLLogicPhasesTrackerWindow.o \
-	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1)
+	$(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
+	$(am__DEPENDENCIES_1)
 AM_V_P = $(am__v_P_$(V))
 am__v_P_ = $(am__v_P_$(AM_DEFAULT_VERBOSITY))
 am__v_P_0 = false
@@ -297,7 +298,7 @@ am__relativize = \
 ACLOCAL = ${SHELL} /run/media/alex/brain/KIA4SM/sumo/svn/missing aclocal-1.15
 ALLOCA = 
 AMTAR = $${TAR-tar}
-AM_CPPFLAGS = -I/run/media/alex/brain/KIA4SM/sumo/svn/./src -I/usr/include/fox-1.6  -I/usr/local/include -I/usr/include 
+AM_CPPFLAGS = -I/run/media/alex/brain/KIA4SM/sumo/svn/./src  -I/usr/include/ffmpeg -I/usr/local/include -I/usr/include/fox-1.6  -I/usr/local/include -I/usr/include 
 AM_CXXFLAGS = 
 AM_DEFAULT_VERBOSITY = 1
 AR = ar
@@ -309,7 +310,7 @@ CC = gcc
 CCDEPMODE = depmode=gcc3
 CFLAGS = -g -O2
 CPP = gcc -E
-CPPFLAGS = 
+CPPFLAGS =  -I/usr/include/ffmpeg -I/usr/local/include
 CXX = g++
 CXXCPP = g++ -E
 CXXDEPMODE = depmode=gcc3
@@ -325,6 +326,7 @@ ECHO_N = -n
 ECHO_T = 
 EGREP = /usr/bin/grep -E
 EXEEXT = 
+FFMPEG_LIBS = -lavformat -lavcodec -lavutil -lswscale
 FGREP = /usr/bin/grep -F
 FOX_CONFIG = /usr/bin/fox-config
 FOX_LDFLAGS = -lFOX-1.6 -lX11 -lXext -lfreetype -lXft -lXcursor -lXrender -lXrandr -lXfixes -lXi -lGL -lGLU -ldl -lpthread -lrt -ljpeg -lpng -ltiff -lz -lbz2 -lGLU -lGL
@@ -515,7 +517,7 @@ $(sumo_LDADD) \
 ./foreign/polyfonts/libpolyfonts.a \
 ./gui/GUIManipulator.o \
 ./gui/GUITLLogicPhasesTrackerWindow.o \
-$(OSG_LIBS) \
+$(OSG_LIBS) $(FFMPEG_LIBS) \
 $(sumo_LDFLAGS) $(GDAL_LDFLAGS) $(X_LDFLAGS)
 
 SUBDIRS = foreign utils microsim router od marouter $(INTERNAL_DIRS) \

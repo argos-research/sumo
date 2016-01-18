@@ -12,7 +12,7 @@ function subscriptionResults = getSubscriptionResults(viewID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getSubscriptionResults.m 20 2015-03-02 16:52:32Z afacostag $
 
 global guiSubscriptionResults
 if isempty(guiSubscriptionResults)

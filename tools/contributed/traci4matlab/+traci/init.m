@@ -22,15 +22,20 @@ function [traciVersion, sumoVersion] = init(varargin)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
-
-import traci.constants
+%   $Id: init.m 29 2015-10-13 13:21:27Z afacostag $
 
 % Add the DataReader class
-[pathstr,~,~] = fileparts(which('traci.init'));
-javaaddpath([pathstr '\..\traci4matlab.jar']);
+% [pathstr,~,~] = fileparts(which('traci.init'));
+
+% dynJavaPath =  javaclasspath('-dynamic');
+% isInPath = ismember(dynJavaPath,[pathstr '\..\traci4matlab.jar']);
+% if(~any(isInPath) || isempty(isInPath))
+%     javaaddpath([pathstr '\..\traci4matlab.jar']);
+% end
 
 global connections
+
+import traci.constants
 
 % Parse the input
 p = inputParser;
@@ -49,9 +54,9 @@ label = p.Results.label;
 % Create the tcp object
 if isempty(connections)
     connections = containers.Map();
-    connections(label) = traci.Socket();
-    connections('') = connections(label);
 end
+connections('') = traci.Socket();
+connections(label) = connections('');
 
 % Connect to the SUMO server within the given number of retries
 err = [];
@@ -67,4 +72,4 @@ if ~isempty(err)
     disp(err);
 end
 
-[traciVersion sumoVersion] = traci.getVersion();
+[traciVersion,sumoVersion] = traci.getVersion();

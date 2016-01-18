@@ -7,7 +7,7 @@ function nextSwitch = getNextSwitch(tlsID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getNextSwitch.m 22 2015-04-13 14:20:57Z afacostag $
 
 import traci.constants
 nextSwitch = traci.trafficlights.getUniversal(constants.TL_NEXT_SWITCH, tlsID);

@@ -6,7 +6,7 @@ function setSchema(viewID, schemeName)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: setSchema.m 20 2015-03-02 16:52:32Z afacostag $
 
 import traci.constants
 traci.sendStringCmd(constants.CMD_SET_GUI_VARIABLE, constants.VAR_VIEW_SCHEMA, viewID, schemeName);

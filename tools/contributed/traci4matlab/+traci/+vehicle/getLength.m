@@ -5,7 +5,7 @@ function length = getLength(vehID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getLength.m 22 2015-04-13 14:20:57Z afacostag $
 
 import traci.constants
 length = traci.vehicle.getUniversal(constants.VAR_LENGTH, vehID);

@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSInsertionControl.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: MSInsertionControl.cpp 19715 2016-01-12 12:58:06Z namdre $
 ///
 // Inserts vehicles into the network when their departure time is reached
 /****************************************************************************/
@@ -267,6 +267,7 @@ MSInsertionControl::determineCandidates(SUMOTime time) {
             } else {
                 // strange: another vehicle with the same id already exists
                 if (MSGlobals::gStateLoaded) {
+                    vehControl.discountStateLoaded();
                     break;
                 }
                 throw ProcessError("Another vehicle with the id '" + newPars->id + "' exists.");

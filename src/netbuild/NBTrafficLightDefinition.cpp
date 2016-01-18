@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBTrafficLightDefinition.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: NBTrafficLightDefinition.cpp 19704 2016-01-11 14:22:54Z namdre $
 ///
 // The base class for traffic light logic definitions
 /****************************************************************************/
@@ -108,7 +108,7 @@ NBTrafficLightDefinition::~NBTrafficLightDefinition() {}
 
 
 NBTrafficLightLogic*
-NBTrafficLightDefinition::compute(const NBEdgeCont& ec, OptionsCont& oc) {
+NBTrafficLightDefinition::compute(OptionsCont& oc) {
     // it is not really a traffic light if no incoming edge exists
     if (amInvalid()) {
         // make a copy of myControlledNodes because it will be modified;
@@ -126,7 +126,7 @@ NBTrafficLightDefinition::compute(const NBEdgeCont& ec, OptionsCont& oc) {
     if (oc.isSet("tls.yellow.time")) {
         brakingTime = oc.getInt("tls.yellow.time");
     }
-    NBTrafficLightLogic* ret = myCompute(ec, brakingTime);
+    NBTrafficLightLogic* ret = myCompute(brakingTime);
     ret->addParameter(getMap());
     return ret;
 }
@@ -196,9 +196,10 @@ NBTrafficLightDefinition::collectEdges() {
         NBEdge* edge = *j;
         // edges that are marked as 'inner' will not get their own phase when
         // computing traffic light logics (unless they cannot be reached from the outside at all)
-        if (myControlledInnerEdges.count(edge->getID()) == 0 && reachable.count(edge) == 1) {
+        if (reachable.count(edge) == 1) {
             edge->setIsInnerEdge();
-            if (uncontrolledWithin) {
+            // legacy behavior
+            if (uncontrolledWithin && myControlledInnerEdges.count(edge->getID()) == 0) {
                 myIncomingEdges.erase(find(myIncomingEdges.begin(), myIncomingEdges.end(), edge));
             }
         }

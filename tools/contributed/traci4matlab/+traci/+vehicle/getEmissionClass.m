@@ -6,7 +6,7 @@ function emissionClass = getEmissionClass(vehID)
 %   Copyright 2015 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id$
+%   $Id: getEmissionClass.m 22 2015-04-13 14:20:57Z afacostag $
 
 import traci.constants
 emissionClass = traci.vehicle.getUniversal(constants.VAR_EMISSIONCLASS, vehID);

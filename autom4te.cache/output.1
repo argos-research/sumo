@@ -636,6 +636,7 @@ LIB@&t@OBJS
 ALLOCA
 AM_CXXFLAGS
 AM_CPPFLAGS
+FFMPEG_LIBS
 OSG_LIBS
 WITH_PYTHON_FALSE
 WITH_PYTHON_TRUE
@@ -17322,6 +17323,23 @@ fi
 
 
 fi
+
+save_cppflags=$CPPFLAGS
+CPPFLAGS="$CPPFLAGS -I/usr/include/ffmpeg -I/usr/local/include"
+export CPPFLAGS
+ac_fn_cxx_check_header_mongrel "$LINENO" "libavformat/version.h" "ac_cv_header_libavformat_version_h" "$ac_includes_default"
+if test "x$ac_cv_header_libavformat_version_h" = xyes; then :
+  AM_CPPFLAGS="$CPPFLAGS $AM_CPPFLAGS"
+                 
+$as_echo "@%:@define HAVE_FFMPEG 1" >>confdefs.h
+
+                 FFMPEG_LIBS="-lavformat -lavcodec -lavutil -lswscale" 
+                 ac_enabled="$ac_enabled ffmpeg"
+else
+  ac_disabled="$ac_disabled ffmpeg"
+fi
+
+
 
 AM_CPPFLAGS="-I$PWD/$srcdir/src $AM_CPPFLAGS"
 

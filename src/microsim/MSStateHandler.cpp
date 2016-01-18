@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Thu, 13 Dec 2012
-/// @version $Id: MSStateHandler.cpp 18226 2015-04-17 11:42:25Z behrisch $
+/// @version $Id: MSStateHandler.cpp 19716 2016-01-12 14:30:40Z namdre $
 ///
 // Parser and output filter for routes and vehicles state saving and loading
 /****************************************************************************/
@@ -39,6 +39,7 @@
 #include <utils/iodevices/OutputDevice.h>
 #include <utils/xml/SUMOXMLDefinitions.h>
 #include <utils/xml/SUMOVehicleParserHelper.h>
+#include <microsim/devices/MSDevice_Routing.h>
 #include <microsim/MSEdge.h>
 #include <microsim/MSLane.h>
 #include <microsim/MSGlobals.h>
@@ -113,8 +114,11 @@ MSStateHandler::myStartElement(int element, const SUMOSAXAttributes& attrs) {
             break;
         }
         case SUMO_TAG_DELAY: {
-            vc.setState(attrs.getInt(SUMO_ATTR_NUMBER), attrs.getInt(SUMO_ATTR_END),
-                        attrs.getFloat(SUMO_ATTR_DEPART), attrs.getFloat(SUMO_ATTR_TIME));
+            vc.setState(attrs.getInt(SUMO_ATTR_NUMBER), 
+                    attrs.getInt(SUMO_ATTR_BEGIN),
+                    attrs.getInt(SUMO_ATTR_END),
+                    attrs.getFloat(SUMO_ATTR_DEPART), 
+                    attrs.getFloat(SUMO_ATTR_TIME));
             break;
         }
         case SUMO_TAG_ROUTE: {
@@ -182,6 +186,12 @@ MSStateHandler::myStartElement(int element, const SUMOSAXAttributes& attrs) {
             assert(vc.getVehicle(p->id) == 0);
 
             SUMOVehicle* v = vc.buildVehicle(p, route, type, true);
+            vc.discountStateLoaded(); // already included (see SUMO_TAG_DELAY)
+            // disable pre-insertion rerouting and enable regular routing behavior
+            MSDevice_Routing* routingDevice = static_cast<MSDevice_Routing*>(v->getDevice(typeid(MSDevice_Routing)));
+            if (routingDevice != 0) {
+                routingDevice->notifyEnter(*v, MSMoveReminder::NOTIFICATION_DEPARTED);
+            }
             v->loadState(attrs, myOffset);
             if (!vc.addVehicle(p->id, v)) {
                 throw ProcessError("Error: Could not build vehicle " + p->id + "!");

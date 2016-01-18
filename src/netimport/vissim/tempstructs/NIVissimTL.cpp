@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NIVissimTL.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: NIVissimTL.cpp 19699 2016-01-11 11:53:55Z namdre $
 ///
 // -------------------
 /****************************************************************************/
@@ -392,7 +392,7 @@ NIVissimTL::dict_SetSignals(NBTrafficLightLogicCont& tlc,
         std::string id = toString<int>(tl->myID);
         TrafficLightType type = ((tl->getType() == "festzeit" || tl->getType() == "festzeit_fake") ?
                                  TLTYPE_STATIC : TLTYPE_ACTUATED);
-        NBLoadedTLDef* def = new NBLoadedTLDef(id, 0, type);
+        NBLoadedTLDef* def = new NBLoadedTLDef(ec, id, 0, type);
         if (!tlc.insert(def)) {
             WRITE_ERROR("Error on adding a traffic light\n Must be a multiple id ('" + id + "')");
             continue;
