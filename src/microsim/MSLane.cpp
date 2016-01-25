@@ -9,7 +9,7 @@
 /// @author  Christoph Sommer
 /// @author  Mario Krumnow
 /// @date    Mon, 05 Mar 2001
-/// @version $Id: MSLane.cpp 19711 2016-01-12 11:37:12Z namdre $
+/// @version $Id: MSLane.cpp 19768 2016-01-21 07:15:29Z namdre $
 ///
 // Representation of a lane in the micro simulation
 /****************************************************************************/
@@ -645,7 +645,7 @@ MSLane::setPartialOccupation(MSVehicle* v, SUMOReal leftVehicleLength) {
     myInlappingVehicleEnd = myLength - leftVehicleLength;
     if (v->getLaneChangeModel().isChangingLanes()) {
         MSLane* shadowLane = v->getLaneChangeModel().getShadowLane(this);
-        if (shadowLane != 0) {
+        if (shadowLane != 0 && v->getLaneChangeModel().hasShadowVehicle()) {
             v->getLaneChangeModel().setShadowPartialOccupator(shadowLane);
             shadowLane->myInlappingVehicle = v;
             shadowLane->myInlappingVehicleEnd = myLength - leftVehicleLength;

@@ -4,7 +4,7 @@
 /// @author  Alessio Bonfietti
 /// @author  Federico Caselli
 /// @date    Feb 2010
-/// @version $Id: MSSOTLE2Sensors.cpp 19623 2015-12-16 09:30:37Z behrisch $
+/// @version $Id: MSSOTLE2Sensors.cpp 19746 2016-01-18 13:59:29Z behrisch $
 ///
 // The class for SOTL sensors of "E2" type
 /****************************************************************************/
@@ -31,11 +31,7 @@ MSSOTLE2Sensors::MSSOTLE2Sensors(std::string tlLogicID,
 }
 
 MSSOTLE2Sensors::~MSSOTLE2Sensors(void) {
-    //Delete sensors
-    for (MSLaneID_MSE2CollectorMap::iterator sensorsIterator = m_sensorMap.begin(); sensorsIterator != m_sensorMap.end();
-            sensorsIterator++) {
-        delete(sensorsIterator->second);
-    }
+    //Deleting sensors takes place in the detector control
 }
 
 void MSSOTLE2Sensors::buildSensors(

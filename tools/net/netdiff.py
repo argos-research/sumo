@@ -5,7 +5,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2011-10-04
-@version $Id: netdiff.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: netdiff.py 19775 2016-01-21 15:33:46Z namdre $
 
 Reads two networks (source, dest) and tries to produce the minimal plain-xml input
 which can be loaded with netconvert alongside source to create dest
@@ -295,7 +295,7 @@ class AttributeStore:
 
     def write(self, file, item):
         file.write(" " * INDENT * self.level)
-        file.write(item)
+        file.write(item.encode("UTF-8"))
 
     def attr_string(self, names, values):
         return ' '.join(['%s="%s"' % (n, v) for n, v in zip(names, values) if v != None])

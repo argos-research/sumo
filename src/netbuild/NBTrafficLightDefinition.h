@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBTrafficLightDefinition.h 19701 2016-01-11 12:29:03Z namdre $
+/// @version $Id: NBTrafficLightDefinition.h 19762 2016-01-20 14:55:01Z namdre $
 ///
 // The base class for traffic light logic definitions
 /****************************************************************************/
@@ -337,6 +337,9 @@ public:
     virtual void initNeedsContRelation() const;
 
 protected:
+    /// @brief id for temporary definitions
+    static const std::string DummyID;
+
     /** @brief Computes the traffic light logic finally in dependence to the type
      * @param[in] brakingTime Duration a vehicle needs for braking in front of the tls
      * @return The computed logic
@@ -432,6 +435,10 @@ protected:
     typedef std::set<std::pair<int, int> > RightOnRedConflicts;
     mutable RightOnRedConflicts myRightOnRedConflicts;
     mutable bool myRightOnRedConflictsReady;
+
+private:
+    static std::set<NBEdge*> collectReachable(EdgeVector outer, bool checkControlled);
+
 
 };
 

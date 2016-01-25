@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 29.04.2005
-/// @version $Id: MSAbstractLaneChangeModel.cpp 18842 2015-09-17 10:43:51Z behrisch $
+/// @version $Id: MSAbstractLaneChangeModel.cpp 19768 2016-01-21 07:15:29Z namdre $
 ///
 // Interface for lane-change models
 /****************************************************************************/
@@ -215,6 +215,11 @@ MSAbstractLaneChangeModel::continueLaneChangeManeuver(bool moved) {
         const SUMOReal sourceHalfWidth = myShadowLane->getWidth() / 2.0;
         const SUMOReal targetHalfWidth = myVehicle.getLane()->getWidth() / 2.0;
         if (myLaneChangeCompletion * (sourceHalfWidth + targetHalfWidth) - myVehicle.getVehicleType().getWidth() / 2.0 > sourceHalfWidth) {
+            // removing partial occupator shadows - will be rebuilt in enterLaneAtLaneChange
+            for (std::vector<MSLane*>::const_iterator it = myPartiallyOccupatedByShadow.begin(); it != myPartiallyOccupatedByShadow.end(); ++it) {
+                (*it)->resetPartialOccupation(&myVehicle);
+            }
+            myPartiallyOccupatedByShadow.clear();
             removeLaneChangeShadow(MSMoveReminder::NOTIFICATION_LANE_CHANGE);
         }
     }

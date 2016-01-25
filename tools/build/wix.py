@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2011
-@version $Id: wix.py 19733 2016-01-15 19:44:08Z behrisch $
+@version $Id: wix.py 19772 2016-01-21 12:18:27Z behrisch $
 
 Builds the installer based on the nightly zip.
 
@@ -42,7 +42,7 @@ SKIP_FILES = ["osmWebWizard.py", "sumo-gui.exe", "netedit.exe", "start-command-l
 def buildFragment(wixBin, sourceDir, targetLabel, tmpDir, log=None):
     base = os.path.basename(sourceDir)
     subprocess.call([os.path.join(wixBin, "heat.exe"), "dir", sourceDir,
-                     "-cg", base, "-gg", "-dr", targetLabel,
+                     "-cg", base, "-gg", "-dr", targetLabel, "-sreg",
                      "-out", os.path.join(tmpDir, base + "RawFragment.wxs")],
                     stdout=log, stderr=log)
     fragIn = open(os.path.join(tmpDir, base + "RawFragment.wxs"))

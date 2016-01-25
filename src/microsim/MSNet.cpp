@@ -10,7 +10,7 @@
 /// @author  Mario Krumnow
 /// @author  Christoph Sommer
 /// @date    Tue, 06 Mar 2001
-/// @version $Id: MSNet.cpp 19525 2015-12-04 11:08:33Z namdre $
+/// @version $Id: MSNet.cpp 19773 2016-01-21 13:38:56Z namdre $
 ///
 // The simulated network and simulation perfomer
 /****************************************************************************/
@@ -604,7 +604,8 @@ MSNet::writeOutput() {
 
     // check emission dumps
     if (OptionsCont::getOptions().isSet("emission-output")) {
-        MSEmissionExport::write(OutputDevice::getDeviceByOption("emission-output"), myStep);
+        MSEmissionExport::write(OutputDevice::getDeviceByOption("emission-output"), myStep,
+                oc.getInt("emission-output.precision"));
     }
 
     // battery dumps

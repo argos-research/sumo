@@ -2,7 +2,7 @@
 /// @file    MSEmissionExport.h
 /// @author  Mario Krumnow
 /// @date    2012-04-26
-/// @version $Id: MSEmissionExport.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MSEmissionExport.h 19773 2016-01-21 13:38:56Z namdre $
 ///
 // Realises dumping Emission Data
 /****************************************************************************/
@@ -64,7 +64,7 @@ public:
      * @param[in] timestep The current time step
      * @exception IOError If an error on writing occurs (!!! not yet implemented)
      */
-    static void write(OutputDevice& of, SUMOTime timestep);
+    static void write(OutputDevice& of, SUMOTime timestep, int precision);
 
 
 private:

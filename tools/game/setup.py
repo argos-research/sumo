@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2010-05-23
-@version $Id: setup.py 19740 2016-01-18 06:44:58Z behrisch $
+@version $Id: setup.py 19786 2016-01-23 21:01:41Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -60,8 +60,9 @@ with zipfile.ZipFile(inZip) as binZip:
                 osgPlugins = extracted
         elif f.endswith(".dll") or f.endswith("gui.exe"):
             extracted = binZip.extract(f)
-            if os.path.isfile(extracted):
-                os.rename(extracted, os.path.join("dist", os.path.basename(f)))
+            dest = os.path.join("dist", os.path.basename(f))
+            if os.path.isfile(extracted) and not os.path.exists(dest):
+                os.rename(extracted, dest)
 os.chdir("dist")
 if osgPlugins:
     os.rename(osgPlugins, os.path.basename(osgPlugins))

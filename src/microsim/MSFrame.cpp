@@ -8,7 +8,7 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSFrame.cpp 19575 2015-12-09 08:22:14Z behrisch $
+/// @version $Id: MSFrame.cpp 19773 2016-01-21 13:38:56Z namdre $
 ///
 // Sets and checks options for microsim; inits global outputs and settings
 /****************************************************************************/
@@ -128,6 +128,8 @@ MSFrame::fillOptions() {
 
     oc.doRegister("emission-output", new Option_FileName());
     oc.addDescription("emission-output", "Output", "Save the emission values of each vehicle");
+    oc.doRegister("emission-output.precision", new Option_Integer(OUTPUT_ACCURACY));
+    oc.addDescription("emission-output.precision", "Output", "Write emission values with the given precision (default 2)");
 
     oc.doRegister("battery-output", new Option_FileName());
     oc.addDescription("battery-output", "Output", "Save the battery values of each vehicle");
