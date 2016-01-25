@@ -1428,6 +1428,8 @@ TraCIAPI::VehicleTypeScope::setLength(const std::string& typeID, SUMOReal length
     content.writeUnsignedByte(TYPE_DOUBLE);
     content.writeDouble(length);
     myParent.send_commandSetValue(CMD_SET_VEHICLETYPE_VARIABLE, VAR_LENGTH, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLETYPE_VARIABLE);
 }
 
 void
@@ -1436,6 +1438,8 @@ TraCIAPI::VehicleTypeScope::setMaxSpeed(const std::string& typeID, SUMOReal spee
     content.writeUnsignedByte(TYPE_DOUBLE);
     content.writeDouble(speed);
     myParent.send_commandSetValue(CMD_SET_VEHICLETYPE_VARIABLE, VAR_MAXSPEED, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLETYPE_VARIABLE);
 }
 
 void
@@ -1444,6 +1448,8 @@ TraCIAPI::VehicleTypeScope::setVehicleClass(const std::string& typeID, const std
     content.writeUnsignedByte(TYPE_STRING);
     content.writeString(clazz);
     myParent.send_commandSetValue(CMD_SET_VEHICLETYPE_VARIABLE, VAR_VEHICLECLASS, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLETYPE_VARIABLE);
 }
 
 void
@@ -1452,6 +1458,8 @@ TraCIAPI::VehicleTypeScope::setSpeedFactor(const std::string& typeID, SUMOReal f
     content.writeUnsignedByte(TYPE_DOUBLE);
     content.writeDouble(factor);
     myParent.send_commandSetValue(CMD_SET_VEHICLETYPE_VARIABLE, VAR_SPEED_FACTOR, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLETYPE_VARIABLE);
 }
 
 void
@@ -1460,6 +1468,8 @@ TraCIAPI::VehicleTypeScope::setSpeedDeviation(const std::string& typeID, SUMORea
     content.writeUnsignedByte(TYPE_DOUBLE);
     content.writeDouble(deviation);
     myParent.send_commandSetValue(CMD_SET_VEHICLETYPE_VARIABLE, VAR_SPEED_DEVIATION, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLETYPE_VARIABLE);
 }
 
 void
@@ -1468,6 +1478,8 @@ TraCIAPI::VehicleTypeScope::setEmissionClass(const std::string& typeID, const st
     content.writeUnsignedByte(TYPE_STRING);
     content.writeString(clazz);
     myParent.send_commandSetValue(CMD_SET_VEHICLETYPE_VARIABLE, VAR_EMISSIONCLASS, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLETYPE_VARIABLE);
 }
 
 void
@@ -1476,6 +1488,8 @@ TraCIAPI::VehicleTypeScope::setWidth(const std::string& typeID, SUMOReal width) 
     content.writeUnsignedByte(TYPE_DOUBLE);
     content.writeDouble(width);
     myParent.send_commandSetValue(CMD_SET_VEHICLETYPE_VARIABLE, VAR_WIDTH, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLETYPE_VARIABLE);
 }
 
 void
@@ -1484,6 +1498,8 @@ TraCIAPI::VehicleTypeScope::setMinGap(const std::string& typeID, SUMOReal minGap
     content.writeUnsignedByte(TYPE_DOUBLE);
     content.writeDouble(minGap);
     myParent.send_commandSetValue(CMD_SET_VEHICLETYPE_VARIABLE, VAR_MINGAP, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLETYPE_VARIABLE);
 }
 
 void
@@ -1492,6 +1508,8 @@ TraCIAPI::VehicleTypeScope::setShapeClass(const std::string& typeID, const std::
     content.writeUnsignedByte(TYPE_STRING);
     content.writeString(clazz);
     myParent.send_commandSetValue(CMD_SET_VEHICLETYPE_VARIABLE, VAR_SHAPECLASS, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLETYPE_VARIABLE);
 }
 
 void
@@ -1500,6 +1518,8 @@ TraCIAPI::VehicleTypeScope::setAccel(const std::string& typeID, SUMOReal accel) 
     content.writeUnsignedByte(TYPE_DOUBLE);
     content.writeDouble(accel);
     myParent.send_commandSetValue(CMD_SET_VEHICLETYPE_VARIABLE, VAR_ACCEL, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLETYPE_VARIABLE);
 }
 
 void
@@ -1508,6 +1528,8 @@ TraCIAPI::VehicleTypeScope::setDecel(const std::string& typeID, SUMOReal decel) 
     content.writeUnsignedByte(TYPE_DOUBLE);
     content.writeDouble(decel);
     myParent.send_commandSetValue(CMD_SET_VEHICLETYPE_VARIABLE, VAR_DECEL, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLETYPE_VARIABLE);
 }
 
 void
@@ -1516,6 +1538,8 @@ TraCIAPI::VehicleTypeScope::setImperfection(const std::string& typeID, SUMOReal 
     content.writeUnsignedByte(TYPE_DOUBLE);
     content.writeDouble(imperfection);
     myParent.send_commandSetValue(CMD_SET_VEHICLETYPE_VARIABLE, VAR_IMPERFECTION, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLETYPE_VARIABLE);
 }
 
 void
@@ -1524,6 +1548,8 @@ TraCIAPI::VehicleTypeScope::setTau(const std::string& typeID, SUMOReal tau) cons
     content.writeUnsignedByte(TYPE_DOUBLE);
     content.writeDouble(tau);
     myParent.send_commandSetValue(CMD_SET_VEHICLETYPE_VARIABLE, VAR_TAU, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLETYPE_VARIABLE);
 }
 
 void
@@ -1535,6 +1561,8 @@ TraCIAPI::VehicleTypeScope::setColor(const std::string& typeID, const TraCIColor
     content.writeUnsignedByte(c.b);
     content.writeUnsignedByte(c.a);
     myParent.send_commandSetValue(CMD_SET_VEHICLETYPE_VARIABLE, VAR_COLOR, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLETYPE_VARIABLE);
 }
 
 
@@ -1627,6 +1655,8 @@ TraCIAPI::VehicleScope::moveTo(const std::string& typeID, const std::string& lan
     content.writeUnsignedByte(TYPE_DOUBLE);
     content.writeDouble(position);
     myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_MOVE_TO, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
 }
 
 void
@@ -1639,6 +1669,8 @@ TraCIAPI::VehicleScope::slowDown(const std::string& typeID, SUMOReal speed, int 
     content.writeUnsignedByte(TYPE_INTEGER);
     content.writeInt(duration);
     myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, CMD_SLOWDOWN, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
 }
 
 void
@@ -1647,6 +1679,8 @@ TraCIAPI::VehicleScope::setSpeed(const std::string& typeID, SUMOReal speed) cons
     content.writeUnsignedByte(TYPE_DOUBLE);
     content.writeDouble(speed);
     myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_SPEED, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
 }
 
 
