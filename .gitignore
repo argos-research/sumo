@@ -17,12 +17,43 @@
 # vim
 *.swp
 
-# eclipse
-.project
-.cproject
-
-# binaries
-bin
-
 # etc
 *.log
+.project
+
+# make + binary stuff
+*.in
+bin
+Makefile
+INSTALL
+aclocal.m4
+autom4te.cache/
+compile
+config.guess
+config.sub
+configure
+depcomp
+install-sh
+ltmain.sh
+missing
+config.status
+libtool
+src/config.h
+src/stamp-h1
+src/activitygen/activitygen
+src/dfrouter/dfrouter
+src/duarouter/duarouter
+src/jtrrouter/jtrrouter
+src/marouter/marouter
+src/netconvert
+src/netedit/netedit
+src/netgen/netgenerate
+src/netimport/typemap.h
+src/od2trips
+src/polyconvert/polyconvert
+src/sumo
+src/sumo-gui
+src/tools/emissionsDrivingCycle
+src/tools/emissionsMap
+src/traci_testclient/TraCITestClient
+src/version.h
