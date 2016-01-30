@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Thu, 13 Dec 2012
-/// @version $Id: MSStateHandler.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MSStateHandler.h 19791 2016-01-25 14:59:17Z namdre $
 ///
 // Parser and output filter for routes and vehicles state saving and loading
 /****************************************************************************/
@@ -39,9 +39,7 @@
 // ===========================================================================
 // class declarations
 // ===========================================================================
-#ifdef HAVE_INTERNAL
 class MESegment;
-#endif
 
 
 // ===========================================================================
@@ -97,9 +95,7 @@ protected:
 private:
     const SUMOTime myOffset;
     SUMOTime myTime;
-#ifdef HAVE_INTERNAL
     MESegment* mySegment;
-#endif
     std::pair<int, int> myEdgeAndLane;
     unsigned int myQueIndex;
 

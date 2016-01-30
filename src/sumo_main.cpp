@@ -6,7 +6,7 @@
 /// @author  Thimor Bohn
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: sumo_main.cpp 19315 2015-11-11 06:51:47Z namdre $
+/// @version $Id: sumo_main.cpp 19791 2016-01-25 14:59:17Z namdre $
 ///
 // Main for SUMO
 /****************************************************************************/
@@ -62,9 +62,7 @@
 #include <microsim/output/MSDetectorControl.h>
 #include <utils/iodevices/OutputDevice.h>
 
-#ifdef HAVE_INTERNAL
 #include <mesosim/MEVehicleControl.h>
-#endif
 
 #ifndef NO_TRACI
 #include <traci-server/TraCIServer.h>
@@ -88,15 +86,11 @@ MSNet*
 load(OptionsCont& oc) {
     MSFrame::setMSGlobals(oc);
     MSVehicleControl* vc = 0;
-#ifdef HAVE_INTERNAL
     if (MSGlobals::gUseMesoSim) {
         vc = new MEVehicleControl();
     } else {
-#endif
         vc = new MSVehicleControl();
-#ifdef HAVE_INTERNAL
     }
-#endif
     MSNet* net = new MSNet(vc, new MSEventControl(),
                            new MSEventControl(), new MSEventControl());
 #ifndef NO_TRACI

@@ -6,7 +6,7 @@
 /// @author  Laura Bieker
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUISUMOViewParent.cpp 19617 2015-12-15 16:42:53Z behrisch $
+/// @version $Id: GUISUMOViewParent.cpp 19791 2016-01-25 14:59:17Z namdre $
 ///
 // A single child window which contains a view of the simulation area
 /****************************************************************************/
@@ -64,9 +64,7 @@
 #include "GUIApplicationWindow.h"
 #include "GUISUMOViewParent.h"
 
-#ifdef HAVE_INTERNAL
 #include <mesogui/GUIMEVehicleControl.h>
-#endif
 
 #ifdef HAVE_OSG
 #include <osgview/GUIOSGView.h>
@@ -203,9 +201,7 @@ GUISUMOViewParent::onCmdLocate(FXObject*, FXSelector sel, void*) {
             break;
         case MID_LOCATEVEHICLE:
             if (MSGlobals::gUseMesoSim) {
-#ifdef HAVE_INTERNAL
                 static_cast<GUIMEVehicleControl*>(static_cast<GUINet*>(MSNet::getInstance())->getGUIMEVehicleControl())->insertVehicleIDs(ids);
-#endif
             } else {
                 static_cast<GUIVehicleControl&>(MSNet::getInstance()->getVehicleControl()).insertVehicleIDs(ids);
             }

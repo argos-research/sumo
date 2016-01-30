@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILoadThread.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GUILoadThread.cpp 19791 2016-01-25 14:59:17Z namdre $
 ///
 // Class describing the thread that performs the loading of a simulation
 /****************************************************************************/
@@ -63,9 +63,7 @@
 #include "GUIGlobals.h"
 #include "GUIEvent_SimulationLoaded.h"
 
-#ifdef HAVE_INTERNAL
 #include <mesogui/GUIMEVehicleControl.h>
-#endif
 
 #ifndef NO_TRACI
 #include <traci-server/TraCIServer.h>
@@ -167,12 +165,10 @@ GUILoadThread::run() {
         myParent->onCmdGaming(0, 0, 0);
     }
     MSVehicleControl* vehControl = 0;
-#ifdef HAVE_INTERNAL
     GUIVisualizationSettings::UseMesoSim = MSGlobals::gUseMesoSim;
     if (MSGlobals::gUseMesoSim) {
         vehControl = new GUIMEVehicleControl();
     } else
-#endif
         vehControl = new GUIVehicleControl();
 
     GUINet* net = 0;
@@ -212,7 +208,7 @@ GUILoadThread::run() {
             simStartTime = string2time(oc.getString("begin"));
             simEndTime = string2time(oc.getString("end"));
             guiSettingsFiles = oc.getStringVector("gui-settings-file");
-#ifdef HAVE_INTERNAL
+#ifdef HAVE_OSG
             osgView = oc.getBool("osg-view");
 #endif
         }

@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Tue, 29.05.2005
-/// @version $Id: NBOwnTLDef.cpp 19758 2016-01-20 10:18:11Z namdre $
+/// @version $Id: NBOwnTLDef.cpp 19788 2016-01-25 10:20:27Z namdre $
 ///
 // A traffic light logics which must be computed (only nodes/edges are given)
 /****************************************************************************/
@@ -329,14 +329,14 @@ NBOwnTLDef::computeLogicAndConts(unsigned int brakingTimeSeconds, bool onlyConts
         for (unsigned int i1 = pos; i1 < pos + crossings.size(); ++i1) {
             state[i1] = 'r';
         }
-
+        const bool buildLeftGreenPhase = haveForbiddenLeftMover && !myHaveSinglePhase && leftTurnTime > 0;
         if (brakingTime > 0) {
             // build yellow (straight)
             for (unsigned int i1 = 0; i1 < pos; ++i1) {
                 if (state[i1] != 'G' && state[i1] != 'g') {
                     continue;
                 }
-                if ((vehicleState[i1] >= 'a' && vehicleState[i1] <= 'z') && haveForbiddenLeftMover && !rightTurnConflicts[i1]) {
+                if ((vehicleState[i1] >= 'a' && vehicleState[i1] <= 'z') && buildLeftGreenPhase && !rightTurnConflicts[i1]) {
                     continue;
                 }
                 state[i1] = 'y';
@@ -345,7 +345,7 @@ NBOwnTLDef::computeLogicAndConts(unsigned int brakingTimeSeconds, bool onlyConts
             logic->addStep(brakingTime, state);
         }
 
-        if (haveForbiddenLeftMover && !myHaveSinglePhase && leftTurnTime > 0) {
+        if (buildLeftGreenPhase) {
             // build left green
             for (unsigned int i1 = 0; i1 < pos; ++i1) {
                 if (state[i1] == 'Y' || state[i1] == 'y') {

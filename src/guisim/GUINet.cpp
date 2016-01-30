@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: GUINet.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GUINet.cpp 19791 2016-01-25 14:59:17Z namdre $
 ///
 // A MSNet extended by some values for usage within the gui
 /****************************************************************************/
@@ -63,9 +63,7 @@
 #include <gui/GUIGlobals.h>
 #include "GUINet.h"
 
-#ifdef HAVE_INTERNAL
 #include <mesogui/GUIMEVehicleControl.h>
-#endif
 
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
@@ -529,12 +527,10 @@ GUINet::unlock() {
     myLock.unlock();
 }
 
-#ifdef HAVE_INTERNAL
 GUIMEVehicleControl*
 GUINet::getGUIMEVehicleControl() {
     return dynamic_cast<GUIMEVehicleControl*>(myVehicleControl);
 }
-#endif
 
 
 #ifdef HAVE_OSG

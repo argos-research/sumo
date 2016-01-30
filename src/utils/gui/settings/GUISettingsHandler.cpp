@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Laura Bieker
 /// @date    Fri, 24. Apr 2009
-/// @version $Id: GUISettingsHandler.cpp 19379 2015-11-18 20:05:38Z namdre $
+/// @version $Id: GUISettingsHandler.cpp 19791 2016-01-25 14:59:17Z namdre $
 ///
 // The dialog to change the view (gui) settings.
 /****************************************************************************/
@@ -140,10 +140,8 @@ GUISettingsHandler::myStartElement(int element,
             mySettings.hideConnectors = TplConvert::_2bool(attrs.getStringSecure("hideConnectors", toString(mySettings.hideConnectors)).c_str());
             mySettings.laneWidthExaggeration = TplConvert::_2SUMOReal(attrs.getStringSecure("widthExaggeration", toString(mySettings.laneWidthExaggeration)).c_str());
             myCurrentColorer = element;
-#ifdef HAVE_INTERNAL
             mySettings.edgeColorer.setActive(laneEdgeMode);
             mySettings.edgeScaler.setActive(laneEdgeScaleMode);
-#endif
             mySettings.laneColorer.setActive(laneEdgeMode);
             mySettings.laneScaler.setActive(laneEdgeScaleMode);
         }
@@ -153,11 +151,9 @@ GUISettingsHandler::myStartElement(int element,
             myCurrentScaleScheme = 0;
             if (myCurrentColorer == SUMO_TAG_VIEWSETTINGS_EDGES) {
                 myCurrentScheme = mySettings.laneColorer.getSchemeByName(attrs.getStringSecure(SUMO_ATTR_NAME, ""));
-#ifdef HAVE_INTERNAL
                 if (myCurrentScheme == 0) {
                     myCurrentScheme = mySettings.edgeColorer.getSchemeByName(attrs.getStringSecure(SUMO_ATTR_NAME, ""));
                 }
-#endif
             }
             if (myCurrentColorer == SUMO_TAG_VIEWSETTINGS_VEHICLES) {
                 myCurrentScheme = mySettings.vehicleColorer.getSchemeByName(attrs.getStringSecure(SUMO_ATTR_NAME, ""));
@@ -179,11 +175,9 @@ GUISettingsHandler::myStartElement(int element,
             myCurrentScaleScheme = 0;
             if (myCurrentColorer == SUMO_TAG_VIEWSETTINGS_EDGES) {
                 myCurrentScaleScheme = mySettings.laneScaler.getSchemeByName(attrs.getStringSecure(SUMO_ATTR_NAME, ""));
-#ifdef HAVE_INTERNAL
                 if (myCurrentScaleScheme == 0) {
                     myCurrentScaleScheme = mySettings.edgeScaler.getSchemeByName(attrs.getStringSecure(SUMO_ATTR_NAME, ""));
                 }
-#endif
             }
             if (myCurrentScaleScheme && !myCurrentScaleScheme->isFixed()) {
                 bool ok = true;

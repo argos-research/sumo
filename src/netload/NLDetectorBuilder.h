@@ -5,7 +5,7 @@
 /// @author  Christian Roessel
 /// @author  Michael Behrisch
 /// @date    Mon, 15 Apr 2002
-/// @version $Id: NLDetectorBuilder.h 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: NLDetectorBuilder.h 19791 2016-01-25 14:59:17Z namdre $
 ///
 // Builds detectors for microsim
 /****************************************************************************/
@@ -45,10 +45,8 @@ class MSDetectorFileOutput;
 class MSLane;
 class MSEdge;
 
-#ifdef HAVE_INTERNAL
 class MEInductLoop;
 class MESegment;
-#endif
 
 
 // ===========================================================================

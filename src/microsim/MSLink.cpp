@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: MSLink.cpp 19614 2015-12-15 09:47:56Z namdre $
+/// @version $Id: MSLink.cpp 19827 2016-01-28 12:11:30Z namdre $
 ///
 // A connnection between lanes
 /****************************************************************************/
@@ -308,13 +308,11 @@ MSLink::opened(SUMOTime arrivalTime, SUMOReal arrivalSpeed, SUMOReal leaveSpeed,
     }
     const SUMOTime leaveTime = getLeaveTime(arrivalTime, arrivalSpeed, leaveSpeed, vehicleLength);
     for (std::vector<MSLink*>::const_iterator i = myFoeLinks.begin(); i != myFoeLinks.end(); ++i) {
-#ifdef HAVE_INTERNAL
         if (MSGlobals::gUseMesoSim) {
             if ((*i)->haveRed()) {
                 continue;
             }
         }
-#endif
         if ((*i)->blockedAtTime(arrivalTime, leaveTime, arrivalSpeed, leaveSpeed, myLane == (*i)->getLane(),
                                 impatience, decel, waitingTime, collectFoes)) {
             return false;
@@ -532,14 +530,31 @@ MSLink::getViaLane() const {
 }
 
 
+bool 
+MSLink::isExitLink() const {
+    /// XXX this only works in networks with internal lanes
+    return MSGlobals::gUsingInternalLanes && myJunctionInlane == 0 && getLane()->getEdge().getPurpose() == MSEdge::EDGEFUNCTION_NORMAL;
+}
+
+
+bool 
+MSLink::isInternalJunctionLink() const {
+    return (MSGlobals::gUsingInternalLanes && myJunctionInlane != 0 && myJunctionInlane->getLogicalPredecessorLane()->getEdge().isInternal());
+}
+
+bool 
+MSLink::fromInternalLane() const {
+    return (MSGlobals::gUsingInternalLanes && (
+                (myJunctionInlane == 0 && getLane()->getEdge().getPurpose() == MSEdge::EDGEFUNCTION_NORMAL)
+                || (myJunctionInlane != 0 && myJunctionInlane->getLogicalPredecessorLane()->getEdge().isInternal())));
+}
+
 MSLink::LinkLeaders
 MSLink::getLeaderInfo(SUMOReal dist, SUMOReal minGap, std::vector<const MSPerson*>* collectBlockers) const {
     LinkLeaders result;
     //gDebugFlag1 = true;
     // this link needs to start at an internal lane (either an exit link or between two internal lanes)
-    if (MSGlobals::gUsingInternalLanes && (
-                (myJunctionInlane == 0 && getLane()->getEdge().getPurpose() == MSEdge::EDGEFUNCTION_NORMAL)
-                || (myJunctionInlane != 0 && myJunctionInlane->getLogicalPredecessorLane()->getEdge().isInternal()))) {
+    if (fromInternalLane()) {
         //if (gDebugFlag1) std::cout << SIMTIME << " getLeaderInfo link=" << getViaLaneOrLane()->getID() << "\n";
         // this is an exit link
         for (size_t i = 0; i < myFoeLanes.size(); ++i) {

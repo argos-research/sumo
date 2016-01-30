@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2008-10-27
-/// @version $Id: MSMoveReminder.cpp 18096 2015-03-17 09:50:59Z behrisch $
+/// @version $Id: MSMoveReminder.cpp 19791 2016-01-25 14:59:17Z namdre $
 ///
 // Something on a lane to be noticed about vehicle movement
 /****************************************************************************/
@@ -47,7 +47,6 @@ MSMoveReminder::MSMoveReminder(const std::string& description, MSLane* const lan
 }
 
 
-#ifdef HAVE_INTERNAL
 void
 MSMoveReminder::updateDetector(SUMOVehicle& veh, SUMOReal entryPos, SUMOReal leavePos,
                                SUMOTime entryTime, SUMOTime currentTime, SUMOTime leaveTime,
@@ -95,6 +94,5 @@ void
 MSMoveReminder::removeFromVehicleUpdateValues(SUMOVehicle& veh) {
     myLastVehicleUpdateValues.erase(&veh);
 }
-#endif
 /****************************************************************************/
 

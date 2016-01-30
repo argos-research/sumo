@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    2014-01-07
-/// @version $Id: StdDefs.cpp 19450 2015-11-27 13:20:08Z namdre $
+/// @version $Id: StdDefs.cpp 19791 2016-01-25 14:59:17Z namdre $
 ///
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -90,9 +90,6 @@ const RGBColor& getLinkColor(const LinkState& ls) {
 
 const std::string getBuildName(const std::string& version) {
     std::string result = version;
-#ifdef HAVE_INTERNAL
-    result += "I";
-#endif
 #ifdef _DEBUG
     result += "D";
 #endif

@@ -7,7 +7,7 @@
 /// @author  Laura Bieker
 /// @author  Mario Krumnow
 /// @date    Sept 2002
-/// @version $Id: TraCIServerAPI_Edge.cpp 19339 2015-11-12 14:12:09Z behrisch $
+/// @version $Id: TraCIServerAPI_Edge.cpp 19833 2016-01-28 13:32:49Z namdre $
 ///
 // APIs for getting/setting edge values via TraCI
 /****************************************************************************/
@@ -69,7 +69,7 @@ TraCIServerAPI_Edge::processGet(TraCIServer& server, tcpip::Storage& inputStorag
             && variable != LAST_STEP_VEHICLE_HALTING_NUMBER && variable != LAST_STEP_LENGTH
             && variable != LAST_STEP_PERSON_ID_LIST
             && variable != LAST_STEP_VEHICLE_ID_LIST && variable != ID_COUNT && variable != VAR_PARAMETER) {
-        return server.writeErrorStatusCmd(CMD_GET_EDGE_VARIABLE, "Get Edge Variable: unsupported variable specified", outputStorage);
+        return server.writeErrorStatusCmd(CMD_GET_EDGE_VARIABLE, "Get Edge Variable: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
     }
     // begin response building
     tcpip::Storage tempMsg;
@@ -328,7 +328,7 @@ TraCIServerAPI_Edge::processSet(TraCIServer& server, tcpip::Storage& inputStorag
     // variable
     int variable = inputStorage.readUnsignedByte();
     if (variable != VAR_EDGE_TRAVELTIME && variable != VAR_EDGE_EFFORT && variable != VAR_MAXSPEED && variable != VAR_PARAMETER) {
-        return server.writeErrorStatusCmd(CMD_SET_EDGE_VARIABLE, "Change Edge State: unsupported variable specified", outputStorage);
+        return server.writeErrorStatusCmd(CMD_SET_EDGE_VARIABLE, "Change Edge State: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
     }
     // id
     std::string id = inputStorage.readString();

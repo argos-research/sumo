@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    late summer 2003
-/// @version $Id: MSGlobals.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MSGlobals.h 19791 2016-01-25 14:59:17Z namdre $
 ///
 // Some static variables for faster access
 /****************************************************************************/
@@ -40,9 +40,7 @@
 // ===========================================================================
 // class declarations
 // ===========================================================================
-#ifdef HAVE_INTERNAL
 class MELoop;
-#endif
 
 
 // ===========================================================================
@@ -85,7 +83,6 @@ public:
     /// Information whether a state has been loaded
     static bool gStateLoaded;
 
-#ifdef HAVE_INTERNAL
     /** Information whether mesosim shall be used */
     static bool gUseMesoSim;
 
@@ -97,11 +94,6 @@ public:
 
     /// mesoscopic simulation infrastructure
     static MELoop* gMesoNet;
-#else
-    /** Information whether mesosim shall be used = constant false */
-    const static bool gUseMesoSim;
-
-#endif
 
 };
 

@@ -8,7 +8,7 @@
 /// @author  Mario Krumnow
 /// @author  Jakob Erdmann
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_Vehicle.cpp 19234 2015-11-02 11:26:19Z behrisch $
+/// @version $Id: TraCIServerAPI_Vehicle.cpp 19833 2016-01-28 13:32:49Z namdre $
 ///
 // APIs for getting/setting vehicle values via TraCI
 /****************************************************************************/
@@ -100,7 +100,7 @@ TraCIServerAPI_Vehicle::processGet(TraCIServer& server, tcpip::Storage& inputSto
             && variable != VAR_ROUTE_INDEX
             && variable != VAR_PARAMETER
        ) {
-        return server.writeErrorStatusCmd(CMD_GET_VEHICLE_VARIABLE, "Get Vehicle Variable: unsupported variable specified", outputStorage);
+        return server.writeErrorStatusCmd(CMD_GET_VEHICLE_VARIABLE, "Get Vehicle Variable: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
     }
     // begin response building
     tcpip::Storage tempMsg;
@@ -452,7 +452,7 @@ TraCIServerAPI_Vehicle::processSet(TraCIServer& server, tcpip::Storage& inputSto
             && variable != ADD && variable != ADD_FULL && variable != REMOVE
             && variable != VAR_MOVE_TO_VTD && variable != VAR_PARAMETER/* && variable != VAR_SPEED_TIME_LINE && variable != VAR_LANE_TIME_LINE*/
        ) {
-        return server.writeErrorStatusCmd(CMD_SET_VEHICLE_VARIABLE, "Change Vehicle State: unsupported variable specified", outputStorage);
+        return server.writeErrorStatusCmd(CMD_SET_VEHICLE_VARIABLE, "Change Vehicle State: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
     }
     // id
     std::string id = inputStorage.readString();

@@ -6,7 +6,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    2005-09-15
-/// @version $Id: MSDetectorControl.h 18213 2015-04-16 11:55:42Z behrisch $
+/// @version $Id: MSDetectorControl.h 19791 2016-01-25 14:59:17Z namdre $
 ///
 // Detectors container; responsible for string and output generation
 /****************************************************************************/
@@ -43,10 +43,6 @@
 #include <microsim/output/MSE3Collector.h>
 #include <microsim/output/MSInductLoop.h>
 #include <microsim/output/MSRouteProbe.h>
-
-#ifdef HAVE_INTERNAL
-#include <mesosim/MEInductLoop.h>
-#endif
 
 
 // ===========================================================================

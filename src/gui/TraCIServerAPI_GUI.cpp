@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_GUI.cpp 19605 2015-12-14 10:20:25Z namdre $
+/// @version $Id: TraCIServerAPI_GUI.cpp 19833 2016-01-28 13:32:49Z namdre $
 ///
 // APIs for getting/setting GUI values via TraCI
 /****************************************************************************/
@@ -62,7 +62,7 @@ TraCIServerAPI_GUI::processGet(TraCIServer& server, tcpip::Storage& inputStorage
     // check variable
     if (variable != ID_LIST && variable != VAR_VIEW_ZOOM && variable != VAR_VIEW_OFFSET
             && variable != VAR_VIEW_SCHEMA && variable != VAR_VIEW_BOUNDARY) {
-        return server.writeErrorStatusCmd(CMD_GET_GUI_VARIABLE, "Get GUI Variable: unsupported variable specified", outputStorage);
+        return server.writeErrorStatusCmd(CMD_GET_GUI_VARIABLE, "Get GUI Variable: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
     }
     // begin response building
     tcpip::Storage tempMsg;
@@ -123,7 +123,7 @@ TraCIServerAPI_GUI::processSet(TraCIServer& server, tcpip::Storage& inputStorage
     if (variable != VAR_VIEW_ZOOM && variable != VAR_VIEW_OFFSET && variable != VAR_VIEW_SCHEMA && variable != VAR_VIEW_BOUNDARY
             && variable != VAR_SCREENSHOT && variable != VAR_TRACK_VEHICLE
        ) {
-        return server.writeErrorStatusCmd(CMD_SET_GUI_VARIABLE, "Change GUI State: unsupported variable specified", outputStorage);
+        return server.writeErrorStatusCmd(CMD_SET_GUI_VARIABLE, "Change GUI State: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
     }
     // id
     std::string id = inputStorage.readString();

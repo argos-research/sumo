@@ -5,7 +5,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    03.02.2014
-/// @version $Id: TraCIServerAPI_ArealDetector.cpp 18773 2015-09-03 13:28:21Z behrisch $
+/// @version $Id: TraCIServerAPI_ArealDetector.cpp 19833 2016-01-28 13:32:49Z namdre $
 ///
 // APIs for getting/setting areal detector values via TraCI
 /****************************************************************************/
@@ -65,7 +65,7 @@ TraCIServerAPI_ArealDetector::processGet(TraCIServer& server, tcpip::Storage& in
             && variable != VAR_POSITION
             && variable != VAR_LANE_ID
             && variable != VAR_LENGTH) {
-        return server.writeErrorStatusCmd(CMD_GET_AREAL_DETECTOR_VARIABLE, "Get Areal Detector Variable: unsupported variable specified", outputStorage);
+        return server.writeErrorStatusCmd(CMD_GET_AREAL_DETECTOR_VARIABLE, "Get Areal Detector Variable: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
     }
 
     // begin response building

@@ -4,7 +4,7 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_Route.cpp 18096 2015-03-17 09:50:59Z behrisch $
+/// @version $Id: TraCIServerAPI_Route.cpp 19833 2016-01-28 13:32:49Z namdre $
 ///
 // APIs for getting/setting route values via TraCI
 /****************************************************************************/
@@ -54,7 +54,7 @@ TraCIServerAPI_Route::processGet(TraCIServer& server, tcpip::Storage& inputStora
     std::string id = inputStorage.readString();
     // check variable
     if (variable != ID_LIST && variable != VAR_EDGES && variable != ID_COUNT && variable != VAR_PARAMETER) {
-        return server.writeErrorStatusCmd(CMD_GET_ROUTE_VARIABLE, "Get Route Variable: unsupported variable specified", outputStorage);
+        return server.writeErrorStatusCmd(CMD_GET_ROUTE_VARIABLE, "Get Route Variable: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
     }
     // begin response building
     tcpip::Storage tempMsg;
@@ -112,7 +112,7 @@ TraCIServerAPI_Route::processSet(TraCIServer& server, tcpip::Storage& inputStora
     // variable
     int variable = inputStorage.readUnsignedByte();
     if (variable != ADD && variable != VAR_PARAMETER) {
-        return server.writeErrorStatusCmd(CMD_SET_ROUTE_VARIABLE, "Change Route State: unsupported variable specified", outputStorage);
+        return server.writeErrorStatusCmd(CMD_SET_ROUTE_VARIABLE, "Change Route State: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
     }
     // id
     std::string id = inputStorage.readString();

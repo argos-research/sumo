@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Sept 2002
-/// @version $Id: SUMOXMLDefinitions.h 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: SUMOXMLDefinitions.h 19798 2016-01-26 07:43:53Z namdre $
 ///
 // Definitions of elements and attributes known by SUMO
 /****************************************************************************/
@@ -731,7 +731,6 @@ enum TrafficLightType {
     TLTYPE_STATIC,
     TLTYPE_RAIL,
     TLTYPE_ACTUATED,
-    TLTYPE_AGENT,
     TLTYPE_SOTL_PHASE,
     TLTYPE_SOTL_PLATOON,
     TLTYPE_SOTL_REQUEST,

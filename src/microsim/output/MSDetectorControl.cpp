@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    2005-09-15
-/// @version $Id: MSDetectorControl.cpp 18213 2015-04-16 11:55:42Z behrisch $
+/// @version $Id: MSDetectorControl.cpp 19791 2016-01-25 14:59:17Z namdre $
 ///
 // Detectors container; responsible for string and output generation
 /****************************************************************************/
@@ -39,10 +39,6 @@
 #include <utils/options/OptionsCont.h>
 #include <utils/options/Option.h>
 #include <utils/common/MsgHandler.h>
-
-#ifdef HAVE_INTERNAL
-#include <mesosim/MEInductLoop.h>
-#endif
 
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>

@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLJunctionControlBuilder.cpp 19618 2015-12-15 16:54:49Z behrisch $
+/// @version $Id: NLJunctionControlBuilder.cpp 19798 2016-01-26 07:43:53Z namdre $
 ///
 // Builder of microsim-junctions and tls
 /****************************************************************************/
@@ -330,6 +330,8 @@ NLJunctionControlBuilder::closeTrafficLightLogic(const std::string& basePath) {
                                    + "' for traffic light type '" + toString(myLogicType) + "'");
             }
             break;
+        case TLTYPE_INVALID:
+                throw ProcessError("Invalid traffic light type '" + toString(myLogicType) + "'");
     }
     myActivePhases.clear();
     if (tlLogic != 0) {

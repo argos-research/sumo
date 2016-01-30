@@ -8,7 +8,7 @@
 /// @author  Michael Behrisch
 /// @author  Sascha Krieg
 /// @date    Tue, 06 Mar 2001
-/// @version $Id: MSEdge.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: MSEdge.cpp 19796 2016-01-26 07:31:58Z behrisch $
 ///
 // A road/street connecting two junctions
 /****************************************************************************/
@@ -51,11 +51,9 @@
 #include "MSEdgeWeightsStorage.h"
 #include <microsim/devices/MSDevice_Routing.h>
 
-#ifdef HAVE_INTERNAL
 #include <mesosim/MELoop.h>
 #include <mesosim/MESegment.h>
 #include <mesosim/MEVehicle.h>
-#endif
 
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
@@ -118,11 +116,9 @@ MSEdge::initialize(const std::vector<MSLane*>* lanes) {
     if (myFunction == EDGEFUNCTION_DISTRICT) {
         myCombinedPermissions = SVCAll;
     }
-#ifdef HAVE_INTERNAL
     if (MSGlobals::gUseMesoSim && !lanes->empty()) {
         MSGlobals::gMesoNet->buildSegmentsFor(*this, OptionsCont::getOptions());
     }
-#endif
 }
 
 
@@ -424,7 +420,6 @@ MSEdge::insertVehicle(SUMOVehicle& v, SUMOTime time, const bool checkOnly) const
             }
         }
     }
-#ifdef HAVE_INTERNAL
     if (MSGlobals::gUseMesoSim) {
         SUMOReal pos = 0.0;
         switch (pars.departPosProcedure) {
@@ -468,9 +463,6 @@ MSEdge::insertVehicle(SUMOVehicle& v, SUMOTime time, const bool checkOnly) const
         }
         return result;
     }
-#else
-    UNUSED_PARAMETER(time);
-#endif
     if (checkOnly) {
         switch (v.getParameter().departLaneProcedure) {
             case DEPART_LANE_GIVEN:
@@ -552,7 +544,6 @@ MSEdge::getCurrentTravelTime(SUMOReal minSpeed) const {
         return myEmptyTraveltime;
     }
     SUMOReal v = 0;
-#ifdef HAVE_INTERNAL
     if (MSGlobals::gUseMesoSim) {
         MESegment* first = MSGlobals::gMesoNet->getSegmentForEdge(*this);
         unsigned segments = 0;
@@ -563,14 +554,11 @@ MSEdge::getCurrentTravelTime(SUMOReal minSpeed) const {
         } while (first != 0);
         v /= (SUMOReal) segments;
     } else {
-#endif
         for (std::vector<MSLane*>::const_iterator i = myLanes->begin(); i != myLanes->end(); ++i) {
             v += (*i)->getMeanSpeed();
         }
         v /= (SUMOReal) myLanes->size();
-#ifdef HAVE_INTERNAL
     }
-#endif
     return getLength() / MAX2(minSpeed, v);
 }
 

@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Tue, 22 Jul 2003
-/// @version $Id: GUIDetectorBuilder.cpp 19567 2015-12-08 20:30:01Z behrisch $
+/// @version $Id: GUIDetectorBuilder.cpp 19791 2016-01-25 14:59:17Z namdre $
 ///
 // Builds detectors for guisim
 /****************************************************************************/
@@ -43,10 +43,8 @@
 #include <utils/common/FileHelpers.h>
 #include "GUIDetectorBuilder.h"
 
-#ifdef HAVE_INTERNAL
 #include <mesogui/GUIMEInductLoop.h>
 #include <mesosim/MELoop.h>
-#endif
 
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
@@ -67,11 +65,9 @@ MSDetectorFileOutput*
 GUIDetectorBuilder::createInductLoop(const std::string& id,
                                      MSLane* lane, SUMOReal pos, bool splitByType, bool show) {
     if (show) {
-#ifdef HAVE_INTERNAL
         if (MSGlobals::gUseMesoSim) {
             return new GUIMEInductLoop(id, MSGlobals::gMesoNet->getSegmentForEdge(lane->getEdge(), pos), pos);
         }
-#endif
         return new GUIInductLoop(id, lane, pos, splitByType);
     } else {
         return NLDetectorBuilder::createInductLoop(id, lane, pos, splitByType);

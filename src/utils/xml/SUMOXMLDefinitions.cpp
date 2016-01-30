@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Sept 2002
-/// @version $Id: SUMOXMLDefinitions.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: SUMOXMLDefinitions.cpp 19798 2016-01-26 07:43:53Z namdre $
 ///
 // Definitions of elements and attributes known by SUMO
 /****************************************************************************/
@@ -556,7 +556,6 @@ StringBijection<TrafficLightType>::Entry SUMOXMLDefinitions::trafficLightTypesVa
     { "static", TLTYPE_STATIC },
     { "rail", TLTYPE_RAIL },
     { "actuated", TLTYPE_ACTUATED },
-    { "agentbased", TLTYPE_AGENT },
     { "sotl_phase", TLTYPE_SOTL_PHASE },
     { "sotl_platoon", TLTYPE_SOTL_PLATOON },
     { "sotl_request", TLTYPE_SOTL_REQUEST },

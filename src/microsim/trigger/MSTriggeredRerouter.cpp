@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 25 July 2005
-/// @version $Id: MSTriggeredRerouter.cpp 18842 2015-09-17 10:43:51Z behrisch $
+/// @version $Id: MSTriggeredRerouter.cpp 19791 2016-01-25 14:59:17Z namdre $
 ///
 // Reroutes vehicles passing an edge
 /****************************************************************************/
@@ -51,10 +51,8 @@
 #include <microsim/MSGlobals.h>
 #include "MSTriggeredRerouter.h"
 
-#ifdef HAVE_INTERNAL
 #include <mesosim/MELoop.h>
 #include <mesosim/MESegment.h>
-#endif
 
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
@@ -79,13 +77,11 @@ MSTriggeredRerouter::MSTriggeredRerouter(const std::string& id,
     myProbability(prob), myUserProbability(prob), myAmInUserMode(false) {
     // build actors
     for (MSEdgeVector::const_iterator j = edges.begin(); j != edges.end(); ++j) {
-#ifdef HAVE_INTERNAL
         if (MSGlobals::gUseMesoSim) {
             MESegment* s = MSGlobals::gMesoNet->getSegmentForEdge(**j);
             s->addDetector(this);
             continue;
         }
-#endif
         const std::vector<MSLane*>& destLanes = (*j)->getLanes();
         for (std::vector<MSLane*>::const_iterator i = destLanes.begin(); i != destLanes.end(); ++i) {
             (*i)->addMoveReminder(this);

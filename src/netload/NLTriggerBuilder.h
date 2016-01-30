@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Thu, 17 Oct 2002
-/// @version $Id: NLTriggerBuilder.h 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: NLTriggerBuilder.h 19791 2016-01-25 14:59:17Z namdre $
 ///
 // Builds trigger objects for microsim
 /****************************************************************************/
@@ -52,9 +52,7 @@ class MSStoppingPlace;
 class MSCalibrator;
 class MSRouteProbe;
 
-#ifdef HAVE_INTERNAL
 class METriggeredCalibrator;
-#endif
 
 
 // ===========================================================================
@@ -261,7 +259,7 @@ protected:
                                           const std::string& id, MSEdge* edge, SUMOReal pos,
                                           const std::string& file, const std::string& outfile,
                                           const SUMOTime freq, const MSRouteProbe* probe);
-#ifdef HAVE_INTERNAL
+
     /** @brief builds a mesoscopic calibrator
      *
      * Simply calls the METriggeredCalibrator constructor.
@@ -277,7 +275,6 @@ protected:
             const std::string& id, const MSEdge* edge, SUMOReal pos,
             const std::string& file, const std::string& outfile,
             const SUMOTime freq, MSRouteProbe* probe);
-#endif
 
 
     /** @brief builds an rerouter

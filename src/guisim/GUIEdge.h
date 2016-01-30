@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIEdge.h 18983 2015-10-01 12:40:07Z namdre $
+/// @version $Id: GUIEdge.h 19791 2016-01-25 14:59:17Z namdre $
 ///
 // A road/street connecting two junctions (gui-version)
 /****************************************************************************/
@@ -43,9 +43,7 @@
 // ===========================================================================
 // class declarations
 // ===========================================================================
-#ifdef HAVE_INTERNAL
 class MESegment;
-#endif
 class MSBaseVehicle;
 class GUILane;
 
@@ -166,7 +164,6 @@ public:
         MSEdge::removeContainer(c);
     }
 
-#ifdef HAVE_INTERNAL
     unsigned int getVehicleNo() const;
     std::string getVehicleIDs() const;
     SUMOReal getBruttoOccupancy() const;
@@ -191,7 +188,6 @@ public:
 
     void drawMesoVehicles(const GUIVisualizationSettings& s) const;
 
-#endif
 
     /// @brief close this edge for traffic
     void closeTraffic(const GUILane* lane);

@@ -6,7 +6,7 @@
 /// @author  Jakob Erdmann
 /// @author  Christoph Sommer
 /// @date    Sept 2002
-/// @version $Id: TraCIServerAPI_Polygon.cpp 19339 2015-11-12 14:12:09Z behrisch $
+/// @version $Id: TraCIServerAPI_Polygon.cpp 19833 2016-01-28 13:32:49Z namdre $
 ///
 // APIs for getting/setting polygon values via TraCI
 /****************************************************************************/
@@ -58,7 +58,7 @@ TraCIServerAPI_Polygon::processGet(TraCIServer& server, tcpip::Storage& inputSto
     // check variable
     if (variable != ID_LIST && variable != VAR_TYPE && variable != VAR_COLOR && variable != VAR_SHAPE && variable != VAR_FILL
             && variable != ID_COUNT && variable != VAR_PARAMETER) {
-        return server.writeErrorStatusCmd(CMD_GET_POLYGON_VARIABLE, "Get Polygon Variable: unsupported variable specified", outputStorage);
+        return server.writeErrorStatusCmd(CMD_GET_POLYGON_VARIABLE, "Get Polygon Variable: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
     }
     // begin response building
     tcpip::Storage tempMsg;
@@ -134,7 +134,7 @@ TraCIServerAPI_Polygon::processSet(TraCIServer& server, tcpip::Storage& inputSto
     int variable = inputStorage.readUnsignedByte();
     if (variable != VAR_TYPE && variable != VAR_COLOR && variable != VAR_SHAPE && variable != VAR_FILL
             && variable != ADD && variable != REMOVE && variable != VAR_PARAMETER) {
-        return server.writeErrorStatusCmd(CMD_SET_POLYGON_VARIABLE, "Change Polygon State: unsupported variable specified", outputStorage);
+        return server.writeErrorStatusCmd(CMD_SET_POLYGON_VARIABLE, "Change Polygon State: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
     }
     // id
     std::string id = inputStorage.readString();

@@ -12,7 +12,7 @@
 /// @author  Axel Wegener
 /// @author  Christoph Sommer
 /// @date    Mon, 05 Mar 2001
-/// @version $Id: MSVehicle.cpp 19709 2016-01-12 07:37:28Z namdre $
+/// @version $Id: MSVehicle.cpp 19821 2016-01-28 08:59:41Z namdre $
 ///
 // Representation of a vehicle in the micro simulation
 /****************************************************************************/
@@ -76,12 +76,6 @@
 #include "MSNet.h"
 #include "MSRoute.h"
 #include "MSLinkCont.h"
-
-#ifdef HAVE_INTERNAL
-#include <mesosim/MESegment.h>
-#include <mesosim/MELoop.h>
-#include "MSGlobals.h"
-#endif
 
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
@@ -1172,7 +1166,7 @@ MSVehicle::planMoveInternal(const SUMOTime t, const MSVehicle* pred, DriveItemVe
         // - and unless they are so close that stopping is impossible (i.e. when a green light turns to yellow when close to the junction)
         if (!(*link)->havePriority() && stopDist > cfModel.getMaxDecel() && brakeDist < seen) {
             // vehicle decelerates just enough to be able to stop if necessary and then accelerates
-            arrivalSpeed = cfModel.getMaxDecel() + cfModel.getMaxAccel();
+            arrivalSpeed = MIN2(vLinkPass, cfModel.getMaxDecel() + cfModel.getMaxAccel());
             slowedDownForMinor = true;
         }
         // @note intuitively it would make sense to compare arrivalSpeed with getSpeed() instead of v
@@ -1210,7 +1204,7 @@ MSVehicle::planMoveInternal(const SUMOTime t, const MSVehicle* pred, DriveItemVe
                                            arrivalTime, arrivalSpeed,
                                            arrivalTimeBraking, arrivalSpeedBraking,
                                            seen,
-                                           estimateLeaveSpeed(*link, vLinkPass)));
+                                           estimateLeaveSpeed(*link, arrivalSpeed)));
 #ifdef HAVE_INTERNAL_LANES
         if ((*link)->getViaLane() == 0) {
             hadNonInternal = true;

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVehicle.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GUIVehicle.cpp 19818 2016-01-28 07:38:00Z namdre $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -226,7 +226,7 @@ GUIVehicle::drawAction_drawLinkItems(const GUIVisualizationSettings& s) const {
                 glColor3d(.8, 0, 0);
             }
             const SUMOTime leaveTime = (*i).myLink->getLeaveTime(
-                                           (*i).myArrivalTime, (*i).myArrivalSpeed, (*i).getLeaveSpeed(), getVehicleType().getLengthWithGap());
+                                           (*i).myArrivalTime, (*i).myArrivalSpeed, (*i).getLeaveSpeed(), getVehicleType().getLength());
             drawLinkItem(p, (*i).myArrivalTime, leaveTime, s.vehicleName.size / s.scale);
             // the time slot that ego vehicle uses when checking opened may
             // differ from the one it requests in setApproaching

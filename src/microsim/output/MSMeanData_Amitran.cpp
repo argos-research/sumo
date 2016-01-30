@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSMeanData_Amitran.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MSMeanData_Amitran.cpp 19791 2016-01-25 14:59:17Z namdre $
 ///
 // Network state mean data collector for edges/lanes
 /****************************************************************************/
@@ -38,12 +38,6 @@
 #include <utils/iodevices/OutputDevice.h>
 #include "MSMeanData_Amitran.h"
 #include <limits>
-
-#ifdef HAVE_INTERNAL
-#include <microsim/MSGlobals.h>
-#include <mesosim/MELoop.h>
-#include <mesosim/MESegment.h>
-#endif
 
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUINet.h 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GUINet.h 19791 2016-01-25 14:59:17Z namdre $
 ///
 // A MSNet extended by some values for usage within the gui
 /****************************************************************************/
@@ -65,9 +65,7 @@ class GUIVehicle;
 class GUIVehicleControl;
 class MSVehicleControl;
 class MFXMutex;
-#ifdef HAVE_INTERNAL
 class GUIMEVehicleControl;
-#endif
 
 
 // ===========================================================================
@@ -295,14 +293,12 @@ public:
      */
     GUIVehicleControl* getGUIVehicleControl();
 
-#ifdef HAVE_INTERNAL
     /** @brief Returns the vehicle control
      * @return The vehicle control
      * @see MSVehicleControl
      * @see myVehicleControl
      */
     GUIMEVehicleControl* getGUIMEVehicleControl();
-#endif
 
 #ifdef HAVE_OSG
     void updateColor(const GUIVisualizationSettings& s);

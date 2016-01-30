@@ -6,7 +6,7 @@
 /// @author  Mario Krumnow
 /// @author  Jakob Erdmann
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_Junction.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: TraCIServerAPI_Junction.cpp 19833 2016-01-28 13:32:49Z namdre $
 ///
 // APIs for getting/setting junction values via TraCI
 /****************************************************************************/
@@ -57,7 +57,7 @@ TraCIServerAPI_Junction::processGet(TraCIServer& server, tcpip::Storage& inputSt
     std::string id = inputStorage.readString();
     // check variable
     if (variable != ID_LIST && variable != VAR_POSITION && variable != ID_COUNT && variable != VAR_SHAPE) {
-        return server.writeErrorStatusCmd(CMD_GET_JUNCTION_VARIABLE, "Get Junction Variable: unsupported variable specified", outputStorage);
+        return server.writeErrorStatusCmd(CMD_GET_JUNCTION_VARIABLE, "Get Junction Variable: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
     }
     // begin response building
     tcpip::Storage tempMsg;

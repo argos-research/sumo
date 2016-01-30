@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVisualizationSettings.h 19379 2015-11-18 20:05:38Z namdre $
+/// @version $Id: GUIVisualizationSettings.h 19791 2016-01-25 14:59:17Z namdre $
 ///
 // Stores the information about how to visualize structures
 /****************************************************************************/
@@ -143,7 +143,6 @@ public:
     /// @name lane visualization settings
     //@{
 
-#ifdef HAVE_INTERNAL
     /// @brief The mesoscopic edge colorer
     GUIColorer edgeColorer;
     /// @brief The mesoscopic edge scaler
@@ -151,7 +150,6 @@ public:
 
     /// @brief this should be set at the same time as MSGlobals::gUseMesoSim
     static bool UseMesoSim;
-#endif
     /// @brief The lane colorer
     GUIColorer laneColorer;
     /// @brief The lane scaler

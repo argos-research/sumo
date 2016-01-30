@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Wed, 21. Dec 2005
-/// @version $Id: GUIDialog_ViewSettings.cpp 19656 2015-12-18 19:38:28Z rhilbrich $
+/// @version $Id: GUIDialog_ViewSettings.cpp 19791 2016-01-25 14:59:17Z namdre $
 ///
 // The dialog to change the view (gui) settings.
 /****************************************************************************/
@@ -220,21 +220,17 @@ GUIDialog_ViewSettings::GUIDialog_ViewSettings(GUISUMOAbstractView* parent,
         myLaneScaleInterpolation = new FXCheckButton(m23, "Interpolate", this, MID_SIMPLE_VIEW_COLORCHANGE, LAYOUT_CENTER_Y | CHECKBUTTON_NORMAL);
         myLaneScaleSettingFrame = new FXVerticalFrame(frame23, LAYOUT_FILL_X | LAYOUT_FILL_Y,  0, 0, 0, 0, 10, 10, 2, 8, 5, 2);
 
-#ifdef HAVE_INTERNAL
         if (GUIVisualizationSettings::UseMesoSim) {
             mySettings->edgeColorer.fill(*myLaneEdgeColorMode);
             mySettings->edgeScaler.fill(*myLaneEdgeScaleMode);
             myLaneEdgeColorMode->setNumVisible((int)mySettings->edgeColorer.size());
             myLaneEdgeScaleMode->setNumVisible((int)mySettings->edgeScaler.size());
         } else {
-#endif
             mySettings->laneColorer.fill(*myLaneEdgeColorMode);
             mySettings->laneScaler.fill(*myLaneEdgeScaleMode);
             myLaneEdgeColorMode->setNumVisible((int)mySettings->laneColorer.size());
             myLaneEdgeScaleMode->setNumVisible((int)mySettings->laneScaler.size());
-#ifdef HAVE_INTERNAL
         }
-#endif
 
         new FXHorizontalSeparator(frame2, SEPARATOR_GROOVE | LAYOUT_FILL_X);
         FXMatrix* m22 =
@@ -822,17 +818,13 @@ GUIDialog_ViewSettings::onCmdColorChange(FXObject* sender, FXSelector, void* /*v
     tmpSettings.gridXSize = (SUMOReal) myGridXSizeDialer->getValue();
     tmpSettings.gridYSize = (SUMOReal) myGridYSizeDialer->getValue();
 
-#ifdef HAVE_INTERNAL
     if (GUIVisualizationSettings::UseMesoSim) {
         tmpSettings.edgeColorer.setActive(myLaneEdgeColorMode->getCurrentItem());
         tmpSettings.edgeScaler.setActive(myLaneEdgeScaleMode->getCurrentItem());
     } else {
-#endif
         tmpSettings.laneColorer.setActive(myLaneEdgeColorMode->getCurrentItem());
         tmpSettings.laneScaler.setActive(myLaneEdgeScaleMode->getCurrentItem());
-#ifdef HAVE_INTERNAL
     }
-#endif
     tmpSettings.laneShowBorders = (myShowLaneBorders->getCheck() != FALSE);
     tmpSettings.showLinkDecals = (myShowLaneDecals->getCheck() != FALSE);
     tmpSettings.showRails = (myShowRails->getCheck() != FALSE);
