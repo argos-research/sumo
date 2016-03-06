@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVehicle.cpp 19818 2016-01-28 07:38:00Z namdre $
+/// @version $Id: GUIVehicle.cpp 20077 2016-02-25 12:13:45Z namdre $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -102,7 +102,7 @@ GUIParameterTableWindow*
 GUIVehicle::getParameterWindow(GUIMainWindow& app,
                                GUISUMOAbstractView&) {
     GUIParameterTableWindow* ret =
-        new GUIParameterTableWindow(app, *this, 40);
+        new GUIParameterTableWindow(app, *this, 42);
     // add items
     ret->mkItem("lane [id]", false, myLane->getID());
     ret->mkItem("position [m]", true,
@@ -111,6 +111,8 @@ GUIVehicle::getParameterWindow(GUIMainWindow& app,
                 new FunctionBinding<GUIVehicle, SUMOReal>(this, &MSVehicle::getSpeed));
     ret->mkItem("angle [degree]", true,
                 new FunctionBinding<GUIVehicle, SUMOReal>(this, &GUIVehicle::getNaviDegree));
+    ret->mkItem("slope [degree]", true,
+                new FunctionBinding<GUIVehicle, SUMOReal>(this, &MSVehicle::getSlope));
     if (getChosenSpeedFactor() != 1) {
         ret->mkItem("speed factor", false, getChosenSpeedFactor());
     }
@@ -376,7 +378,6 @@ GUIVehicle::drawBestLanes() const {
     myLock.lock();
     std::vector<std::vector<MSVehicle::LaneQ> > bestLanes = myBestLanes;
     myLock.unlock();
-    SUMOReal width = 0.5;
     for (std::vector<std::vector<MSVehicle::LaneQ> >::iterator j = bestLanes.begin(); j != bestLanes.end(); ++j) {
         std::vector<MSVehicle::LaneQ>& lanes = *j;
         SUMOReal gmax = -1;
@@ -390,6 +391,7 @@ GUIVehicle::drawBestLanes() const {
             SUMOReal g = (*i).length / gmax;
             SUMOReal r = (*i).occupation / rmax;
             glColor3d(r, g, 0);
+            SUMOReal width = 0.5 / (1 + abs((*i).bestLaneOffset));
             GLHelper::drawBoxLines(shape, width);
 
             PositionVector s1 = shape;
@@ -401,9 +403,7 @@ GUIVehicle::drawBestLanes() const {
             GLHelper::drawLine(s1);
 
             glColor3d(r, g, 0);
-            Position lastPos = shape[-1];
         }
-        width = .2;
     }
 }
 

@@ -10,7 +10,7 @@
 /// @author  Mario Krumnow
 /// @author  Christoph Sommer
 /// @date    Tue, 06 Mar 2001
-/// @version $Id: MSNet.cpp 19791 2016-01-25 14:59:17Z namdre $
+/// @version $Id: MSNet.cpp 19890 2016-02-04 09:40:40Z behrisch $
 ///
 // The simulated network and simulation perfomer
 /****************************************************************************/
@@ -268,6 +268,9 @@ MSNet::~MSNet() {
     delete myRouterTTDijkstra;
     delete myRouterTTAStar;
     delete myRouterEffort;
+    if (myPedestrianRouter != 0) {
+        delete myPedestrianRouter;
+    }
     myLanesRTree.second.RemoveAll();
     clearAll();
     if (MSGlobals::gUseMesoSim) {

@@ -2,7 +2,7 @@
 /// @file    GNETLSEditor.cpp
 /// @author  Jakob Erdmann
 /// @date    May 2011
-/// @version $Id: GNETLSEditor.cpp 19608 2015-12-14 15:17:17Z namdre $
+/// @version $Id: GNETLSEditor.cpp 20139 2016-03-03 11:34:22Z namdre $
 ///
 // The Widget for modifying traffic lights
 /****************************************************************************/
@@ -220,8 +220,12 @@ GNETLSEditor::onCmdOK(FXObject*, FXSelector, void*) {
     if (myCurrentJunction != 0) {
         if (myHaveModifications) {
             NBTrafficLightDefinition* old = myDefinitions[myDefBox->getCurrentItem()];
-            myUndoList->add(new GNEChange_TLS(myCurrentJunction, old, false), true);
-            myUndoList->add(new GNEChange_TLS(myCurrentJunction, myEditedDef, true), true);
+            std::vector<NBNode*> nodes = old->getNodes();
+            for (std::vector<NBNode*>::iterator it = nodes.begin(); it != nodes.end(); it++) {
+                GNEJunction* junction = myUpdateTarget->getNet()->retrieveJunction((*it)->getID());
+                myUndoList->add(new GNEChange_TLS(junction, old, false), true);
+                myUndoList->add(new GNEChange_TLS(junction, myEditedDef, true), true);
+            }
             myEditedDef = 0;
             myUndoList->p_end();
             cleanup();

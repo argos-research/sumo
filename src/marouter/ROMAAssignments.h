@@ -4,7 +4,7 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    Feb 2013
-/// @version $Id: ROMAAssignments.h 19003 2015-10-02 14:41:41Z behrisch $
+/// @version $Id: ROMAAssignments.h 20095 2016-02-26 14:07:14Z behrisch $
 ///
 // Assignment methods
 /****************************************************************************/
@@ -78,7 +78,7 @@ public:
     void resetFlows();
 
     // @brief incremental method
-    void incremental(const int numIter);
+    void incremental(const int numIter, const bool verbose);
 
     // @brief UE method
     void ue();
@@ -127,7 +127,7 @@ public:
 
 private:
     /// @brief add a route and check for duplicates
-    bool addRoute(ConstROEdgeVector& edges, std::vector<RORoute*>& paths, std::string routeId, SUMOReal costs, SUMOReal prob);
+    bool addRoute(ConstROEdgeVector& edges, std::vector<RORoute*>& paths, std::string routeId, SUMOReal prob);
 
     /// @brief get the k shortest paths
     void getKPaths(const int kPaths, const SUMOReal penalty);
@@ -142,6 +142,25 @@ private:
     SUMOAbstractRouter<ROEdge, ROVehicle>& myRouter;
     static std::map<const ROEdge* const, SUMOReal> myPenalties;
     ROVehicle* myDefaultVehicle;
+
+#ifdef HAVE_FOX
+private:
+    class RoutingTask : public FXWorkerThread::Task {
+    public:
+        RoutingTask(ROMAAssignments& assign, ODCell* c, const SUMOTime begin, const SUMOReal linkFlow)
+            : myAssign(assign), myCell(c), myBegin(begin), myLinkFlow(linkFlow) {}
+        void run(FXWorkerThread* context);
+    private:
+        ROMAAssignments& myAssign;
+        ODCell* const myCell;
+        const SUMOTime myBegin;
+        const SUMOReal myLinkFlow;
+    private:
+        /// @brief Invalidated assignment operator.
+        RoutingTask& operator=(const RoutingTask&);
+    };
+#endif
+
 
 private:
     /// @brief Invalidated assignment operator

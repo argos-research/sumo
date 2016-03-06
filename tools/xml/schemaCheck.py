@@ -5,7 +5,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    03.12.2009
-@version $Id: schemaCheck.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: schemaCheck.py 20118 2016-03-02 09:54:08Z martintaraz $
 
 Checks schema for files matching certain file names using either
 lxml or SAX2Count.exe depending on availability.
@@ -109,7 +109,7 @@ def main(srcRoot, toCheck, err):
     print("%s files checked" % fileNo)
 
     if haveLxml:
-        for scheme in schemes.itervalues():
+        for scheme in schemes.values():
             if scheme.error_log:
                 print(scheme.error_log, file=err)
                 return 1

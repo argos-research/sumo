@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 10.05.2004
-/// @version $Id: HelpersHBEFA3.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: HelpersHBEFA3.h 20083 2016-02-25 15:47:51Z behrisch $
 ///
 // Helper methods for HBEFA3-based emission computation
 /****************************************************************************/
@@ -102,7 +102,7 @@ public:
      * @param[in] e the type of emission (CO, CO2, ...)
      * @param[in] v The vehicle's current velocity
      * @param[in] a The vehicle's current acceleration
-     * @param[in] slope The road's slope at vehicle's position [°]
+     * @param[in] slope The road's slope at vehicle's position [deg]
      * @return The amount emitted by the given emission class when moving with the given velocity and acceleration [mg/s or ml/s]
      */
     inline SUMOReal compute(const SUMOEmissionClass c, const PollutantsInterface::EmissionType e, const double v, const double a, const double slope) const {

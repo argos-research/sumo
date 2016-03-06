@@ -1,10 +1,17 @@
 """
-@author  Daniel.Krajzewicz@dlr.de
+@file    basic_rilsanet.py
+@author  Daniel Krajzewicz
 @date    2014-09-01
-@version $Id: basic_rilsanet.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: basic_rilsanet.py 20116 2016-03-02 09:42:27Z martintaraz $
 
-Copyright (C) 2014 DLR/TS, Germany
-All rights reserved
+SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+Copyright (C) 2012-2015 DLR (http://www.dlr.de/) and contributors
+
+This file is part of SUMO.
+SUMO is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License, or
+(at your option) any later version.
 """
 from __future__ import absolute_import
 from __future__ import print_function

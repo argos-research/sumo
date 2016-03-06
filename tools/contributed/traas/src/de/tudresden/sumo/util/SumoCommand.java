@@ -25,6 +25,7 @@ import de.tudresden.ws.container.SumoColor;
 import de.tudresden.ws.container.SumoGeometry;
 import de.tudresden.ws.container.SumoPosition2D;
 import de.tudresden.ws.container.SumoPosition3D;
+import de.tudresden.ws.container.SumoStopFlags;
 import de.tudresden.ws.container.SumoStringList;
 import de.tudresden.ws.container.SumoTLSLogic;
 import de.tudresden.ws.container.SumoTLSPhase;
@@ -43,6 +44,8 @@ public class SumoCommand {
 	public int input1;
 	public int input2;
 	String input3;
+	String info;
+	
 	
 	int response;
 	int output_type;
@@ -69,6 +72,31 @@ public class SumoCommand {
 		this.raw.add(output_type);
 		
 	}
+	
+	//Get Statements
+	public SumoCommand(Object input1, Object input2, Object input3, Object response, Object output_type, String info){
+		
+			this.cmd = new Command((Integer) input1);
+			cmd.content().writeUnsignedByte((Integer) input2);
+			cmd.content().writeStringASCII(String.valueOf(input3));
+			
+			this.input1=(Integer) input1;
+			this.input2=(Integer) input2;
+			this.input3=String.valueOf(input3);
+			this.info=info;
+			
+			this.response = (Integer) response;
+			this.output_type = (Integer) output_type;
+			
+			this.raw = new LinkedList<Object>();
+			this.raw.add(input1);
+			this.raw.add(input2);
+			this.raw.add(input3);
+			this.raw.add(response);
+			this.raw.add(output_type);
+			
+		}
+	
 
 	public SumoCommand(Object input1, Object input2, Object input3, Object[] array, Object response, Object output_type){
 		
@@ -77,16 +105,38 @@ public class SumoCommand {
 		cmd.content().writeStringASCII(String.valueOf(input3));
 		
 		if(array.length == 1){
-			add_type(array[0]);
-			add_variable(array[0]);
-		}else{
-			cmd.content().writeUnsignedByte(Constants.TYPE_COMPOUND);
-			cmd.content().writeInt(array.length);	
-			for(int i=0; i<array.length; i++){
-				add_type(array[i]);
-				add_variable(array[i]);
+				add_type(array[0]);
+				add_variable(array[0]);
+			}else{
+				
+				cmd.content().writeUnsignedByte(Constants.TYPE_COMPOUND);
+				if((Integer) input1 == Constants.CMD_GET_VEHICLE_VARIABLE && (Integer) input2 == Constants.DISTANCE_REQUEST){
+					
+					cmd.content().writeInt(2);	
+					
+					if(array.length == 3){
+						cmd.content().writeUnsignedByte(Constants.POSITION_ROADMAP);
+						cmd.content().writeStringASCII((String) array[0]);
+						cmd.content().writeDouble((double) array[1]); 
+						cmd.content().writeUnsignedByte((byte) array[2]);
+					}else if(array.length == 2) {
+						cmd.content().writeUnsignedByte(Constants.POSITION_2D);
+						cmd.content().writeDouble((double) array[0]); 
+						cmd.content().writeDouble((double) array[1]); 
+					}
+
+					cmd.content().writeUnsignedByte(Constants.REQUEST_DRIVINGDIST);
+					
+				}else{
+					
+					cmd.content().writeInt(array.length);	
+					
+					for(int i=0; i<array.length; i++){
+						add_type(array[i]);
+						add_variable(array[i]);
+					}
+				}
 			}
-		}
 		
 		this.input1=(Integer) input1;
 		this.input2=(Integer) input2;
@@ -228,6 +278,8 @@ public class SumoCommand {
 			}
 		}
 		
+		
+		
 		this.raw = new LinkedList<Object>();
 		this.raw.add(input1);
 		this.raw.add(input2);
@@ -304,6 +356,72 @@ public class SumoCommand {
 	}
 	
 	
+	public SumoCommand(Object input1, Object input2, Object[] array, Object response, Object output_type){
+	
+		this.cmd = new Command((Integer) input1);
+		this.input1=(Integer) input1;
+		this.input2=(Integer) input2;
+		
+		cmd.content().writeUnsignedByte((Integer) input2);
+		cmd.content().writeStringASCII("");
+		
+		if((Integer) input1 == Constants.CMD_GET_SIM_VARIABLE && (Integer) input2 == Constants.DISTANCE_REQUEST && array.length == 4){
+			
+			cmd.content().writeUnsignedByte(Constants.TYPE_COMPOUND);
+			cmd.content().writeInt(3);	
+			
+			boolean isGeo = (boolean) array[2];
+			boolean isDriving = (boolean) array[3];
+			
+			if(!isGeo){this.cmd.content().writeUnsignedByte(Constants.POSITION_2D);}
+			else{this.cmd.content().writeUnsignedByte(Constants.POSITION_LON_LAT);}
+
+			add_variable(array[0]);
+
+			if(!isGeo){this.cmd.content().writeUnsignedByte(Constants.POSITION_2D);}
+			else{this.cmd.content().writeUnsignedByte(Constants.POSITION_LON_LAT);}
+			
+			add_variable(array[1]);
+
+			if(isDriving){this.cmd.content().writeUnsignedByte(Constants.REQUEST_DRIVINGDIST);}
+			else{this.cmd.content().writeUnsignedByte(Constants.REQUEST_AIRDIST);}
+			
+		}else if ((Integer) input1 == Constants.CMD_GET_SIM_VARIABLE && (Integer) input2 == Constants.DISTANCE_REQUEST && array.length == 5){
+			
+			cmd.content().writeUnsignedByte(Constants.TYPE_COMPOUND);
+			cmd.content().writeInt(3);	
+			
+			String edge1 = (String) array[0];
+			
+			cmd.content().writeUnsignedByte(Constants.POSITION_ROADMAP);
+			add_variable(edge1);
+			cmd.content().writeUnsignedByte(0);
+			add_variable(array[1]);
+			
+			String edge2 = (String) array[2];
+			cmd.content().writeUnsignedByte(Constants.POSITION_ROADMAP);
+			add_variable(edge2);
+			cmd.content().writeUnsignedByte(0);
+			add_variable(array[3]);
+
+			boolean isDriving = (boolean) array[4];
+			
+			if(isDriving){this.cmd.content().writeUnsignedByte(Constants.REQUEST_DRIVINGDIST);}
+			else{this.cmd.content().writeUnsignedByte(Constants.REQUEST_AIRDIST);}
+			
+		}
+		
+		this.response = (Integer) response;
+		this.output_type = (Integer) output_type;
+		
+		this.raw = new LinkedList<Object>();
+		this.raw.add(input1);
+		this.raw.add(input2);
+		this.raw.add(input3);
+		this.raw.add(array);
+		
+	}
+
 	public Object[] get_raw(){
 		
 		Object[] output = new Object[this.raw.size()];
@@ -333,6 +451,8 @@ public class SumoCommand {
 			this.cmd.content().writeUnsignedByte(Constants.POSITION_2D);
 		}else if(input.getClass().equals(SumoPosition3D.class)){
 			this.cmd.content().writeUnsignedByte(Constants.POSITION_3D);
+		}else if(input.getClass().equals(SumoStopFlags.class)){
+			this.cmd.content().writeUnsignedByte(Constants.TYPE_BYTE);
 		}else if(input.getClass().equals(Boolean.class)){
 			this.cmd.content().writeUnsignedByte(Constants.TYPE_UBYTE);
 		}else if(input.getClass().equals(SumoStringList.class)){
@@ -399,8 +519,11 @@ public class SumoCommand {
 				cmd.content().writeStringASCII(s);
 			}
 		
+		}else if(input.getClass().equals(SumoStopFlags.class)){
+			SumoStopFlags sf = (SumoStopFlags) input;
+			this.cmd.content().writeByte(sf.getID());
 		}
-		
+	
 	}
 
 	public Command get_command(){

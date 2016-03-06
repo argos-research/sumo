@@ -5,7 +5,7 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: ROMAFrame.cpp 19003 2015-10-02 14:41:41Z behrisch $
+/// @version $Id: ROMAFrame.cpp 20095 2016-02-26 14:07:14Z behrisch $
 ///
 // Sets and checks options for ma-routing
 /****************************************************************************/
@@ -161,6 +161,12 @@ ROMAFrame::addImportOptions() {
 
     oc.doRegister("routing-algorithm", new Option_String("dijkstra"));
     oc.addDescription("routing-algorithm", "Processing", "Select among routing algorithms ['dijkstra', 'astar', 'CH', 'CHWrapper']");
+
+    oc.doRegister("bulk-routing.vtypes", new Option_Bool(false));
+    oc.addDescription("bulk-routing.vtypes", "Processing", "Aggregate routing queries with the same origin for different vehicle types");
+
+    oc.doRegister("routing-threads", new Option_Integer(0));
+    oc.addDescription("routing-threads", "Processing", "The number of parallel execution threads used for routing");
 
     oc.doRegister("weight-period", new Option_String("3600", "TIME"));
     oc.addDescription("weight-period", "Processing", "Aggregation period for the given weight files; triggers rebuilding of Contraction Hierarchy");

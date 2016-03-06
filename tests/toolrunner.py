@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2008-03-29
-@version $Id: toolrunner.py 19048 2015-10-08 10:25:52Z behrisch $
+@version $Id: toolrunner.py 19984 2016-02-15 18:53:57Z behrisch $
 
 Wrapper script for running tool tests with TextTest.
 
@@ -29,7 +29,5 @@ if tool[0].endswith(".jar"):
 if tool[0].endswith(".py"):
     tool = [os.environ.get('PYTHON', 'python')] + tool
 
-import os
-from sys import version_info
 subprocess.call(tool + sys.argv[1:-1], env=os.environ,
                 stdout=sys.stdout, stderr=sys.stderr)

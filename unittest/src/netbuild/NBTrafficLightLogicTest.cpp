@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2009-10-24
-/// @version $Id: NBTrafficLightLogicTest.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: NBTrafficLightLogicTest.cpp 19910 2016-02-08 12:31:43Z behrisch $
 ///
 // Tests the class NBTrafficLightLogic 
 /****************************************************************************/
@@ -24,16 +24,13 @@
 #include <netbuild/NBTrafficLightLogic.h>
 #include "../utils/iodevices/OutputDeviceMock.h"
 
-using namespace std;
-
 
 /* Test the method 'getDuration'*/
-TEST(NBTrafficLightLogic, test_method_getDuration) {	
-	NBTrafficLightLogic *edge = new NBTrafficLightLogic("1","11",2);
-	EXPECT_EQ(0, edge->getDuration());
+TEST(NBTrafficLightLogic, test_method_getDuration) {
+    NBTrafficLightLogic tll("1","11",2);
+    EXPECT_EQ(0, tll.getDuration());
 
-	edge->addStep(3,"gr");
-	edge->addStep(5,"rG");
-	EXPECT_EQ(8, edge->getDuration());
-	
+    tll.addStep(3,"gr");
+    tll.addStep(5,"rG");
+    EXPECT_EQ(8, tll.getDuration());
 }

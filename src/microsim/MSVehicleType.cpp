@@ -6,7 +6,7 @@
 /// @author  Thimor Bohn
 /// @author  Michael Behrisch
 /// @date    Tue, 06 Mar 2001
-/// @version $Id: MSVehicleType.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MSVehicleType.cpp 19908 2016-02-08 11:28:50Z behrisch $
 ///
 // The car-following model and parameter
 /****************************************************************************/
@@ -65,7 +65,7 @@ int MSVehicleType::myNextIndex = 0;
 // method definitions
 // ===========================================================================
 MSVehicleType::MSVehicleType(const SUMOVTypeParameter& parameter)
-    : myParameter(parameter), myIndex(myNextIndex++), myOriginalType(0) {
+    : myParameter(parameter), myIndex(myNextIndex++), myCarFollowModel(0), myOriginalType(0) {
     assert(getLength() > 0);
     assert(getMaxSpeed() > 0);
 }

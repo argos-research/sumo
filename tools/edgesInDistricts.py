@@ -5,7 +5,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2007-07-26
-@version $Id: edgesInDistricts.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: edgesInDistricts.py 19975 2016-02-13 17:44:55Z behrisch $
 
 Parsing a number of networks and taz (district) files with shapes
 this script writes a taz file with all the edges which are inside
@@ -71,8 +71,8 @@ class DistrictEdgeComputer:
             if options.verbose and idx % 100 == 0:
                 sys.stdout.write("%s/%s\r" % (idx, len(self._net.getEdges())))
         if options.complete:
-            for edge, districts in self._edgeDistricts.iteritems():
-                if len(districts) > 1:
+            for edge in self._edgeDistricts:
+                if len(self._edgeDistricts[edge]) > 1:
                     self._invalidatedEdges.add(edge)
 
     def getEdgeDistrictMap(self):
@@ -85,7 +85,7 @@ class DistrictEdgeComputer:
     def writeResults(self, options):
         fd = open(options.output, "w")
         fd.write("<tazs>\n")
-        for district, edges in sorted(self._districtEdges.iteritems()):
+        for district, edges in sorted(self._districtEdges.items()):
             filtered = [
                 edge for edge in edges if edge not in self._invalidatedEdges]
             if len(filtered) == 0:

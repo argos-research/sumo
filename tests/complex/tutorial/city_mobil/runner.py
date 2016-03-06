@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2011-10-28
-@version $Id: runner.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: runner.py 19904 2016-02-07 19:51:27Z behrisch $
 
 This script is a test runner for the CityMobil scenario.
 
@@ -17,6 +17,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 
 import os
@@ -35,4 +37,4 @@ vehicleControl.init(agentManager.AgentManager(), True)
 try:
     shutil.copy("all-the-results.txt", "../result2")
 except:
-    print "Missing 'all-the-results.txt'"
+    print("Missing 'all-the-results.txt'")

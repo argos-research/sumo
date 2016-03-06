@@ -4,7 +4,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2012-08-15
-@version $Id: cutRoutes.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: cutRoutes.py 20118 2016-03-02 09:54:08Z martintaraz $
 
 Cut down routes from a large scenario to a sub-scenario optionally using exitTimes
 Output can be a route file or a tripfile.
@@ -23,6 +23,7 @@ from __future__ import print_function
 
 import os
 import sys
+PY3 = sys.version_info > (3,)
 import codecs
 from optparse import OptionParser
 from collections import defaultdict
@@ -182,7 +183,7 @@ def missingEdges(areaEdges, edges, missingEdgeOccurences):
 
 def printTop(missingEdgeOccurences, num=1000):
     counts = sorted(
-        [(v, k) for k, v in missingEdgeOccurences.iteritems()], reverse=True)
+        [(v, k) for k, v in missingEdgeOccurences.items()], reverse=True)
     counts.sort(reverse=True)
     for count, edge in counts[:num]:
         print(count, edge)

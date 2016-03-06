@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: ROMARouteHandler.cpp 18756 2015-08-31 19:16:33Z behrisch $
+/// @version $Id: ROMARouteHandler.cpp 20059 2016-02-23 15:23:24Z behrisch $
 ///
 // Parser and container for routes during their loading
 /****************************************************************************/
@@ -58,7 +58,8 @@ ROMARouteHandler::myStartElement(int element,
                                  const SUMOSAXAttributes& attrs) {
     if (element == SUMO_TAG_TRIP || element == SUMO_TAG_VEHICLE) {
         SUMOVehicleParameter* parameter = SUMOVehicleParserHelper::parseVehicleAttributes(attrs);
-        myMatrix.add(parameter->id, parameter->depart, parameter->fromTaz, parameter->toTaz, parameter->vtypeid);
+        std::pair<const std::string, const std::string> od = std::make_pair(parameter->fromTaz, parameter->toTaz);
+        myMatrix.add(parameter->id, parameter->depart, od, parameter->vtypeid);
     }
 }
 

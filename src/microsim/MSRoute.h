@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: MSRoute.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MSRoute.h 20063 2016-02-24 14:31:44Z behrisch $
 ///
 // A vehicle route
 /****************************************************************************/
@@ -43,6 +43,10 @@
 #include <utils/common/RGBColor.h>
 #include <utils/vehicle/SUMOVehicleParameter.h>
 #include <utils/common/Parameterised.h>
+#ifdef HAVE_FOX
+#include <fx.h>
+#include <FXThread.h>
+#endif
 
 
 // ===========================================================================
@@ -257,6 +261,10 @@ private:
     /// The dictionary container
     static RouteDistDict myDistDict;
 
+#ifdef HAVE_FOX
+    /// @brief the mutex for the route dictionaries
+    static FXMutex myDictMutex;
+#endif
 private:
     /** invalid assignment operator */
     MSRoute& operator=(const MSRoute& s);

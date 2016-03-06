@@ -8,7 +8,7 @@
 /// @author  Michael Behrisch
 /// @author  Mario Krumnow
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSLane.h 19651 2015-12-18 08:50:54Z behrisch $
+/// @version $Id: MSLane.h 20089 2016-02-26 09:20:59Z namdre $
 ///
 // Representation of a lane in the micro simulation
 /****************************************************************************/
@@ -198,9 +198,7 @@ public:
                             MSMoveReminder::Notification notification);
 
     bool checkFailure(MSVehicle* aVehicle, SUMOReal& speed, SUMOReal& dist, const SUMOReal nspeed, const bool patchSpeed, const std::string errorMsg) const;
-    bool pWagGenericInsertion(MSVehicle& veh, SUMOReal speed, SUMOReal maxPos, SUMOReal minPos);
-    bool pWagSimpleInsertion(MSVehicle& veh, SUMOReal speed, SUMOReal maxPos, SUMOReal minPos);
-    bool maxSpeedGapInsertion(MSVehicle& veh, SUMOReal mspeed);
+    bool lastInsertion(MSVehicle& veh, SUMOReal mspeed);
 
     /** @brief Tries to insert the given vehicle on any place
      *
@@ -826,6 +824,9 @@ protected:
      * @return the depart speed
      */
     SUMOReal getDepartSpeed(const MSVehicle& veh, bool& patchSpeed);
+
+    /// @brief departure position where the vehicle fits fully onto the lane (if possible)
+    SUMOReal basePos(const MSVehicle& veh) const;
 
 protected:
     /// Unique numerical ID (set on reading by netload)

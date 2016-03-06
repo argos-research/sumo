@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: GUIEdge.cpp 19791 2016-01-25 14:59:17Z namdre $
+/// @version $Id: GUIEdge.cpp 20143 2016-03-03 15:25:30Z namdre $
 ///
 // A road/street connecting two junctions (gui-version)
 /****************************************************************************/
@@ -128,8 +128,25 @@ GUIEdge::getTotalLength(bool includeInternal, bool eachLane) {
 Boundary
 GUIEdge::getBoundary() const {
     Boundary ret;
-    for (std::vector<MSLane*>::const_iterator i = myLanes->begin(); i != myLanes->end(); ++i) {
-        ret.add((*i)->getShape().getBoxBoundary());
+    if (getPurpose() != MSEdge::EDGEFUNCTION_DISTRICT) {
+        for (std::vector<MSLane*>::const_iterator i = myLanes->begin(); i != myLanes->end(); ++i) {
+            ret.add((*i)->getShape().getBoxBoundary());
+        }
+    } else {
+        // take the starting coordinates of all follower edges and the endpoints
+        // of all successor edges
+        for (MSEdgeVector::const_iterator it = mySuccessors.begin(); it != mySuccessors.end(); ++it) {
+            const std::vector<MSLane*>& lanes = (*it)->getLanes();
+            for (std::vector<MSLane*>::const_iterator it_lane = lanes.begin(); it_lane != lanes.end(); ++it_lane) {
+                ret.add((*it_lane)->getShape().front());
+            }
+        }
+        for (MSEdgeVector::const_iterator it = myPredecessors.begin(); it != myPredecessors.end(); ++it) {
+            const std::vector<MSLane*>& lanes = (*it)->getLanes();
+            for (std::vector<MSLane*>::const_iterator it_lane = lanes.begin(); it_lane != lanes.end(); ++it_lane) {
+                ret.add((*it_lane)->getShape().back());
+            }
+        }
     }
     ret.grow(10);
     return ret;
@@ -200,7 +217,9 @@ GUIEdge::getParameterWindow(GUIMainWindow& app,
 Boundary
 GUIEdge::getCenteringBoundary() const {
     Boundary b = getBoundary();
-    b.grow(20);
+    // ensure that vehicles and persons on the side are drawn even if the edge
+    // is outside the view
+    b.grow(10);
     return b;
 }
 
@@ -284,6 +303,7 @@ GUIEdge::drawMesoVehicles(const GUIVisualizationSettings& s) const {
     if (vehicleControl != 0) {
         // draw the meso vehicles
         vehicleControl->secureVehicles();
+        AbstractMutex::ScopedLocker locker(myLock);
         size_t laneIndex = 0;
         MESegment::Queue queue;
         for (std::vector<MSLane*>::const_iterator msl = myLanes->begin(); msl != myLanes->end(); ++msl, ++laneIndex) {

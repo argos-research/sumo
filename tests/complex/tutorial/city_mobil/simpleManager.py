@@ -5,7 +5,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2008-10-09
-@version $Id: simpleManager.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: simpleManager.py 19904 2016-02-07 19:51:27Z behrisch $
 
 Control the CityMobil parking lot with a simple first come first serve approach.
 
@@ -18,6 +18,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 import vehicleControl
 import statistics
 from constants import *

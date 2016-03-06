@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIPerson.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GUIPerson.cpp 19974 2016-02-12 13:58:46Z namdre $
 ///
 // A MSPerson extended by some values for usage within the gui
 /****************************************************************************/
@@ -241,7 +241,7 @@ GUIPerson::getCenteringBoundary() const {
     } else {
         b.add(getPosition());
     }
-    b.grow(20);
+    b.grow(MAX2(getVehicleType().getWidth(), getVehicleType().getLength()));
     return b;
 }
 

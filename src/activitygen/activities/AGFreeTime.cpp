@@ -5,7 +5,7 @@
 /// @author  Walter Bamberger
 /// @author  Michael Behrisch
 /// @date    July 2010
-/// @version $Id: AGFreeTime.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: AGFreeTime.cpp 19885 2016-02-04 07:28:09Z behrisch $
 ///
 // Generates trips related to after-work activities
 // like visiting the family or party.
@@ -48,12 +48,12 @@ const int AGFreeTime::DAY = 1;
 const int AGFreeTime::EVENING = 2;
 const int AGFreeTime::NIGHT = 4;
 
-const int AGFreeTime::TB_DAY = (new AGTime(0, 8, 0))->getTime();
-const int AGFreeTime::TE_DAY = (new AGTime(0, 18, 0))->getTime();
-const int AGFreeTime::TB_EVENING = (new AGTime(0, 19, 0))->getTime();
-const int AGFreeTime::TE_EVENING = (new AGTime(0, 23, 59))->getTime();
-const int AGFreeTime::TB_NIGHT = (new AGTime(0, 23, 0))->getTime();
-const int AGFreeTime::TE_NIGHT = (new AGTime(1, 5, 0))->getTime();
+const int AGFreeTime::TB_DAY = AGTime(0, 8, 0).getTime();
+const int AGFreeTime::TE_DAY = AGTime(0, 18, 0).getTime();
+const int AGFreeTime::TB_EVENING = AGTime(0, 19, 0).getTime();
+const int AGFreeTime::TE_EVENING = AGTime(0, 23, 59).getTime();
+const int AGFreeTime::TB_NIGHT = AGTime(0, 23, 0).getTime();
+const int AGFreeTime::TE_NIGHT = AGTime(1, 5, 0).getTime();
 
 
 // ===========================================================================
@@ -123,7 +123,7 @@ AGFreeTime::possibleTypeOfTrip() {
             val += DAY;
         }
 
-        if (tReady < (*(new AGTime(0, 22, 0))).getTime()) {
+        if (tReady < AGTime(0, 22, 0).getTime()) {
             val += EVENING;
         }
     }

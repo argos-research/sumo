@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2010-05-23
-@version $Id: setup.py 19786 2016-01-23 21:01:41Z behrisch $
+@version $Id: setup.py 20048 2016-02-22 12:08:12Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -58,7 +58,7 @@ with zipfile.ZipFile(inZip) as binZip:
             extracted = binZip.extract(f)
             if osgPlugins is None:
                 osgPlugins = extracted
-        elif f.endswith(".dll") or f.endswith("gui.exe"):
+        elif f.endswith(".dll") or f.endswith("gui.exe") or f.endswith("sumo.exe"):
             extracted = binZip.extract(f)
             dest = os.path.join("dist", os.path.basename(f))
             if os.path.isfile(extracted) and not os.path.exists(dest):
@@ -70,7 +70,7 @@ if osgPlugins:
         shutil.copy2(f, ".")
     os.chdir("bs3d")
     subprocess.call([sevenZip, 'x', os.path.join(
-        os.path.dirname(inZip), '..', '..', '3D_Modell_Forschungskreuzung_BS.7z')])
+        os.path.dirname(inZip), '..', '3D_Modell_Forschungskreuzung_BS.7z')])
     os.chdir("..")
 zipf = zipfile.ZipFile(inZip.replace("sumo-", "sumo-game-"), 'w', zipfile.ZIP_DEFLATED)
 

@@ -4,7 +4,7 @@
 @file    main.py
 @author  Marek Heinrich
 @date    2014-11-17
-@version $Id: main.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: main.py 20038 2016-02-19 14:57:36Z behrisch $
 
 Main module.
 
@@ -21,9 +21,9 @@ the Free Software Foundation; either version 3 of the License, or
 import sys
 import inspect
 try:
-    import Image
-    import ImageDraw
-    import ImageColor
+    from PIL import Image
+    from PIL import ImageDraw
+    from PIL import ImageColor
     haveImaging = True
 except ImportError:
     print >> sys.stderr, "No imaging"

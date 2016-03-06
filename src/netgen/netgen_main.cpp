@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mar, 2003
-/// @version $Id: netgen_main.cpp 18486 2015-06-11 11:10:09Z behrisch $
+/// @version $Id: netgen_main.cpp 19987 2016-02-16 10:05:54Z behrisch $
 ///
 // Main for NETGENERATE
 /****************************************************************************/
@@ -205,7 +205,7 @@ main(int argc, char** argv) {
     OptionsCont& oc = OptionsCont::getOptions();
     // give some application descriptions
     oc.setApplicationDescription("Road network generator for the microscopic road traffic simulation SUMO.");
-    oc.setApplicationName("netgenerate", "SUMO netgenerate Version " + getBuildName(VERSION_STRING));
+    oc.setApplicationName("netgenerate", "SUMO netgenerate Version " VERSION_STRING);
     int ret = 0;
     try {
         // initialise the application system (messaging, xml, options)

@@ -4,7 +4,7 @@
 @author  Yun-Pang Floetteroed
 @author  Michael Behrisch
 @date    2007-02-27
-@version $Id: networkStatistics.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: networkStatistics.py 20118 2016-03-02 09:54:08Z martintaraz $
 
 This script is to calculate the global performance indices according to the SUMO-based simulation results.
 Besides, this script is also to execute the significance test for evaluating the results from different assignment methods.
@@ -325,7 +325,7 @@ combilabel = ''
 
 assignments = {}
 # calculate/read the basic statistics
-for method, vehicles in allvehicles.iteritems():
+for method, vehicles in allvehicles.items():
     getBasicStats(options.verbose, method, vehicles, assignments)
 
 getStatisticsOutput(assignments, options.outputfile)

@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2009-11-23
-/// @version $Id: MSEventControlTest.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MSEventControlTest.cpp 19910 2016-02-08 12:31:43Z behrisch $
 ///
 // Tests the class MSEventControl  
 /****************************************************************************/
@@ -27,16 +27,16 @@
 
 /* Test the method 'execute'. Tests if the execute method from the Command Class is called.*/
 
-TEST(MSEventControl, test_method_execute) {	
-	
-	MSEventControl *edge = new MSEventControl();
-	CommandMock *mock = new CommandMock(); 
-	edge->setCurrentTimeStep(4);
-	edge->addEvent(mock,1,MSEventControl::ADAPT_AFTER_EXECUTION);
-	
-	EXPECT_FALSE(mock->isExecuteCalled());
-	edge->execute(5);
-	EXPECT_TRUE(mock->isExecuteCalled());
+TEST(MSEventControl, test_method_execute) {
+    
+    MSEventControl eventControl;
+    CommandMock *mock = new CommandMock(); 
+    eventControl.setCurrentTimeStep(4);
+    eventControl.addEvent(mock,1,MSEventControl::ADAPT_AFTER_EXECUTION);
+    
+    EXPECT_FALSE(mock->isExecuteCalled());
+    eventControl.execute(5);
+    EXPECT_TRUE(mock->isExecuteCalled());
 }
 
 

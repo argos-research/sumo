@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: NBLoadedSUMOTLDef.cpp 19701 2016-01-11 12:29:03Z namdre $
+/// @version $Id: NBLoadedSUMOTLDef.cpp 20080 2016-02-25 14:42:03Z namdre $
 ///
 // A complete traffic light logic loaded from a sumo-net. (opted to reimplement
 // since NBLoadedTLDef is quite vissim specific)
@@ -357,24 +357,22 @@ NBLoadedSUMOTLDef::patchIfCrossingsAdded() {
 
 void 
 NBLoadedSUMOTLDef::collectEdgeVectors(EdgeVector& fromEdges, EdgeVector& toEdges, std::vector<int>& fromLanes) const {
-assert(fromEdges.size() > 0);
-assert(fromEdges.size() == toEdges.size());
-const int size = fromEdges.size();
+    assert(fromEdges.size() > 0);
+    assert(fromEdges.size() == toEdges.size());
+    const int size = (int)fromEdges.size();
 
-for (NBConnectionVector::const_iterator it = myControlledLinks.begin(); it != myControlledLinks.end(); it++) {
-    const NBConnection& c = *it;
-    if (c.getTLIndex() != NBConnection::InvalidTlIndex) {
-        if (c.getTLIndex() >= size) {
-            throw ProcessError("Invalid linkIndex " + toString(c.getTLIndex()) + " for traffic light '" + getID() +
-                    "' with " + toString(size) + " links.");
+    for (NBConnectionVector::const_iterator it = myControlledLinks.begin(); it != myControlledLinks.end(); it++) {
+        const NBConnection& c = *it;
+        if (c.getTLIndex() != NBConnection::InvalidTlIndex) {
+            if (c.getTLIndex() >= size) {
+                throw ProcessError("Invalid linkIndex " + toString(c.getTLIndex()) + " for traffic light '" + getID() +
+                        "' with " + toString(size) + " links.");
+            }
+            fromEdges[c.getTLIndex()] = c.getFrom();
+            toEdges[c.getTLIndex()] = c.getTo();
+            fromLanes[c.getTLIndex()] = c.getFromLane();
         }
-
-
-        fromEdges[c.getTLIndex()] = c.getFrom();
-        toEdges[c.getTLIndex()] = c.getTo();
-        fromLanes[c.getTLIndex()] = c.getFromLane();
     }
-}
 }
 
 
@@ -382,6 +380,7 @@ void
 NBLoadedSUMOTLDef::initNeedsContRelation() const {
     if (!amInvalid() && !myNeedsContRelationReady) {
         myNeedsContRelation.clear();
+        myRightOnRedConflicts.clear();
         const bool controlledWithin = !OptionsCont::getOptions().getBool("tls.uncontrolled-within");
         const std::vector<NBTrafficLightLogic::PhaseDefinition> phases = myTLLogic->getPhases();
         for (std::vector<NBTrafficLightLogic::PhaseDefinition>::const_iterator it = phases.begin(); it != phases.end(); it++) {
@@ -401,15 +400,35 @@ NBLoadedSUMOTLDef::initNeedsContRelation() const {
                             && c2.getFrom() != 0 && c2.getTo() != 0) {
                         const bool rightTurnConflict = NBNode::rightTurnConflict(
                                 c1.getFrom(), c1.getTo(), c1.getFromLane(), c2.getFrom(), c2.getTo(), c2.getFromLane());
-                        if (forbids(c2.getFrom(), c2.getTo(), c1.getFrom(), c1.getTo(), true, controlledWithin) || rightTurnConflict) {
+                        const bool forbidden = forbids(c2.getFrom(), c2.getTo(), c1.getFrom(), c1.getTo(), true, controlledWithin);
+                        const bool isFoes = foes(c2.getFrom(), c2.getTo(), c1.getFrom(), c1.getTo());
+                        if (forbidden || rightTurnConflict) {
                             myNeedsContRelation.insert(StreamPair(c1.getFrom(), c1.getTo(), c2.getFrom(), c2.getTo()));
                         }
+                        if (isFoes) {
+                            myRightOnRedConflicts.insert(std::make_pair(i1, i2));
+                        }
+                        //std::cout << getID() << " i1=" << i1 << " i2=" << i2 << " rightTurnConflict=" << rightTurnConflict << " forbidden=" << forbidden << " isFoes=" << isFoes << "\n";
                     }
                 }
             }
         }
     }
     myNeedsContRelationReady = true;
+    myRightOnRedConflictsReady = true;
+}
+
+
+bool
+NBLoadedSUMOTLDef::rightOnRedConflict(int index, int foeIndex) const {
+    if (amInvalid()) {
+        return false;
+    }
+    if (!myRightOnRedConflictsReady) {
+        initNeedsContRelation();
+        assert(myRightOnRedConflictsReady);
+    }
+    return std::find(myRightOnRedConflicts.begin(), myRightOnRedConflicts.end(), std::make_pair(index, foeIndex)) != myRightOnRedConflicts.end();
 }
 
 

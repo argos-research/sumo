@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIBaseVehicle.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GUIBaseVehicle.cpp 19974 2016-02-12 13:58:46Z namdre $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -328,7 +328,7 @@ Boundary
 GUIBaseVehicle::getCenteringBoundary() const {
     Boundary b;
     b.add(getPosition());
-    b.grow(20);
+    b.grow(myVehicle.getVehicleType().getLength());
     return b;
 }
 

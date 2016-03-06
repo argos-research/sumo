@@ -6,7 +6,7 @@
 /// @author  Walter Bamberger
 /// @author  Laura Bieker
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NIXMLEdgesHandler.cpp 19523 2015-12-04 11:00:56Z behrisch $
+/// @version $Id: NIXMLEdgesHandler.cpp 19915 2016-02-08 19:59:15Z behrisch $
 ///
 // Importer for network edges stored in XML
 /****************************************************************************/
@@ -59,11 +59,6 @@
 #include <foreign/nvwa/debug_new.h>
 #endif // CHECK_MEMORY_LEAKS
 
-
-// ===========================================================================
-// used constants
-// ===========================================================================
-const SUMOReal SUMOXML_INVALID_POSITION = -999999.;
 
 // ===========================================================================
 // method definitions

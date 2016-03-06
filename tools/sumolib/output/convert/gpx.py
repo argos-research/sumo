@@ -3,7 +3,7 @@
 @author  Jakob Erdmann
 @author  Laura Bieker
 @date    2014-02-13
-@version $Id: gpx.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: gpx.py 20118 2016-03-02 09:54:08Z martintaraz $
 
 This module includes functions for converting SUMO's fcd-output into
 GPX format (http://en.wikipedia.org/wiki/GPS_eXchange_Format)
@@ -29,7 +29,7 @@ def fcd2gpx(inpFCD, outSTRM, ignored):
 
     outSTRM.write('<?xml version="1.0" encoding="UTF-8"?>\n')
     outSTRM.write('<gpx version="1.0">\n')
-    for vehicle, trackpoints in tracks.iteritems():
+    for vehicle, trackpoints in tracks.items():
         outSTRM.write("  <trk><name>%s</name><trkseg>\n" % vehicle)
         for timestamp, lon, lat in trackpoints:
             outSTRM.write('    <trkpt lon="%s" lat="%s"><time>%s</time></trkpt>\n' % (

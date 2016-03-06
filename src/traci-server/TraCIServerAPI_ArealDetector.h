@@ -3,7 +3,7 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    15.09.2013
-/// @version $Id: TraCIServerAPI_ArealDetector.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: TraCIServerAPI_ArealDetector.h 20063 2016-02-24 14:31:44Z behrisch $
 ///
 // APIs for getting/setting areal detector values via TraCI
 /****************************************************************************/
@@ -33,9 +33,13 @@
 
 #ifndef NO_TRACI
 
-#include "TraCIException.h"
-#include "TraCIServer.h"
 #include <foreign/tcpip/storage.h>
+
+
+// ===========================================================================
+// class declarations
+// ===========================================================================
+class TraCIServer;
 
 
 // ===========================================================================

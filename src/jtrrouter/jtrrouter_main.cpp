@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Jan 2004
-/// @version $Id: jtrrouter_main.cpp 18486 2015-06-11 11:10:09Z behrisch $
+/// @version $Id: jtrrouter_main.cpp 19987 2016-02-16 10:05:54Z behrisch $
 ///
 // Main for JTRROUTER
 /****************************************************************************/
@@ -167,7 +167,7 @@ main(int argc, char** argv) {
     OptionsCont& oc = OptionsCont::getOptions();
     // give some application descriptions
     oc.setApplicationDescription("Router for the microscopic road traffic simulation SUMO based on junction turning ratios.");
-    oc.setApplicationName("jtrrouter", "SUMO jtrrouter Version " + getBuildName(VERSION_STRING));
+    oc.setApplicationName("jtrrouter", "SUMO jtrrouter Version " VERSION_STRING);
     int ret = 0;
     RONet* net = 0;
     try {

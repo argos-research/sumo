@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdge.h 19552 2015-12-07 15:27:51Z namdre $
+/// @version $Id: NBEdge.h 20110 2016-02-29 15:01:04Z namdre $
 ///
 // The representation of a single edge during network building
 /****************************************************************************/
@@ -708,7 +708,7 @@ public:
      * @param[in] mayDefinitelyPass Whether this connection is definitely undistrubed (special case for on-ramps)
      * @todo Check difference between "setConnection" and "addLane2LaneConnection"
      */
-    void setConnection(unsigned int lane, NBEdge* destEdge,
+    bool setConnection(unsigned int lane, NBEdge* destEdge,
                        unsigned int destLane,
                        Lane2LaneInfoType type,
                        bool mayUseSameDestination = false,
@@ -942,7 +942,7 @@ public:
      *  of this edge to the leftmost lane of myTurnDestination).
      * @param[in] noTLSControlled Whether the turnaround shall not be connected if this edge is controlled by a tls
      */
-    void appendTurnaround(bool noTLSControlled);
+    void appendTurnaround(bool noTLSControlled, bool checkPermissions);
 
 
 

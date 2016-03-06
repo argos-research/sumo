@@ -6,9 +6,9 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-04-07
-@version $Id: SeparateVLSArea.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: SeparateVLSArea.py 20036 2016-02-19 14:34:07Z behrisch $
 
-Separates from an FCD-File (from Nürnberg) all routes which belongs to the VLS-Area and saves them in a new file. 
+Separates from an FCD-File (from Nuernberg) all routes which belongs to the VLS-Area and saves them in a new file. 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
 Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors

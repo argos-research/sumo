@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Felix Brack
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLHandler.cpp 19614 2015-12-15 09:47:56Z namdre $
+/// @version $Id: NLHandler.cpp 19994 2016-02-17 08:53:32Z namdre $
 ///
 // The XML-Handler for network loading
 /****************************************************************************/
@@ -272,8 +272,6 @@ NLHandler::myEndElement(int element) {
                     to->addIncoming(edge);
                 }
             }
-            //initialise traffic lights
-            myJunctionControlBuilder.postLoadInitialization();
             myNetIsLoaded = true;
             break;
         default:

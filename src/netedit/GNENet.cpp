@@ -2,7 +2,7 @@
 /// @file    GNENet.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNENet.cpp 19701 2016-01-11 12:29:03Z namdre $
+/// @version $Id: GNENet.cpp 19915 2016-02-08 19:59:15Z behrisch $
 ///
 // A visual container for GNE-network-components such as GNEEdge and GNEJunction.
 // GNE components wrap netbuild-components and supply visualisation and editing
@@ -709,7 +709,6 @@ void
 GNENet::computeJunction(GNEJunction* junction) {
     // recompute tl-logics
     OptionsCont& oc = OptionsCont::getOptions();
-    NBEdgeCont& ec = myNetBuilder->getEdgeCont();
     NBTrafficLightLogicCont& tllCont = getTLLogicCont();
 
     NBNode* nbn = junction->getNBNode();

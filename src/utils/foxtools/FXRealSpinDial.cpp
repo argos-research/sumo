@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    2004-03-19
-/// @version $Id: FXRealSpinDial.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: FXRealSpinDial.cpp 19881 2016-02-03 18:17:40Z behrisch $
 ///
 //
 /****************************************************************************/
@@ -42,7 +42,7 @@
 * License along with this library; if not, write to the Free Software           *
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
 *********************************************************************************
-* $Id: FXRealSpinDial.cpp 18095 2015-03-17 09:39:00Z behrisch $                   *
+* $Id: FXRealSpinDial.cpp 19881 2016-02-03 18:17:40Z behrisch $                   *
 ********************************************************************************/
 
 /* =========================================================================
@@ -459,10 +459,10 @@ FXIMPLEMENT(FXRealSpinDial, FXPacker, FXRealSpinDialMap, ARRAYNUMBER(FXRealSpinD
 // Construct spinner out of two buttons and a text field
 FXRealSpinDial::FXRealSpinDial() {
     flags = (flags | FLAG_ENABLED | FLAG_SHOWN)&~FLAG_UPDATE;
-    textField = (FXRealSpinDialText*) - 1L;
-    dial = (FXDial*) - 1L;
-    upButton = (FXRealSpinDialBtn*) - 1L;
-    downButton = (FXRealSpinDialBtn*) - 1L;
+    textField = 0;
+    dial = 0;
+    upButton = 0;
+    downButton = 0;
     range[0] = -DBL_MAX;
     range[1] = DBL_MAX;
     incr[0] = 0.1;
@@ -1255,10 +1255,10 @@ void FXRealSpinDial::load(FXStream& store) {
 
 // Destruct spinner:- trash it!
 FXRealSpinDial::~FXRealSpinDial() {
-    textField = (FXRealSpinDialText*) - 1L;
-    dial = (FXDial*) - 1L;
-    upButton = (FXRealSpinDialBtn*) - 1L;
-    downButton = (FXRealSpinDialBtn*) - 1L;
+    textField = 0;
+    dial = 0;
+    upButton = 0;
+    downButton = 0;
 }
 
 }

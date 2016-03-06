@@ -6,7 +6,7 @@
 /// @author  Christoph Sommer
 /// @author  Jakob Erdmann
 /// @date    Tue, 04 Dec 2007
-/// @version $Id: MSDevice_Routing.cpp 19131 2015-10-20 11:52:38Z namdre $
+/// @version $Id: MSDevice_Routing.cpp 20136 2016-03-03 09:51:08Z namdre $
 ///
 // A device that performs vehicle rerouting based on current edge speeds
 /****************************************************************************/
@@ -236,8 +236,13 @@ MSDevice_Routing::preInsertionReroute(const SUMOTime currentTime) {
     if (source->getPurpose() == MSEdge::EDGEFUNCTION_DISTRICT && dest->getPurpose() == MSEdge::EDGEFUNCTION_DISTRICT) {
         const std::pair<const MSEdge*, const MSEdge*> key = std::make_pair(source, dest);
         if (myCachedRoutes.find(key) != myCachedRoutes.end()) {
-            myHolder.replaceRoute(myCachedRoutes[key], true);
-            return myPreInsertionPeriod;
+            if (myCachedRoutes[key]->size() > 2) {
+                myHolder.replaceRoute(myCachedRoutes[key], true);
+                return myPreInsertionPeriod;
+            } else {
+                WRITE_WARNING("No route for vehicle '" + myHolder.getID() + "' found.");
+                return myPreInsertionPeriod;
+            }
         }
     }
     reroute(currentTime, true);

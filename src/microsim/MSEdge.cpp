@@ -8,7 +8,7 @@
 /// @author  Michael Behrisch
 /// @author  Sascha Krieg
 /// @date    Tue, 06 Mar 2001
-/// @version $Id: MSEdge.cpp 19796 2016-01-26 07:31:58Z behrisch $
+/// @version $Id: MSEdge.cpp 19994 2016-02-17 08:53:32Z namdre $
 ///
 // A road/street connecting two junctions
 /****************************************************************************/
@@ -116,9 +116,6 @@ MSEdge::initialize(const std::vector<MSLane*>* lanes) {
     if (myFunction == EDGEFUNCTION_DISTRICT) {
         myCombinedPermissions = SVCAll;
     }
-    if (MSGlobals::gUseMesoSim && !lanes->empty()) {
-        MSGlobals::gMesoNet->buildSegmentsFor(*this, OptionsCont::getOptions());
-    }
 }
 
 
@@ -164,6 +161,10 @@ MSEdge::closeBuilding() {
     }
     std::sort(mySuccessors.begin(), mySuccessors.end(), by_id_sorter());
     rebuildAllowedLanes();
+    // segment building depends on the finished list of successors (for multi-queue)
+    if (MSGlobals::gUseMesoSim && !myLanes->empty()) {
+        MSGlobals::gMesoNet->buildSegmentsFor(*this, OptionsCont::getOptions());
+    }
 }
 
 
@@ -516,7 +517,7 @@ MSEdge::changeLanes(SUMOTime t) {
 
 #ifdef HAVE_INTERNAL_LANES
 const MSEdge*
-MSEdge::getInternalFollowingEdge(MSEdge* followerAfterInternal) const {
+MSEdge::getInternalFollowingEdge(const MSEdge* followerAfterInternal) const {
     //@todo to be optimized
     for (std::vector<MSLane*>::const_iterator i = myLanes->begin(); i != myLanes->end(); ++i) {
         MSLane* l = *i;

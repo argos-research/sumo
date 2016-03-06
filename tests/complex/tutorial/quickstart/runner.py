@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2011-09-25
-@version $Id: runner.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: runner.py 19904 2016-02-07 19:51:27Z behrisch $
 
 This script is a test runner for the quickstart tutorial.
 
@@ -17,6 +17,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 
 import os
@@ -39,11 +41,11 @@ retcode = subprocess.call(
 try:
     shutil.copy("data/quickstart.net.xml", "net.net.xml")
 except:
-    print "Missing 'quickstart.net.xml'"
-print ">> Netbuilding closed with status %s" % retcode
+    print("Missing 'quickstart.net.xml'")
+print(">> Netbuilding closed with status %s" % retcode)
 sys.stdout.flush()
 # run simulation
 retcode = subprocess.call(
     [sumoBinary, "-c", "data/quickstart.sumocfg", "--no-step-log"], stdout=sys.stdout, stderr=sys.stderr)
-print ">> Simulation closed with status %s" % retcode
+print(">> Simulation closed with status %s" % retcode)
 sys.stdout.flush()

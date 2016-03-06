@@ -2,7 +2,7 @@
 /// @file    GNEApplicationWindow.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEApplicationWindow.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GNEApplicationWindow.cpp 19987 2016-02-16 10:05:54Z behrisch $
 ///
 // The main window of Netedit (adapted from GUIApplicationWindow)
 /****************************************************************************/
@@ -168,7 +168,7 @@ GNEApplicationWindow::GNEApplicationWindow(FXApp* a,
       hadDependentBuild(false),
       myNet(0),
       myUndoList(new GNEUndoList(this)),
-      myTitlePrefix(("NETEDIT " + getBuildName(VERSION_STRING)).c_str()) {
+      myTitlePrefix("NETEDIT " VERSION_STRING) {
     GUIIconSubSys::init(a);
 }
 #ifdef _MSC_VER

@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Laura Bieker
 @date    2008
-@version $Id: dailyBuildMSVC.py 19783 2016-01-22 11:25:44Z behrisch $
+@version $Id: dailyBuildMSVC.py 19900 2016-02-06 16:22:21Z behrisch $
 
 Does the nightly svn update on the windows server and the visual
 studio build. The script is also used for the meso build.
@@ -89,7 +89,7 @@ def runTests(options, env, testLog, svnrev):
     fullOpt = ["-b", env["FILEPREFIX"], "-name", "%sr%s" %
                (date.today().strftime("%d%b%y"), svnrev)]
     ttBin = "texttestc.py"
-    if options.suffix == "meso":
+    if options.suffix == "extra":
         runInternalTests.runInternal("", fullOpt, log, console=True)
     else:
         subprocess.call([ttBin] + fullOpt, env=env,

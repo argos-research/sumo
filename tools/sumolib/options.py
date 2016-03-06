@@ -3,7 +3,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2012-03-15
-@version $Id: options.py 19661 2015-12-23 22:45:02Z behrisch $
+@version $Id: options.py 20118 2016-03-02 09:54:08Z martintaraz $
 
 Provides utility functions for dealing with program options
 
@@ -35,7 +35,7 @@ def get_long_option_names(application):
     for line in output.splitlines():
         m = reprog.search(line)
         if m:
-            result.append(m.group(1))
+            result.append(m.group(1).decode('utf-8'))
     return result
 
 

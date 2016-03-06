@@ -6,7 +6,7 @@
 /// @author  Laura Bieker
 /// @author  Andreas Gaubatz
 /// @date    Mon, 1 Jul 2003
-/// @version $Id: GUIJunctionWrapper.cpp 19552 2015-12-07 15:27:51Z namdre $
+/// @version $Id: GUIJunctionWrapper.cpp 19974 2016-02-12 13:58:46Z namdre $
 ///
 // }
 /****************************************************************************/
@@ -121,7 +121,7 @@ GUIJunctionWrapper::getParameterWindow(GUIMainWindow& /*app*/,
 Boundary
 GUIJunctionWrapper::getCenteringBoundary() const {
     Boundary b = myBoundary;
-    b.grow(20);
+    b.grow(1);
     return b;
 }
 

@@ -6,7 +6,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-05-26
-@version $Id: VelocityOverRoute.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: VelocityOverRoute.py 20036 2016-02-19 14:34:07Z behrisch $
 
 Shows the velocity of the chosen taxi over the driven route for all available sources.
 
@@ -105,7 +105,7 @@ def fetchData(taxiId):
                 index = (route[0].index(step.edge) * 2)
 
                 if len(route[2]) > 0 and step.edge == route[2][-1]:
-                    # TODO: Mittelwertbildung ist falsch überarbeiten
+                    # TODO: Mittelwertbildung ist falsch ueberarbeiten
                     values[2][index] = (values[2][index] + step.speed) / 2.0
                     values[2][index + 1] = values[2][index]
                 else:

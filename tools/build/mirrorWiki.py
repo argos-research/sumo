@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2011-10-20
-@version $Id: mirrorWiki.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: mirrorWiki.py 19847 2016-01-31 11:04:30Z behrisch $
 
 Mirrors wiki-documentation.
 
@@ -92,8 +92,7 @@ if __name__ == "__main__":
     images = set()
     if len(args) == 0:
         p = readParsePage("Special:AllPages")
-        p = p[p.find("<input type=\"submit\" value=\"Go\" />"):]
-        p = p[p.find("<table "):]
+        p = p[p.find('<ul class="mw-allpages-chunk">'):]
         pages = p.split("<a ")
     else:
         pages = ['href="/wiki/%s"' % a for a in args]

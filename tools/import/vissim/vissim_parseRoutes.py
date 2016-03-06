@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2009-05-27
-@version $Id: vissim_parseRoutes.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: vissim_parseRoutes.py 20152 2016-03-05 22:46:32Z behrisch $
 
 
 Parses routes given in the Vissim file (first parameter) as (in-)flows and 
@@ -227,7 +227,7 @@ for inflow in inflows:
             emissions.append((int(t), id, edges))
 # sort emissions
 print("Sorting routes...")
-emissions.sort(sorter(0))
+emissions.sort(key=sorter(0))
 
 # save emissions
 print("Writing routes...")

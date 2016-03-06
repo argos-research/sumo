@@ -6,7 +6,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    July 2010
-/// @version $Id: AGTrip.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: AGTrip.cpp 19880 2016-02-03 18:06:43Z behrisch $
 ///
 // Class containing all information of a given trip (car, bus)
 /****************************************************************************/
@@ -167,12 +167,12 @@ AGTrip::setVehicleName(std::string name) {
 
 void
 AGTrip::setArr(AGPosition arrival) {
-    myTo = *new AGPosition(arrival.getStreet(), arrival.getPosition());
+    myTo = AGPosition(arrival.getStreet(), arrival.getPosition());
 }
 
 void
 AGTrip::setDep(AGPosition departure) {
-    myFrom = *new AGPosition(departure.getStreet(), departure.getPosition());
+    myFrom = AGPosition(departure.getStreet(), departure.getPosition());
 }
 
 bool

@@ -4,7 +4,7 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    30.05.2012
-/// @version $Id: TraCIAPI.h 19370 2015-11-18 07:29:11Z namdre $
+/// @version $Id: TraCIAPI.h 19859 2016-02-01 07:56:56Z namdre $
 ///
 // C++ TraCI client API implementation
 /****************************************************************************/
@@ -290,6 +290,22 @@ public:
         InductionLoopScope(TraCIAPI& parent) : TraCIScopeWrapper(parent) {}
         virtual ~InductionLoopScope() {}
 
+        struct VehicleData {
+            /* @brief Constructor
+              (mirrors MSInductLoop::VehicleData) */
+            VehicleData() {}
+            /// @brief The id of the vehicle
+            std::string id;
+            /// @brief Length of the vehicle
+            SUMOReal length;
+            /// @brief Entry-time of the vehicle in [s]
+            SUMOReal entryTime;
+            /// @brief Leave-time of the vehicle in [s]
+            SUMOReal leaveTime;
+            /// @brief Type of the vehicle in
+            std::string typeID;
+        };
+
         std::vector<std::string> getIDList() const;
         SUMOReal  getPosition(const std::string& loopID) const;
         std::string getLaneID(const std::string& loopID) const;
@@ -299,7 +315,8 @@ public:
         SUMOReal getLastStepOccupancy(const std::string& loopID) const;
         SUMOReal getLastStepMeanLength(const std::string& loopID) const;
         SUMOReal getTimeSinceDetection(const std::string& loopID) const;
-        unsigned int getVehicleData(const std::string& loopID) const;
+        std::vector<VehicleData> getVehicleData(const std::string& loopID) const;
+
 
     private:
         /// @brief invalidated copy constructor

@@ -7,7 +7,7 @@
 /// @author  Melanie Knocke
 /// @author  Yun-Pang Floetteroed
 /// @date    Sept 2002
-/// @version $Id: ROEdge.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: ROEdge.cpp 20095 2016-02-26 14:07:14Z behrisch $
 ///
 // A basic edge for routing applications
 /****************************************************************************/
@@ -290,7 +290,7 @@ ROEdge::getSuccessors(SUMOVehicleClass vClass) const {
     }
 #ifdef HAVE_FOX
     if (myAmParallel) {
-        RONet::getInstance()->lock();
+        RONet::getInstance()->getThreadPool().lock();
     }
 #endif
     std::map<SUMOVehicleClass, ROEdgeVector>::const_iterator i = myClassesSuccessorMap.find(vClass);
@@ -298,7 +298,7 @@ ROEdge::getSuccessors(SUMOVehicleClass vClass) const {
         // can use cached value
 #ifdef HAVE_FOX
         if (myAmParallel) {
-            RONet::getInstance()->unlock();
+            RONet::getInstance()->getThreadPool().unlock();
         }
 #endif
         return i->second;
@@ -327,7 +327,7 @@ ROEdge::getSuccessors(SUMOVehicleClass vClass) const {
                                              followers.begin(), followers.end());
 #ifdef HAVE_FOX
         if (myAmParallel) {
-            RONet::getInstance()->unlock();
+            RONet::getInstance()->getThreadPool().unlock();
         }
 #endif
         return myClassesSuccessorMap[vClass];

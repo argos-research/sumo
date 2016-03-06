@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSVehicleType.h 18096 2015-03-17 09:50:59Z behrisch $
+/// @version $Id: MSVehicleType.h 19908 2016-02-08 11:28:50Z behrisch $
 ///
 // The car-following model and parameter
 /****************************************************************************/
@@ -449,7 +449,7 @@ private:
     /// @brief the running index
     const int myIndex;
 
-    /// @brief ID of the car following model.
+    /// @brief instance of the car following model.
     MSCFModel* myCarFollowModel;
 
     /// @brief The original type

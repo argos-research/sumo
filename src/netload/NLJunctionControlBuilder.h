@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLJunctionControlBuilder.h 19618 2015-12-15 16:54:49Z behrisch $
+/// @version $Id: NLJunctionControlBuilder.h 19994 2016-02-17 08:53:32Z namdre $
 ///
 // Builder of microsim-junctions and tls
 /****************************************************************************/
@@ -226,7 +226,7 @@ public:
      * @exception ProcessError If the traffic lights were not correct
      * @see MSTLLogicControl::closeNetworkReading
      */
-    MSTLLogicControl* buildTLLogics() const;
+    MSTLLogicControl* buildTLLogics();
 
 
     /** @brief Ends the building of a traffic lights logic

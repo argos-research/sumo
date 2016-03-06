@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUIViewTraffic.cpp 19650 2015-12-18 08:34:31Z behrisch $
+/// @version $Id: GUIViewTraffic.cpp 19923 2016-02-09 13:01:26Z behrisch $
 ///
 // A view on the simulation; this view is a microscopic one
 /****************************************************************************/
@@ -389,7 +389,7 @@ GUIViewTraffic::checkSnapshots() {
 #ifdef HAVE_FFMPEG
     if (myCurrentVideo != 0) {
         std::string error = makeSnapshot("");
-        if (error != "") {
+        if (error != "" && error != "video") {
             WRITE_WARNING(error);
         }
     }

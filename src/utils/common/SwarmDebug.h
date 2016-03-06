@@ -1,8 +1,8 @@
 /****************************************************************************/
 /// @file    SwarmDebug.h
 /// @author  Riccardo Belletti
-/// @date    Apr 2013
-/// @version $Id: SwarmDebug.h 19604 2015-12-13 20:49:24Z behrisch $
+/// @date    2014-03-21
+/// @version $Id: SwarmDebug.h 20113 2016-03-01 13:22:42Z martintaraz $
 ///
 // Used for additional optional debug messages
 /****************************************************************************/
@@ -10,9 +10,10 @@
 // Copyright 2001-2013 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
-//   This program is free software; you can redistribute it and/or modify
+//   This file is part of SUMO.
+//   SUMO is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
-//   the Free Software Foundation; either version 2 of the License, or
+//   the Free Software Foundation, either version 3 of the License, or
 //   (at your option) any later version.
 //
 /****************************************************************************/

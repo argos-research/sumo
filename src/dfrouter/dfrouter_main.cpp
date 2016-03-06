@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Thu, 16.03.2006
-/// @version $Id: dfrouter_main.cpp 18486 2015-06-11 11:10:09Z behrisch $
+/// @version $Id: dfrouter_main.cpp 19987 2016-02-16 10:05:54Z behrisch $
 ///
 // Main for the DFROUTER
 /****************************************************************************/
@@ -264,7 +264,7 @@ main(int argc, char** argv) {
     OptionsCont& oc = OptionsCont::getOptions();
     // give some application descriptions
     oc.setApplicationDescription("Builds vehicle routes for SUMO using detector values.");
-    oc.setApplicationName("dfrouter", "SUMO dfrouter Version " + getBuildName(VERSION_STRING));
+    oc.setApplicationName("dfrouter", "SUMO dfrouter Version " VERSION_STRING);
     int ret = 0;
     RODFNet* net = 0;
     RODFDetectorCon* detectors = 0;

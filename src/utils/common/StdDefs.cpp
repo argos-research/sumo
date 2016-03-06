@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    2014-01-07
-/// @version $Id: StdDefs.cpp 19791 2016-01-25 14:59:17Z namdre $
+/// @version $Id: StdDefs.cpp 19987 2016-02-16 10:05:54Z behrisch $
 ///
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -87,14 +87,6 @@ const RGBColor& getLinkColor(const LinkState& ls) {
     }
 }
 
-
-const std::string getBuildName(const std::string& version) {
-    std::string result = version;
-#ifdef _DEBUG
-    result += "D";
-#endif
-    return result;
-}
 
 bool gDebugFlag1 = false;
 bool gDebugFlag2 = false;

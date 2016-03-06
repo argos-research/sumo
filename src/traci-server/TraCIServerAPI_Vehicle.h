@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_Vehicle.h 18756 2015-08-31 19:16:33Z behrisch $
+/// @version $Id: TraCIServerAPI_Vehicle.h 19950 2016-02-11 08:33:15Z namdre $
 ///
 // APIs for getting/setting vehicle values via TraCI
 /****************************************************************************/
@@ -89,6 +89,8 @@ private:
 
     static bool vtdMap_matchingRoutePosition(const Position& pos, const std::string& origID, MSVehicle& v,
             SUMOReal& bestDistance, MSLane** lane, SUMOReal& lanePos, int& routeOffset, ConstMSEdgeVector& edges);
+
+    static bool findCloserLane(const MSEdge* edge, const Position& pos, SUMOReal& bestDistance, MSLane** lane); 
 
     static std::map<std::string, std::vector<MSLane*> > gVTDMap;
 

@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2008-03-19
-@version $Id: route2trips.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: route2trips.py 20118 2016-03-02 09:54:08Z martintaraz $
 
 This script converts SUMO routes back into SUMO trips which serve
 as input to one of the routing applications.
@@ -60,7 +60,7 @@ class RouteReader(handler.ContentHandler):
                   file=self.outfile)
         elif name == 'routes':
             print("""<?xml version="1.0"?>
-<!-- generated on %s by $Id: route2trips.py 19649 2015-12-17 21:05:20Z behrisch $ -->
+<!-- generated on %s by $Id: route2trips.py 20118 2016-03-02 09:54:08Z martintaraz $ -->
 <trips>""" % datetime.datetime.now(), file=self.outfile)
 
     def endElement(self, name):
@@ -79,7 +79,7 @@ class RouteReader(handler.ContentHandler):
             else:
                 del self._vehicleAttrs['id']
                 items = sorted(['%s="%s"' % (key, val)
-                                for key, val in self._vehicleAttrs.iteritems()])
+                                for key, val in self._vehicleAttrs.items()])
                 print('    <trip id="%s" %s/>' % (self._vID, ' '.join(items)),
                       file=self.outfile)
             self._vID = ''

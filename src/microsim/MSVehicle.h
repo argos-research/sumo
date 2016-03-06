@@ -10,7 +10,7 @@
 /// @author  Michael Behrisch
 /// @author  Axel Wegener
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSVehicle.h 19525 2015-12-04 11:08:33Z namdre $
+/// @version $Id: MSVehicle.h 20065 2016-02-24 16:36:29Z namdre $
 ///
 // Representation of a vehicle in the micro simulation
 /****************************************************************************/
@@ -375,9 +375,16 @@ public:
     /** @brief Returns the vehicle's direction in degrees
      * @return The vehicle's current angle
      */
-    SUMOReal getAngle() const;
+    SUMOReal getAngle() const {
+        return myAngle;
+    }
     //@}
 
+    /// @brief compute the current vehicle angle
+    SUMOReal computeAngle() const;
+
+    /// @brief Set a custom vehicle angle in rad
+    void setAngle(SUMOReal angle);
 
     /** Returns true if the two vehicles overlap. */
     static bool overlap(const MSVehicle* veh1, const MSVehicle* veh2) {
@@ -462,6 +469,8 @@ public:
         MSLane* lane;
         /// @brief The overall length which may be driven when using this lane without a lane change
         SUMOReal length;
+        /// @brief The length which may be driven on this lane
+        SUMOReal currentLength;
         /// @brief The overall vehicle sum on consecutive lanes which can be passed without a lane change
         SUMOReal occupation;
         /// @brief As occupation, but without the first lane
@@ -847,6 +856,10 @@ public:
     /// @}
 
 
+    /// @brief whether the vehicle may safely move to the given lane with regard to upcoming links
+    bool unsafeLinkAhead(const MSLane* lane) const;
+
+
 #ifndef NO_TRACI
     /** @brief Returns the uninfluenced velocity
      *
@@ -1022,14 +1035,7 @@ public:
             return myOriginalSpeed;
         }
 
-        void setVTDControlled(bool c, MSLane* l, SUMOReal pos, int edgeOffset, const ConstMSEdgeVector& route, SUMOTime t) {
-            myAmVTDControlled = c;
-            myVTDLane = l;
-            myVTDPos = pos;
-            myVTDEdgeOffset = edgeOffset;
-            myVTDRoute = route;
-            myLastVTDAccess = t;
-        }
+        void setVTDControlled(MSLane* l, SUMOReal pos, SUMOReal angle, int edgeOffset, const ConstMSEdgeVector& route, SUMOTime t); 
 
         SUMOTime getLastAccessTimeStep() const {
             return myLastVTDAccess;
@@ -1043,14 +1049,9 @@ public:
         /// @brief return the change in longitudinal position that is implicit in the new VTD position
         SUMOReal implicitDeltaPosVTD(const MSVehicle* veh);
 
-        inline bool isVTDControlled() const {
-            return myAmVTDControlled;
-        }
+        bool isVTDControlled() const;
 
-        inline bool isVTDAffected(SUMOTime t) const {
-            return myAmVTDControlled && myLastVTDAccess >= t - TIME2STEPS(10);
-        }
-
+        bool isVTDAffected(SUMOTime t) const;
 
     private:
         /// @brief The velocity time line to apply
@@ -1080,9 +1081,9 @@ public:
         /// @brief Whether red lights are a reason to brake
         bool myEmergencyBrakeRedLight;
 
-        bool myAmVTDControlled;
         MSLane* myVTDLane;
         SUMOReal myVTDPos;
+        SUMOReal myVTDAngle;
         int myVTDEdgeOffset;
         ConstMSEdgeVector myVTDRoute;
         SUMOTime myLastVTDAccess;
@@ -1121,6 +1122,9 @@ public:
     /// @brief compute safe speed for following the given leader
     SUMOReal getSafeFollowSpeed(const std::pair<const MSVehicle*, SUMOReal> leaderInfo,
                                 const SUMOReal seen, const MSLane* const lane, SUMOReal distToCrossing) const;
+
+    /// @brief get a numerical value for the priority of the  upcoming link
+    static int nextLinkPriority(const std::vector<MSLane*>& conts); 
 
 #endif
 
@@ -1222,6 +1226,9 @@ protected:
     bool myAmRegisteredAsWaitingForContainer;
 
     bool myHaveToWaitOnNextLink;
+
+    /// @brief the angle (@todo consider moving this into myState)
+    SUMOReal myAngle;
 
     mutable Position myCachedPosition;
 

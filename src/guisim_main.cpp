@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Felix Brack
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: guisim_main.cpp 18512 2015-06-30 07:56:13Z behrisch $
+/// @version $Id: guisim_main.cpp 19987 2016-02-16 10:05:54Z behrisch $
 ///
 // Main for GUISIM
 /****************************************************************************/
@@ -72,7 +72,7 @@ main(int argc, char** argv) {
     OptionsCont& oc = OptionsCont::getOptions();
     // give some application descriptions
     oc.setApplicationDescription("GUI version of the simulation SUMO.");
-    oc.setApplicationName("sumo-gui.exe", "SUMO gui Version " + getBuildName(VERSION_STRING));
+    oc.setApplicationName("sumo-gui.exe", "SUMO gui Version " VERSION_STRING);
     int ret = 0;
     try {
         // initialise subsystems

@@ -5,7 +5,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2010-01-30
-@version $Id: runner.py 19839 2016-01-28 20:58:13Z behrisch $
+@version $Id: runner.py 20048 2016-02-22 12:08:12Z behrisch $
 
 This script runs the gaming GUI for the LNdW traffic light game.
 It checks for possible scenarios in the current working directory
@@ -384,8 +384,7 @@ def findSumoBinary(guisimBinary):
 
 
 guisimPath = findSumoBinary("sumo-gui")
-# @todo need to check for OSG here
-haveOSG = True
+haveOSG = "OSG" in subprocess.check_output(findSumoBinary("sumo"))
 
 if options.stereo:
     for m in stereoModes:

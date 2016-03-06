@@ -2,7 +2,7 @@
 /// @file    GNEAttributeCarrier.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEAttributeCarrier.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GNEAttributeCarrier.cpp 19947 2016-02-10 15:32:46Z behrisch $
 ///
 // Abstract Base class for gui objects which carry attributes
 /****************************************************************************/
@@ -69,6 +69,18 @@ GNEAttributeCarrier::isValid(SumoXMLAttr key, const std::string& value) {
 bool
 GNEAttributeCarrier::isValidID(const std::string& value) {
     return value.find_first_of(" \t\n\r@$%^&/|\\{}*'\";:<>") == std::string::npos;
+}
+
+
+template<> int
+GNEAttributeCarrier::parse(const std::string& string) {
+    return TplConvert::_str2int(string);
+}
+
+
+template<> SUMOReal
+GNEAttributeCarrier::parse(const std::string& string) {
+    return TplConvert::_str2SUMOReal(string);
 }
 
 // ===========================================================================

@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Wed, 21.08.2013
-/// @version $Id: emissionsMap_main.cpp 18486 2015-06-11 11:10:09Z behrisch $
+/// @version $Id: emissionsMap_main.cpp 20035 2016-02-19 14:16:24Z behrisch $
 ///
 // Main for an emissions map writer
 /****************************************************************************/
@@ -95,7 +95,7 @@ main(int argc, char** argv) {
     OptionsCont& oc = OptionsCont::getOptions();
     //  give some application descriptions
     oc.setApplicationDescription("Builds and writes an emissions map.");
-    oc.setApplicationName("emissionsMap", "SUMO emissionsMap Version " + getBuildName(VERSION_STRING));
+    oc.setApplicationName("emissionsMap", "SUMO emissionsMap Version " VERSION_STRING);
     //  add options
     SystemFrame::addConfigurationOptions(oc);
     oc.addOptionSubTopic("Processing");

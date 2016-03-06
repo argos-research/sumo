@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: OptionsCont.cpp 18756 2015-08-31 19:16:33Z behrisch $
+/// @version $Id: OptionsCont.cpp 19857 2016-01-31 21:58:22Z behrisch $
 ///
 // A storage for options (typed value containers)
 /****************************************************************************/
@@ -534,6 +534,7 @@ OptionsCont::processMetaOptions(bool missingOptions) {
     if (missingOptions) {
         // no options are given
         std::cout << myFullName << std::endl;
+        std::cout << " Build features: " << HAVE_ENABLED << std::endl;
         for (std::vector<std::string>::const_iterator it =
                     myCopyrightNotices.begin(); it != myCopyrightNotices.end(); ++it) {
             std::cout << " " << *it << std::endl;
@@ -556,6 +557,7 @@ OptionsCont::processMetaOptions(bool missingOptions) {
     // check whether the help shall be printed
     if (getBool("version")) {
         std::cout << myFullName << std::endl;
+        std::cout << " Build features: " << HAVE_ENABLED << std::endl;
         for (std::vector<std::string>::const_iterator it =
                     myCopyrightNotices.begin(); it != myCopyrightNotices.end(); ++it) {
             std::cout << " " << *it << std::endl;

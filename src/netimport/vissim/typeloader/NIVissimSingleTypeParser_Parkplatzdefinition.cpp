@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Wed, 18 Dec 2002
-/// @version $Id: NIVissimSingleTypeParser_Parkplatzdefinition.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: NIVissimSingleTypeParser_Parkplatzdefinition.cpp 20083 2016-02-25 15:47:51Z behrisch $
 ///
 //
 /****************************************************************************/
@@ -99,8 +99,8 @@ NIVissimSingleTypeParser_Parkplatzdefinition::parse(std::istream& from) {
     from >> tag;
     from >> length;
 
-    from >> tag; // "Kapazität"
-    from >> tag; // "Kapazität"-value
+    from >> tag; // "Kapazitaet"
+    from >> tag; // "Kapazitaet"-value
 
     tag = myRead(from);
     if (tag == "belegung") {

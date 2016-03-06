@@ -1,10 +1,10 @@
 /****************************************************************************/
-/// @file    MSChargingStation_h.h
+/// @file    MSChargingStation.h
 /// @author  Daniel Krajzewicz
 /// @author  Tamas Kurzveil
 /// @author  Pablo Alvarez Lopez
 /// @date    20-12-13
-/// @version $Id: MSChargingStation.h 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: MSChargingStation.h 20083 2016-02-25 15:47:51Z behrisch $
 ///
 // Chargin Station for Electric vehicles
 /****************************************************************************/

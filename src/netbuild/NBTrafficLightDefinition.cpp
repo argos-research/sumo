@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBTrafficLightDefinition.cpp 19762 2016-01-20 14:55:01Z namdre $
+/// @version $Id: NBTrafficLightDefinition.cpp 20080 2016-02-25 14:42:03Z namdre $
 ///
 // The base class for traffic light logic definitions
 /****************************************************************************/
@@ -90,7 +90,9 @@ NBTrafficLightDefinition::NBTrafficLightDefinition(const std::string& id,
     mySubID(programID),
     myOffset(offset),
     myType(type),
-    myNeedsContRelationReady(false) {
+    myNeedsContRelationReady(false),
+    myRightOnRedConflictsReady(false) 
+{
     addNode(junction);
 }
 
@@ -101,7 +103,8 @@ NBTrafficLightDefinition::NBTrafficLightDefinition(const std::string& id, const 
     mySubID(programID),
     myOffset(offset),
     myType(type),
-    myNeedsContRelationReady(false)
+    myNeedsContRelationReady(false),
+    myRightOnRedConflictsReady(false) 
 {}
 
 
@@ -154,7 +157,7 @@ NBTrafficLightDefinition::setParticipantsInformation() {
 }
 
 std::set<NBEdge*> 
-NBTrafficLightDefinition::collectReachable(EdgeVector outer, bool checkControlled) {
+NBTrafficLightDefinition::collectReachable(EdgeVector outer, const EdgeVector& within, bool checkControlled) {
     std::set<NBEdge*> reachable;
     while (outer.size() > 0) {
         NBEdge* from = outer.back();
@@ -163,6 +166,7 @@ NBTrafficLightDefinition::collectReachable(EdgeVector outer, bool checkControlle
         for (std::vector<NBEdge::Connection>::iterator k = cons.begin(); k != cons.end(); k++) {
             NBEdge* to = (*k).toEdge;
             if (reachable.count(to) == 0 &&
+                    (find(within.begin(), within.end(), to) != within.end()) &&
                     (!checkControlled || from->mayBeTLSControlled((*k).fromLane, to, (*k).toLane))) {
                 reachable.insert(to);
                 outer.push_back(to);
@@ -199,9 +203,9 @@ NBTrafficLightDefinition::collectEdges() {
         }
     }
     // collect edges that are reachable from the outside via controlled connections 
-    std::set<NBEdge*> reachable = collectReachable(outer, true);
+    std::set<NBEdge*> reachable = collectReachable(outer, myEdgesWithin, true);
     // collect edges that are reachable from the outside regardless of controllability
-    std::set<NBEdge*> reachable2 = collectReachable(outer, false);
+    std::set<NBEdge*> reachable2 = collectReachable(outer, myEdgesWithin, false);
 
     const bool uncontrolledWithin = OptionsCont::getOptions().getBool("tls.uncontrolled-within");
     for (EdgeVector::iterator j = myEdgesWithin.begin(); j != myEdgesWithin.end(); ++j) {

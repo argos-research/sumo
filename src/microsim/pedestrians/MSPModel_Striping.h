@@ -3,7 +3,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 13 Jan 2014
-/// @version $Id: MSPModel_Striping.h 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: MSPModel_Striping.h 19988 2016-02-16 15:18:30Z namdre $
 ///
 // The pedestrian following model (prototype)
 /****************************************************************************/
@@ -103,6 +103,9 @@ public:
 
     // @brief the utility penalty for oncoming conflicts on stripes (corresponds to meters)
     static const SUMOReal ONCOMING_CONFLICT_PENALTY;
+
+    // @brief the minimum utility that indicates obstruction
+    static const SUMOReal OBSTRUCTION_THRESHOLD;
 
     // @brief the factor by which pedestrian width is reduced when sqeezing past each other
     static const SUMOReal SQUEEZE;
@@ -293,7 +296,12 @@ protected:
         int stripe(const SUMOReal relY) const;
         int otherStripe(const SUMOReal relY) const;
 
-        /// @brief calculate distance to the given obstacle, positive values mean in front of me in walking direction, negative behind me, 0 means overlap
+        /* @brief calculate distance to the given obstacle, 
+         * - non-negative values signify an obstacle in front of ego
+         * the special values DIST_OVERLAP and DIST_BEHIND are used to signify
+         * obstacles that overlap and obstacles behind ego respectively
+         * the result is the same regardless of walking direction
+         */
         SUMOReal distanceTo(const Obstacle& obs, const bool includeMinGap = true) const;
 
         /// @brief replace obstacles in the first vector with obstacles from the second if they are closer to me

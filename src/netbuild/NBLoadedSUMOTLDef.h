@@ -3,7 +3,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mar 2011
-/// @version $Id: NBLoadedSUMOTLDef.h 19701 2016-01-11 12:29:03Z namdre $
+/// @version $Id: NBLoadedSUMOTLDef.h 20080 2016-02-25 14:42:03Z namdre $
 ///
 // A complete traffic light logic loaded from a sumo-net. (opted to reimplement
 // since NBLoadedTLDef is quite vissim specific)
@@ -129,6 +129,9 @@ public:
      * @param[in] offset The algorithm type of this tls
      */
     void setType(TrafficLightType type);
+
+    /// @brief whether the given index must yield to the foeIndex while turing right on a red light
+    bool rightOnRedConflict(int index, int foeIndex) const;
 
 protected:
     /** @brief Collects the links participating in this traffic light

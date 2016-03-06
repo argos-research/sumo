@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSLink.h 19826 2016-01-28 11:42:08Z namdre $
+/// @version $Id: MSLink.h 20049 2016-02-22 12:19:06Z namdre $
 ///
 // A connnection between lanes
 /****************************************************************************/
@@ -75,6 +75,9 @@ class OutputDevice;
  */
 class MSLink {
 public:
+
+    // distance to link in m below which adaptation for zipper-merging should take place
+    static const SUMOReal ZIPPER_ADAPT_DIST;
 
     struct LinkLeader {
         LinkLeader(MSVehicle* _veh, SUMOReal _gap, SUMOReal _distToCrossing) :

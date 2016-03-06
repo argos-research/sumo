@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 29.04.2005
-/// @version $Id: StdDefs.h 19395 2015-11-20 12:22:20Z namdre $
+/// @version $Id: StdDefs.h 19987 2016-02-16 10:05:54Z behrisch $
 ///
 //
 /****************************************************************************/
@@ -59,10 +59,6 @@ const SUMOReal SUMO_const_haltingSpeed = (SUMOReal) 0.1;
 /* @brief map from LinkState to color constants (see above)
  */
 const RGBColor& getLinkColor(const LinkState& ls);
-
-/// @brief attach some build flags to the version string
-const std::string getBuildName(const std::string& version);
-
 
 
 /* -------------------------------------------------------------------------

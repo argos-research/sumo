@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Tue, 17 Jun 2003
-/// @version $Id: MsgHandler.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MsgHandler.h 19998 2016-02-17 11:45:55Z behrisch $
 ///
 // Retrieves messages about the process and gives them further to output
 /****************************************************************************/
@@ -201,6 +201,7 @@ private:
 #define WRITE_MESSAGE(msg) MsgHandler::getMessageInstance()->inform(msg);
 #define PROGRESS_BEGIN_MESSAGE(msg) MsgHandler::getMessageInstance()->beginProcessMsg((msg) + std::string("..."));
 #define PROGRESS_DONE_MESSAGE() MsgHandler::getMessageInstance()->endProcessMsg("done.");
+#define PROGRESS_TIME_MESSAGE(before) MsgHandler::getMessageInstance()->endProcessMsg("done (" + toString(SysUtils::getCurrentMillis() - before) + "ms).");
 #define PROGRESS_FAILED_MESSAGE() MsgHandler::getMessageInstance()->endProcessMsg("failed.");
 #define WRITE_ERROR(msg)   MsgHandler::getErrorInstance()->inform(msg);
 

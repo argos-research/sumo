@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILane.cpp 19791 2016-01-25 14:59:17Z namdre $
+/// @version $Id: GUILane.cpp 19974 2016-02-12 13:58:46Z namdre $
 ///
 // Representation of a lane in the micro simulation (gui-version)
 /****************************************************************************/
@@ -707,7 +707,9 @@ GUILane::getCenteringBoundary() const {
     Boundary b;
     b.add(myShape[0]);
     b.add(myShape[-1]);
-    b.grow(20);
+    b.grow(10);
+    // ensure that vehicles and persons on the side are drawn even if the edge
+    // is outside the view
     return b;
 }
 

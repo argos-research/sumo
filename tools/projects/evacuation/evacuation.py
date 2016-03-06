@@ -1,11 +1,10 @@
 #!/usr/bin/env python
-# -*- coding: cp1252 -*-
 """
 @file evacuation.py
 @author  Martin Taraz
 @author  Michael Behrisch
 @date    2015-09-09
-@version $Id: evacuation.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: evacuation.py 20118 2016-03-02 09:54:08Z martintaraz $
 
 Starts the creation of an Evacuation Scenario
 

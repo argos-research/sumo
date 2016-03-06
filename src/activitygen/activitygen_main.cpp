@@ -6,7 +6,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Jul 2010
-/// @version $Id: activitygen_main.cpp 18486 2015-06-11 11:10:09Z behrisch $
+/// @version $Id: activitygen_main.cpp 19987 2016-02-16 10:05:54Z behrisch $
 ///
 // Main object of the ActivityGen application
 /****************************************************************************/
@@ -101,7 +101,7 @@ main(int argc, char* argv[]) {
     // give some application descriptions
     oc.setApplicationDescription(
         "Generates routes of persons throughout a day for the microscopic road traffic simulation SUMO.");
-    oc.setApplicationName("activitygen", "SUMO activitygen Version " + getBuildName(VERSION_STRING));
+    oc.setApplicationName("activitygen", "SUMO activitygen Version " VERSION_STRING);
     oc.addCopyrightNotice("Copyright (C) 2010-2012 Technische Universitaet Muenchen");
     int ret = 0;
     RONet* net = 0;

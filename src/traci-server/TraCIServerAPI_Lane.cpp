@@ -6,7 +6,7 @@
 /// @author  Laura Bieker
 /// @author  Mario Krumnow
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_Lane.cpp 19833 2016-01-28 13:32:49Z namdre $
+/// @version $Id: TraCIServerAPI_Lane.cpp 20063 2016-02-24 14:31:44Z behrisch $
 ///
 // APIs for getting/setting lane values via TraCI
 /****************************************************************************/
@@ -38,6 +38,7 @@
 #include <microsim/MSEdgeControl.h>
 #include <microsim/MSLane.h>
 #include <microsim/MSNet.h>
+#include <microsim/MSVehicle.h>
 #include "TraCIConstants.h"
 #include "TraCIServer.h"
 #include "TraCIServerAPI_Lane.h"

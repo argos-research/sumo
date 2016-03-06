@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Melanie Knocke
 /// @date    Mon, 05 Dec 2005
-/// @version $Id: polyconvert_main.cpp 18892 2015-09-21 13:29:52Z namdre $
+/// @version $Id: polyconvert_main.cpp 19987 2016-02-16 10:05:54Z behrisch $
 ///
 // Main for POLYCONVERT
 /****************************************************************************/
@@ -222,7 +222,7 @@ int
 main(int argc, char** argv) {
     OptionsCont& oc = OptionsCont::getOptions();
     oc.setApplicationDescription("Importer of polygons and POIs for the road traffic simulation SUMO.");
-    oc.setApplicationName("polyconvert", "SUMO polyconvert Version " + getBuildName(VERSION_STRING));
+    oc.setApplicationName("polyconvert", "SUMO polyconvert Version " VERSION_STRING);
     int ret = 0;
     try {
         // initialise subsystems

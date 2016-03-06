@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-07-10
-@version $Id: statisticsElements.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: statisticsElements.py 20118 2016-03-02 09:54:08Z martintaraz $
 
 This script is to define classes, functions, parse-reader and output files/format for
 - calculating network performances
@@ -141,7 +141,7 @@ def getStatisticsOutput(assignments, outputfile):
         'average vehicular travel length(m) = the sum of all vehicular travel lengths / the number of vehicles\n')
     foutveh.write(
         'average vehicular travel speed(m/s) = the sum of all vehicular travel speeds / the number of vehicles\n')
-    for method in assignments.itervalues():
+    for method in assignments.values():
         foutveh.write('\nAssignment Method:%s\n' % method.label)
         foutveh.write('- total number of vehicles:%s\n' % method.totalVeh)
         foutveh.write('- total departure delay(s):%s, ' %

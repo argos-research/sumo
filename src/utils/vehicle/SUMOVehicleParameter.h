@@ -5,7 +5,7 @@
 /// @author  Axel Wegener
 /// @author  Michael Behrisch
 /// @date    2006-01-24
-/// @version $Id: SUMOVehicleParameter.h 19575 2015-12-09 08:22:14Z behrisch $
+/// @version $Id: SUMOVehicleParameter.h 20089 2016-02-26 09:20:59Z namdre $
 ///
 // Structure representing possible vehicle parameter
 /****************************************************************************/
@@ -67,7 +67,7 @@ const int VEHPARS_TO_TAZ_SET = 2 << 12;
 const int VEHPARS_FORCE_REROUTE = 2 << 13;
 const int VEHPARS_PERSON_CAPACITY_SET = 2 << 14;
 const int VEHPARS_PERSON_NUMBER_SET = 2 << 15;
-const int VEHPARS_CONTAINER_NUMBER_SET = 2 << 15;
+const int VEHPARS_CONTAINER_NUMBER_SET = 2 << 16;
 
 const int STOP_INDEX_END = -1;
 const int STOP_INDEX_FIT = -2;
@@ -141,12 +141,8 @@ enum DepartPosDefinition {
     DEPART_POS_FREE,
     /// @brief Back-at-zero position
     DEPART_POS_BASE,
-    /// @brief Simple max-flow insertion by P.Wagner
-    DEPART_POS_PWAG_SIMPLE,
-    /// @brief Generic max-flow insertion by P.Wagner
-    DEPART_POS_PWAG_GENERIC,
-    /// @brief A gap is chosen where the maximum speed may be achieved
-    DEPART_POS_MAX_SPEED_GAP,
+    /// @brief Insert behind the last vehicle as close as possible to still allow the specified departSpeed. Fallback to DEPART_POS_BASE if there is no vehicle on the departLane yet.
+    DEPART_POS_LAST,
     /// @brief If a fixed number of random choices fails, a free position is chosen
     DEPART_POS_RANDOM_FREE,
     /// @brief Tag for the last element in the enum for safe int casting

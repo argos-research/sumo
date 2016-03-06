@@ -2,9 +2,9 @@
 /// @file    MSBatteryExport.h
 /// @author  Mario Krumnow
 /// @author  Tamas Kurczveil
-/// @author  Pablo Alvarez López
+/// @author  Pablo Alvarez Lopez
 /// @date    20-12-13
-/// @version $Id: MSBatteryExport.h 18762 2015-09-01 16:27:09Z behrisch $
+/// @version $Id: MSBatteryExport.h 20083 2016-02-25 15:47:51Z behrisch $
 ///
 // Realises dumping Battery Data
 /****************************************************************************/

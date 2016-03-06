@@ -5,7 +5,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    03.02.2014
-/// @version $Id: TraCIServerAPI_ArealDetector.cpp 19833 2016-01-28 13:32:49Z namdre $
+/// @version $Id: TraCIServerAPI_ArealDetector.cpp 20063 2016-02-24 14:31:44Z behrisch $
 ///
 // APIs for getting/setting areal detector values via TraCI
 /****************************************************************************/
@@ -33,8 +33,9 @@
 
 #ifndef NO_TRACI
 
-#include "TraCIConstants.h"
 #include <microsim/output/MSDetectorControl.h>
+#include "TraCIConstants.h"
+#include "TraCIServer.h"
 #include "TraCIServerAPI_ArealDetector.h"
 
 #ifdef CHECK_MEMORY_LEAKS

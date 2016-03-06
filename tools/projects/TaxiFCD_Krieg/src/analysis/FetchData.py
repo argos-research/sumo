@@ -6,7 +6,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-04-15
-@version $Id: FetchData.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: FetchData.py 20036 2016-02-19 14:34:07Z behrisch $
 
 Fetches Information of the simulated Data and the FCD.
 For each taxi the time, speed and position of every step will be collected and stored in a file. 
@@ -42,7 +42,7 @@ withoutEmptyEdges = True
 
 def main():
     print("start program")
-    # multi change pathes (routen müssen immer extra neu erstellt werden wegen
+    # multi change pathes (routen muessen immer extra neu erstellt werden wegen
     # taxiIDpickleList)
     path.simFcd = path.newPath(
         path.main, "simProzessiertFCD/t2MitVerschiedenenLosfahrzeiten/linkspeeds.simulatedRawFCD_-4.dat")

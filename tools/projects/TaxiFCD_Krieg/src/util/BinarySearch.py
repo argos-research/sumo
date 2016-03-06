@@ -5,7 +5,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-04-01
-@version $Id: BinarySearch.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: BinarySearch.py 20036 2016-02-19 14:34:07Z behrisch $
 
 binary search helper functions.
 
@@ -46,7 +46,7 @@ def isElmInListFaster(list, elm):
     pos = 0
     # aktuelle Teilungsposition
 
-    # solange der Schlüssel im Bereich liegt (andernfalls ist das gesuchte
+    # solange der Schluessel im Bereich liegt (andernfalls ist das gesuchte
     # Element nicht vorhanden)
     while elm >= list[links] and elm <= list[rechts]:
         # Aktualisierung der Anzahl der verschiedenen Elemente
@@ -58,12 +58,12 @@ def isElmInListFaster(list, elm):
 
         if elm > list[pos]:             # rechtes Teilintervall
             links = pos + 1
-            # daten[pos] bereits überprüft
+            # daten[pos] bereits ueberprueft
         elif elm < list[pos]:        # linkes Teilintervall
             rechts = pos - 1
-            # daten[pos] bereits überprüft
+            # daten[pos] bereits ueberprueft
         else:                                     # Element gefunden
             return True
-            # Position zurückgeben
+            # Position zurueckgeben
     return False
     # Element nicht gefunden

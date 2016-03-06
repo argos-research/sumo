@@ -3,8 +3,8 @@
 /// @author  Gianfilippo Slager
 /// @author  Alessio Bonfietti
 /// @author  Federico Caselli
-/// @date    Feb 2010
-/// @version $Id: MSSOTLE2Sensors.cpp 19746 2016-01-18 13:59:29Z behrisch $
+/// @date    2010-02-25
+/// @version $Id: MSSOTLE2Sensors.cpp 20113 2016-03-01 13:22:42Z martintaraz $
 ///
 // The class for SOTL sensors of "E2" type
 /****************************************************************************/
@@ -12,9 +12,10 @@
 // Copyright 2001-2009 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
-//   This program is free software; you can redistribute it and/or modify
+//   This file is part of SUMO.
+//   SUMO is free software: you can redistribute it and/or modify
 //   it under the terms of the GNU General Public License as published by
-//   the Free Software Foundation; either version 2 of the License, or
+//   the Free Software Foundation, either version 3 of the License, or
 //   (at your option) any later version.
 //
 /****************************************************************************/

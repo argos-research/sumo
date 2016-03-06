@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Wed, 10. Dec 2003
-/// @version $Id: MSVehicleControl.cpp 19715 2016-01-12 12:58:06Z namdre $
+/// @version $Id: MSVehicleControl.cpp 20121 2016-03-02 12:22:25Z namdre $
 ///
 // The class responsible for building and deletion of vehicles
 /****************************************************************************/
@@ -71,7 +71,7 @@ MSVehicleControl::MSVehicleControl() :
     myScale(-1),
     myMaxSpeedFactor(1),
     myMinDeceleration(SUMOVTypeParameter::getDefaultDecel(SVC_IGNORING)) {
-    SUMOVTypeParameter defType(DEFAULT_VTYPE_ID, SVC_IGNORING);
+    SUMOVTypeParameter defType(DEFAULT_VTYPE_ID, SVC_PASSENGER);
     myVTypeDict[DEFAULT_VTYPE_ID] = MSVehicleType::build(defType);
     SUMOVTypeParameter defPedType(DEFAULT_PEDTYPE_ID, SVC_PEDESTRIAN);
     defPedType.setParameter |= VTYPEPARS_VEHICLECLASS_SET;

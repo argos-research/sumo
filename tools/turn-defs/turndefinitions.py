@@ -4,7 +4,7 @@
 @author  Karol Stosiek
 @author  Michael Behrisch
 @date    2011-10-26
-@version $Id: turndefinitions.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: turndefinitions.py 20118 2016-03-02 09:54:08Z martintaraz $
 
 Operations and classes necessary to work on SUMO turn definitions.
 
@@ -63,7 +63,7 @@ class TurnDefinitions():
         """ Returns all of the turn definitions incoming edges. The result
             will be sorted in alphabetical. """
 
-        sources = self.turn_definitions.keys()
+        sources = list(self.turn_definitions.keys())
         sources.sort()
         return sources
 

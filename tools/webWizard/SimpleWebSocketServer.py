@@ -2,7 +2,7 @@
 @file    SimpleWebSocketServer.py
 @author  Dave Pallot
 @date    2013
-@version $Id: SimpleWebSocketServer.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: SimpleWebSocketServer.py 20118 2016-03-02 09:54:08Z martintaraz $
 
 A web socket server implementation to be used by the osm server.py
 Originally distributed under the MIT license at
@@ -18,7 +18,14 @@ the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
 from __future__ import absolute_import
-import SocketServer
+try:
+    import SocketServer
+    from BaseHTTPServer import BaseHTTPRequestHandler
+    from StringIO import StringIO
+except ImportError:
+    import socketserver
+    from http.server import BaseHTTPRequestHandler
+    from io import StringIO
 import hashlib
 import base64
 import socket
@@ -28,8 +35,6 @@ import sys
 import errno
 import codecs
 from collections import deque
-from BaseHTTPServer import BaseHTTPRequestHandler
-from StringIO import StringIO
 from select import select
 
 __all__ = ['WebSocket', 'SimpleWebSocketServer', 'SimpleSSLWebSocketServer']

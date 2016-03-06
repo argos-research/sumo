@@ -6,7 +6,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSEdge.h 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSEdge.h 20143 2016-03-03 15:25:30Z namdre $
 ///
 // A road/street connecting two junctions
 /****************************************************************************/
@@ -537,7 +537,7 @@ public:
 
 #ifdef HAVE_INTERNAL_LANES
     /// @todo extension: inner junctions are not filled
-    const MSEdge* getInternalFollowingEdge(MSEdge* followerAfterInternal) const;
+    const MSEdge* getInternalFollowingEdge(const MSEdge* followerAfterInternal) const;
 #endif
 
     /// @brief Returns whether the vehicle (class) is not allowed on the edge
@@ -620,6 +620,12 @@ public:
     void markDelayed() const {
         myAmDelayed = true;
     }
+
+    /// @brief grant exclusive access to the mesoscopic state
+    virtual void lock() const {}
+
+    /// @brief release exclusive access to the mesoscopic state
+    virtual void unlock() const {};
 
     /** @brief Inserts edge into the static dictionary
         Returns true if the key id isn't already in the dictionary. Otherwise

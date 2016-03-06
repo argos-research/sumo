@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: RORouteHandler.cpp 18541 2015-07-07 13:49:54Z behrisch $
+/// @version $Id: RORouteHandler.cpp 19888 2016-02-04 08:58:22Z behrisch $
 ///
 // Parser and container for routes during their loading
 /****************************************************************************/
@@ -514,6 +514,7 @@ RORouteHandler::closeFlow() {
     }
     if (myNet.getVehicleTypeSecure(myVehicleParameter->vtypeid) == 0) {
         myErrorOutput->inform("The vehicle type '" + myVehicleParameter->vtypeid + "' for flow '" + myVehicleParameter->id + "' is not known.");
+        myVehicleParameter->vtypeid = DEFAULT_VTYPE_ID;
     }
     if (myVehicleParameter->routeid[0] == '!' && myNet.getRouteDef(myVehicleParameter->routeid) == 0) {
         closeRoute(true);
@@ -531,6 +532,8 @@ RORouteHandler::closeFlow() {
         } else {
             myErrorOutput->inform("Another flow with the id '" + myVehicleParameter->id + "' exists.");
         }
+    } else {
+        delete myVehicleParameter;
     }
     myVehicleParameter = 0;
     myInsertStopEdgesAt = -1;

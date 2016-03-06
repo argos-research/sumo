@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIEdge.h 19791 2016-01-25 14:59:17Z namdre $
+/// @version $Id: GUIEdge.h 20143 2016-03-03 15:25:30Z namdre $
 ///
 // A road/street connecting two junctions (gui-version)
 /****************************************************************************/
@@ -188,6 +188,15 @@ public:
 
     void drawMesoVehicles(const GUIVisualizationSettings& s) const;
 
+    /// @brief grant exclusive access to the mesoscopic state
+    void lock() const {
+        myLock.lock();
+    }
+
+    /// @brief release exclusive access to the mesoscopic state
+    void unlock() const {
+        myLock.unlock();
+    }
 
     /// @brief close this edge for traffic
     void closeTraffic(const GUILane* lane);

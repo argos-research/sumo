@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBNodeShapeComputer.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: NBNodeShapeComputer.cpp 19939 2016-02-10 12:05:15Z namdre $
 ///
 // This class computes shapes of junctions
 /****************************************************************************/
@@ -263,7 +263,7 @@ NBNodeShapeComputer::computeNodeShapeDefault(bool simpleContinuation) {
                         SUMOReal a2 = radius + closestIntersection(currGeom2, neighGeom2, 100);
                         if (ccad > DEG2RAD(90. + 45.) && cad > DEG2RAD(90. + 45.)) {
                             SUMOReal mmin = MIN2(distances[*cwi], distances[*ccwi]);
-                            if (mmin > 100) {
+                            if (mmin > 100 && mmin < 205) {
                                 distances[*i] = (SUMOReal) 5. + (SUMOReal) 100. - (SUMOReal)(mmin - 100); //100 + 1.5;
                             }
                         } else if (fabs(a2 - a1) < 10 || farAngleDist < DEG2RAD(135)) {

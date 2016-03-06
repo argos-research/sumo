@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBTrafficLightDefinition.h 19762 2016-01-20 14:55:01Z namdre $
+/// @version $Id: NBTrafficLightDefinition.h 20080 2016-02-25 14:42:03Z namdre $
 ///
 // The base class for traffic light logic definitions
 /****************************************************************************/
@@ -329,7 +329,7 @@ public:
     bool needsCont(const NBEdge* fromE, const NBEdge* toE, const NBEdge* otherFromE, const NBEdge* otherToE) const;
 
     /// @brief whether the given index must yield to the foeIndex while turing right on a red light
-    bool rightOnRedConflict(int index, int foeIndex) const;
+    virtual bool rightOnRedConflict(int index, int foeIndex) const;
 
     /* initialize myNeedsContRelation and set myNeedsContRelationReady to true
      * This information is a byproduct of NBOwnTLDef::myCompute. All other
@@ -437,7 +437,7 @@ protected:
     mutable bool myRightOnRedConflictsReady;
 
 private:
-    static std::set<NBEdge*> collectReachable(EdgeVector outer, bool checkControlled);
+    static std::set<NBEdge*> collectReachable(EdgeVector outer, const EdgeVector& within, bool checkControlled);
 
 
 };

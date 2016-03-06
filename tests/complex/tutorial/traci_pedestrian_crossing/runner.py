@@ -6,7 +6,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2009-03-26
-@version $Id: runner.py 18756 2015-08-31 19:16:33Z behrisch $
+@version $Id: runner.py 19901 2016-02-06 19:33:44Z behrisch $
 
 Tutorial for traffic light control via the TraCI interface.
 This scenario models a pedestrian crossing which switches on demand.
@@ -20,6 +20,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
+from __future__ import print_function
 
 import os
 import sys
@@ -113,7 +115,7 @@ def checkWaitingPersons():
         for ped in peds:
             if (traci.person.getWaitingTime(ped) == 1 and
                     traci.person.getNextEdge(ped) in CROSSINGS):
-                print "%s pushes the button" % ped
+                print("%s pushes the button" % ped)
                 return True
     return False
 

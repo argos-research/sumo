@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLBuilder.cpp 19451 2015-11-27 13:39:24Z namdre $
+/// @version $Id: NLBuilder.cpp 19998 2016-02-17 11:45:55Z behrisch $
 ///
 // The main interface for loading a microsim
 /****************************************************************************/
@@ -147,7 +147,7 @@ NLBuilder::build() {
         if (MsgHandler::getErrorInstance()->wasInformed()) {
             return false;
         }
-        MsgHandler::getMessageInstance()->endProcessMsg("done (" + toString(SysUtils::getCurrentMillis() - before) + "ms).");
+        PROGRESS_TIME_MESSAGE(before);
     }
     // load weights if wished
     if (myOptions.isSet("weight-files")) {
@@ -265,7 +265,7 @@ NLBuilder::load(const std::string& mmlWhat, const bool isNet) {
             WRITE_MESSAGE("Loading of " + mmlWhat + " failed.");
             return false;
         }
-        MsgHandler::getMessageInstance()->endProcessMsg(" done (" + toString(SysUtils::getCurrentMillis() - before) + "ms).");
+        PROGRESS_TIME_MESSAGE(before);
     }
     return true;
 }

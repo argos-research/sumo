@@ -4,7 +4,7 @@
 @author  Melanie Knocke
 @author  Michael Behrisch
 @date    2012-12-04
-@version $Id: polygon.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: polygon.py 19975 2016-02-13 17:44:55Z behrisch $
 
 Library for reading and storing polygons.
 
@@ -70,6 +70,9 @@ class Polygon:
                 ret += '<param key="%s" value="%s"/>' % (a, self.attributes[a])
             ret += '</poly>'
         return ret
+
+    def __lt__(self, other):
+        return self.id < other.id
 
 
 class PolygonReader(handler.ContentHandler):

@@ -6,7 +6,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2009-03-26
-@version $Id: embedded.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: embedded.py 19904 2016-02-07 19:51:27Z behrisch $
 
 Tutorial for traffic light control via the TraCI interface.
 
@@ -19,6 +19,7 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+from __future__ import absolute_import
 
 import os
 import sys

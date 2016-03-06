@@ -4,7 +4,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2012-11-15
-@version $Id: route2poly.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: route2poly.py 20127 2016-03-02 14:18:41Z namdre $
 
 From a sumo network and a route file, this script generates a polygon (polyline) for every route
 which can be loaded with sumo-gui for visualization
@@ -41,6 +41,8 @@ def parse_args():
                          help="brightness for polygons (float from [0,1] or 'random')")
     optParser.add_option(
         "-l", "--layer", default=100, help="layer for generated polygons")
+    optParser.add_option("--geo", action="store_true",
+                         default=False, help="write polgyons with geo-coordinates")
     options, args = optParser.parse_args()
     try:
         options.net, options.routefile = args
@@ -53,12 +55,16 @@ def parse_args():
     return options
 
 
-def generate_poly(net, id, color, layer, edges, outf):
+def generate_poly(net, id, color, layer, geo, edges, outf):
     shape = list(itertools.chain(*list(net.getEdge(e).getLane(0).getShape()
                                        for e in edges)))
+    geoFlag = ""
+    if geo:
+        shape = [net.convertXY2LonLat(*pos) for pos in shape]
+        geoFlag = ' geo="true"'
     shapeString = ' '.join('%s,%s' % (x, y) for x, y in shape)
-    outf.write('<poly id="%s" color="%s" layer="%s" type="route" shape="%s"/>\n' % (
-        id, color, layer, shapeString))
+    outf.write('<poly id="%s" color="%s" layer="%s" type="route" shape="%s"%s/>\n' % (
+        id, color, layer, shapeString, geoFlag))
 
 
 def main():
@@ -68,7 +74,7 @@ def main():
         outf.write('<polygons>\n')
         for vehicle in parse(options.routefile, 'vehicle'):
             generate_poly(net, vehicle.id, options.colorgen(),
-                          options.layer, vehicle.route[0].edges.split(), outf)
+                          options.layer, options.geo, vehicle.route[0].edges.split(), outf)
         outf.write('</polygons>\n')
 
 if __name__ == "__main__":

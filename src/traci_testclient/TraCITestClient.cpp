@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2008/04/07
-/// @version $Id: TraCITestClient.cpp 19623 2015-12-16 09:30:37Z behrisch $
+/// @version $Id: TraCITestClient.cpp 19859 2016-02-01 07:56:56Z namdre $
 ///
 /// A test execution class
 /****************************************************************************/
@@ -677,9 +677,17 @@ TraCITestClient::testAPI() {
     answerLog << "  edge:\n";
     answerLog << "    getIDList: " << joinToString(edge.getIDList(), " ") << "\n";
     answerLog << "    getIDCount: " << edge.getIDCount() << "\n";
-    //answerLog << "  vehicle:\n";
-    //answerLog << "    getIDList: " << joinToString(vehicle.getIDList(), " ") << "\n";
-    //answerLog << "    getIDCount: " << vehicle.getIDCount() << "\n";
+    answerLog << "  vehicle:\n";
+    answerLog << "    getIDList: " << joinToString(vehicle.getIDList(), " ") << "\n";
+    answerLog << "    getIDCount: " << vehicle.getIDCount() << "\n";
+    answerLog << "  inductionloop:\n";
+    answerLog << "    getIDList: " << joinToString(inductionloop.getIDList(), " ") << "\n";
+    answerLog << "    getVehicleData:\n";
+    std::vector<InductionLoopScope::VehicleData> result = inductionloop.getVehicleData("det1");
+    for (int i = 0; i < (int)result.size(); ++i) {
+        const InductionLoopScope::VehicleData& vd = result[i];
+        answerLog << "      veh=" << vd.id << " length=" << vd.length << " entered=" << vd.entryTime << " left=" << vd.leaveTime << " type=" << vd.typeID << "\n";
+    }
     answerLog << "  simulation:\n";
     answerLog << "    getCurrentTime: " << simulation.getCurrentTime() << "\n";
     answerLog << "  gui:\n";

@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_OpenStreetMap.cpp 19710 2016-01-12 08:29:09Z namdre $
+/// @version $Id: NIImporter_OpenStreetMap.cpp 19922 2016-02-09 12:26:50Z behrisch $
 ///
 // Importer for networks stored in OpenStreetMap format
 /****************************************************************************/
@@ -304,8 +304,12 @@ NIImporter_OpenStreetMap::insertEdge(Edge* e, int index, NBNode* from, NBNode* t
         index = 0;
     }
     if (from == to) {
-        // in the special case of a looped way split again using passed
         assert(passed.size() >= 2);
+        if (passed.size() == 2) {
+            WRITE_WARNING("Discarding edge '" + id + "' which connects two identical nodes without geometry.");
+            return index;
+        }
+        // in the special case of a looped way split again using passed
         size_t intermediateIndex = passed.size() / 2;
         NBNode* intermediate = insertNodeChecking(passed[intermediateIndex], nc, tlsc);
         std::vector<long long int> part1(passed.begin(), passed.begin() + intermediateIndex);

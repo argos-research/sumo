@@ -3,7 +3,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    2013-06-05
-/// @version $Id: MSCFModelTest.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MSCFModelTest.cpp 19908 2016-02-08 11:28:50Z behrisch $
 ///
 // Tests the cfmodel functions 
 /****************************************************************************/
@@ -56,7 +56,7 @@ class MSCFModelTest : public testing::Test {
 
         virtual void TearDown(){
             delete m;
-//            delete type; // !!! seems to lead to a segfault on linux
+            delete type;
         }
 };
 

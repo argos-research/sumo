@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Wed, 07.12.2005
-/// @version $Id: GUIBusStop.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GUIBusStop.cpp 19974 2016-02-12 13:58:46Z namdre $
 ///
 // A lane area vehicles can halt at (gui-version)
 /****************************************************************************/
@@ -175,7 +175,7 @@ GUIBusStop::drawGL(const GUIVisualizationSettings& s) const {
 Boundary
 GUIBusStop::getCenteringBoundary() const {
     Boundary b = myFGShape.getBoxBoundary();
-    b.grow(20);
+    b.grow(SUMO_const_laneWidth);
     return b;
 }
 

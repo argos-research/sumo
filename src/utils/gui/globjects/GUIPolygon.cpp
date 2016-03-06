@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    June 2006
-/// @version $Id: GUIPolygon.cpp 19373 2015-11-18 09:57:34Z namdre $
+/// @version $Id: GUIPolygon.cpp 19974 2016-02-12 13:58:46Z namdre $
 ///
 // The GUI-version of a polygon
 /****************************************************************************/
@@ -91,7 +91,7 @@ Boundary
 GUIPolygon::getCenteringBoundary() const {
     Boundary b;
     b.add(myShape.getBoxBoundary());
-    b.grow(10);
+    b.grow(2);
     return b;
 }
 

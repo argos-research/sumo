@@ -6,7 +6,7 @@
 /// @author  Thimor Bohn
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: sumo_main.cpp 19791 2016-01-25 14:59:17Z namdre $
+/// @version $Id: sumo_main.cpp 19987 2016-02-16 10:05:54Z behrisch $
 ///
 // Main for SUMO
 /****************************************************************************/
@@ -121,7 +121,7 @@ main(int argc, char** argv) {
     OptionsCont& oc = OptionsCont::getOptions();
     // give some application descriptions
     oc.setApplicationDescription("A microscopic road traffic simulation.");
-    oc.setApplicationName("sumo", "SUMO Version " + getBuildName(VERSION_STRING));
+    oc.setApplicationName("sumo", "SUMO Version " VERSION_STRING);
     int ret = 0;
     MSNet* net = 0;
     try {

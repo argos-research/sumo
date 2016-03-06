@@ -2,7 +2,7 @@
 /// @file    netedit_main.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: netedit_main.cpp 18830 2015-09-11 08:57:34Z behrisch $
+/// @version $Id: netedit_main.cpp 19987 2016-02-16 10:05:54Z behrisch $
 ///
 // Main for NETEDIT (adapted from guisim_main)
 /****************************************************************************/
@@ -77,7 +77,7 @@ main(int argc, char** argv) {
     OptionsCont& oc = OptionsCont::getOptions();
     // give some application descriptions
     oc.setApplicationDescription("Graphical editor for SUMO networks.");
-    oc.setApplicationName("netedit.exe", "Netedit Version " + getBuildName(VERSION_STRING));
+    oc.setApplicationName("netedit.exe", "Netedit Version " VERSION_STRING);
     int ret = 0;
 #ifndef _DEBUG
     try {
