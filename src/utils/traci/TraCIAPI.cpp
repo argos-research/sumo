@@ -1767,6 +1767,68 @@ TraCIAPI::VehicleScope::setSpeed(const std::string& typeID, SUMOReal speed) cons
     myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
 }
 
+void
+TraCIAPI::VehicleScope::setMaxSpeed(const std::string& typeID, SUMOReal speed) const {
+	tcpip::Storage content;
+	content.writeUnsignedByte(TYPE_DOUBLE);
+	content.writeDouble(speed);
+	myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_MAXSPEED, typeID, content);
+	tcpip::Storage inMsg;
+	myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
+}
+
+void
+TraCIAPI::VehicleScope::setSpeedFactor(const std::string& typeID, SUMOReal factor) const {
+	tcpip::Storage content;
+	content.writeUnsignedByte(TYPE_DOUBLE);
+	content.writeDouble(factor);
+	myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_SPEED_FACTOR, typeID, content);
+	tcpip::Storage inMsg;
+	myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
+}
+
+void
+TraCIAPI::VehicleScope::setLength(const std::string& typeID, SUMOReal length) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(length);
+    myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_LENGTH, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
+}
+
+void
+TraCIAPI::VehicleScope::setWidth(const std::string& typeID, SUMOReal width) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(width);
+    myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_WIDTH, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
+}
+
+void
+TraCIAPI::VehicleScope::setAccel(const std::string& typeID, SUMOReal accel) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(accel);
+    myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_ACCEL, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
+}
+
+void
+TraCIAPI::VehicleScope::setDecel(const std::string& typeID, SUMOReal decel) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(decel);
+    myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_DECEL, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
+}
+
+
+
 
 
 /****************************************************************************/
