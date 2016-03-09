@@ -4,7 +4,7 @@
 @author  Martin Taraz (martin@taraz.de)
 @author  Jakob Erdmann
 @date    2015-09-07
-@version $Id: tlsCoordinator.py 20118 2016-03-02 09:54:08Z martintaraz $
+@version $Id: tlsCoordinator.py 20160 2016-03-08 12:44:59Z behrisch $
 
 Coordinates traffic lights in a sumo net for a given demand
 
@@ -322,8 +322,8 @@ def main(options):
     with open(options.outfile, 'w') as outf:
         outf.write('<additional>\n')
         for ID, startOffset in sorted(offsetDict.items()):
-            outf.write('    <tlLogic id="%s" programID="0" offset="%s"/>\n' %
-                       (ID, str(startOffset)))
+            outf.write('    <tlLogic id="%s" programID="0" offset="%.2f"/>\n' %
+                       (ID, startOffset))
         outf.write('</additional>\n')
 
     sumo = sumolib.checkBinary('sumo')

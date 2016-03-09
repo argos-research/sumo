@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2008-03-19
-@version $Id: route2trips.py 20118 2016-03-02 09:54:08Z martintaraz $
+@version $Id: route2trips.py 20166 2016-03-09 09:47:46Z behrisch $
 
 This script converts SUMO routes back into SUMO trips which serve
 as input to one of the routing applications.
@@ -56,11 +56,11 @@ class RouteReader(handler.ContentHandler):
                 self._routeString = attrs['edges']
         elif name == 'vType':
             # XXX does not handle child elements
-            print('    <vType %s/>' % (' '.join(['%s="%s"' % (key, value) for key, value in dict(attrs).items()])),
+            print('    <vType %s/>' % (' '.join(['%s="%s"' % (key, value) for key, value in sorted(dict(attrs).items())])),
                   file=self.outfile)
         elif name == 'routes':
             print("""<?xml version="1.0"?>
-<!-- generated on %s by $Id: route2trips.py 20118 2016-03-02 09:54:08Z martintaraz $ -->
+<!-- generated on %s by $Id: route2trips.py 20166 2016-03-09 09:47:46Z behrisch $ -->
 <trips>""" % datetime.datetime.now(), file=self.outfile)
 
     def endElement(self, name):

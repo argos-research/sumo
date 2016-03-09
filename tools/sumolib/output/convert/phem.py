@@ -4,7 +4,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2013-01-15
-@version $Id: phem.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: phem.py 20165 2016-03-09 09:19:13Z behrisch $
 
 This module includes functions for converting SUMO's fcd-output into
 data files read by PHEM.
@@ -120,9 +120,9 @@ def vehicleTypes2flt(outSTRM, vtIDm):
     Currently, rather a stub than an implementation. Writes the vehicle ids stored
     in the given "vtIDm" map formatted as a .flt file readable by PHEM.
 
-    The following may be a matter of changes:               
+    The following may be a matter of changes:
     - A default map is assigned to all vehicle types with the same probability 
     """
-    for q in vtIDm._m:
+    for q in sorted(vtIDm._m):
         print("%s,%s,%s" %
               (vtIDm.g(q), "<VEHDIR>\PC\PC_%s.GEN" % q, 1.), file=outSTRM)

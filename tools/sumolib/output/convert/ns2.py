@@ -4,7 +4,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2013-01-15
-@version $Id: ns2.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: ns2.py 20165 2016-03-09 09:19:13Z behrisch $
 
 This module includes functions for converting SUMO's fcd-output into
 data files read by ns2.
@@ -80,7 +80,7 @@ def fcd2ns2mobility(inpFCD, outSTRM, further):
 
 
 def writeNS2activity(outSTRM, vehInfo):
-    for v in vehInfo:
+    for v in sorted(vehInfo):
         i = vehInfo[v]
         print('$ns_ at %s "$g(%s) start"; # SUMO-ID: %s' %
               (i[1], i[0], v), file=outSTRM)

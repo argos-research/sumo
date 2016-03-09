@@ -3,7 +3,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2013-01-15
-@version $Id: omnet.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: omnet.py 20165 2016-03-09 09:19:13Z behrisch $
 
 This module includes functions for converting SUMO's fcd-output into
 data files read by OMNET.
@@ -57,7 +57,7 @@ def fcd2omnet(inpFCD, outSTRM, further):
 
 def _writeMissing(outSTRM, t, vIDm, seen):
     toDel = []
-    for v in vIDm._m:
+    for v in sorted(vIDm._m):
         if v in seen:
             continue
         nid = vIDm.g(v)

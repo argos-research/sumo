@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2014-14-10
-@version $Id: osmWebWizard.py 20118 2016-03-02 09:54:08Z martintaraz $
+@version $Id: osmWebWizard.py 20164 2016-03-09 08:56:48Z behrisch $
 
 Browser GUI for OSMget, OSMbuild, optionally randomTrips and SUMO GUI
 
@@ -91,7 +91,9 @@ BATCH_MODE |= stat.S_IXUSR | stat.S_IXGRP | stat.S_IXOTH
 
 
 def quoted_str(s):
-    if type(s) != str:
+    if type(s) == float:
+        return "%.6f" % s
+    elif type(s) != str:
         return str(s)
     elif '"' in s:
         if os.name == "nt":
@@ -207,7 +209,7 @@ class Builder(object):
                 SUMO_HOME, "tools", "randomTrips.py")
             batchFile = "build.bat"
             with open(batchFile, 'w') as f:
-                for opts in randomTripsCalls:
+                for opts in sorted(randomTripsCalls):
                     f.write("python %s %s\n" %
                             (randomTripsPath, " ".join(map(quoted_str, opts))))
 

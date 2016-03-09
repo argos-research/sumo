@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2010-03-06
-@version $Id: randomTrips.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: randomTrips.py 20166 2016-03-09 09:47:46Z behrisch $
 
 Generates random trips for the given network.
 
@@ -272,7 +272,7 @@ def main(options):
     if options.min_distance > net.getBBoxDiameter() * (options.intermediate + 1):
         options.intermediate = int(
             math.ceil(options.min_distance / net.getBBoxDiameter())) - 1
-        print("Warning: setting number of intermediate waypoints to %s to achieve a minimum trip length of %s in a network with diameter %s." % (
+        print("Warning: setting number of intermediate waypoints to %s to achieve a minimum trip length of %s in a network with diameter %.2f." % (
             options.intermediate, options.min_distance, net.getBBoxDiameter()))
 
     trip_generator = buildTripGenerator(net, options)
@@ -310,7 +310,7 @@ def main(options):
 
     with open(options.tripfile, 'w') as fouttrips:
         fouttrips.write("""<?xml version="1.0"?>
-<!-- generated on %s by $Id: randomTrips.py 19649 2015-12-17 21:05:20Z behrisch $
+<!-- generated on %s by $Id: randomTrips.py 20166 2016-03-09 09:47:46Z behrisch $
   options: %s
 -->
 <trips>
