@@ -1827,6 +1827,27 @@ TraCIAPI::VehicleScope::setDecel(const std::string& typeID, SUMOReal decel) cons
     myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
 }
 
+void
+TraCIAPI::VehicleScope::changeRouteID(const std::string& typeID, const std::string& routeID) const {
+  tcpip::Storage content;
+  content.writeUnsignedByte(TYPE_STRING);
+  content.writeString(routeID);
+  myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_ROUTE_ID, typeID, content);
+  tcpip::Storage inMsg;
+  myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
+}
+
+void
+TraCIAPI::VehicleScope::changeRoute(const std::string& typeID, const std::vector<std::string>& edges) const {
+  tcpip::Storage content;
+  content.writeUnsignedByte(TYPE_STRINGLIST);
+  content.writeStringList(edges);
+  myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_ROUTE, typeID, content);
+  tcpip::Storage inMsg;
+  myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
+}
+
+
 
 
 

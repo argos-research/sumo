@@ -720,6 +720,8 @@ public:
         void setSpeedFactor(const std::string& typeID, SUMOReal factor) const;
         void setLength(const std::string& typeID, SUMOReal length) const;
         void setWidth(const std::string& typeID, SUMOReal width) const;
+        void changeRouteID(const std::string& typeID, const std::string& routeID) const;
+        void changeRoute(const std::string& typeID, const std::vector<std::string>& edges) const;
 
     private:
         /// @brief invalidated copy constructor
