@@ -12,7 +12,7 @@
 /// @author  Jakob Erdmann
 /// @author  Laura Bieker
 /// @date    2007/10/24
-/// @version $Id: TraCIConstants.h 18719 2015-08-25 12:52:06Z behrisch $
+/// @version $Id: TraCIConstants.h 20191 2016-03-15 11:34:04Z namdre $
 ///
 /// holds codes used for TraCI
 /****************************************************************************/
@@ -728,6 +728,9 @@
 
 // clears the simulation of all not inserted vehicles (set: simulation)
 #define CMD_CLEAR_PENDING_VEHICLES 0x94
+
+// triggers saving simulation state (set: simulation)
+#define CMD_SAVE_SIMSTATE 0x95
 
 // sets/retrieves abstract parameter
 #define VAR_PARAMETER 0x7e

@@ -6,7 +6,7 @@
 @author  Daniel Krajzewicz
 @author  Jakob Erdmann
 @date    2011-03-04
-@version $Id: runner.py 19666 2015-12-23 23:30:55Z behrisch $
+@version $Id: runner.py 20191 2016-03-15 11:34:04Z namdre $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -81,6 +81,8 @@ print("distanceRoad", traci.simulation.getDistanceRoad("o", 0., "2o", 0.))
 print("drivingDistanceRoad", traci.simulation.getDistanceRoad("o", 0., "2o", 0., isDriving=True))
 print("clearing pending")
 traci.simulation.clearPending()
+print("save simstate")
+traci.simulation.saveState("state.xml")
 for step in range(6):
     print("step", step)
     traci.simulationStep()

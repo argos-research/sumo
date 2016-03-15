@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2011-03-15
-@version $Id: simulation.py 19828 2016-01-28 12:20:41Z namdre $
+@version $Id: simulation.py 20191 2016-03-15 11:34:04Z namdre $
 
 Python implementation of the TraCI interface.
 
@@ -364,4 +364,10 @@ def clearPending(routeID=""):
     traci._beginMessage(tc.CMD_SET_SIM_VARIABLE, tc.CMD_CLEAR_PENDING_VEHICLES, "",
                         1 + 4 + len(routeID))
     traci._message.packString(routeID)
+    traci._sendExact()
+
+def saveState(fileName):
+    traci._beginMessage(tc.CMD_SET_SIM_VARIABLE, tc.CMD_SAVE_SIMSTATE, "",
+                        1 + 4 + len(fileName))
+    traci._message.packString(fileName)
     traci._sendExact()

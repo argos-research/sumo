@@ -185,7 +185,7 @@ namespace PHEMlightdll
             _idlingValueFC = idlingFC * _ratedPower;
         }
         #endregion
-
+#if FLEET
         #region ConstrutorForFleetmix
         private CEP(bool heavyVehicle,
                        double vehicleMass,
@@ -236,7 +236,7 @@ namespace PHEMlightdll
 
         }
         #endregion
-
+#endif
         //--------------------------------------------------------------------------------------------------
         // Members 
         //--------------------------------------------------------------------------------------------------
@@ -411,7 +411,7 @@ namespace PHEMlightdll
             int upperIndex;
             int lowerIndex;
 
-            if (VehicleClass.pClass != Constants.strBEV)
+            if (VehicleClass.tClass != Constants.strBEV)
             {
                 if (Math.Abs(speed) <= Constants.ZERO_SPEED_ACCURACY)
                 {
@@ -475,7 +475,7 @@ namespace PHEMlightdll
             return Interpolate(power, powerPattern[lowerIndex], powerPattern[upperIndex], emissionCurve[lowerIndex], emissionCurve[upperIndex]);
         }
         #endregion
-
+#if FLEET
         #region GetNormedEmission
         public double GetNormedEmission(string pollutant, double power, double speed, Helpers VehicleClass)
         {
@@ -528,7 +528,7 @@ namespace PHEMlightdll
             return Interpolate(power, powerPattern[lowerIndex], powerPattern[upperIndex], emissionCurve[lowerIndex], emissionCurve[upperIndex]);
         }
         #endregion
-
+#endif
         #region GetCO2Emission
         public double GetCO2Emission(double _FC, double _CO, double _HC, Helpers VehicleClass)
         {
@@ -642,8 +642,8 @@ namespace PHEMlightdll
                                         _gearTransmissionCurve[upperIndex]);
         }
         #endregion
-        
-        #region GetGearCoeffecient
+
+        #region GetDragCoeffecient
         public double GetDragCoeffecient(double nNorm)
         {
             //Declaration
@@ -721,37 +721,10 @@ namespace PHEMlightdll
         }
         #endregion
 
-        #region GetMaxAccel
-        public double GetMaxAccel(double speed, double acc, double gradient)
-        {
-            double rotFactor = GetRotationalCoeffecient(speed);
-            double pMaxNorm = GetPMaxNorm(speed);
-            double pMaxForAcc = GetPMaxNorm(speed) * _ratedPower - CalcPower(speed, 0, gradient);
-
-            return (pMaxForAcc * 1000) / ((_massVehicle * rotFactor + _vehicleMassRot + _vehicleLoading) * speed);
-        }
-
-        #endregion
-
-        #region GetPMaxNorm
-        private double GetPMaxNorm(double speed)
-        {
-            // Linear function between v0 and v1, constant elsewhere
-            if (speed <= _pNormV0)
-                return _pNormP0;
-            else if (speed >= _pNormV1)
-                return _pNormP1;
-            else
-            {
-                return Interpolate(speed, _pNormV0, _pNormV1, _pNormP0, _pNormP1);
-            }
-        }
-        #endregion
-
         //--------------------------------------------------------------------------------------------------
         // Operators for fleetmix
         //--------------------------------------------------------------------------------------------------
-
+#if FLEET
         #region AddRangeCeps
         public static CEP AddRangeCeps(CEP[] cps, Helpers Helper)
         {
@@ -1024,5 +997,6 @@ namespace PHEMlightdll
             return pattern;
         }
         #endregion
+#endif
     }
 }

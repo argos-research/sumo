@@ -13,7 +13,6 @@ namespace PHEMlightdll
     {
         private string _DataPath;
         private CEPHandler DataInput;
-        private CEP Data;
         public Helpers Helper = new Helpers();
 
         //******************* Parameters of Array or Single calculation *******************
@@ -62,6 +61,9 @@ namespace PHEMlightdll
             double acc;
             List<VehicleResult>  _VehicleResult = new List<VehicleResult>();
 
+            //Initialisation
+            Helper.ErrMsg = null;
+
             //Borrow
             Helper.CommentPrefix = CommentPref;
             Helper.PHEMDataV = PHEMDataV;
@@ -70,11 +72,12 @@ namespace PHEMlightdll
             else
                 _DataPath = Assembly.GetExecutingAssembly().Location.Substring(0, Assembly.GetExecutingAssembly().Location.LastIndexOf(@"\")) + @"\Default Vehicles\" + Helper.PHEMDataV;
 
+#if FLEET
             //Read the vehicle and emission data
-            if (fleetMix)
+            if (fleetMix) //(#ifdefs)
             {
                 //Set the vehicle class
-                Helper.gClass = "AggClass_" + VEH;
+                Helper.gClass = VEH;
 
                 //Generate the class
                 DataInput = new CEPHandler();
@@ -86,13 +89,14 @@ namespace PHEMlightdll
                     return false;
                 }
                 //Read the vehicle and emission data
-                if (!DataInput.GetFleetCEP(_DataPath, VEH, Helper, out Data))
+                if (!DataInput.GetFleetCEP(_DataPath, VEH, Helper))
                 {
                     VehicleResultsOrg = null;
                     return false;
                 }
             }
             else
+#endif
             {
                 //Get vehicle string
                 if (!Helper.setclass(VEH))
@@ -105,7 +109,7 @@ namespace PHEMlightdll
                 DataInput = new CEPHandler();
 
                 //Read the vehicle and emission data
-                if (!DataInput.GetCEP(_DataPath, Helper, out Data))
+                if (!DataInput.GetCEP(_DataPath, Helper))
                 {
                     VehicleResultsOrg = null;
                     return false;
@@ -159,7 +163,8 @@ namespace PHEMlightdll
                 _DataPath = Assembly.GetExecutingAssembly().Location.Substring(0, Assembly.GetExecutingAssembly().Location.LastIndexOf(@"\")) + @"\Default Vehicles\" + Helper.PHEMDataV;
 
             //Read the vehicle and emission data
-            if (fleetMix)
+#if FLEET
+            if (fleetMix) //(#ifdefs)
             {
                 //Set the vehicle class
                 Helper.gClass = "AggClass_" + VEH;
@@ -174,13 +179,14 @@ namespace PHEMlightdll
                     return false;
                 }
                 //Read the vehicle and emission data
-                if (!DataInput.GetFleetCEP(_DataPath, VEH, Helper, out Data))
+                if (!DataInput.GetFleetCEP(_DataPath, VEH, Helper))
                 {
                     VehicleResultsOrg = null;
                     return false;
                 }
             }
             else
+#endif
             {
                 //Get vehicle string
                 if (!Helper.setclass(VEH))
@@ -193,7 +199,7 @@ namespace PHEMlightdll
                 DataInput = new CEPHandler();
 
                 //Read the vehicle and emission data
-                if (!DataInput.GetCEP(_DataPath, Helper, out Data))
+                if (!DataInput.GetCEP(_DataPath, Helper))
                 {
                     VehicleResultsOrg = null;
                     return false;
@@ -437,7 +443,7 @@ namespace PHEMlightdll
                 P_pos = 0;
 
             //Calculate the result values (BEV)
-            if (Helper.pClass == Constants.strBEV)
+            if (Helper.tClass == Constants.strBEV)
             {
                 return new VehicleResult(time,
                                          speed,

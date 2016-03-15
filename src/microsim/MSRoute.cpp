@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: MSRoute.cpp 20063 2016-02-24 14:31:44Z behrisch $
+/// @version $Id: MSRoute.cpp 20190 2016-03-15 11:13:33Z namdre $
 ///
 // A vehicle route
 /****************************************************************************/
@@ -53,7 +53,7 @@
 MSRoute::RouteDict MSRoute::myDict;
 MSRoute::RouteDistDict MSRoute::myDistDict;
 #ifdef HAVE_FOX
-FXMutex MSRoute::myDictMutex;
+FXMutex MSRoute::myDictMutex(true);
 #endif
 
 

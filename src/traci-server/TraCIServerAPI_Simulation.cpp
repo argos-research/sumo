@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: TraCIServerAPI_Simulation.cpp 19833 2016-01-28 13:32:49Z namdre $
+/// @version $Id: TraCIServerAPI_Simulation.cpp 20191 2016-03-15 11:34:04Z namdre $
 ///
 // APIs for getting/setting edge values via TraCI
 /****************************************************************************/
@@ -41,6 +41,7 @@
 #include <microsim/MSEdge.h>
 #include <microsim/MSLane.h>
 #include <microsim/MSVehicle.h>
+#include <microsim/MSStateHandler.h>
 #include "TraCIConstants.h"
 #include "TraCIServerAPI_Simulation.h"
 
@@ -213,7 +214,8 @@ TraCIServerAPI_Simulation::processSet(TraCIServer& server, tcpip::Storage& input
     std::string warning = ""; // additional description for response
     // variable
     int variable = inputStorage.readUnsignedByte();
-    if (variable != CMD_CLEAR_PENDING_VEHICLES) {
+    if (variable != CMD_CLEAR_PENDING_VEHICLES
+            && variable != CMD_SAVE_SIMSTATE) {
         return server.writeErrorStatusCmd(CMD_SET_SIM_VARIABLE, "Set Simulation Variable: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
     }
     // id
@@ -227,6 +229,15 @@ TraCIServerAPI_Simulation::processSet(TraCIServer& server, tcpip::Storage& input
                 return server.writeErrorStatusCmd(CMD_SET_SIM_VARIABLE, "A string is needed for clearing pending vehicles.", outputStorage);
             }
             MSNet::getInstance()->getInsertionControl().clearPendingVehicles(route);
+        }
+        break;
+        case CMD_SAVE_SIMSTATE: {
+            //save current simulation state
+            std::string file;
+            if (!server.readTypeCheckingString(inputStorage, file)) {
+                return server.writeErrorStatusCmd(CMD_SET_SIM_VARIABLE, "A string is needed for saving simulation state.", outputStorage);
+            }
+            MSStateHandler::saveState(file, MSNet::getInstance()->getCurrentTimeStep());
         }
         break;
         default:

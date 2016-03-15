@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 25 July 2005
-/// @version $Id: MSTriggeredRerouter.cpp 19791 2016-01-25 14:59:17Z namdre $
+/// @version $Id: MSTriggeredRerouter.cpp 20184 2016-03-14 12:40:46Z namdre $
 ///
 // Reroutes vehicles passing an edge
 /****************************************************************************/
@@ -319,8 +319,8 @@ MSTriggeredRerouter::notifyEnter(SUMOVehicle& veh, MSMoveReminder::Notification 
     ConstMSEdgeVector edges;
     MSNet::getInstance()->getRouterTT(rerouteDef->closed).compute(
         veh.getEdge(), newEdge, &veh, MSNet::getInstance()->getCurrentTimeStep(), edges);
-    veh.replaceRouteEdges(edges);
-    if (newArrivalPos != -1) {
+    const bool useNewRoute = veh.replaceRouteEdges(edges);
+    if (useNewRoute && newArrivalPos != -1) {
         // must be called here because replaceRouteEdges may also set the arrivalPos
         veh.setArrivalPos(newArrivalPos);
     }

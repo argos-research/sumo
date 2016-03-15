@@ -36,6 +36,7 @@ namespace PHEMlightdll
         }
         #endregion
 
+#if FLEET
         #region FleetShares
         private Dictionary<string, Dictionary<string, double>> _fleetShares;
         public Dictionary<string, Dictionary<string, double>> FleetShares
@@ -46,29 +47,29 @@ namespace PHEMlightdll
             }
         }
         #endregion
+#endif
 
         //--------------------------------------------------------------------------------------------------
         // Methods 
         //--------------------------------------------------------------------------------------------------
 
         #region GetCEP
-        public bool GetCEP(string DataPath, Helpers Helper, out CEP Data)
+        public bool GetCEP(string DataPath, Helpers Helper)
         {
             if (!CEPS.ContainsKey(Helper.gClass))
             {
                 if (!Load(DataPath, Helper))
                 {
-                    Data = null;
                     return false;
                 }
             }
-            Data = CEPS[Helper.gClass];
             return true;
         }
         #endregion
 
+#if FLEET
         #region GetFleetCEP
-        public bool GetFleetCEP(string DataPath, string AggClass, Helpers Helper, out CEP Data)
+        public bool GetFleetCEP(string DataPath, string AggClass, Helpers Helper)
         {
             if (!CEPS.ContainsKey(Helper.gClass))
             {
@@ -76,29 +77,41 @@ namespace PHEMlightdll
                 {
                     List<CEP> weightedCEPS = new List<CEP>();
 
-                    foreach (string aggVehClass in FleetShares[AggClass].Keys)
+                    if (FleetShares.ContainsKey(AggClass))
                     {
-                        if (!Helper.setclass(aggVehClass))
+                        foreach (string aggVehClass in FleetShares[AggClass].Keys)
                         {
-                            Data = null;
-                            return false;
+                            if (!Helper.setclass(aggVehClass))
+                            {
+                                return false;
+                            }
+                            if (!CEPS.ContainsKey(aggVehClass) && !Load(DataPath, Helper))
+                            {
+                                return false;
+                            }
+                            weightedCEPS.Add(CEPS[aggVehClass] * FleetShares[AggClass][aggVehClass]);
                         }
-                        if (!CEPS.ContainsKey(aggVehClass) && !Load(DataPath, Helper))
-                        {
-                            Data = null;
-                            return false;
-                        }
-                        weightedCEPS.Add(CEPS[aggVehClass] * FleetShares[AggClass][aggVehClass]);
-                    }
-                    _ceps.Add(AggClass, CEP.AddRangeCeps(weightedCEPS.ToArray(), Helper));
+                        _ceps.Add(AggClass, CEP.AddRangeCeps(weightedCEPS.ToArray(), Helper));
 
+                        //Set the vehicle class back
+                        Helper.gClass = AggClass;
+                    }
+                    else
+                    {
+                        Helper.ErrMsg = "The aggregated vehicle class (" + AggClass + ") is not available in the FleetShare file!";
+                        return false;
+                    }
+                }
+                else
+                {
+                    Helper.ErrMsg = "The aggregated vehicle class (" + AggClass + ") is a unknown class!";
+                    return false;
                 }
             }
-            Data = CEPS[AggClass];
             return true;
         }
         #endregion
-
+#endif
         //--------------------------------------------------------------------------------------------------
         // Methods 
         //--------------------------------------------------------------------------------------------------
@@ -396,8 +409,7 @@ namespace PHEMlightdll
                 if (line.Substring(0, 1) == Helper.CommentPrefix)
                     continue;
 
-                List<double> entries = todoubleList(line, ',');
-                matrixSpeedInertiaTable.Add(entries);
+                matrixSpeedInertiaTable.Add(todoubleList(split(line, ',')));
             }
 
             while ((line = ReadLine(vehicleReader)) != null)
@@ -405,8 +417,7 @@ namespace PHEMlightdll
                 if (line.Substring(0, 1) == Helper.CommentPrefix)
                     continue;
 
-                List<double> entries = todoubleList(line, ',');
-                normedDragTable.Add(entries);
+                normedDragTable.Add(todoubleList(split(line, ',')));
             }
 
             vehicleReader.Close();
@@ -444,9 +455,9 @@ namespace PHEMlightdll
             // read header line for pollutant identifiers
             if ((line = ReadLine(fileReader)) != null)
             {
-                string[] entries = split(line, ',');
+                List<string> entries = split(line, ',');
                 // skip first entry "Pe"
-                for (int i = 1; i < entries.Length; i++)
+                for (int i = 1; i < entries.Count; i++)
                 {
                     header.Add(entries[i]);
                 }
@@ -464,18 +475,18 @@ namespace PHEMlightdll
             List<string> stringIdlings = split(line, ',').ToList();
             stringIdlings.RemoveAt(0);
 
-            idlingValues = stringIdlings.Select(p => todouble(p)).Cast<double>().ToList();
+            idlingValues = todoubleList(stringIdlings);
 
             while ((line = ReadLine(fileReader)) != null)
             {
-                List<double> vi = todoubleList(line, ',');
-                matrix.Add(vi);
+                matrix.Add(todoubleList(split(line, ',')));
             }
             fileReader.Close();
             return true;
         }
         #endregion
 
+#if FLEET
         #region ReadFleetShares
         public bool ReadFleetShares(string DataPath, Helpers Helper)
         {
@@ -496,7 +507,7 @@ namespace PHEMlightdll
                 if (line.Substring(0, 1) == Helper.CommentPrefix)
                     continue;
 
-                string[] splitLine = split(line, ',');
+                List<string> splitLine = split(line, ',');
                 string aggregateClass = splitLine[0];
 
                 if (!FleetShares.ContainsKey(aggregateClass))
@@ -510,15 +521,16 @@ namespace PHEMlightdll
             return true;
         }
         #endregion
-
+#endif
         //--------------------------------------------------------------------------------------------------
         // Functions 
         //--------------------------------------------------------------------------------------------------
 
+        #region Functions
         //Split the string
-        private string[] split(string s, char delim)
+        private List<string> split(string s, char delim)
         {
-            return s.Split(delim);
+            return s.Split(delim).ToList();
         }
 
         //Convert string to double
@@ -528,9 +540,9 @@ namespace PHEMlightdll
         }
 
         //Convert string to double list
-        private List<double> todoubleList(string s, char delim)
+        private List<double> todoubleList(List<string> s)
         {
-            return split(s, delim).Select(p => todouble(p)).Cast<double>().ToList();
+            return s.Select(p => todouble(p)).Cast<double>().ToList();
         }
 
         //Read a line from file
@@ -538,5 +550,6 @@ namespace PHEMlightdll
         {
             return s.ReadLine();
         }
+        #endregion
     }
 }
