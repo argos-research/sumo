@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSInsertionControl.cpp 19715 2016-01-12 12:58:06Z namdre $
+/// @version $Id: MSInsertionControl.cpp 20205 2016-03-16 08:50:17Z namdre $
 ///
 // Inserts vehicles into the network when their departure time is reached
 /****************************************************************************/
@@ -146,8 +146,6 @@ MSInsertionControl::tryInsert(SUMOTime time, SUMOVehicle* veh,
     assert(veh->getParameter().depart < time + DELTA_T);
     const MSEdge& edge = *veh->getEdge();
     if (veh->isOnRoad()) {
-        // may have been inserted forcefully already
-        veh->onDepart();
         return 1;
     }
     if ((myMaxVehicleNumber < 0 || (int)MSNet::getInstance()->getVehicleControl().getRunningVehicleNo() < myMaxVehicleNumber)
@@ -155,7 +153,6 @@ MSInsertionControl::tryInsert(SUMOTime time, SUMOVehicle* veh,
             && edge.insertVehicle(*veh, time)) {
         // Successful insertion
         checkFlowWait(veh);
-        veh->onDepart();
         return 1;
     }
     if (myMaxDepartDelay >= 0 && time - veh->getParameter().depart > myMaxDepartDelay) {

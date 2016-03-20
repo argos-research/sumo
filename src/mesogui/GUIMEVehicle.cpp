@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIMEVehicle.cpp 19991 2016-02-17 07:39:39Z namdre $
+/// @version $Id: GUIMEVehicle.cpp 20197 2016-03-15 14:16:49Z namdre $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -90,6 +90,7 @@ GUIMEVehicle::getParameterWindow(GUIMainWindow& app,
     //ret->mkItem("last lane change [s]", true,
     //            new FunctionBinding<GUIMEVehicle, SUMOReal>(this, &GUIMEVehicle::getLastLaneChangeOffset));
     ret->mkItem("desired depart [s]", false, time2string(getParameter().depart));
+    ret->mkItem("depart delay [s]", false, time2string(getDepartDelay()));
     if (getParameter().repetitionNumber < INT_MAX) {
         ret->mkItem("remaining [#]", false, (unsigned int) getParameter().repetitionNumber - getParameter().repetitionsDone);
     }
@@ -128,6 +129,12 @@ GUIMEVehicle::getParameterWindow(GUIMainWindow& app,
     //ret->mkItem("containers", true,
     //            new FunctionBinding<GUIMEVehicle, unsigned int>(this, &GUIMEVehicle::getContainerNumber));
     ret->mkItem("parameters [key:val]", false, toString(getParameter().getMap()));
+
+    // meso specific values
+    ret->mkItem("event time [s]", true, new FunctionBinding<GUIMEVehicle, SUMOReal>(this, &MEVehicle::getEventTimeSeconds));
+    ret->mkItem("entry time [s]", true, new FunctionBinding<GUIMEVehicle, SUMOReal>(this, &MEVehicle::getLastEntryTimeSeconds));
+    ret->mkItem("block time [s]", true, new FunctionBinding<GUIMEVehicle, SUMOReal>(this, &MEVehicle::getBlockTimeSeconds));
+
     ret->mkItem("", false, "");
     ret->mkItem("Type Information:", false, "");
     ret->mkItem("type [id]", false, myType->getID());
@@ -212,6 +219,8 @@ GUIMEVehicle::getColorValue(size_t activeScheme) const {
             return 0; // invalid getAcceleration();
         case 23:
             return 0; // invalid getTimeGap();
+        case 24:
+            return STEPS2TIME(getDepartDelay());
     }
     return 0;
 }

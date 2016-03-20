@@ -6,7 +6,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSEdge.h 20143 2016-03-03 15:25:30Z namdre $
+/// @version $Id: MSEdge.h 20236 2016-03-17 14:55:47Z namdre $
 ///
 // A road/street connecting two junctions
 /****************************************************************************/
@@ -577,6 +577,10 @@ public:
      */
     SUMOReal getSpeedLimit() const;
 
+    /** @brief Sets a new maximum speed for all lanes (used by TraCI and MSCalibrator)
+     * @param[in] val the new speed in m/s
+     */
+    void setMaxSpeed(SUMOReal val) const;
 
     /** @brief Returns the maximum speed the vehicle may use on this edge
      *
@@ -620,6 +624,9 @@ public:
     void markDelayed() const {
         myAmDelayed = true;
     }
+
+    /// @brief get the mean speed for mesoscopic simulation
+    SUMOReal getMesoMeanSpeed() const;
 
     /// @brief grant exclusive access to the mesoscopic state
     virtual void lock() const {}

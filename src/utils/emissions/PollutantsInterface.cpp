@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 19.08.2013
-/// @version $Id: PollutantsInterface.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: PollutantsInterface.cpp 20221 2016-03-17 10:19:09Z behrisch $
 ///
 // Interface to capsulate different emission models
 /****************************************************************************/
@@ -98,12 +98,6 @@ PollutantsInterface::isHeavy(const SUMOEmissionClass c) {
 bool
 PollutantsInterface::isSilent(const SUMOEmissionClass c) {
     return myHelpers[c >> 16]->isSilent(c);
-}
-
-
-SUMOReal
-PollutantsInterface::getMaxAccel(SUMOEmissionClass c, double v, double a, double slope) {
-    return myHelpers[c >> 16]->getMaxAccel(c, v, a, slope);
 }
 
 

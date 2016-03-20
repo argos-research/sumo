@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 30.01.2009
-/// @version $Id: MSDevice_Vehroutes.h 18375 2015-05-15 07:05:22Z behrisch $
+/// @version $Id: MSDevice_Vehroutes.h 20205 2016-03-16 08:50:17Z namdre $
 ///
 // A device which collects info on the vehicle trip
 /****************************************************************************/
@@ -238,9 +238,6 @@ private:
         const MSRoute* route;
 
     };
-
-    /// @brief The position on the lane the vehicle departed at
-    SUMOReal myDepartPos;
 
     /// @brief The currently used route
     const MSRoute* myCurrentRoute;

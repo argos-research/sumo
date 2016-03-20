@@ -6,7 +6,7 @@
 /// @author  Christoph Sommer
 /// @author  Jakob Erdmann
 /// @date    Tue, 04 Dec 2007
-/// @version $Id: MSDevice_Routing.cpp 20136 2016-03-03 09:51:08Z namdre $
+/// @version $Id: MSDevice_Routing.cpp 20232 2016-03-17 14:19:25Z namdre $
 ///
 // A device that performs vehicle rerouting based on current edge speeds
 /****************************************************************************/
@@ -61,6 +61,7 @@ SUMOTime MSDevice_Routing::myLastAdaptation = -1;
 bool MSDevice_Routing::myWithTaz;
 std::map<std::pair<const MSEdge*, const MSEdge*>, const MSRoute*> MSDevice_Routing::myCachedRoutes;
 SUMOAbstractRouter<MSEdge, SUMOVehicle>* MSDevice_Routing::myRouter = 0;
+AStarRouter<MSEdge, SUMOVehicle, prohibited_withPermissions<MSEdge, SUMOVehicle> >* MSDevice_Routing::myRouterWithProhibited = 0;
 SUMOReal MSDevice_Routing::myRandomizeWeightsFactor = 0;
 #ifdef HAVE_FOX
 FXWorkerThread::Pool MSDevice_Routing::myThreadPool;
@@ -119,13 +120,13 @@ MSDevice_Routing::insertOptions(OptionsCont& oc) {
 
 void
 MSDevice_Routing::buildVehicleDevices(SUMOVehicle& v, std::vector<MSDevice*>& into) {
-    bool needRerouting = v.getParameter().wasSet(VEHPARS_FORCE_REROUTE);
     OptionsCont& oc = OptionsCont::getOptions();
+    bool needRerouting = v.getParameter().wasSet(VEHPARS_FORCE_REROUTE);
+    needRerouting |= equippedByDefaultAssignmentOptions(oc, "rerouting", v);
     if (!needRerouting && oc.getFloat("device.rerouting.probability") == 0 && !oc.isSet("device.rerouting.explicit")) {
         // no route computation is modelled
         return;
     }
-    needRerouting |= equippedByDefaultAssignmentOptions(oc, "rerouting", v);
     if (needRerouting) {
         // route computation is enabled
         myWithTaz = oc.getBool("device.rerouting.with-taz");
@@ -387,8 +388,22 @@ MSDevice_Routing::reroute(const SUMOTime currentTime, const bool onInit) {
 }
 
 
+SUMOAbstractRouter<MSEdge, SUMOVehicle>&
+MSDevice_Routing::getRouterTT(const MSEdgeVector& prohibited) {
+    if (myRouterWithProhibited == 0) {
+        myRouterWithProhibited = new AStarRouter<MSEdge, SUMOVehicle, prohibited_withPermissions<MSEdge, SUMOVehicle> >(
+                MSEdge::numericalDictSize(), true, &MSDevice_Routing::getEffort);
+    }
+    myRouterWithProhibited->prohibit(prohibited);
+    return *myRouterWithProhibited;
+}
+
+
+
 void
 MSDevice_Routing::cleanup() {
+    delete myRouterWithProhibited;
+    myRouterWithProhibited = 0;
 #ifdef HAVE_FOX
     if (myThreadPool.size() > 0) {
         // we cannot wait for the static destructor to do the cleanup

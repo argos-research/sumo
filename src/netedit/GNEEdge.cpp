@@ -2,7 +2,7 @@
 /// @file    GNEEdge.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEEdge.cpp 19933 2016-02-10 10:56:48Z behrisch $
+/// @version $Id: GNEEdge.cpp 20250 2016-03-18 08:32:48Z namdre $
 ///
 // A road/street connecting two junctions (netedit-version, adapted from GUIEdge)
 // Basically a container for an NBEdge with drawing and editing capabilities
@@ -411,7 +411,7 @@ GNEEdge::getAttribute(SumoXMLAttr key) const {
         case SUMO_ATTR_PRIORITY:
             return toString(myNBEdge.getPriority());
         case SUMO_ATTR_LENGTH:
-            return toString(myNBEdge.getLoadedLength());
+            return toString(myNBEdge.getFinalLength());
         case SUMO_ATTR_TYPE:
             return myNBEdge.getTypeID();
         case SUMO_ATTR_SHAPE:

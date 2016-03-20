@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Tue, 04 Dec 2007
-/// @version $Id: MSDevice_Routing.h 18394 2015-05-18 13:26:24Z behrisch $
+/// @version $Id: MSDevice_Routing.h 20232 2016-03-17 14:19:25Z namdre $
 ///
 // A device that performs vehicle rerouting based on current edge speeds
 /****************************************************************************/
@@ -38,6 +38,7 @@
 #include <utils/common/SUMOTime.h>
 #include <utils/common/WrappingCommand.h>
 #include <utils/vehicle/SUMOAbstractRouter.h>
+#include <utils/vehicle/AStarRouter.h>
 #include <microsim/MSVehicle.h>
 #include "MSDevice.h"
 
@@ -107,6 +108,10 @@ public:
     static bool isEnabled() {
         return !myWithTaz && !myEdgeEfforts.empty();
     }
+
+    /// @brief return the router instance
+    static SUMOAbstractRouter<MSEdge, SUMOVehicle>& getRouterTT(
+            const MSEdgeVector& prohibited = MSEdgeVector());
 
 #ifdef HAVE_FOX
     static void waitForAll();
@@ -327,6 +332,9 @@ private:
 
     /// @brief The router to use
     static SUMOAbstractRouter<MSEdge, SUMOVehicle>* myRouter;
+
+    /// @brief The router to use by rerouter elements
+    static AStarRouter<MSEdge, SUMOVehicle, prohibited_withPermissions<MSEdge, SUMOVehicle> >* myRouterWithProhibited;
 
     /// @brief Whether to disturb edge weights dynamically
     static SUMOReal myRandomizeWeightsFactor;

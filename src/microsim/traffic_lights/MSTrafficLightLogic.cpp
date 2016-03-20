@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSTrafficLightLogic.cpp 19650 2015-12-18 08:34:31Z behrisch $
+/// @version $Id: MSTrafficLightLogic.cpp 20252 2016-03-18 09:33:46Z namdre $
 ///
 // The parent class for traffic light logics
 /****************************************************************************/
@@ -39,6 +39,7 @@
 #include <microsim/MSEventControl.h>
 #include <microsim/MSJunctionLogic.h>
 #include <microsim/MSNet.h>
+#include <microsim/MSGlobals.h>
 #include "MSTLLogicControl.h"
 #include "MSTrafficLightLogic.h"
 
@@ -122,6 +123,9 @@ MSTrafficLightLogic::MSTrafficLightLogic(MSTLLogicControl& tlcontrol, const std:
 void
 MSTrafficLightLogic::init(NLDetectorBuilder&) {
     const Phases& phases = getPhases();
+    if (phases.size() > 0 && MSGlobals::gMesoTLSPenalty > 0) {
+        initMesoTLSPenalties();
+    }
     if (phases.size() > 1) {
         bool haveWarnedAboutUnusedStates = false;
         std::vector<bool> foundGreen(phases.front()->getState().size(), false);
@@ -167,7 +171,6 @@ MSTrafficLightLogic::init(NLDetectorBuilder&) {
                 break;
             }
         }
-
     }
 }
 
@@ -281,6 +284,44 @@ MSTrafficLightLogic::setCurrentDurationIncrement(SUMOTime delay) {
     myCurrentDurationIncrement = delay;
 }
 
+
+void MSTrafficLightLogic::initMesoTLSPenalties() {
+    // set mesoscopic time penalties
+    const Phases& phases = getPhases();
+    const int numLinks = phases.front()->getState().size();
+    assert(myLinks.size() >= numLinks);
+    SUMOTime duration = 0;
+    std::vector<SUMOReal> redDuration(numLinks, 0);
+    std::vector<SUMOReal> penalty(numLinks, 0);
+    for (int i = 0; i < (int)phases.size(); ++i) {
+        const std::string& state = phases[i]->getState();
+        duration += phases[i]->duration;
+        // warn about transitions from green to red without intermediate yellow
+        for (int j = 0; j < numLinks; ++j) {
+            if ((LinkState)state[j] == LINKSTATE_TL_RED
+                    || (LinkState)state[j] == LINKSTATE_TL_REDYELLOW) {
+                redDuration[j] += STEPS2TIME(phases[i]->duration);
+            } else if (redDuration[j] > 0) {
+                penalty[j] += 0.5 * (redDuration[j] * redDuration[j] + redDuration[j]);
+                redDuration[j] = 0;
+            }
+        }
+    } 
+    /// XXX penalty for wrap-around red phases is underestimated
+    for (int j = 0; j < numLinks; ++j) {
+        if (redDuration[j] > 0) {
+            penalty[j] += 0.5 * (redDuration[j] * redDuration[j] + redDuration[j]);
+            redDuration[j] = 0;
+        }
+    }
+    const SUMOReal durationSeconds = STEPS2TIME(duration);
+    for (int j = 0; j < numLinks; ++j) {
+        for (int k = 0; k < (int)myLinks[j].size(); ++k) {
+            myLinks[j][k]->setMesoTLSPenalty(TIME2STEPS(MSGlobals::gMesoTLSPenalty * penalty[j] / durationSeconds));
+            //std::cout << " tls=" << getID() << " link=" << j << " penalty=" << penalty[j] / durationSeconds << " durSecs=" << durationSeconds << "\n";
+        }
+    }
+}
 
 /****************************************************************************/
 

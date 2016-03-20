@@ -12,7 +12,7 @@
 /// @author  Axel Wegener
 /// @author  Christoph Sommer
 /// @date    Mon, 05 Mar 2001
-/// @version $Id: MSVehicle.cpp 20114 2016-03-01 14:16:03Z luecken $
+/// @version $Id: MSVehicle.cpp 20205 2016-03-16 08:50:17Z namdre $
 ///
 // Representation of a vehicle in the micro simulation
 /****************************************************************************/
@@ -1859,6 +1859,9 @@ MSVehicle::enterLaneAtLaneChange(MSLane* enteredLane) {
 
 void
 MSVehicle::enterLaneAtInsertion(MSLane* enteredLane, SUMOReal pos, SUMOReal speed, MSMoveReminder::Notification notification) {
+    if (myDeparture == NOT_YET_DEPARTED) {
+        onDepart();
+    }
     myState = State(pos, speed);
     myCachedPosition = Position::INVALID;
     assert(myState.myPos >= 0);

@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Tue, 17 Feb 2009
-/// @version $Id: SUMOVehicle.h 19380 2015-11-18 20:31:19Z namdre $
+/// @version $Id: SUMOVehicle.h 20205 2016-03-16 08:50:17Z namdre $
 ///
 // Abstract base class for vehicle representations
 /****************************************************************************/
@@ -200,6 +200,11 @@ public:
      * @return This vehicle's real departure time
      */
     virtual SUMOTime getDeparture() const = 0;
+
+    /** @brief Returns this vehicle's real departure position
+     * @return This vehicle's real departure position
+     */
+    virtual SUMOReal getDepartPos() const = 0;
 
     /** @brief Returns this vehicle's desired arrivalPos for its current route
      * (may change on reroute)

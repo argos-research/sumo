@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: MSLink.cpp 20050 2016-02-22 14:21:14Z namdre $
+/// @version $Id: MSLink.cpp 20252 2016-03-18 09:33:46Z namdre $
 ///
 // A connnection between lanes
 /****************************************************************************/
@@ -70,24 +70,26 @@ MSLink::MSLink(MSLane* succLane, LinkDirection dir, LinkState state, SUMOReal le
     myLane(succLane),
     myIndex(-1),
     myState(state),
-    myLastStateChange(-1),
+    myLastStateChange(SUMOTime_MIN),
     myDirection(dir),
     myLength(length),
     myHasFoes(false),
     myAmCont(false),
     myKeepClear(keepClear),
+    myMesoTLSPenalty(0),
     myJunction(0)
 #else
 MSLink::MSLink(MSLane* succLane, MSLane* via, LinkDirection dir, LinkState state, SUMOReal length, bool keepClear) :
     myLane(succLane),
     myIndex(-1),
     myState(state),
-    myLastStateChange(-1),
+    myLastStateChange(SUMOTime_MIN),
     myDirection(dir),
     myLength(length),
     myHasFoes(false),
     myAmCont(false),
     myKeepClear(keepClear),
+    myMesoTLSPenalty(0),
     myJunctionInlane(via),
     myInternalLaneBefore(0),
     myJunction(0)

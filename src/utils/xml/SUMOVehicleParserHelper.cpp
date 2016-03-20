@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 07.04.2008
-/// @version $Id: SUMOVehicleParserHelper.cpp 19575 2015-12-09 08:22:14Z behrisch $
+/// @version $Id: SUMOVehicleParserHelper.cpp 20221 2016-03-17 10:19:09Z behrisch $
 ///
 // Helper methods for parsing vehicle attributes
 /****************************************************************************/
@@ -493,7 +493,6 @@ SUMOVehicleParserHelper::getAllowedCFModelAttrs() {
         allowedCFModelAttrs[SUMO_TAG_CF_KRAUSS] = krausParams;
         allowedCFModelAttrs[SUMO_TAG_CF_KRAUSS_ORIG1] = krausParams;
         allowedCFModelAttrs[SUMO_TAG_CF_KRAUSS_PLUS_SLOPE] = krausParams;
-        allowedCFModelAttrs[SUMO_TAG_CF_KRAUSS_ACCEL_BOUND] = krausParams;
 
         std::set<SumoXMLAttr> smartSKParams;
         smartSKParams.insert(SUMO_ATTR_ACCEL);

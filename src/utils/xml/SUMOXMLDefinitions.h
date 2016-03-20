@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Sept 2002
-/// @version $Id: SUMOXMLDefinitions.h 19798 2016-01-26 07:43:53Z namdre $
+/// @version $Id: SUMOXMLDefinitions.h 20221 2016-03-17 10:19:09Z behrisch $
 ///
 // Definitions of elements and attributes known by SUMO
 /****************************************************************************/
@@ -199,7 +199,6 @@ enum SumoXMLTag {
 
     SUMO_TAG_CF_KRAUSS,
     SUMO_TAG_CF_KRAUSS_PLUS_SLOPE,
-    SUMO_TAG_CF_KRAUSS_ACCEL_BOUND,
     SUMO_TAG_CF_KRAUSS_ORIG1,
     SUMO_TAG_CF_SMART_SK,
     SUMO_TAG_CF_DANIEL1,

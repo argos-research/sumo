@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 30.01.2009
-/// @version $Id: MSDevice_Tripinfo.h 19002 2015-10-02 12:19:53Z namdre $
+/// @version $Id: MSDevice_Tripinfo.h 20211 2016-03-16 13:39:17Z namdre $
 ///
 // A device which collects info on the vehicle trip
 /****************************************************************************/
@@ -152,12 +152,19 @@ private:
        vehicle arrived or not */
     void computeLengthAndDuration(SUMOReal& routeLength, SUMOTime& duration) const;
 
+protected:
+    /** @brief Internal notification about the vehicle moves
+     *
+     * @param[in] veh Vehicle that asks this reminder.
+     * @param[in] timeOnLane time the vehicle spent on the lane.
+     * @param[in] speed Moving speed.
+     */
+    void notifyMoveInternal(SUMOVehicle& veh, SUMOReal timeOnLane,
+                            SUMOReal speed);
+
 private:
     /// @brief The lane the vehicle departed at
     std::string myDepartLane;
-
-    /// @brief The position on the lane the vehicle departed at
-    SUMOReal myDepartPos;
 
     /// @brief The speed on departure
     SUMOReal myDepartSpeed;

@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: MSRoute.cpp 20190 2016-03-15 11:13:33Z namdre $
+/// @version $Id: MSRoute.cpp 20193 2016-03-15 13:08:43Z namdre $
 ///
 // A vehicle route
 /****************************************************************************/
@@ -326,22 +326,13 @@ MSRoute::getDistanceBetween(SUMOReal fromPos, SUMOReal toPos,
             distance += toPos;
             break;
         } else {
-            const std::vector<MSLane*>& lanes = (*it)->getLanes();
-            distance += lanes[0]->getLength();
+            distance += (*it)->getLength();
 #ifdef HAVE_INTERNAL_LANES
             if (includeInternal) {
                 // add length of internal lanes to the result
-                for (std::vector<MSLane*>::const_iterator laneIt = lanes.begin(); laneIt != lanes.end(); ++laneIt) {
-                    const MSLinkCont& links = (*laneIt)->getLinkCont();
-                    for (MSLinkCont::const_iterator linkIt = links.begin(); linkIt != links.end(); ++linkIt) {
-                        if ((*linkIt) == 0 || (*linkIt)->getLane() == 0) {
-                            continue;
-                        }
-                        std::string succLaneId = (*(it + 1))->getLanes()[0]->getID();
-                        if ((*linkIt)->getLane()->getID().compare(succLaneId) == 0) {
-                            distance += (*linkIt)->getLength();
-                        }
-                    }
+                const MSEdge* internal = (*it)->getInternalFollowingEdge(*(it + 1));
+                if (internal != 0) {
+                    distance += internal->getLength();
                 }
             }
 #else

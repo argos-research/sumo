@@ -2,7 +2,7 @@
 /// @file    METriggeredCalibrator.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: METriggeredCalibrator.cpp 19820 2016-01-28 08:48:03Z bieker $
+/// @version $Id: METriggeredCalibrator.cpp 20210 2016-03-16 13:18:30Z namdre $
 ///
 // Calibrates the flow on a segment to a specified one
 /****************************************************************************/
@@ -84,7 +84,6 @@ METriggeredCalibrator::~METriggeredCalibrator() {
 bool
 METriggeredCalibrator::tryEmit(MESegment* s, MEVehicle* vehicle) {
     if (s->initialise(vehicle, vehicle->getParameter().depart)) {
-        vehicle->onDepart();
         if (!MSNet::getInstance()->getVehicleControl().addVehicle(vehicle->getID(), vehicle)) {
             throw ProcessError("Emission of vehicle '" + vehicle->getID() + "' in calibrator '" + getID() + "'failed!");
         }
@@ -107,6 +106,7 @@ METriggeredCalibrator::execute(SUMOTime currentTime) {
         myEdgeMeanData.reset(); // discard collected values
         if (!mySpeedIsDefault) {
             // if not, reset adaptation values
+            mySegment->getEdge().setMaxSpeed(myDefaultSpeed);
             MESegment* first = MSGlobals::gMesoNet->getSegmentForEdge(mySegment->getEdge());
             const SUMOReal jamThresh = OptionsCont::getOptions().getFloat("meso-jam-threshold");
             while (first != 0) {
@@ -122,7 +122,8 @@ METriggeredCalibrator::execute(SUMOTime currentTime) {
         return myFrequency;
     }
     // we are active
-    if (!myDidSpeedAdaption && myCurrentStateInterval->v >= 0) {
+    if (!myDidSpeedAdaption && myCurrentStateInterval->v >= 0 && myCurrentStateInterval->v != mySegment->getEdge().getSpeedLimit()) {
+        mySegment->getEdge().setMaxSpeed(myCurrentStateInterval->v);
         MESegment* first = MSGlobals::gMesoNet->getSegmentForEdge(mySegment->getEdge());
         while (first != 0) {
             first->setSpeed(myCurrentStateInterval->v, currentTime, -1);
@@ -237,7 +238,7 @@ METriggeredCalibrator::invalidJam() const {
         return false;
     }
     // maxSpeed reflects the calibration target
-    const bool toSlow = mySegment->getMeanSpeed() < 0.8 * mySegment->getMaxSpeed();
+    const bool toSlow = mySegment->getMeanSpeed() < 0.8 * mySegment->getEdge().getSpeedLimit();
     return toSlow && remainingVehicleCapacity() < maximumInflow();
 }
 

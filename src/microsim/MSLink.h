@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSLink.h 20049 2016-02-22 12:19:06Z namdre $
+/// @version $Id: MSLink.h 20261 2016-03-19 21:57:04Z behrisch $
 ///
 // A connnection between lanes
 /****************************************************************************/
@@ -322,6 +322,9 @@ public:
         return myState == LINKSTATE_TL_RED || myState == LINKSTATE_TL_REDYELLOW;
     }
 
+    inline bool isTLSControlled() const {
+        return myLastStateChange != SUMOTime_MIN;
+    }
 
     /** @brief Returns the length of this link
      *
@@ -404,6 +407,16 @@ public:
     /// @brief return whether the fromLane and the toLane of this link are internal lanes
     bool isInternalJunctionLink() const;
 
+    /** @brief Returns the time penalty for passing a tls-controlled link (meso) */
+    SUMOTime getMesoTLSPenalty() const {
+        return myMesoTLSPenalty;
+    }
+
+    /** @brief Sets the time penalty for passing a tls-controlled link (meso) */
+    void setMesoTLSPenalty(const SUMOTime penalty) {
+        myMesoTLSPenalty = penalty;
+    }
+
 private:
     /// @brief return whether the given vehicles may NOT merge safely
     static inline bool unsafeMergeSpeeds(SUMOReal leaderSpeed, SUMOReal followerSpeed, SUMOReal leaderDecel, SUMOReal followerDecel) {
@@ -445,6 +458,9 @@ private:
     bool myAmCont;
 
     bool myKeepClear;
+
+    /// @brief penalty time for mesoscopic simulation
+    SUMOTime myMesoTLSPenalty;
 
 #ifdef HAVE_INTERNAL_LANES
     /// @brief The following junction-internal lane if used

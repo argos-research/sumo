@@ -2,7 +2,7 @@
 /// @file    MEVehicle.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MEVehicle.cpp 19820 2016-01-28 08:48:03Z bieker $
+/// @version $Id: MEVehicle.cpp 20216 2016-03-16 16:27:12Z namdre $
 ///
 // A vehicle from the mesoscopic point of view
 /****************************************************************************/
@@ -105,7 +105,26 @@ MEVehicle::getPosition(const SUMOReal offset) const {
 
 SUMOReal
 MEVehicle::getSpeed() const {
+    if (getWaitingTime() > 0) {
+        return 0;
+    } else {
+        return getAverageSpeed();
+    }
+}
+
+
+SUMOReal
+MEVehicle::getAverageSpeed() const {
     return mySegment->getLength() / STEPS2TIME(myEventTime - myLastEntryTime);
+}
+
+
+SUMOReal
+MEVehicle::estimateLeaveSpeed(const MSLink* link) const {
+    /// @see MSVehicle.cpp::estimateLeaveSpeed
+    const SUMOReal v = getSpeed();
+    return MIN2(link->getViaLaneOrLane()->getVehicleMaxSpeed(this),
+            (SUMOReal)sqrt(2 * link->getLength() * getVehicleType().getCarFollowModel().getMaxAccel() + v * v));
 }
 
 

@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Mon, 8 Nov 2010
-/// @version $Id: MSBaseVehicle.cpp 20063 2016-02-24 14:31:44Z behrisch $
+/// @version $Id: MSBaseVehicle.cpp 20205 2016-03-16 08:50:17Z namdre $
 ///
 // A base class for vehicle implementations
 /****************************************************************************/
@@ -69,6 +69,7 @@ MSBaseVehicle::MSBaseVehicle(SUMOVehicleParameter* pars, const MSRoute* route,
     myChosenSpeedFactor(speedFactor),
     myMoveReminders(0),
     myDeparture(NOT_YET_DEPARTED),
+    myDepartPos(NOT_YET_DEPARTED),
     myArrivalPos(-1),
     myArrivalLane(-1),
     myNumberReroutes(0)
@@ -229,6 +230,7 @@ MSBaseVehicle::getSlope() const {
 void
 MSBaseVehicle::onDepart() {
     myDeparture = MSNet::getInstance()->getCurrentTimeStep();
+    myDepartPos = getPositionOnLane();
     MSNet::getInstance()->getVehicleControl().vehicleDeparted(*this);
 }
 

@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: MSLaneSpeedTrigger.cpp 19791 2016-01-25 14:59:17Z namdre $
+/// @version $Id: MSLaneSpeedTrigger.cpp 20210 2016-03-16 13:18:30Z namdre $
 ///
 // Changes the speed allowed on a set of lanes
 /****************************************************************************/
@@ -115,16 +115,19 @@ MSLaneSpeedTrigger::processCommand(bool move2next, SUMOTime currentTime) {
     UNUSED_PARAMETER(currentTime);
     std::vector<MSLane*>::iterator i;
     const SUMOReal speed = getCurrentSpeed();
-    for (i = myDestLanes.begin(); i != myDestLanes.end(); ++i) {
-        if (MSGlobals::gUseMesoSim) {
-            MESegment* first = MSGlobals::gMesoNet->getSegmentForEdge((*i)->getEdge());
+    if (MSGlobals::gUseMesoSim) {
+        if (myDestLanes.size() > 0 && myDestLanes.front()->getSpeedLimit() != speed) {
+            myDestLanes.front()->getEdge().setMaxSpeed(speed);
+            MESegment* first = MSGlobals::gMesoNet->getSegmentForEdge(myDestLanes.front()->getEdge());
             while (first != 0) {
                 first->setSpeed(speed, currentTime, -1);
                 first = first->getNextSegment();
             }
-            continue;
         }
-        (*i)->setMaxSpeed(speed);
+    } else {
+        for (i = myDestLanes.begin(); i != myDestLanes.end(); ++i) {
+            (*i)->setMaxSpeed(speed);
+        }
     }
     if (!move2next) {
         // changed from the gui

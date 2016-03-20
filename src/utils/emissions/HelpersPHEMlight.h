@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Nikolaus Furian
 /// @date    Sat, 20.04.2013
-/// @version $Id: HelpersPHEMlight.h 20083 2016-02-25 15:47:51Z behrisch $
+/// @version $Id: HelpersPHEMlight.h 20221 2016-03-17 10:19:09Z behrisch $
 ///
 // Helper methods for PHEMlight-based emission computation
 /****************************************************************************/
@@ -31,12 +31,20 @@
 #include <config.h>
 #endif
 
+#define INTERNAL_PHEM
+
 #include <vector>
 #include <limits>
 #include <cmath>
+#ifdef INTERNAL_PHEM
+#include "PHEMCEPHandler.h"
+#else
+#include <foreign/PHEMlight/cpp/CEP.h>
+#include <foreign/PHEMlight/cpp/CEPHandler.h>
+#include <foreign/PHEMlight/cpp/Helpers.h>
+#endif
 #include <utils/common/StdDefs.h>
 #include "PollutantsInterface.h"
-#include "PHEMCEPHandler.h"
 
 
 // ===========================================================================
@@ -98,16 +106,6 @@ public:
      */
     SUMOReal getWeight(const SUMOEmissionClass c) const;
 
-    /** @brief Returns the maximum possible acceleration
-     * @param[in] c The vehicle emission class
-     * @param[in] v The vehicle's current velocity
-     * @param[in] a The vehicle's current acceleration
-     * @param[in] slope The road's slope at vehicle's position [deg]
-     * @return The maximum possible acceleration
-     */
-    SUMOReal getMaxAccel(SUMOEmissionClass c, double v, double a, double slope) const;
-
-
     /** @brief Returns the amount of emitted pollutant given the vehicle type and state (in mg/s or in ml/s for fuel)
      * @param[in] c The vehicle emission class
      * @param[in] v The vehicle's current velocity
@@ -118,8 +116,26 @@ public:
     SUMOReal compute(const SUMOEmissionClass c, const PollutantsInterface::EmissionType e, const double v, const double a, const double slope) const;
 
 private:
+    /** @brief Returns the amount of emitted pollutant given the vehicle type and state (in mg/s or in ml/s for fuel)
+    * @param[in] currCep The vehicle emission class
+    * @param[in] e The emission type
+    * @param[in] p The vehicle's current power
+    * @param[in] v The vehicle's current velocity
+    * @return The amount of the pollutant emitted by the given emission class when moving with the given velocity and acceleration [mg/s or ml/s]
+    */
+#ifdef INTERNAL_PHEM
+    SUMOReal getEmission(const PHEMCEP* currCep, const std::string& e, const double p, const double v) const;
+#else
+    SUMOReal getEmission(PHEMlightdll::CEP* currCep, const std::string& e, const double p, const double v) const;
+#endif
+
     /// @brief the index of the next class
     int myIndex;
+#ifndef INTERNAL_PHEM
+    PHEMlightdll::CEPHandler myCEPHandler;
+    mutable PHEMlightdll::Helpers myHelper;
+    std::map<SUMOEmissionClass, PHEMlightdll::CEP*> myCEPs;
+#endif
 };
 
 

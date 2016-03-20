@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    late summer 2003
-/// @version $Id: MSGlobals.h 19791 2016-01-25 14:59:17Z namdre $
+/// @version $Id: MSGlobals.h 20252 2016-03-18 09:33:46Z namdre $
 ///
 // Some static variables for faster access
 /****************************************************************************/
@@ -91,6 +91,9 @@ public:
 
     /** Information whether overtaking is enabled in the mesoscopic simulation */
     static bool gMesoOvertaking;
+
+    /** scaling factor for macroscopic time penalty when passing tls controlled intersection */
+    static SUMOReal gMesoTLSPenalty;
 
     /// mesoscopic simulation infrastructure
     static MELoop* gMesoNet;

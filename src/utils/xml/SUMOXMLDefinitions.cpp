@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Sept 2002
-/// @version $Id: SUMOXMLDefinitions.cpp 19798 2016-01-26 07:43:53Z namdre $
+/// @version $Id: SUMOXMLDefinitions.cpp 20221 2016-03-17 10:19:09Z behrisch $
 ///
 // Definitions of elements and attributes known by SUMO
 /****************************************************************************/
@@ -157,7 +157,6 @@ StringBijection<int>::Entry SUMOXMLDefinitions::tags[] = {
     { "carFollowing-IDMM",        SUMO_TAG_CF_IDMM },
     { "carFollowing-Krauss",      SUMO_TAG_CF_KRAUSS },
     { "carFollowing-KraussPS",    SUMO_TAG_CF_KRAUSS_PLUS_SLOPE },
-    { "carFollowing-KraussAB",    SUMO_TAG_CF_KRAUSS_ACCEL_BOUND },
     { "carFollowing-KraussOrig1", SUMO_TAG_CF_KRAUSS_ORIG1 },
     { "carFollowing-SmartSK",     SUMO_TAG_CF_SMART_SK },
     { "carFollowing-Daniel1",     SUMO_TAG_CF_DANIEL1 },
@@ -578,7 +577,6 @@ StringBijection<SumoXMLTag>::Entry SUMOXMLDefinitions::carFollowModelValues[] = 
     { "IDMM",        SUMO_TAG_CF_IDMM },
     { "Krauss",      SUMO_TAG_CF_KRAUSS },
     { "KraussPS",    SUMO_TAG_CF_KRAUSS_PLUS_SLOPE },
-    { "KraussAB",    SUMO_TAG_CF_KRAUSS_ACCEL_BOUND },
     { "KraussOrig1", SUMO_TAG_CF_KRAUSS_ORIG1 },
     { "SmartSK",     SUMO_TAG_CF_SMART_SK },
     { "Daniel1",     SUMO_TAG_CF_DANIEL1 },

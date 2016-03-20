@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Friedemann Wesner
 /// @date    Sept 2002
-/// @version $Id: MSTrafficLightLogic.h 19623 2015-12-16 09:30:37Z behrisch $
+/// @version $Id: MSTrafficLightLogic.h 20252 2016-03-18 09:33:46Z namdre $
 ///
 // The parent class for traffic light logics
 /****************************************************************************/
@@ -393,6 +393,7 @@ protected:
 
     };
 
+
 protected:
     /// @brief The id of the logic
     std::string myProgramID;
@@ -417,6 +418,10 @@ protected:
 
     /// @brief An empty lane vector
     static const LaneVector myEmptyLaneVector;
+
+private:
+    /// @brief initialize optional meso penalties
+    void initMesoTLSPenalties();
 
 
 private:

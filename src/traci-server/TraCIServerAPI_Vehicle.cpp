@@ -8,7 +8,7 @@
 /// @author  Mario Krumnow
 /// @author  Jakob Erdmann
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_Vehicle.cpp 19997 2016-02-17 11:34:23Z namdre $
+/// @version $Id: TraCIServerAPI_Vehicle.cpp 20204 2016-03-16 07:25:48Z namdre $
 ///
 // APIs for getting/setting vehicle values via TraCI
 /****************************************************************************/
@@ -391,7 +391,7 @@ TraCIServerAPI_Vehicle::processGet(TraCIServer& server, tcpip::Storage& inputSto
             break;
             case VAR_DISTANCE: {
                 tempMsg.writeUnsignedByte(TYPE_DOUBLE);
-                SUMOReal distance = onRoad ? v->getRoute().getDistanceBetween(0, v->getPositionOnLane(), v->getRoute().getEdges()[0],  &v->getLane()->getEdge()) : INVALID_DOUBLE_VALUE;
+                SUMOReal distance = onRoad ? v->getRoute().getDistanceBetween(v->getDepartPos(), v->getPositionOnLane(), v->getRoute().getEdges()[0],  &v->getLane()->getEdge()) : INVALID_DOUBLE_VALUE;
                 if (distance == std::numeric_limits<SUMOReal>::max()) {
                     distance = INVALID_DOUBLE_VALUE;
                 }

@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Okt 2003
-/// @version $Id: GUI_E2_ZS_Collector.cpp 19200 2015-10-28 16:48:07Z behrisch $
+/// @version $Id: GUI_E2_ZS_Collector.cpp 20217 2016-03-17 07:04:07Z namdre $
 ///
 // The gui-version of the MS_E2_ZS_Collector
 /****************************************************************************/
@@ -150,19 +150,21 @@ GUI_E2_ZS_Collector::MyWrapper::drawGL(const GUIVisualizationSettings& s) const 
     glTranslated(0, 0, getType());
     SUMOReal dwidth = 1;
     const SUMOReal exaggeration = s.addSize.getExaggeration(s);
-    if (myDetector.getUsageType() == DU_TL_CONTROL) {
-        dwidth = (SUMOReal) 0.3;
-        glColor3d(0, (SUMOReal) .6, (SUMOReal) .8);
-    } else {
-        glColor3d(0, (SUMOReal) .8, (SUMOReal) .8);
-    }
-    SUMOReal width = (SUMOReal) 2.0 * s.scale;
-    if (width * exaggeration > 1.0) {
-        GLHelper::drawBoxLines(myFullGeometry, myShapeRotations, myShapeLengths, dwidth * exaggeration);
-    } else {
-        int e = (int) myFullGeometry.size() - 1;
-        for (int i = 0; i < e; ++i) {
-            GLHelper::drawLine(myFullGeometry[i], myShapeRotations[i], myShapeLengths[i]);
+    if (exaggeration > 0) {
+        if (myDetector.getUsageType() == DU_TL_CONTROL) {
+            dwidth = (SUMOReal) 0.3;
+            glColor3d(0, (SUMOReal) .6, (SUMOReal) .8);
+        } else {
+            glColor3d(0, (SUMOReal) .8, (SUMOReal) .8);
+        }
+        SUMOReal width = (SUMOReal) 2.0 * s.scale;
+        if (width * exaggeration > 1.0) {
+            GLHelper::drawBoxLines(myFullGeometry, myShapeRotations, myShapeLengths, dwidth * exaggeration);
+        } else {
+            int e = (int) myFullGeometry.size() - 1;
+            for (int i = 0; i < e; ++i) {
+                GLHelper::drawLine(myFullGeometry[i], myShapeRotations[i], myShapeLengths[i]);
+            }
         }
     }
     glPopMatrix();

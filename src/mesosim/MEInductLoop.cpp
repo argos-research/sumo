@@ -2,7 +2,7 @@
 /// @file    MEInductLoop.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MEInductLoop.cpp 19820 2016-01-28 08:48:03Z bieker $
+/// @version $Id: MEInductLoop.cpp 20206 2016-03-16 09:00:46Z namdre $
 ///
 // An induction loop for mesoscopic simulation
 /****************************************************************************/
@@ -56,7 +56,6 @@ MEInductLoop::MEInductLoop(const std::string& id,
     MSDetectorFileOutput(id), mySegment(s),
     myPosition(positionInMeters),
     myMeanData(0, mySegment->getLength(), false) {
-    assert(myPosition >= 0 && myPosition <= s->getLength());
     myMeanData.setDescription("inductionLoop_" + id);
     s->addDetector(&myMeanData);
 }

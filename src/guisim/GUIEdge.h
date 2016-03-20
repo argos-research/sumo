@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIEdge.h 20143 2016-03-03 15:25:30Z namdre $
+/// @version $Id: GUIEdge.h 20236 2016-03-17 14:55:47Z namdre $
 ///
 // A road/street connecting two junctions (gui-version)
 /****************************************************************************/
@@ -167,7 +167,6 @@ public:
     unsigned int getVehicleNo() const;
     std::string getVehicleIDs() const;
     SUMOReal getBruttoOccupancy() const;
-    SUMOReal getMeanSpeed() const;
     SUMOReal getAllowedSpeed() const;
     /// @brief return flow based on meanSpead @note: may produced incorrect results when jammed
     SUMOReal getFlow() const;

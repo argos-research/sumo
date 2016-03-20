@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdge.cpp 20188 2016-03-15 08:38:51Z namdre $
+/// @version $Id: NBEdge.cpp 20250 2016-03-18 08:32:48Z namdre $
 ///
 // Methods for the representation of a single edge
 /****************************************************************************/
@@ -2536,6 +2536,23 @@ NBEdge::shiftPositionAtNode(NBNode* node, NBEdge* other) {
             myGeom[i] = tmp[i];
         }
     }
+}
+
+
+SUMOReal 
+NBEdge::getFinalLength() const {
+    SUMOReal result = getLoadedLength();
+    if (OptionsCont::getOptions().getBool("no-internal-links") && !hasLoadedLength()) {
+        // use length to junction center even if a modified geometry was given
+        PositionVector geom = cutAtIntersection(myGeom);
+        geom.push_back_noDoublePos(getToNode()->getCenter());
+        geom.push_front_noDoublePos(getFromNode()->getCenter());
+        result = geom.length();
+    }
+    if (result <= 0) {
+        result = POSITION_EPS;
+    }
+    return result;
 }
 
 /****************************************************************************/

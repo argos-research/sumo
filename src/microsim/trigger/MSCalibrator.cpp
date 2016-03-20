@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, May 2005
-/// @version $Id: MSCalibrator.cpp 18842 2015-09-17 10:43:51Z behrisch $
+/// @version $Id: MSCalibrator.cpp 20207 2016-03-16 12:13:54Z namdre $
 ///
 // Calibrates the flow on an edge by removing an inserting vehicles
 /****************************************************************************/
@@ -292,9 +292,7 @@ MSCalibrator::execute(SUMOTime currentTime) {
         reset();
         if (!mySpeedIsDefault) {
             // reset speed to default
-            for (std::vector<MSLane*>::const_iterator i = myEdge->getLanes().begin(); i != myEdge->getLanes().end(); ++i) {
-                (*i)->setMaxSpeed(myDefaultSpeed);
-            }
+            myEdge->setMaxSpeed(myDefaultSpeed);
             mySpeedIsDefault = true;
         }
         if (myCurrentStateInterval == myIntervals.end()) {
@@ -305,9 +303,7 @@ MSCalibrator::execute(SUMOTime currentTime) {
     }
     // we are active
     if (!myDidSpeedAdaption && myCurrentStateInterval->v >= 0) {
-        for (std::vector<MSLane*>::const_iterator i = myEdge->getLanes().begin(); i != myEdge->getLanes().end(); ++i) {
-            (*i)->setMaxSpeed(myCurrentStateInterval->v);
-        }
+        myEdge->setMaxSpeed(myCurrentStateInterval->v);
         mySpeedIsDefault = false;
         myDidSpeedAdaption = true;
     }
@@ -376,7 +372,6 @@ MSCalibrator::execute(SUMOTime currentTime) {
 #endif
             vehicle->resetRoutePosition(routeIndex);
             if (myEdge->insertVehicle(*vehicle, currentTime)) {
-                vehicle->onDepart();
                 if (!MSNet::getInstance()->getVehicleControl().addVehicle(vehicle->getID(), vehicle)) {
                     throw ProcessError("Emission of vehicle '" + vehicle->getID() + "' in calibrator '" + getID() + "'failed!");
                 }
