@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVisualizationSettings.cpp 19791 2016-01-25 14:59:17Z namdre $
+/// @version $Id: GUIVisualizationSettings.cpp 20308 2016-03-27 19:20:25Z luecken $
 ///
 // Stores the information about how to visualize structures
 /****************************************************************************/
@@ -224,6 +224,9 @@ GUIVisualizationSettings::GUIVisualizationSettings()
     scheme.addColor(RGBColor::BLUE, (SUMOReal)(1));
     scheme.addColor(RGBColor::MAGENTA, (SUMOReal)(1.25));
     laneColorer.addScheme(scheme);
+    scheme = GUIColorScheme("by electricity consumption", RGBColor::GREEN);
+    scheme.addColor(RGBColor::RED, (SUMOReal)(.005 / 7.5 * 100.));
+    laneColorer.addScheme(scheme);
 
 
     /// add vehicle coloring schemes
@@ -247,6 +250,12 @@ GUIVisualizationSettings::GUIVisualizationSettings()
     scheme.addColor(RGBColor::GREEN, (SUMOReal)100);
     scheme.addColor(RGBColor::YELLOW, (SUMOReal)200);
     scheme.addColor(RGBColor::RED, (SUMOReal)300);
+    vehicleColorer.addScheme(scheme);
+    scheme = GUIColorScheme("by accumulated waiting time (% of waiting in 100 secs)", RGBColor::BLUE); // XXX: can we tie the number (100secs) to MSGlobals::gWaitingTimeMemory? (simply importing MSGlobals.h fails (Leo))
+    scheme.addColor(RGBColor::CYAN, (SUMOReal)25);
+    scheme.addColor(RGBColor::GREEN, (SUMOReal)50);
+    scheme.addColor(RGBColor::YELLOW, (SUMOReal)75);
+    scheme.addColor(RGBColor::RED, (SUMOReal)100);
     vehicleColorer.addScheme(scheme);
     scheme = GUIColorScheme("by time since lane change", RGBColor(179, 179, 179, 255), "0");
     scheme.addColor(RGBColor(189, 189, 179, 255), -180);
@@ -320,6 +329,9 @@ GUIVisualizationSettings::GUIVisualizationSettings()
     scheme.addColor(RGBColor::RED, (SUMOReal)300);
     vehicleColorer.addScheme(scheme);
     vehicleColorer.addScheme(GUIColorScheme("random", RGBColor::YELLOW, "", true));
+    scheme = GUIColorScheme("by electricity consumption", RGBColor::GREEN);
+    scheme.addColor(RGBColor::RED, (SUMOReal).005);
+    vehicleColorer.addScheme(scheme);
 
     /// add person coloring schemes
     personColorer.addScheme(GUIColorScheme("given person/type color", RGBColor::YELLOW, "", true));
@@ -471,6 +483,9 @@ GUIVisualizationSettings::GUIVisualizationSettings()
         scheme.addColor(0.5, (SUMOReal)(0.5));
         scheme.addColor(2, (SUMOReal)(1));
         scheme.addColor(10, (SUMOReal)(2));
+        laneScaler.addScheme(scheme);
+        scheme = GUIScaleScheme("by electricity consumption", 0);
+        scheme.addColor(10, (SUMOReal)(.005 / 7.5 * 100.));
         laneScaler.addScheme(scheme);
     }
 

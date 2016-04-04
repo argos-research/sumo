@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NIFrame.cpp 18531 2015-07-07 07:30:33Z behrisch $
+/// @version $Id: NIFrame.cpp 20328 2016-04-02 20:39:26Z behrisch $
 ///
 // Sets and checks options for netimport
 /****************************************************************************/
@@ -62,6 +62,7 @@ NIFrame::fillOptions() {
     oc.doRegister("sumo-net-file", 's', new Option_FileName());
     oc.addSynonyme("sumo-net-file", "sumo-net", true);
     oc.addDescription("sumo-net-file", "Input", "Read SUMO-net from FILE");
+    oc.addXMLDefault("sumo-net-file", "net");
 
     oc.doRegister("node-files", 'n', new Option_FileName());
     oc.addSynonyme("node-files", "xml-node-files", true);
@@ -308,11 +309,9 @@ NIFrame::checkOptions() {
         } else {
             const std::string path = sumoPath + std::string("/data/typemap/");
             if (oc.isSet("osm-files")) {
-                oc.unSet("type-files");
                 oc.set("type-files", path + "osmNetconvert.typ.xml");
             }
             if (oc.isSet("opendrive-files")) {
-                oc.unSet("type-files");
                 oc.set("type-files", path + "opendriveNetconvert.typ.xml");
             }
         }

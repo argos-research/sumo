@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: Option.h 18306 2015-04-27 20:35:05Z behrisch $
+/// @version $Id: Option.h 20324 2016-03-31 12:34:29Z behrisch $
 ///
 // Classes representing a single program option (with different types)
 /****************************************************************************/
@@ -148,15 +148,11 @@ public:
     virtual const IntVector& getIntVector() const;
 
 
-    /** @brief Stores the given value (used for non-bool options)
+    /** @brief Stores the given value
      *
-     * This method is overriden by all option classes but Option_Bool.
+     * This method is overriden by all option classes.
      *  The value is converted into the proper type and stored in "myValue".
      *  Then, "markSet" is called in order to know that a value has been set.
-     *
-     * The method defined in Option throws an exception, because all derived
-     *  classes should override it - for Option_Bool, it is tested on a different
-     *  position whether to use this method or bool set(bool).
      *
      * The method returns whether the value could be set (the return value from
      *  "markSet").
@@ -165,7 +161,7 @@ public:
      *  is thrown.
      *
      * @return Whether the new value could be set
-     * @exception InvalidArgument If being an instance of Option or Option_Bool or if the value could not be converted
+     * @exception InvalidArgument If the value could not be converted
      */
     virtual bool set(const std::string& v) = 0;
 
@@ -220,6 +216,14 @@ public:
      *  it is no longer writeable. This method resets the writable-flag.
      */
     void resetWritable();
+
+
+    /** @brief Resets the option to be on its default value
+     *
+     * An option is on its default after initialisation with a value, but as soon as it gets set,
+     *  it is no longer. This method resets the default-flag.
+     */
+    void resetDefault();
 
 
     /** @brief Returns the description of what this option does

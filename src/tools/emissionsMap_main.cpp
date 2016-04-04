@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Wed, 21.08.2013
-/// @version $Id: emissionsMap_main.cpp 20035 2016-02-19 14:16:24Z behrisch $
+/// @version $Id: emissionsMap_main.cpp 20279 2016-03-22 13:55:22Z behrisch $
 ///
 // Main for an emissions map writer
 /****************************************************************************/
@@ -81,6 +81,7 @@ void single(const std::string& of, const std::string& className, SUMOEmissionCla
                 o << v << ";" << a << ";" << s << ";" << "PMx" << ";" << result.PMx << std::endl;
                 o << v << ";" << a << ";" << s << ";" << "NOx" << ";" << result.NOx << std::endl;
                 o << v << ";" << a << ";" << s << ";" << "fuel" << ";" << result.fuel << std::endl;
+                o << v << ";" << a << ";" << s << ";" << "electricity" << ";" << result.electricity << std::endl;
             }
         }
     }

@@ -3,7 +3,7 @@
 @file    trafficlights.py
 @author  Michael Behrisch
 @date    2011-03-16
-@version $Id: _trafficlights.py 20200 2016-03-15 18:06:25Z behrisch $
+@version $Id: _trafficlights.py 20326 2016-04-02 13:13:53Z behrisch $
 
 Python implementation of the TraCI interface.
 
@@ -211,6 +211,10 @@ class TrafficLightsDomain(Domain):
 
 
     def setPhaseDuration(self, tlsID, phaseDuration):
+        """setPhaseDuration(string, integer or float) -> None
+
+        Set the phase duration of the current phase in seconds.
+        """
         self._connection._sendIntCmd(
             tc.CMD_SET_TL_VARIABLE, tc.TL_PHASE_DURATION, tlsID, int(1000 * phaseDuration))
 

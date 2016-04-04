@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 10.05.2004
-/// @version $Id: HelpersHBEFA.h 20083 2016-02-25 15:47:51Z behrisch $
+/// @version $Id: HelpersHBEFA.h 20279 2016-03-22 13:55:22Z behrisch $
 ///
 // Helper methods for HBEFA-based emission computation
 /****************************************************************************/
@@ -73,7 +73,7 @@ public:
      */
     inline SUMOReal compute(const SUMOEmissionClass c, const PollutantsInterface::EmissionType e, const double v, const double a, const double slope) const {
         UNUSED_PARAMETER(slope);
-        if (c == PollutantsInterface::ZERO_EMISSIONS) {
+        if (c == PollutantsInterface::ZERO_EMISSIONS || e == PollutantsInterface::ELEC) {
             return 0.;
         }
         const int index = (c & ~PollutantsInterface::HEAVY_BIT) - 1;

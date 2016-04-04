@@ -7,7 +7,7 @@
 /// @author  Melanie Knocke
 /// @author  Yun-Pang Floetteroed
 /// @date    Sept 2002
-/// @version $Id: ROEdge.cpp 20095 2016-02-26 14:07:14Z behrisch $
+/// @version $Id: ROEdge.cpp 20291 2016-03-23 10:19:29Z behrisch $
 ///
 // A basic edge for routing applications
 /****************************************************************************/
@@ -256,6 +256,9 @@ ROEdge::buildTimeLines(const std::string& measure, const bool boundariesOverride
         }
         if (measure == "fuel") {
             value = PollutantsInterface::compute(c, PollutantsInterface::FUEL, mySpeed, 0, 0) * value; // @todo: give correct slope
+        }
+        if (measure == "electricity") {
+            value = PollutantsInterface::compute(c, PollutantsInterface::ELEC, mySpeed, 0, 0) * value; // @todo: give correct slope
         }
         myEfforts.fillGaps(value, boundariesOverride);
     }

@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    late summer 2003
-/// @version $Id: MSGlobals.h 20252 2016-03-18 09:33:46Z namdre $
+/// @version $Id: MSGlobals.h 20308 2016-03-27 19:20:25Z luecken $
 ///
 // Some static variables for faster access
 /****************************************************************************/
@@ -97,6 +97,9 @@ public:
 
     /// mesoscopic simulation infrastructure
     static MELoop* gMesoNet;
+
+    /// length of memory for waiting times (in millisecs)
+    static SUMOTime gWaitingTimeMemory;
 
 };
 

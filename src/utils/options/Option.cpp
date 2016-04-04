@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: Option.cpp 18308 2015-04-27 21:28:24Z behrisch $
+/// @version $Id: Option.cpp 20324 2016-03-31 12:34:29Z behrisch $
 ///
 // A class representing a single program option
 /****************************************************************************/
@@ -156,6 +156,12 @@ Option::isWriteable() const {
 void
 Option::resetWritable() {
     myAmWritable = true;
+}
+
+
+void
+Option::resetDefault() {
+    myHaveTheDefaultValue = true;
 }
 
 

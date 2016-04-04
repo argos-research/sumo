@@ -3,7 +3,7 @@
 @file    typemap.py
 @author  Michael Behrisch
 @date    2015-07-06
-@version $Id: typemap.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: typemap.py 20331 2016-04-02 20:45:24Z behrisch $
 
 This script rebuilds "../../src/netimport/typemap.h", the file 
 representing the default typemaps.
@@ -24,26 +24,36 @@ from __future__ import absolute_import
 import sys
 from os.path import dirname, exists, getmtime, join
 
+def writeTypeMap(typemapFile, typemap):
+    with open(typemapFile, 'w') as f:
+        for format, mapFile in sorted(typemap.iteritems()):
+            print("const std::string %sTypemap =" % format, file=f)
+            for line in open(mapFile):
+                print('"%s"' %
+                      line.replace('"', r'\"').replace('\n', r'\n'), file=f)
+            print(";", file=f)
 
 def main():
-    typemapFile = join(
-        dirname(__file__), '..', '..', 'src', 'netimport', 'typemap.h')
     typemapDir = join(dirname(__file__), '..', '..', 'data', 'typemap')
+    if len(sys.argv) == 1:
+        typemapFile = join(
+            dirname(__file__), '..', '..', 'src', 'netimport', 'typemap.h')
+        formats = ("opendrive", "osm")
+        suffix = "Netconvert.typ.xml"
+    else:
+        typemapFile = join(
+            dirname(__file__), '..', '..', 'src', 'polyconvert', 'pc_typemap.h')
+        formats = ("navteq", "osm", "visum")
+        suffix = "Polyconvert.typ.xml"
     # determine output file
     typemap = {}
     maxTime = 0
-    for format in ("opendrive", "osm"):
-        typemap[format] = join(typemapDir, "%sNetconvert.typ.xml" % format)
+    for format in formats:
+        typemap[format] = join(typemapDir, format + suffix)
         if exists(typemap[format]):
             maxTime = max(maxTime, getmtime(typemap[format]))
     if not exists(typemapFile) or maxTime > getmtime(typemapFile):
-        with open(typemapFile, 'w') as f:
-            for format, mapFile in sorted(typemap.iteritems()):
-                print("const std::string %sTypemap =" % format, file=f)
-                for line in open(mapFile):
-                    print('"%s"' %
-                          line.replace('"', r'\"').replace('\n', r'\n'), file=f)
-                print(";", file=f)
+        writeTypeMap(typemapFile, typemap)
 
 
 if __name__ == "__main__":

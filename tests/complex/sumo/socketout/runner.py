@@ -3,7 +3,7 @@
 @file    runner.py
 @author  Michael Behrisch
 @date    2012-01-14
-@version $Id: runner.py 19667 2015-12-23 23:33:40Z behrisch $
+@version $Id: runner.py 20317 2016-03-29 10:34:50Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -32,6 +32,7 @@ sumoBinary = sumolib.checkBinary('sumo')
 
 
 def main(bailOut=False):
+    sys.stdout.flush()
     # create an INET, STREAMing socket
     serversocket = socket.socket(
         socket.AF_INET, socket.SOCK_STREAM)

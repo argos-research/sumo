@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    09.05.2011
-/// @version $Id: NBFrame.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: NBFrame.cpp 20291 2016-03-23 10:19:29Z behrisch $
 ///
 // Sets and checks options for netbuild
 /****************************************************************************/
@@ -161,7 +161,7 @@ NBFrame::fillOptions(bool forNetgen) {
 
     oc.doRegister("edges.join", new Option_Bool(false));
     oc.addDescription("edges.join", "Processing",
-                      "Merges edges whch connect the same nodes and are close to each other (recommended for VISSIM import)");
+                      "Merges edges which connect the same nodes and are close to each other (recommended for VISSIM import)");
 
     oc.doRegister("junctions.join", new Option_Bool(false));
     oc.addDescription("junctions.join", "Processing",

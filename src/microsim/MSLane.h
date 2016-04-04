@@ -8,7 +8,7 @@
 /// @author  Michael Behrisch
 /// @author  Mario Krumnow
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSLane.h 20089 2016-02-26 09:20:59Z namdre $
+/// @version $Id: MSLane.h 20279 2016-03-22 13:55:22Z behrisch $
 ///
 // Representation of a lane in the micro simulation
 /****************************************************************************/
@@ -741,9 +741,15 @@ public:
 
 
     /** @brief Returns the sum of last step fuel consumption
-     * @return fuel consumption of vehicles on this lane during the last step
-     */
+    * @return fuel consumption of vehicles on this lane during the last step
+    */
     SUMOReal getFuelConsumption() const;
+
+
+    /** @brief Returns the sum of last step electricity consumption
+    * @return electricity consumption of vehicles on this lane during the last step
+    */
+    SUMOReal getElectricityConsumption() const;
 
 
     /** @brief Returns the sum of last step noise emissions

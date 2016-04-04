@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Christian Roessel
 /// @date    Sept 2002
-/// @version $Id: ROLoader.cpp 19003 2015-10-02 14:41:41Z behrisch $
+/// @version $Id: ROLoader.cpp 20291 2016-03-23 10:19:29Z behrisch $
 ///
 // Loader for networks and route imports
 /****************************************************************************/
@@ -280,7 +280,7 @@ ROLoader::loadWeights(RONet& net, const std::string& optionName,
     EdgeFloatTimeLineRetriever_EdgeWeight eRetriever(net);
     if (measure != "traveltime") {
         std::string umeasure = measure;
-        if (measure == "CO" || measure == "CO2" || measure == "HC" || measure == "PMx" || measure == "NOx" || measure == "fuel") {
+        if (measure == "CO" || measure == "CO2" || measure == "HC" || measure == "PMx" || measure == "NOx" || measure == "fuel" || measure == "electricity") {
             umeasure = measure + "_perVeh";
         }
         retrieverDefs.push_back(new SAXWeightsHandler::ToRetrieveDefinition(umeasure, !useLanes, eRetriever));

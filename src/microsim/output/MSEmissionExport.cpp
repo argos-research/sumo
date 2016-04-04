@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2012-04-26
-/// @version $Id: MSEmissionExport.cpp 19773 2016-01-21 13:38:56Z namdre $
+/// @version $Id: MSEmissionExport.cpp 20291 2016-03-23 10:19:29Z behrisch $
 ///
 // Realises dumping Emission Data
 /****************************************************************************/
@@ -61,7 +61,7 @@ MSEmissionExport::write(OutputDevice& of, SUMOTime timestep, int precision) {
             PollutantsInterface::Emissions emiss = PollutantsInterface::computeAll(veh->getVehicleType().getEmissionClass(), veh->getSpeed(), veh->getAcceleration(), veh->getSlope());
             of.openTag("vehicle").writeAttr("id", veh->getID()).writeAttr("eclass", PollutantsInterface::getName(veh->getVehicleType().getEmissionClass()));
             of.writeAttr("CO2", emiss.CO2).writeAttr("CO", emiss.CO).writeAttr("HC", emiss.HC).writeAttr("NOx", emiss.NOx);
-            of.writeAttr("PMx", emiss.PMx).writeAttr("fuel", emiss.fuel);
+            of.writeAttr("PMx", emiss.PMx).writeAttr("fuel", emiss.fuel).writeAttr("electricity", emiss.electricity);
             of.writeAttr("noise", HelpersHarmonoise::computeNoise(veh->getVehicleType().getEmissionClass(), veh->getSpeed(), veh->getAcceleration()));
             of.writeAttr("route", veh->getRoute().getID()).writeAttr("type", fclass);
             if (microVeh != 0) {

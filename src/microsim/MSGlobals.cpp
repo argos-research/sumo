@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    late summer 2003
-/// @version $Id: MSGlobals.cpp 20252 2016-03-18 09:33:46Z namdre $
+/// @version $Id: MSGlobals.cpp 20308 2016-03-27 19:20:25Z luecken $
 ///
 // Some static variables for faster access
 /****************************************************************************/
@@ -61,5 +61,7 @@ bool MSGlobals::gMesoOvertaking;
 SUMOReal MSGlobals::gMesoTLSPenalty;
 MELoop* MSGlobals::gMesoNet;
 
+
+SUMOTime MSGlobals::gWaitingTimeMemory;
 /****************************************************************************/
 

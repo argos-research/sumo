@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 23.06.2003
-/// @version $Id: SystemFrame.cpp 18401 2015-05-19 10:11:15Z namdre $
+/// @version $Id: SystemFrame.cpp 20321 2016-03-29 14:04:15Z behrisch $
 ///
 // A set of actions common to all applications
 /****************************************************************************/
@@ -53,6 +53,7 @@ SystemFrame::addConfigurationOptions(OptionsCont& oc) {
     oc.doRegister("configuration-file", 'c', new Option_FileName());
     oc.addSynonyme("configuration-file", "configuration");
     oc.addDescription("configuration-file", "Configuration", "Loads the named config on startup");
+    oc.addXMLDefault("configuration-file");
 
     oc.doRegister("save-configuration", new Option_FileName());
     oc.addSynonyme("save-config", "save-configuration");

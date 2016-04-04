@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2012-04-26
-/// @version $Id: MSFullExport.cpp 19230 2015-10-30 21:59:38Z behrisch $
+/// @version $Id: MSFullExport.cpp 20291 2016-03-23 10:19:29Z behrisch $
 ///
 // Dumping a hugh List of Parameters available in the Simulation
 /****************************************************************************/
@@ -77,7 +77,7 @@ MSFullExport::writeVehicles(OutputDevice& of) {
             PollutantsInterface::Emissions emiss = PollutantsInterface::computeAll(veh->getVehicleType().getEmissionClass(), veh->getSpeed(), veh->getAcceleration(), veh->getSlope());
             of.openTag("vehicle").writeAttr("id", veh->getID()).writeAttr("eclass", PollutantsInterface::getName(veh->getVehicleType().getEmissionClass()));
             of.writeAttr("CO2", emiss.CO2).writeAttr("CO", emiss.CO).writeAttr("HC", emiss.HC).writeAttr("NOx", emiss.NOx);
-            of.writeAttr("PMx", emiss.PMx).writeAttr("fuel", emiss.fuel);
+            of.writeAttr("PMx", emiss.PMx).writeAttr("fuel", emiss.fuel).writeAttr("electricity", emiss.electricity);
             of.writeAttr("noise", HelpersHarmonoise::computeNoise(veh->getVehicleType().getEmissionClass(), veh->getSpeed(), veh->getAcceleration()));
             of.writeAttr("route", veh->getRoute().getID()).writeAttr("type", fclass);
             if (microVeh != 0) {
@@ -115,7 +115,8 @@ MSFullExport::writeLane(OutputDevice& of, const MSLane& lane) {
 
     of.openTag("lane").writeAttr("id", lane.getID()).writeAttr("CO", lane.getCOEmissions()).writeAttr("CO2", lane.getCO2Emissions());
     of.writeAttr("NOx", lane.getNOxEmissions()).writeAttr("PMx", lane.getPMxEmissions()).writeAttr("HC", lane.getHCEmissions());
-    of.writeAttr("noise", lane.getHarmonoise_NoiseEmissions()).writeAttr("fuel", lane.getFuelConsumption()).writeAttr("maxspeed", lane.getSpeedLimit());
+    of.writeAttr("noise", lane.getHarmonoise_NoiseEmissions()).writeAttr("fuel", lane.getFuelConsumption());
+    of.writeAttr("electricity", lane.getElectricityConsumption()).writeAttr("maxspeed", lane.getSpeedLimit());
     of.writeAttr("meanspeed", lane.getMeanSpeed() * 3.6).writeAttr("occupancy", lane.getNettoOccupancy()).writeAttr("vehicle_count", lane.getVehicleNumber());
     of.closeTag();
 }

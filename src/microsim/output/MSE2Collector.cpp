@@ -8,7 +8,7 @@
 /// @author  Robbin Blokpoel
 /// @author  Jakob Erdmann
 /// @date    Mon Feb 03 2014 10:13 CET
-/// @version $Id: MSE2Collector.cpp 19623 2015-12-16 09:30:37Z behrisch $
+/// @version $Id: MSE2Collector.cpp 20284 2016-03-22 21:07:03Z namdre $
 ///
 // An areal (along a single lane) detector
 /****************************************************************************/
@@ -516,7 +516,7 @@ MSE2Collector::getEstimateQueueLength() const {
 
 SUMOReal
 MSE2Collector::getCurrentOccupancy() const {
-    return myCurrentOccupancy * (SUMOReal) 100.;
+    return myCurrentOccupancy;
 }
 
 

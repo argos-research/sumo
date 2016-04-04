@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: OptionsIO.h 18486 2015-06-11 11:10:09Z behrisch $
+/// @version $Id: OptionsIO.h 20321 2016-03-29 14:04:15Z behrisch $
 ///
 // Helper for parsing command line arguments and reading configuration files
 /****************************************************************************/
@@ -83,6 +83,16 @@ public:
      *  the name of the configuration).
      */
     static void loadConfiguration();
+
+
+private:
+    /** @brief Retrieves the XML root element of a supposed configuration or net
+     *
+     * @param[in] filename the XML file to parse
+     * @return the root element if any
+     */
+    static std::string getRoot(const std::string& filename);
+
 
 private:
     static int myArgC;

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILane.cpp 19974 2016-02-12 13:58:46Z namdre $
+/// @version $Id: GUILane.cpp 20291 2016-03-23 10:19:29Z behrisch $
 ///
 // Representation of a lane in the micro simulation (gui-version)
 /****************************************************************************/
@@ -910,6 +910,8 @@ GUILane::getColorValue(size_t activeScheme) const {
             // color by average relative speed
             return getMeanSpeed() / myMaxSpeed;
         }
+        case 27:
+            return getElectricityConsumption() / myLength;
     }
     return 0;
 }
@@ -977,6 +979,8 @@ GUILane::getScaleValue(size_t activeScheme) const {
             // scale by average relative speed
             return getMeanSpeed() / myMaxSpeed;
         }
+        case 21:
+            return getElectricityConsumption() / myLength;
     }
     return 0;
 }

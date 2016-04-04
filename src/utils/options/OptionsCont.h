@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: OptionsCont.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: OptionsCont.h 20324 2016-03-31 12:34:29Z behrisch $
 ///
 // A storage for options (typed value containers)
 /****************************************************************************/
@@ -262,6 +262,14 @@ public:
      * @exception InvalidArgument If none of the synonymes or both synonymes with different options were registered before
      */
     void addSynonyme(const std::string& name1, const std::string& name2, bool isDeprecated = false);
+
+
+    /** @brief Adds an XML root element to handle by default. The special root "" denotes the default handler.
+     *
+     * @param[in] name The option name
+     * @param[in] xmlRoot The name of the xml root element to handle
+     */
+    void addXMLDefault(const std::string& name, const std::string& xmlRoot="");
 
 
     /** @brief Adds a description for an option
@@ -552,6 +560,41 @@ public:
      * @see Option::set(const std::string &)
      */
     bool set(const std::string& name, const std::string& value);
+
+    /** @brief Sets the given value for the named option as new default value
+     *
+     * The option is retrieved from the container, first, what yields in a InvalidArgument
+     *  exception for not known options.
+     *
+     * If the option is not writable (was set before), an error is generated using
+     *  reportDoubleSetting, and false is returned. Otherwise, the option is
+     *  told to set the given value using Option::set. Possible problems herein
+     *  are caught and reported to the error-handler, yielding in returning false.
+     *
+     * If the new value could be set, true is returned.
+     *
+     * @param[in] name The name of the option to set
+     * @param[in] value The value to set
+     * @return Whether the value could be set
+     * @exception InvalidArgument If the option does not exist
+     * @see reportDoubleSetting
+     * @see Option::set(const std::string &)
+     */
+    bool setDefault(const std::string& name, const std::string& value);
+
+    /** @brief Sets the given value for the option which can handle the given XML root
+     *
+     * The option is retrieved from the container, which yields in an InvalidArgument
+     *  exception if no option is registered for the XML root. Then it uses the
+     *  standard set method.
+     *
+     * @param[in] root The name of the XML root element to look for
+     * @param[in] value The value to set
+     * @return Whether the value could be set
+     * @exception InvalidArgument If the root element was not registered or the value could not be set
+     * @see OptionsCont::set(const std::string &, const std::string &)
+     */
+    bool setByRootElement(const std::string& name, const std::string& value);
     /// @}
 
 
@@ -696,6 +739,9 @@ private:
 
     /// A map from subtopic to option
     std::map<std::string, std::vector<std::string> > mySubTopicEntries;
+
+    /// A map from XML root element to option
+    std::map<std::string, std::string> myXMLDefaults;
 
     /// A map from deprecated options to a bool indicating whether we warned about deprecation
     mutable std::map<std::string, bool> myDeprecatedSynonymes;

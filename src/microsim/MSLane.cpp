@@ -9,7 +9,7 @@
 /// @author  Christoph Sommer
 /// @author  Mario Krumnow
 /// @date    Mon, 05 Mar 2001
-/// @version $Id: MSLane.cpp 20089 2016-02-26 09:20:59Z namdre $
+/// @version $Id: MSLane.cpp 20279 2016-03-22 13:55:22Z behrisch $
 ///
 // Representation of a lane in the micro simulation
 /****************************************************************************/
@@ -1522,6 +1522,18 @@ MSLane::getFuelConsumption() const {
     const MSLane::VehCont& vehs = getVehiclesSecure();
     for (MSLane::VehCont::const_iterator i = vehs.begin(); i != vehs.end(); ++i) {
         ret += (*i)->getFuelConsumption();
+    }
+    releaseVehicles();
+    return ret;
+}
+
+
+SUMOReal
+MSLane::getElectricityConsumption() const {
+    SUMOReal ret = 0;
+    const MSLane::VehCont& vehs = getVehiclesSecure();
+    for (MSLane::VehCont::const_iterator i = vehs.begin(); i != vehs.end(); ++i) {
+        ret += (*i)->getElectricityConsumption();
     }
     releaseVehicles();
     return ret;

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: OptionsParser.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: OptionsParser.cpp 20321 2016-03-29 14:04:15Z behrisch $
 ///
 // Parses the command line arguments
 /****************************************************************************/
@@ -49,11 +49,6 @@
 bool
 OptionsParser::parse(int argc, char** argv) {
     bool ok = true;
-    if (argc == 2 && argv[1][0] != '-') {
-        // special case only one parameter is handled like config
-        check("-c", argv[1], ok);
-        return ok;
-    }
     for (int i = 1; i < argc;) {
         try {
             int add;

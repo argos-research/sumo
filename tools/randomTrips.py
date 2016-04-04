@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2010-03-06
-@version $Id: randomTrips.py 20166 2016-03-09 09:47:46Z behrisch $
+@version $Id: randomTrips.py 20293 2016-03-23 11:29:51Z behrisch $
 
 Generates random trips for the given network.
 
@@ -309,13 +309,8 @@ def main(options):
         return idx + 1
 
     with open(options.tripfile, 'w') as fouttrips:
-        fouttrips.write("""<?xml version="1.0"?>
-<!-- generated on %s by $Id: randomTrips.py 20166 2016-03-09 09:47:46Z behrisch $
-  options: %s
--->
-<trips>
-""" % (datetime.datetime.now(),
-            (' '.join(sys.argv[1:]).replace('--', '<doubleminus>'))))
+        sumolib.writeXMLHeader(fouttrips, "$Id: randomTrips.py 20293 2016-03-23 11:29:51Z behrisch $")
+        fouttrips.write("<trips>\n")
         if options.vehicle_class:
             fouttrips.write('    <vType id="%s" vClass="%s" />\n' %
                             (options.vehicle_class, options.vehicle_class))

@@ -12,7 +12,7 @@
 /// @author  Axel Wegener
 /// @author  Christoph Sommer
 /// @date    Mon, 05 Mar 2001
-/// @version $Id: MSVehicle.cpp 20205 2016-03-16 08:50:17Z namdre $
+/// @version $Id: MSVehicle.cpp 20313 2016-03-28 22:17:48Z luecken $
 ///
 // Representation of a vehicle in the micro simulation
 /****************************************************************************/
@@ -95,6 +95,7 @@
 // static value definitions
 // ===========================================================================
 std::vector<MSLane*> MSVehicle::myEmptyLaneVector;
+std::vector<MSTransportable*> MSVehicle::myEmptyTransportableVector;
 
 
 // ===========================================================================
@@ -132,6 +133,75 @@ MSVehicle::State::pos() const {
 
 MSVehicle::State::State(SUMOReal pos, SUMOReal speed) :
     myPos(pos), mySpeed(speed) {}
+
+
+
+/* -------------------------------------------------------------------------
+ * methods of MSVehicle::WaitingTimeCollector
+ * ----------------------------------------------------------------------- */
+
+MSVehicle::WaitingTimeCollector::WaitingTimeCollector(SUMOTime memory) : myMemorySize(memory){}
+
+MSVehicle::WaitingTimeCollector::WaitingTimeCollector(const WaitingTimeCollector& wt) : myMemorySize(wt.getMemorySize()), myWaitingIntervals(wt.getWaitingIntervals()) {}
+
+MSVehicle::WaitingTimeCollector&
+MSVehicle::WaitingTimeCollector::operator=(const WaitingTimeCollector& wt){
+	myMemorySize = wt.getMemorySize();
+	myWaitingIntervals = wt.getWaitingIntervals();
+	return *this;
+}
+
+MSVehicle::WaitingTimeCollector&
+MSVehicle::WaitingTimeCollector::operator=(SUMOTime t){
+	myWaitingIntervals.clear();
+	passTime(t,true);
+	return *this;
+}
+
+SUMOTime
+MSVehicle::WaitingTimeCollector::cumulatedWaitingTime(SUMOTime memorySpan) const{
+	assert(memorySpan <= myMemorySize);
+	if(memorySpan == -1) memorySpan = myMemorySize;
+	SUMOTime totalWaitingTime = 0;
+	for(waitingIntervalList::const_iterator i = myWaitingIntervals.begin(); i!=myWaitingIntervals.end(); i++){
+		if(i->second >= memorySpan){
+			if(i->first >= memorySpan) break;
+			else totalWaitingTime += memorySpan - i->first;
+		} else {
+			totalWaitingTime += i->second - i->first;
+		}
+	}
+	return totalWaitingTime;
+}
+
+void
+MSVehicle::WaitingTimeCollector::passTime(SUMOTime dt, bool waiting){
+	waitingIntervalList::iterator i = myWaitingIntervals.begin();
+	waitingIntervalList::iterator end = myWaitingIntervals.end();
+	bool startNewInterval = i==end || (i->first != 0);
+	while(i!=end){
+		i->first += dt;
+		if(i->first >= myMemorySize) break;
+		i->second += dt; i++;
+	}
+
+	// remove intervals beyond memorySize
+	waitingIntervalList::iterator::difference_type d = std::distance(i,end);
+	while(d > 0) {
+		myWaitingIntervals.pop_back();
+		d--;
+	}
+
+	if(!waiting) return;
+	else if(!startNewInterval)
+		myWaitingIntervals.begin()->first = 0;
+	else
+		myWaitingIntervals.push_front(std::make_pair(0,dt));
+	return;
+}
+
+
+
 
 
 /* -------------------------------------------------------------------------
@@ -425,6 +495,7 @@ MSVehicle::MSVehicle(SUMOVehicleParameter* pars, const MSRoute* route,
                      const MSVehicleType* type, const SUMOReal speedFactor) :
     MSBaseVehicle(pars, route, type, speedFactor),
     myWaitingTime(0),
+    myWaitingTimeCollector(),
     myState(0, 0), //
     myLane(0),
     myLastBestLanesEdge(0),
@@ -1437,11 +1508,14 @@ MSVehicle::executeMove() {
 #endif
     // visit waiting time
     if (vNext <= SUMO_const_haltingSpeed) {
-        myWaitingTime += DELTA_T;
+    	 myWaitingTime += DELTA_T;
+        myWaitingTimeCollector.passTime(DELTA_T, true);
         brakelightsOn = true;
     } else {
-        myWaitingTime = 0;
+    	 myWaitingTime = 0;
+        myWaitingTimeCollector.passTime(DELTA_T, false);
     }
+
     if (brakelightsOn) {
         switchOnSignal(VEH_SIGNAL_BRAKELIGHT);
     } else {
@@ -1859,10 +1933,10 @@ MSVehicle::enterLaneAtLaneChange(MSLane* enteredLane) {
 
 void
 MSVehicle::enterLaneAtInsertion(MSLane* enteredLane, SUMOReal pos, SUMOReal speed, MSMoveReminder::Notification notification) {
+    myState = State(pos, speed);
     if (myDeparture == NOT_YET_DEPARTED) {
         onDepart();
     }
-    myState = State(pos, speed);
     myCachedPosition = Position::INVALID;
     assert(myState.myPos >= 0);
     assert(myState.mySpeed >= 0);
@@ -2392,6 +2466,12 @@ MSVehicle::getFuelConsumption() const {
 
 
 SUMOReal
+MSVehicle::getElectricityConsumption() const {
+    return PollutantsInterface::compute(myType->getEmissionClass(), PollutantsInterface::ELEC, myState.speed(), myAcceleration, getSlope());
+}
+
+
+SUMOReal
 MSVehicle::getHarmonoise_NoiseEmissions() const {
     return HelpersHarmonoise::computeNoise(myType->getEmissionClass(), myState.speed(), myAcceleration);
 }
@@ -2436,6 +2516,36 @@ MSVehicle::addContainer(MSTransportable* container) {
             myStops.front().duration = 0;
         }
     }
+}
+
+
+std::vector<MSTransportable*>
+MSVehicle::getSortedPersons() const {
+    if (myPersonDevice == 0) {
+        return myEmptyTransportableVector;
+    } else {
+        std::vector<MSTransportable*> result = myPersonDevice->getPersons();
+        sort(result.begin(), result.end(), transportable_by_id_sorter());
+        return result;
+    }
+}
+
+
+std::vector<MSTransportable*>
+MSVehicle::getSortedContainers() const {
+    if (myContainerDevice == 0) {
+        return myEmptyTransportableVector;
+    } else {
+        std::vector<MSTransportable*> result = myContainerDevice->getContainers();
+        sort(result.begin(), result.end(), transportable_by_id_sorter());
+        return result;
+    }
+}
+
+
+int
+MSVehicle::transportable_by_id_sorter::operator()(const MSTransportable* const c1, const MSTransportable* const c2) const {
+    return c1->getID() < c2->getID();
 }
 
 

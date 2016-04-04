@@ -3,7 +3,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 13 Jan 2014
-/// @version $Id: MSPModel_Striping.cpp 19988 2016-02-16 15:18:30Z namdre $
+/// @version $Id: MSPModel_Striping.cpp 20304 2016-03-24 14:21:50Z namdre $
 ///
 // The pedestrian following model (prototype)
 /****************************************************************************/
@@ -955,6 +955,9 @@ MSPModel_Striping::PState::moveToNextLane(SUMOTime currentTime) {
                       << " oldDir=" << oldDir
                       << " newDir=" << myDir
                       << "\n";
+        }
+        if (myLane == 0) {
+            myRelX = myStage->getArrivalPos();
         }
         myStage->moveToNextEdge(myPerson, currentTime, normalLane ? 0 : &myLane->getEdge());
         if (myLane != 0) {

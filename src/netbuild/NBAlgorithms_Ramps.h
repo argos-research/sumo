@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    29. March 2012
-/// @version $Id: NBAlgorithms_Ramps.h 18875 2015-09-19 22:50:53Z namdre $
+/// @version $Id: NBAlgorithms_Ramps.h 20266 2016-03-21 07:55:25Z namdre $
 ///
 // Algorithms for highway on-/off-ramps computation
 /****************************************************************************/
@@ -96,7 +96,7 @@ private:
      * @param[in] dontSplit Whether no edges shall be split
      * @param[in, filled] incremented The list of edges which lane number was already incremented
      */
-    static void buildOnRamp(NBNode* cur, NBNodeCont& nc, NBEdgeCont& ec, NBDistrictCont& dc, SUMOReal rampLength, bool dontSplit, std::set<NBEdge*>& incremented);
+    static void buildOnRamp(NBNode* cur, NBNodeCont& nc, NBEdgeCont& ec, NBDistrictCont& dc, SUMOReal rampLength, bool dontSplit);
 
 
     /** @brief Builds an off-ramp ending at the given node
@@ -108,7 +108,7 @@ private:
      * @param[in] dontSplit Whether no edges shall be split
      * @param[in, filled] incremented The list of edges which lane number was already incremented
      */
-    static void buildOffRamp(NBNode* cur, NBNodeCont& nc, NBEdgeCont& ec, NBDistrictCont& dc, SUMOReal rampLength, bool dontSplit, std::set<NBEdge*>& incremented);
+    static void buildOffRamp(NBNode* cur, NBNodeCont& nc, NBEdgeCont& ec, NBDistrictCont& dc, SUMOReal rampLength, bool dontSplit);
 
 
     static void getOnRampEdges(NBNode* n, NBEdge** potHighway, NBEdge** potRamp, NBEdge** other);

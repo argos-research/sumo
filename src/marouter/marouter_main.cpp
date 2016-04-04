@@ -5,7 +5,7 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    Thu, 06 Jun 2002
-/// @version $Id: marouter_main.cpp 20095 2016-02-26 14:07:14Z behrisch $
+/// @version $Id: marouter_main.cpp 20291 2016-03-23 10:19:29Z behrisch $
 ///
 // Main for MAROUTER
 /****************************************************************************/
@@ -252,6 +252,8 @@ computeRoutes(RONet& net, OptionsCont& oc, ODMatrix& matrix) {
             op = &ROEdge::getEmissionEffort<PollutantsInterface::NO_X>;
         } else if (measure == "fuel") {
             op = &ROEdge::getEmissionEffort<PollutantsInterface::FUEL>;
+        } else if (measure == "electricity") {
+            op = &ROEdge::getEmissionEffort<PollutantsInterface::ELEC>;
         } else if (measure == "noise") {
             op = &ROEdge::getNoiseEffort;
         } else {

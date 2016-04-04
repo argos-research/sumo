@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NWFrame.cpp 20007 2016-02-17 15:33:19Z namdre $
+/// @version $Id: NWFrame.cpp 20324 2016-03-31 12:34:29Z behrisch $
 ///
 // Sets and checks options for netwrite
 /****************************************************************************/
@@ -118,7 +118,11 @@ NWFrame::checkOptions() {
             && !oc.isSet("matsim-output")
             && !oc.isSet("opendrive-output")
             && !oc.isSet("dlr-navteq-output")) {
-        oc.set("output-file", "net.net.xml");
+        std::string net = "net.net.xml";
+        if (oc.isSet("configuration-file")) {
+            net = FileHelpers::getConfigurationRelative(oc.getString("configuration-file"), net);
+        }
+        oc.setDefault("output-file", net);
     }
     // some outputs need internal lanes
     if (oc.isSet("opendrive-output") && oc.getBool("no-internal-links")) {

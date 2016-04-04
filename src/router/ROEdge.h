@@ -7,7 +7,7 @@
 /// @author  Melanie Knocke
 /// @author  Yun-Pang Floetteroed
 /// @date    Sept 2002
-/// @version $Id: ROEdge.h 19003 2015-10-02 14:41:41Z behrisch $
+/// @version $Id: ROEdge.h 20291 2016-03-23 10:19:29Z behrisch $
 ///
 // A basic edge for routing applications
 /****************************************************************************/
@@ -166,7 +166,7 @@ public:
      *
      * Should be called after weights / travel times have been loaded.
      *
-     * In the case "weight-attribute" is one of "CO", "CO2", "HC", "NOx", "PMx", or "fuel"
+     * In the case "weight-attribute" is one of "CO", "CO2", "HC", "NOx", "PMx", "fuel", or "electricity"
      *  the proper value (departs/s) is computed and multiplied with the travel time.
      *
      * @param[in] measure The name of the measure to use.

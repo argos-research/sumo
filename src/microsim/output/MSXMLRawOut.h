@@ -6,7 +6,7 @@
 /// @author  Bjoern Hendriks
 /// @author  Michael Behrisch
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSXMLRawOut.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MSXMLRawOut.h 20270 2016-03-22 07:35:23Z namdre $
 ///
 // Realises dumping the complete network state
 /****************************************************************************/
@@ -110,6 +110,8 @@ private:
      */
     static void writeLane(OutputDevice& of, const MSLane& lane);
 
+    /// @brief write transportable
+    static void writeTransportable(OutputDevice& of, const MSTransportable* p, SumoXMLTag tag);
 
 private:
     /// @brief Invalidated copy constructor.

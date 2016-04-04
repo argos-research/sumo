@@ -8,7 +8,7 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSFrame.cpp 20252 2016-03-18 09:33:46Z namdre $
+/// @version $Id: MSFrame.cpp 20321 2016-03-29 14:04:15Z behrisch $
 ///
 // Sets and checks options for microsim; inits global outputs and settings
 /****************************************************************************/
@@ -87,6 +87,7 @@ MSFrame::fillOptions() {
     oc.doRegister("net-file", 'n', new Option_FileName());
     oc.addSynonyme("net-file", "net");
     oc.addDescription("net-file", "Input", "Load road network description from FILE");
+    oc.addXMLDefault("net-file", "net");
 
     oc.doRegister("route-files", 'r', new Option_FileName());
     oc.addSynonyme("route-files", "routes");
@@ -251,8 +252,12 @@ MSFrame::fillOptions() {
 
     oc.doRegister("time-to-teleport", new Option_String("300", "TIME"));
     oc.addDescription("time-to-teleport", "Processing", "Specify how long a vehicle may wait until being teleported, defaults to 300, non-positive values disable teleporting");
+
     oc.doRegister("time-to-teleport.highways", new Option_String("0", "TIME"));
     oc.addDescription("time-to-teleport.highways", "Processing", "The waiting time after which vehicles on a fast road (speed > 69m/s) are teleported if they are on a non-continuing lane");
+
+    oc.doRegister("waiting-time-memory", new Option_String("100", "TIME"));
+    oc.addDescription("waiting-time-memory", "Processing", "Length of time interval, over which accumulated waiting time is taken into account");
 
     oc.doRegister("max-depart-delay", new Option_String("-1", "TIME"));
     oc.addDescription("max-depart-delay", "Processing", "How long vehicles wait for departure before being skipped, defaults to -1 which means vehicles are never skipped");
@@ -500,7 +505,9 @@ MSFrame::setMSGlobals(OptionsCont& oc) {
     if (MSGlobals::gUseMesoSim) {
         MSGlobals::gUsingInternalLanes = false;
     }
+    MSGlobals::gWaitingTimeMemory = string2time(oc.getString("waiting-time-memory"));
     MSAbstractLaneChangeModel::initGlobalOptions(oc);
+
 
     DELTA_T = string2time(oc.getString("step-length"));
 #ifdef _DEBUG

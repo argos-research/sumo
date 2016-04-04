@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Sept 2002
-/// @version $Id: PositionVector.cpp 19780 2016-01-22 08:22:40Z namdre $
+/// @version $Id: PositionVector.cpp 20287 2016-03-23 08:10:36Z namdre $
 ///
 // A list of positions
 /****************************************************************************/
@@ -323,11 +323,13 @@ Position
 PositionVector::getPolygonCenter() const {
     SUMOReal x = 0;
     SUMOReal y = 0;
+    SUMOReal z = 0;
     for (const_iterator i = begin(); i != end(); i++) {
         x += (*i).x();
         y += (*i).y();
+        z += (*i).z();
     }
-    return Position(x / (SUMOReal) size(), y / (SUMOReal) size());
+    return Position(x / (SUMOReal) size(), y / (SUMOReal) size(), z / (SUMOReal)size());
 }
 
 

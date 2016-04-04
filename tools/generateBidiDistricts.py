@@ -3,7 +3,7 @@
 @file    generateBidiDistricts.py
 @author  Jakob Erdmann
 @date    2015-07-31
-@version $Id: generateBidiDistricts.py 20126 2016-03-02 13:58:03Z namdre $
+@version $Id: generateBidiDistricts.py 20293 2016-03-23 11:29:51Z behrisch $
 
 Generate a taz (district) file which groups edges in opposite directions
 belonging to the same road. For each edge, a taz is created which contains this edge
@@ -24,10 +24,10 @@ the Free Software Foundation; either version 3 of the License, or
 from __future__ import absolute_import
 import sys
 import os
+import datetime
 from optparse import OptionParser
 
-from sumolib.net import readNet
-from sumolib import geomhelper
+import sumolib
 from functools import reduce
 
 
@@ -52,7 +52,7 @@ def parse_args():
 
 def getCandidates(edge, net, radius):
     candidates = []
-    r = min(radius, geomhelper.polyLength(edge.getShape()) / 2)
+    r = min(radius, sumolib.geomhelper.polyLength(edge.getShape()) / 2)
     for x, y in edge.getShape():
         nearby = set()
         for edge2, dist in net.getNeighboringEdges(x, y, r):
@@ -100,8 +100,9 @@ def computeAllBidiTaz(net, radius, useTravelDist, symmetrical):
 
 
 def main(netFile, outFile, radius, useTravelDist, symmetrical):
-    net = readNet(netFile, withConnections=False, withFoes=False)
+    net = sumolib.net.readNet(netFile, withConnections=False, withFoes=False)
     with open(outFile, 'w') as outf:
+        sumolib.writeXMLHeader(outf, "$Id: generateBidiDistricts.py 20293 2016-03-23 11:29:51Z behrisch $")
         outf.write('<tazs>\n')
         for taz, edges in computeAllBidiTaz(net, radius, useTravelDist, symmetrical):
             outf.write('    <taz id="%s" edges="%s"/>\n' % (

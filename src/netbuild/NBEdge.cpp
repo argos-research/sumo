@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdge.cpp 20250 2016-03-18 08:32:48Z namdre $
+/// @version $Id: NBEdge.cpp 20298 2016-03-24 08:57:26Z namdre $
 ///
 // Methods for the representation of a single edge
 /****************************************************************************/
@@ -2532,8 +2532,12 @@ NBEdge::shiftPositionAtNode(NBNode* node, NBEdge* other) {
             PositionVector tmp = myGeom;
             // @note this doesn't work well for vissim networks
             //tmp.move2side(MIN2(neededOffset - dist, neededOffset2 - dist2));
-            tmp.move2side(neededOffset - dist);
-            myGeom[i] = tmp[i];
+            try {
+                tmp.move2side(neededOffset - dist);
+                myGeom[i] = tmp[i];
+            } catch (InvalidArgument&) {
+                WRITE_WARNING("Could not avoid overlapping shape at node '" + node->getID() + "' for edge '" + getID() + "'");
+            }
         }
     }
 }

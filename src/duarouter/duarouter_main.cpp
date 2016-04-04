@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Thu, 06 Jun 2002
-/// @version $Id: duarouter_main.cpp 19987 2016-02-16 10:05:54Z behrisch $
+/// @version $Id: duarouter_main.cpp 20279 2016-03-22 13:55:22Z behrisch $
 ///
 // Main for DUAROUTER
 /****************************************************************************/
@@ -169,6 +169,8 @@ computeRoutes(RONet& net, ROLoader& loader, OptionsCont& oc) {
             op = &ROEdge::getEmissionEffort<PollutantsInterface::NO_X>;
         } else if (measure == "fuel") {
             op = &ROEdge::getEmissionEffort<PollutantsInterface::FUEL>;
+        } else if (measure == "electricity") {
+            op = &ROEdge::getEmissionEffort<PollutantsInterface::ELEC>;
         } else if (measure == "noise") {
             op = &ROEdge::getNoiseEffort;
         } else {

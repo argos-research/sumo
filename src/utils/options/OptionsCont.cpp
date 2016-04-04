@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: OptionsCont.cpp 19857 2016-01-31 21:58:22Z behrisch $
+/// @version $Id: OptionsCont.cpp 20324 2016-03-31 12:34:29Z behrisch $
 ///
 // A storage for options (typed value containers)
 /****************************************************************************/
@@ -128,6 +128,12 @@ OptionsCont::addSynonyme(const std::string& name1, const std::string& name2, boo
             myDeprecatedSynonymes[name2] = false;
         }
     }
+}
+
+
+void
+OptionsCont::addXMLDefault(const std::string& name, const std::string& xmlRoot) {
+    myXMLDefaults[xmlRoot] = name;
 }
 
 
@@ -257,6 +263,28 @@ OptionsCont::set(const std::string& name, const std::string& value) {
 }
 
 
+bool
+OptionsCont::setDefault(const std::string& name, const std::string& value) {
+    if (set(name, value)) {
+        getSecure(name)->resetDefault();
+        return true;
+    }
+    return false;
+}
+
+
+bool
+OptionsCont::setByRootElement(const std::string& root, const std::string& value) {
+    if (myXMLDefaults.count(root) > 0) {
+        return set(myXMLDefaults[root], value);
+    }
+    if (myXMLDefaults.count("") > 0) {
+        return set(myXMLDefaults[""], value);
+    }
+    return false;
+}
+
+
 std::vector<std::string>
 OptionsCont::getSynonymes(const std::string& name) const {
     Option* o = getSecure(name);
@@ -321,7 +349,11 @@ OptionsCont::relocateFiles(const std::string& configuration) const {
                 conv += StringUtils::urlDecode(tmp);
             }
             if (conv != (*i)->getString()) {
+                const bool hadDefault = (*i)->isDefault();
                 (*i)->set(conv);
+                if (hadDefault) {
+                    (*i)->resetDefault();
+                }
             }
         }
     }

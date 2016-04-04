@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLBuilder.cpp 19998 2016-02-17 11:45:55Z behrisch $
+/// @version $Id: NLBuilder.cpp 20291 2016-03-23 10:19:29Z behrisch $
 ///
 // The main interface for loading a microsim
 /****************************************************************************/
@@ -163,7 +163,7 @@ NLBuilder::build() {
         EdgeFloatTimeLineRetriever_EdgeEffort eRetriever(myNet);
         std::string measure = myOptions.getString("weight-attribute");
         if (!myOptions.isDefault("weight-attribute")) {
-            if (measure == "CO" || measure == "CO2" || measure == "HC" || measure == "PMx" || measure == "NOx" || measure == "fuel") {
+            if (measure == "CO" || measure == "CO2" || measure == "HC" || measure == "PMx" || measure == "NOx" || measure == "fuel" || measure == "electricity") {
                 measure += "_perVeh";
             }
             retrieverDefs.push_back(new SAXWeightsHandler::ToRetrieveDefinition(measure, true, eRetriever));

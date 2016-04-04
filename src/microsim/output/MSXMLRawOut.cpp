@@ -6,7 +6,7 @@
 /// @author  Bjoern Hendriks
 /// @author  Michael Behrisch
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSXMLRawOut.cpp 19791 2016-01-25 14:59:17Z namdre $
+/// @version $Id: MSXMLRawOut.cpp 20272 2016-03-22 08:07:46Z namdre $
 ///
 // Realises dumping the complete network state
 /****************************************************************************/
@@ -114,21 +114,11 @@ MSXMLRawOut::writeEdge(OutputDevice& of, const MSEdge& edge, SUMOTime timestep) 
         }
         // write persons
         for (std::vector<MSTransportable*>::const_iterator it_p = persons.begin(); it_p != persons.end(); ++it_p) {
-            of.openTag(SUMO_TAG_PERSON);
-            of.writeAttr(SUMO_ATTR_ID, (*it_p)->getID());
-            of.writeAttr(SUMO_ATTR_POSITION, (*it_p)->getEdgePos());
-            of.writeAttr(SUMO_ATTR_ANGLE, GeomHelper::naviDegree((*it_p)->getAngle()));
-            of.writeAttr("stage", (*it_p)->getCurrentStageDescription());
-            of.closeTag();
+            writeTransportable(of, *it_p, SUMO_TAG_PERSON);
         }
         // write containers
         for (std::vector<MSTransportable*>::const_iterator it_c = containers.begin(); it_c != containers.end(); ++it_c) {
-            of.openTag(SUMO_TAG_CONTAINER);
-            of.writeAttr(SUMO_ATTR_ID, (*it_c)->getID());
-            of.writeAttr(SUMO_ATTR_POSITION, (*it_c)->getEdgePos());
-            of.writeAttr(SUMO_ATTR_ANGLE, GeomHelper::naviDegree((*it_c)->getAngle()));
-            of.writeAttr("stage", (*it_c)->getCurrentStageDescription());
-            of.closeTag();
+            writeTransportable(of, *it_c, SUMO_TAG_CONTAINER);
         }
         of.closeTag();
     }
@@ -160,19 +150,38 @@ MSXMLRawOut::writeVehicle(OutputDevice& of, const MSBaseVehicle& veh) {
         of.writeAttr(SUMO_ATTR_POSITION, veh.getPositionOnLane());
         of.writeAttr(SUMO_ATTR_SPEED, veh.getSpeed());
         if (!MSGlobals::gUseMesoSim) {
+            const MSVehicle& microVeh = static_cast<const MSVehicle&>(veh);
             // microsim-specific stuff
-            const unsigned int personNumber = static_cast<const MSVehicle&>(veh).getPersonNumber();
+            const unsigned int personNumber = microVeh.getPersonNumber();
             if (personNumber > 0) {
                 of.writeAttr(SUMO_ATTR_PERSON_NUMBER, personNumber);
             }
-            const unsigned int containerNumber = static_cast<const MSVehicle&>(veh).getContainerNumber();
+            const unsigned int containerNumber = microVeh.getContainerNumber();
             if (containerNumber > 0) {
                 of.writeAttr(SUMO_ATTR_CONTAINER_NUMBER, containerNumber);
+            }
+            const std::vector<MSTransportable*>& persons = microVeh.getSortedPersons();
+            for (std::vector<MSTransportable*>::const_iterator it_p = persons.begin(); it_p != persons.end(); ++it_p) {
+                writeTransportable(of, *it_p, SUMO_TAG_PERSON);
+            }
+            const std::vector<MSTransportable*>& containers = microVeh.getSortedContainers();
+            for (std::vector<MSTransportable*>::const_iterator it_c = containers.begin(); it_c != containers.end(); ++it_c) {
+                writeTransportable(of, *it_c, SUMO_TAG_CONTAINER);
             }
         }
         of.closeTag();
     }
 }
 
+
+void 
+MSXMLRawOut::writeTransportable(OutputDevice& of, const MSTransportable* p, SumoXMLTag tag) {
+    of.openTag(tag);
+    of.writeAttr(SUMO_ATTR_ID, p->getID());
+    of.writeAttr(SUMO_ATTR_POSITION, p->getEdgePos());
+    of.writeAttr(SUMO_ATTR_ANGLE, GeomHelper::naviDegree(p->getAngle()));
+    of.writeAttr("stage", p->getCurrentStageDescription());
+    of.closeTag();
+}
 
 /****************************************************************************/

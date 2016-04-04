@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVehicle.cpp 20077 2016-02-25 12:13:45Z namdre $
+/// @version $Id: GUIVehicle.cpp 20308 2016-03-27 19:20:25Z luecken $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -120,6 +120,8 @@ GUIVehicle::getParameterWindow(GUIMainWindow& app,
                 new FunctionBinding<GUIVehicle, SUMOReal>(this, &MSVehicle::getTimeGap));
     ret->mkItem("waiting time [s]", true,
                 new FunctionBinding<GUIVehicle, SUMOReal>(this, &MSVehicle::getWaitingSeconds));
+    ret->mkItem("waiting time (accumulated) [s]", true,
+                new FunctionBinding<GUIVehicle, SUMOReal>(this, &MSVehicle::getAccumulatedWaitingSeconds));
     ret->mkItem("impatience", true,
                 new FunctionBinding<GUIVehicle, SUMOReal>(this, &MSVehicle::getImpatience));
     ret->mkItem("last lane change [s]", true,
@@ -149,6 +151,8 @@ GUIVehicle::getParameterWindow(GUIMainWindow& app,
                 new FunctionBinding<GUIVehicle, SUMOReal>(this, &MSVehicle::getPMxEmissions));
     ret->mkItem("fuel [ml/s]", true,
                 new FunctionBinding<GUIVehicle, SUMOReal>(this, &MSVehicle::getFuelConsumption));
+    ret->mkItem("electricity [kWh/s]", true,
+                new FunctionBinding<GUIVehicle, SUMOReal>(this, &MSVehicle::getElectricityConsumption));
     ret->mkItem("noise (Harmonoise) [dB]", true,
                 new FunctionBinding<GUIVehicle, SUMOReal>(this, &MSVehicle::getHarmonoise_NoiseEmissions));
     std::ostringstream str;
@@ -336,38 +340,42 @@ GUIVehicle::getColorValue(size_t activeScheme) const {
         case 9:
             return getWaitingSeconds();
         case 10:
-            return getLastLaneChangeOffset();
+            return 100*getAccumulatedWaitingSeconds()/STEPS2TIME(MSGlobals::gWaitingTimeMemory);
         case 11:
-            return getLane()->getVehicleMaxSpeed(this);
+            return getLastLaneChangeOffset();
         case 12:
-            return getCO2Emissions();
+            return getLane()->getVehicleMaxSpeed(this);
         case 13:
-            return getCOEmissions();
+            return getCO2Emissions();
         case 14:
-            return getPMxEmissions();
+            return getCOEmissions();
         case 15:
-            return getNOxEmissions();
+            return getPMxEmissions();
         case 16:
-            return getHCEmissions();
+            return getNOxEmissions();
         case 17:
-            return getFuelConsumption();
+            return getHCEmissions();
         case 18:
+            return getFuelConsumption();
+        case 19:
             return getHarmonoise_NoiseEmissions();
-        case 19: // !!! unused!?
+        case 20: // !!! unused!?
             if (getNumberReroutes() == 0) {
                 return -1;
             }
             return getNumberReroutes();
-        case 20:
-            return gSelected.isSelected(GLO_VEHICLE, getGlID());
         case 21:
-            return getBestLaneOffset();
+            return gSelected.isSelected(GLO_VEHICLE, getGlID());
         case 22:
-            return getAcceleration();
+            return getBestLaneOffset();
         case 23:
-            return getTimeGap();
+            return getAcceleration();
         case 24:
+            return getTimeGap();
+        case 25:
             return STEPS2TIME(getDepartDelay());
+        case 27:
+            return getElectricityConsumption();
     }
     return 0;
 }
