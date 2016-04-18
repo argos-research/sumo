@@ -2,12 +2,12 @@
 /// @file    MSTransportable.h
 /// @author  Michael Behrisch
 /// @date    Tue, 21 Apr 2015
-/// @version $Id: MSTransportable.h 19388 2015-11-19 21:33:01Z behrisch $
+/// @version $Id: MSTransportable.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The common superclass for modelling transportable objects like persons and containers
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

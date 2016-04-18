@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: MSActuatedTrafficLightLogic.cpp 19506 2015-12-03 12:44:22Z behrisch $
+/// @version $Id: MSActuatedTrafficLightLogic.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // An actuated (adaptive) traffic light logic
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

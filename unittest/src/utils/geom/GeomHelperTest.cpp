@@ -4,12 +4,12 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    2011-12-12
-/// @version $Id: GeomHelperTest.cpp 19222 2015-10-29 20:48:55Z behrisch $
+/// @version $Id: GeomHelperTest.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Tests the class GeomHelper
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

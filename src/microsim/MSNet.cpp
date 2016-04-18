@@ -10,12 +10,12 @@
 /// @author  Mario Krumnow
 /// @author  Christoph Sommer
 /// @date    Tue, 06 Mar 2001
-/// @version $Id: MSNet.cpp 19890 2016-02-04 09:40:40Z behrisch $
+/// @version $Id: MSNet.cpp 20447 2016-04-14 13:02:24Z luecken $
 ///
 // The simulated network and simulation perfomer
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -70,6 +70,7 @@
 #include <microsim/devices/MSDevice_Routing.h>
 #include <microsim/devices/MSDevice_Vehroutes.h>
 #include <microsim/devices/MSDevice_Tripinfo.h>
+#include <microsim/devices/MSDevice_BTsender.h>
 #include "traffic_lights/MSTrafficLightLogic.h"
 #include <utils/shapes/Polygon.h>
 #include <utils/shapes/ShapeContainer.h>
@@ -276,6 +277,7 @@ MSNet::~MSNet() {
     if (MSGlobals::gUseMesoSim) {
         delete MSGlobals::gMesoNet;
     }
+//    delete myPedestrianRouter;
     myInstance = 0;
 }
 
@@ -572,7 +574,7 @@ MSNet::clearAll() {
     MSCalibrator::cleanup();
     MSPModel::cleanup();
     MSCModel_NonInteracting::cleanup();
-    PedestrianEdge<MSEdge, MSLane, MSJunction>::cleanup();
+    MSDevice_BTsender::cleanup();
 }
 
 
@@ -848,13 +850,13 @@ MSNet::getRouterTT(const MSEdgeVector& prohibited) const {
         const std::string routingAlgorithm = OptionsCont::getOptions().getString("routing-algorithm");
         if (routingAlgorithm == "dijkstra") {
             myRouterTTDijkstra = new DijkstraRouterTT<MSEdge, SUMOVehicle, prohibited_withPermissions<MSEdge, SUMOVehicle> >(
-                MSEdge::numericalDictSize(), true, &MSNet::getTravelTime);
+                MSEdge::getAllEdges(), true, &MSNet::getTravelTime);
         } else {
             if (routingAlgorithm != "astar") {
                 WRITE_WARNING("TraCI and Triggers cannot use routing algorithm '" + routingAlgorithm + "'. using 'astar' instead.");
             }
             myRouterTTAStar = new AStarRouter<MSEdge, SUMOVehicle, prohibited_withPermissions<MSEdge, SUMOVehicle> >(
-                MSEdge::numericalDictSize(), true, &MSNet::getTravelTime);
+                MSEdge::getAllEdges(), true, &MSNet::getTravelTime);
         }
     }
     if (myRouterTTDijkstra != 0) {
@@ -872,7 +874,7 @@ SUMOAbstractRouter<MSEdge, SUMOVehicle>&
 MSNet::getRouterEffort(const MSEdgeVector& prohibited) const {
     if (myRouterEffort == 0) {
         myRouterEffort = new DijkstraRouterEffort<MSEdge, SUMOVehicle, prohibited_withPermissions<MSEdge, SUMOVehicle> >(
-            MSEdge::numericalDictSize(), true, &MSNet::getEffort, &MSNet::getTravelTime);
+            MSEdge::getAllEdges(), true, &MSNet::getEffort, &MSNet::getTravelTime);
     }
     myRouterEffort->prohibit(prohibited);
     return *myRouterEffort;

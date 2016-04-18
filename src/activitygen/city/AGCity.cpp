@@ -6,13 +6,13 @@
 /// @author  Walter Bamberger
 /// @author  Jakob Erdmann
 /// @date    July 2010
-/// @version $Id: AGCity.cpp 18467 2015-05-29 03:50:41Z behrisch $
+/// @version $Id: AGCity.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // City class that contains all other objects of the city: in particular
 // streets, households, bus lines, work positions and school
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2010-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2010-2016 DLR (http://www.dlr.de/) and contributors
 // activitygen module
 // Copyright 2010 TUM (Technische Universitaet Muenchen, http://www.tum.de/)
 /****************************************************************************/

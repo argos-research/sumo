@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: TraCIServerAPI_Simulation.cpp 20191 2016-03-15 11:34:04Z namdre $
+/// @version $Id: TraCIServerAPI_Simulation.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // APIs for getting/setting edge values via TraCI
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILane.cpp 20291 2016-03-23 10:19:29Z behrisch $
+/// @version $Id: GUILane.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Representation of a lane in the micro simulation (gui-version)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -51,6 +51,7 @@
 #include <microsim/MSVehicleTransfer.h>
 #include <microsim/MSNet.h>
 #include <microsim/MSEdgeWeightsStorage.h>
+#include <microsim/devices/MSDevice_Routing.h>
 #include "GUILane.h"
 #include "GUIEdge.h"
 #include "GUIVehicle.h"
@@ -910,7 +911,11 @@ GUILane::getColorValue(size_t activeScheme) const {
             // color by average relative speed
             return getMeanSpeed() / myMaxSpeed;
         }
-        case 27:
+        case 27: {
+            // color by routing device assumed speed
+            return MSDevice_Routing::getAssumedSpeed(&getEdge());
+        }
+        case 28:
             return getElectricityConsumption() / myLength;
     }
     return 0;

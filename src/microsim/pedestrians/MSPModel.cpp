@@ -2,12 +2,12 @@
 /// @file    MSPModel.h
 /// @author  Jakob Erdmann
 /// @date    Mon, 13 Jan 2014
-/// @version $Id: MSPModel.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MSPModel.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The pedestrian following model (prototype)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2014-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2014-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -37,8 +37,6 @@
 #include "MSPModel_Striping.h"
 #include "MSPModel_NonInteracting.h"
 #include "MSPModel.h"
-
-
 
 
 // ===========================================================================
@@ -86,22 +84,6 @@ MSPModel::cleanup() {
         delete myModel;
         myModel = 0;
     }
-}
-
-
-MSLane*
-MSPModel::getSidewalk(const MSEdge* edge) {
-    if (edge == 0) {
-        return 0;
-    }
-    assert(edge->getLanes().size() > 0);
-    const std::vector<MSLane*>& lanes = edge->getLanes();
-    for (std::vector<MSLane*>::const_iterator it = lanes.begin(); it != lanes.end(); ++it) {
-        if ((*it)->allowsVehicleClass(SVC_PEDESTRIAN)) {
-            return *it;
-        }
-    }
-    return lanes.front();
 }
 
 

@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2003-05-21
-/// @version $Id: MSMoveReminder.h 19791 2016-01-25 14:59:17Z namdre $
+/// @version $Id: MSMoveReminder.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Something on a lane to be noticed about vehicle movement
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2003-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2003-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

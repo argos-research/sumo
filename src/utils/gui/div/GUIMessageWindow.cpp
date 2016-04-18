@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Tue, 25 Nov 2003
-/// @version $Id: GUIMessageWindow.cpp 18855 2015-09-17 23:30:22Z namdre $
+/// @version $Id: GUIMessageWindow.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A logging window for the gui
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2003-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2003-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

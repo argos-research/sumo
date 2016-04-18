@@ -4,12 +4,12 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2011-06-23
-@version $Id: __init__.py 20156 2016-03-06 08:22:01Z behrisch $
+@version $Id: __init__.py 20464 2016-04-15 12:35:23Z behrisch $
 
 Python interface to SUMO especially for parsing output files.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2011-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2011-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -83,7 +83,7 @@ def compound_object(element_name, attrnames):
             return "<%s,child_dict=%s>" % (self.getAttributes(), dict(self._child_dict))
 
         def toXML(self, initialIndent="", indent="    "):
-            fields = ['%s="%s"' % (k, getattr(self, k)) for k in self._fields]
+            fields = ['%s="%s"' % (k, getattr(self, k)) for k in self._fields if getattr(self, k) is not None]
             if not self._child_dict:
                 return "%s<%s %s/>\n" % (initialIndent, element_name, " ".join(fields))
             else:

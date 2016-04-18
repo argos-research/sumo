@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: MSRouteHandler.h 19377 2015-11-18 12:08:00Z behrisch $
+/// @version $Id: MSRouteHandler.h 20462 2016-04-15 12:20:52Z luecken $
 ///
 // Parser and container for routes during their loading
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -178,6 +178,9 @@ protected:
     static MTRand myParsingRNG;
 
 private:
+    /// @brief delete already created MSTransportablePlans if error occurs before handing over responsibility to a MSTransportable.
+    void deleteActivePlans();
+
     /// @brief Invalidated copy constructor
     MSRouteHandler(const MSRouteHandler& s);
 

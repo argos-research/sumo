@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2009-08-01
-@version $Id: xmlconnections_mapEdges.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: xmlconnections_mapEdges.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Reads edge id replacements from "edgemap.txt"; the format of this file is
  <OLD_EDGE_ID>-><NEW_EDGE_ID>
@@ -14,7 +14,7 @@ The result is written to <CONNECTIONS>.mod.xml
 Call: xmlconnections_mapEdges.py <CONNECTIONS>
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

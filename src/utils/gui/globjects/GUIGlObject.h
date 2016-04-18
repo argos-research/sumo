@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Oct 2002
-/// @version $Id: GUIGlObject.h 18989 2015-10-01 19:38:26Z namdre $
+/// @version $Id: GUIGlObject.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Base class for all objects that may be displayed within the openGL-gui
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -147,6 +147,19 @@ public:
     virtual GUIParameterTableWindow* getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent) = 0;
 
 
+    /** @brief Returns an own type parameter window (optional)
+     *
+     * @param[in] app The application needed to build the parameter window
+     * @param[in] parent The parent window needed to build the parameter window
+     * @return The built parameter window
+     */
+    virtual GUIParameterTableWindow* getTypeParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent) {
+        UNUSED_PARAMETER(&app);
+        UNUSED_PARAMETER(&parent);
+        return 0;
+    }
+
+
     /** @brief Returns the id of the object as known to microsim
      *
      * @return The id of the object
@@ -259,6 +272,13 @@ protected:
      * @param[in] addSeparator Whether a separator shall be added, too
      */
     void buildShowParamsPopupEntry(GUIGLObjectPopupMenu* ret, bool addSeparator = true);
+
+
+    /** @brief Builds an entry which allows to open the type parameter window
+     * @param[in, filled] ret The popup menu to add the entry to
+     * @param[in] addSeparator Whether a separator shall be added, too
+     */
+    void buildShowTypeParamsPopupEntry(GUIGLObjectPopupMenu* ret, bool addSeparator = true);
 
 
     /** @brief Builds an entry which allows to copy the cursor position

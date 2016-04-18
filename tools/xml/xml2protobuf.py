@@ -6,12 +6,12 @@
 @author  Laura Bieker
 @author  Jakob Erdmann
 @date    2014-01-22
-@version $Id: xml2protobuf.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: xml2protobuf.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Convert hierarchical xml files to binary protobuf.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2014-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2014-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

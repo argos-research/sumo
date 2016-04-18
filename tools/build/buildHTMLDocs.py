@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2011-10-20
-@version $Id: buildHTMLDocs.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: buildHTMLDocs.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Converts wiki-documentation into HTML pages.
 
@@ -32,7 +32,7 @@ the page is saved into options.output/<PAGE_PATH>. All images are copied
 from options.mirror/images to options.output/images.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2011-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2011-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

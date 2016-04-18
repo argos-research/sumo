@@ -4,13 +4,13 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2010-02-20
-@version $Id: poi_atTLS.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: poi_atTLS.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Generates a PoI-file containing a PoI for each tls controlled intersection
  from the given net.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2010-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2010-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

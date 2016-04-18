@@ -3,7 +3,7 @@
 @file    texttestDiff.py
 @author  Jakob Erdmann
 @date    2015-11-03
-@version $Id: texttestDiff.py 19535 2015-12-05 13:47:18Z behrisch $
+@version $Id: texttestDiff.py 20433 2016-04-13 08:00:14Z behrisch $
 
 This is meant to be used as a diff tool for the sumo public and internal tests by adding the line
 ----------------------------
@@ -15,7 +15,7 @@ It runs the textual diff tool (vim by default) and, if the differing files are
 sumo networks, opens both of them with sumo-gui.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2015 DLR/TS, Germany
+Copyright (C) 2009-2016 DLR/TS, Germany
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

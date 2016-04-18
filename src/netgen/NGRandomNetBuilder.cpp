@@ -4,12 +4,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mar, 2003
-/// @version $Id: NGRandomNetBuilder.cpp 19218 2015-10-29 13:08:18Z behrisch $
+/// @version $Id: NGRandomNetBuilder.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Additional structures for building random nets
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

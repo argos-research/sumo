@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Jan 2004
-/// @version $Id: ROJTRTurnDefLoader.cpp 18467 2015-05-29 03:50:41Z behrisch $
+/// @version $Id: ROJTRTurnDefLoader.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Loader for the of turning percentages and source/sink definitions
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

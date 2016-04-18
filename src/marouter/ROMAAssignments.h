@@ -4,12 +4,12 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    Feb 2013
-/// @version $Id: ROMAAssignments.h 20095 2016-02-26 14:07:14Z behrisch $
+/// @version $Id: ROMAAssignments.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Assignment methods
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

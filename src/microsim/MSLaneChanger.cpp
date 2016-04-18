@@ -7,12 +7,12 @@
 /// @author  Friedemann Wesner
 /// @author  Jakob Erdmann
 /// @date    Fri, 01 Feb 2002
-/// @version $Id: MSLaneChanger.cpp 20065 2016-02-24 16:36:29Z namdre $
+/// @version $Id: MSLaneChanger.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Performs lane changing of vehicles
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

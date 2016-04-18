@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2008-04-16
-@version $Id: findUTurns.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: findUTurns.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Determines the number of U turns in a route file by comparing 
 the edge ids of successive edges for "negation". This works wherever the sumo network
@@ -20,7 +20,7 @@ U turns at the start and the end of a route and output the
 modified routes.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

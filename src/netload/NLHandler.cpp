@@ -7,12 +7,12 @@
 /// @author  Michael Behrisch
 /// @author  Felix Brack
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLHandler.cpp 19994 2016-02-17 08:53:32Z namdre $
+/// @version $Id: NLHandler.cpp 20462 2016-04-15 12:20:52Z luecken $
 ///
 // The XML-Handler for network loading
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -161,10 +161,12 @@ NLHandler::myStartElement(int element,
                 myTriggerBuilder.parseAndBuildRerouter(myNet, attrs, getFileName());
                 break;
             case SUMO_TAG_BUS_STOP:
-                myTriggerBuilder.parseAndBuildBusStop(myNet, attrs);
-                break;
+            case SUMO_TAG_TRAIN_STOP:
             case SUMO_TAG_CONTAINER_STOP:
-                myTriggerBuilder.parseAndBuildContainerStop(myNet, attrs);
+                myTriggerBuilder.parseAndBuildStoppingPlace(myNet, attrs, (SumoXMLTag)element);
+                break;
+            case SUMO_TAG_ACCESS:
+                myTriggerBuilder.addAccess(myNet, attrs);
                 break;
             case SUMO_TAG_CHARGING_STATION:
                 myTriggerBuilder.parseAndBuildChargingStation(myNet, attrs);
@@ -994,6 +996,7 @@ NLHandler::addConnection(const SUMOSAXAttributes& attrs) {
         return;
     }
 
+    MSLink* link = 0;
     try {
         bool ok = true;
         const std::string toID = attrs.get<std::string>(SUMO_ATTR_TO, 0, ok);
@@ -1044,7 +1047,6 @@ NLHandler::addConnection(const SUMOSAXAttributes& attrs) {
             }
         }
         SUMOReal length = fromLane->getShape()[-1].distanceTo(toLane->getShape()[0]);
-        MSLink* link = 0;
 
         // build the link
 #ifdef HAVE_INTERNAL_LANES

@@ -5,14 +5,14 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2007-07-26
-@version $Id: edgesInDistricts.py 19975 2016-02-13 17:44:55Z behrisch $
+@version $Id: edgesInDistricts.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Parsing a number of networks and taz (district) files with shapes
 this script writes a taz file with all the edges which are inside
 the relevant taz.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2007-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

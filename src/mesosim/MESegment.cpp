@@ -2,12 +2,12 @@
 /// @file    MESegment.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MESegment.cpp 20252 2016-03-18 09:33:46Z namdre $
+/// @version $Id: MESegment.cpp 20462 2016-04-15 12:20:52Z luecken $
 ///
 // A single mesoscopic segment (cell)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -33,6 +33,7 @@
 #include <utils/common/StdDefs.h>
 #include <microsim/MSGlobals.h>
 #include <microsim/MSEdge.h>
+#include <microsim/MSJunction.h>
 #include <microsim/MSNet.h>
 #include <microsim/MSLane.h>
 #include <microsim/MSLinkCont.h>
@@ -81,6 +82,10 @@ MESegment::MESegment(const std::string& id,
     myCapacity(length * parent.getLanes().size()),
     myOccupancy(0.f), 
     myJunctionControl(junctionControl),
+    myTLSPenalty(MSGlobals::gMesoTLSPenalty > 0 && myNextSegment == 0 && (
+                parent.getToJunction()->getType() == NODETYPE_TRAFFIC_LIGHT ||
+                parent.getToJunction()->getType() == NODETYPE_TRAFFIC_LIGHT_NOJUNCTION ||
+                parent.getToJunction()->getType() == NODETYPE_TRAFFIC_LIGHT_RIGHT_ON_RED)),
     myEntryBlockTime(SUMOTime_MIN),
     myLengthGeometryFactor(lengthGeometryFactor),
     myMeanSpeed(speed),
@@ -119,6 +124,7 @@ MESegment::MESegment(const std::string& id):
     myNextSegment(0), myLength(0), myIndex(0),
     myTau_ff(0), myTau_fj(0), myTau_jf(0), myTau_jj(0),
     myHeadwayCapacity(0), myCapacity(0), myJunctionControl(false),
+    myTLSPenalty(false),
     myLengthGeometryFactor(0)
 {}
 
@@ -143,6 +149,7 @@ MESegment::jamThresholdForSpeed(SUMOReal speed) const {
     // vehicles driving freely at maximum speed should not jam
     // we compute how many vehicles could possible enter the segment until the first vehicle leaves
     // and multiply by the space these vehicles would occupy
+	if(speed==0) return std::numeric_limits<double>::max(); // FIXME: This line is just an adhoc-fix to avoid division by zero (Leo)
     return std::ceil((myLength / (speed * STEPS2TIME(myTau_ff)))) * (SUMOVTypeParameter::getDefault().length + SUMOVTypeParameter::getDefault().minGap);
 }
 
@@ -314,12 +321,12 @@ MESegment::getTimeHeadway(bool predecessorIsFree) {
     if (predecessorIsFree) {
         return free() ? myTau_ff : myTau_fj;
     } else {
-        if (free()) {
+        if (free() || myTLSPenalty) {
             return myTau_jf;
         } else {
             // the gap has to move from the start of the segment to its end
             // this allows jams to clear and move upstream
-            const SUMOTime b = (SUMOTime)(myHeadwayCapacity * (myTau_jf - myTau_jj));
+            const SUMOTime b = (SUMOTime)(myHeadwayCapacity * (myTau_jf - myTau_jj)); // FIXME: unsigned integer overflow (in meso/tau/tau_jj)
             return (SUMOTime)(myTau_jj * getCarNumber() + b);
         }
     }
@@ -333,7 +340,8 @@ MESegment::getNextInsertionTime(SUMOTime earliestEntry) const {
     for (size_t i = 0; i < myCarQues.size(); ++i) {
         earliestLeave = MAX2(earliestLeave, myBlockTimes[i]);
     }
-    return MAX3(earliestEntry, earliestLeave - TIME2STEPS(myLength / myEdge.getSpeedLimit()), myEntryBlockTime);
+    if( myEdge.getSpeedLimit() == 0) return MAX2(earliestEntry, myEntryBlockTime);  // FIXME: This line is just an adhoc-fix to avoid division by zero (Leo)
+    else return MAX3(earliestEntry, earliestLeave - TIME2STEPS(myLength / myEdge.getSpeedLimit()), myEntryBlockTime);
 }
 
 
@@ -370,10 +378,12 @@ MESegment::getLink(const MEVehicle* veh, bool tlsPenalty) const {
 
 bool
 MESegment::isOpen(const MEVehicle* veh) const {
-    const bool useTLSPenalty = MSGlobals::gMesoTLSPenalty > 0;
-    const MSLink* link = getLink(veh, useTLSPenalty);
+    if (myTLSPenalty) {
+        // XXX should limited control take precedence over tls penalty?
+        return true;
+    }
+    const MSLink* link = getLink(veh);
     return (link == 0
-            || (useTLSPenalty && link->isTLSControlled()) // XXX should limited control take precedence over tls penalty?
             || link->havePriority()
             || limitedControlOverride(link)
             || link->opened(veh->getEventTime(), veh->getSpeed(), veh->estimateLeaveSpeed(link),
@@ -627,9 +637,9 @@ MESegment::getFlow() const {
 
 SUMOTime 
 MESegment::getTLSPenalty(const MEVehicle* veh) const {
-    const bool useTLSPenalty = MSGlobals::gMesoTLSPenalty > 0;
-    const MSLink* link = getLink(veh, useTLSPenalty);
+    const MSLink* link = getLink(veh, myTLSPenalty);
     if (link != 0 && link->isTLSControlled()) {
+        // only apply to the last segment of a tls-controlled edge
         return link->getMesoTLSPenalty();
     } else {
         return 0;

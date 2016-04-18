@@ -6,12 +6,12 @@
 @author  Eric Melde
 @author  Michael Behrisch
 @date    2009-02-09
-@version $Id: generateTripsXml.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: generateTripsXml.py 20433 2016-04-13 08:00:14Z behrisch $
 
 This script generate a trip file as input data in sumo
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -331,7 +331,7 @@ def main(options):
     matrixSum = 0.
     fouttrips = open(options.tripfile, 'w')
     fouttrips.write('<?xml version="1.0"?>\n')
-    print("""<!-- generated on %s by $Id: generateTripsXml.py 19649 2015-12-17 21:05:20Z behrisch $ -->
+    print("""<!-- generated on %s by $Id: generateTripsXml.py 20433 2016-04-13 08:00:14Z behrisch $ -->
     """ % datetime.datetime.now(), file=fouttrips)
     fouttrips.write("<tripdefs>\n")
 

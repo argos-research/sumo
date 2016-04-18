@@ -5,13 +5,13 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2011-10-04
-@version $Id: netdiff.py 20154 2016-03-06 07:25:37Z behrisch $
+@version $Id: netdiff.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Reads two networks (source, dest) and tries to produce the minimal plain-xml input
 which can be loaded with netconvert alongside source to create dest
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2011-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2011-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -66,11 +66,15 @@ PLAIN_TYPES = [
 
 TAG_TLL = 'tlLogic'
 TAG_CONNECTION = 'connection'
+TAG_CROSSING = 'crossing'
+TAG_ROUNDABOUT = 'roundabout'
 
 # see CAVEAT1
 IDATTRS = defaultdict(lambda: ('id',))
 IDATTRS[TAG_TLL] = ('id', 'programID')
 IDATTRS[TAG_CONNECTION] = ('from', 'to', 'fromLane', 'toLane')
+IDATTRS[TAG_CROSSING] = ('node', 'edges')
+IDATTRS[TAG_ROUNDABOUT] = ('edges',)
 IDATTRS['interval'] = ('begin', 'end')
 
 DELETE_ELEMENT = 'delete'  # the xml element for signifying deletes
@@ -235,19 +239,32 @@ class AttributeStore:
         # data loss if two elements with different tags
         # have the same id
         for tag, id in self.ids_deleted:
+            comment_start, comment_end = ("", "")
             additional = ""
+            delete_element = DELETE_ELEMENT
+
             if self.type == TYPE_TLLOGICS and tag == TAG_CONNECTION:
                 # see CAVEAT4
                 names, values, children = self.id_attrs[(tag, id)]
                 additional = " " + self.attr_string(names, values)
 
-            comment_start, comment_end = ("", "")
             if tag == TAG_TLL:  # see CAVEAT3
                 comment_start, comment_end = (
                     "<!-- implicit via changed node type: ", " -->")
+
+            if tag == TAG_CROSSING:
+                delete_element = tag
+                additional = ' discard="true"'
+
+            if tag == TAG_ROUNDABOUT:
+                delete_element = tag
+                additional = ' discard="true"'
+                comment_start, comment_end = (
+                    "<!-- deletion of roundabouts not yet supported. see #2225 ", " -->")
+
             self.write(file, '%s<%s %s%s/>%s\n' % (
                 comment_start,
-                DELETE_ELEMENT, self.id_string(tag, id), additional,
+                delete_element, self.id_string(tag, id), additional,
                 comment_end))
         # data loss if two elements with different tags
         # have the same list of attributes and values

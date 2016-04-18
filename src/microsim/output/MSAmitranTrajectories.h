@@ -2,12 +2,12 @@
 /// @file    MSAmitranTrajectories.h
 /// @author  Michael Behrisch
 /// @date    13.03.2014
-/// @version $Id: MSAmitranTrajectories.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MSAmitranTrajectories.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Realises dumping the complete network state
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2014-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2014-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

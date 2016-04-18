@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSMeanData.cpp 19791 2016-01-25 14:59:17Z namdre $
+/// @version $Id: MSMeanData.cpp 20462 2016-04-15 12:20:52Z luecken $
 ///
 // Data collector for edges/lanes
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -153,13 +153,27 @@ MSMeanData::MeanDataValueTracker::MeanDataValueTracker(MSLane* const lane,
 
 
 MSMeanData::MeanDataValueTracker::~MeanDataValueTracker() {
+	std::list<TrackerEntry*>::iterator i;
+	for(i= myCurrentData.begin(); i != myCurrentData.end(); i++){
+		delete *i;
+	}
+
+	// FIXME: myTrackedData may still hold some undeleted TrackerEntries. When to delete those? (Leo), refers to #2251
+	// code below fails
+
+//	std::map<SUMOVehicle*, TrackerEntry*>::iterator j;
+//	for(j=myTrackedData.begin(); j!=myTrackedData.end();j++){
+//		delete j->second;
+//	}
 }
 
 
 void
 MSMeanData::MeanDataValueTracker::reset(bool afterWrite) {
     if (afterWrite) {
-        myCurrentData.pop_front();
+    	if(myCurrentData.begin() != myCurrentData.end()){
+			myCurrentData.pop_front();
+    	}
     } else {
         myCurrentData.push_back(new TrackerEntry(myParent->createValues(myLane, myLaneLength, false)));
     }

@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSTrafficLightLogic.cpp 20252 2016-03-18 09:33:46Z namdre $
+/// @version $Id: MSTrafficLightLogic.cpp 20476 2016-04-18 08:36:33Z behrisch $
 ///
 // The parent class for traffic light logics
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -288,7 +288,7 @@ MSTrafficLightLogic::setCurrentDurationIncrement(SUMOTime delay) {
 void MSTrafficLightLogic::initMesoTLSPenalties() {
     // set mesoscopic time penalties
     const Phases& phases = getPhases();
-    const int numLinks = phases.front()->getState().size();
+    const int numLinks = (int)phases.front()->getState().size();
     assert(myLinks.size() >= numLinks);
     SUMOTime duration = 0;
     std::vector<SUMOReal> redDuration(numLinks, 0);

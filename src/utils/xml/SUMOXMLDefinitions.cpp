@@ -7,12 +7,12 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Sept 2002
-/// @version $Id: SUMOXMLDefinitions.cpp 20221 2016-03-17 10:19:09Z behrisch $
+/// @version $Id: SUMOXMLDefinitions.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Definitions of elements and attributes known by SUMO
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -71,6 +71,8 @@ StringBijection<int>::Entry SUMOXMLDefinitions::tags[] = {
     { "calibrator",       SUMO_TAG_CALIBRATOR },
     { "rerouter",         SUMO_TAG_REROUTER },
     { "busStop",          SUMO_TAG_BUS_STOP },
+    { "trainStop",        SUMO_TAG_TRAIN_STOP },
+    { "access",           SUMO_TAG_ACCESS },
     { "containerStop",    SUMO_TAG_CONTAINER_STOP },
     { "chargingStation",  SUMO_TAG_CHARGING_STATION },
     { "vTypeProbe",       SUMO_TAG_VTYPEPROBE },
@@ -165,6 +167,7 @@ StringBijection<int>::Entry SUMOXMLDefinitions::tags[] = {
     { "carFollowing-Wiedemann",   SUMO_TAG_CF_WIEDEMANN },
 
     { "person",           SUMO_TAG_PERSON },
+    { "personTrip",       SUMO_TAG_PERSONTRIP },
     { "ride",             SUMO_TAG_RIDE },
     { "walk",             SUMO_TAG_WALK },
 
@@ -294,6 +297,7 @@ StringBijection<int>::Entry SUMOXMLDefinitions::attrs[] = {
     { "containerCapacity", SUMO_ATTR_CONTAINER_CAPACITY },
     { "personNumber",   SUMO_ATTR_PERSON_NUMBER },
     { "containerNumber", SUMO_ATTR_CONTAINER_NUMBER },
+    { "modes",          SUMO_ATTR_MODES },
 
     { "function",       SUMO_ATTR_FUNCTION },
     { "pos",            SUMO_ATTR_POSITION },

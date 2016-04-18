@@ -6,12 +6,12 @@
 /// @author  Laura Bieker
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUISUMOAbstractView.cpp 19923 2016-02-09 13:01:26Z behrisch $
+/// @version $Id: GUISUMOAbstractView.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The base class for a view
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

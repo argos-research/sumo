@@ -7,12 +7,12 @@
 /// @author  Melanie Knocke
 /// @author  Yun-Pang Floetteroed
 /// @date    Sept 2002
-/// @version $Id: ROEdge.h 20291 2016-03-23 10:19:29Z behrisch $
+/// @version $Id: ROEdge.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A basic edge for routing applications
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -44,6 +44,9 @@
 #include <utils/common/ValueTimeLine.h>
 #include <utils/common/SUMOVehicleClass.h>
 #include <utils/emissions/PollutantsInterface.h>
+#ifdef HAVE_FOX
+#include <fx.h>
+#endif
 #include <utils/vehicle/SUMOVTypeParameter.h>
 #include "RONode.h"
 #include "ROVehicle.h"
@@ -57,6 +60,7 @@ class ROEdge;
 
 typedef std::vector<ROEdge*> ROEdgeVector;
 typedef std::vector<const ROEdge*> ConstROEdgeVector;
+
 
 // ===========================================================================
 // class definitions
@@ -398,19 +402,16 @@ public:
     SUMOReal getDistanceTo(const ROEdge* other) const;
 
 
-    /** @brief Returns the ROEdge at the index */
-    static ROEdge* dictionary(size_t index);
+    /** @brief Returns all ROEdges */
+    static const ROEdgeVector& getAllEdges();
 
     /// @brief Returns the number of edges
     static size_t dictSize() {
         return myEdges.size();
     };
 
-    static void setGlobalOptions(
-        bool interpolate,
-        bool isParallel) {
+    static void setGlobalOptions(const bool interpolate) {
         myInterpolate = interpolate;
-        myAmParallel = isParallel;
     }
 
     /// @brief get edge priority (road class)
@@ -476,9 +477,6 @@ protected:
     /// @brief Information whether to interpolate at interval boundaries
     static bool myInterpolate;
 
-    /// @brief Information whether we are routing multi-threaded
-    static bool myAmParallel;
-
     /// @brief Information whether the edge has reported missing weights
     static bool myHaveEWarned;
     /// @brief Information whether the edge has reported missing weights
@@ -507,6 +505,11 @@ protected:
 
     /// @brief The successors available for a given vClass
     mutable std::map<SUMOVehicleClass, ROEdgeVector> myClassesSuccessorMap;
+
+#ifdef HAVE_FOX
+    /// The mutex used to avoid concurrent updates of myClassesSuccessorMap
+    mutable FXMutex myLock;
+#endif
 
 private:
     /// @brief Invalidated copy constructor

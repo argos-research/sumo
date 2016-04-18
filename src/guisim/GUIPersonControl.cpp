@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Wed, 13.06.2012
-/// @version $Id: GUIPersonControl.cpp 18274 2015-04-22 15:00:44Z behrisch $
+/// @version $Id: GUIPersonControl.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // GUI-version of the person control for building gui persons
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

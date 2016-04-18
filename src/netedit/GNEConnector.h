@@ -2,12 +2,12 @@
 /// @file    GNEConnector.h
 /// @author  Jakob Erdmann
 /// @date    May 2011
-/// @version $Id: GNEConnector.h 18966 2015-09-30 06:12:04Z namdre $
+/// @version $Id: GNEConnector.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The Widget for modifying lane-to-lane connections
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

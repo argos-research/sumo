@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    2006-01-24
-/// @version $Id: SUMOVehicleClass.h 19079 2015-10-12 19:30:19Z namdre $
+/// @version $Id: SUMOVehicleClass.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Definitions of SUMO vehicle classes and helper functions
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

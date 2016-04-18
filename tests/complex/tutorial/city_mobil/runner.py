@@ -4,12 +4,12 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2011-10-28
-@version $Id: runner.py 19904 2016-02-07 19:51:27Z behrisch $
+@version $Id: runner.py 20433 2016-04-13 08:00:14Z behrisch $
 
 This script is a test runner for the CityMobil scenario.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2011-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2011-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

@@ -6,12 +6,12 @@
 /// @author  Laura Bieker
 /// @author  Yun-Pang Floetteroed
 /// @date    Thu, 12 September 2002
-/// @version $Id: od2trips_main.cpp 19987 2016-02-16 10:05:54Z behrisch $
+/// @version $Id: od2trips_main.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Main for OD2TRIPS
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

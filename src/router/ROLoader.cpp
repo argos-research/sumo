@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Christian Roessel
 /// @date    Sept 2002
-/// @version $Id: ROLoader.cpp 20291 2016-03-23 10:19:29Z behrisch $
+/// @version $Id: ROLoader.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Loader for networks and route imports
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -199,7 +199,7 @@ ROLoader::openRoutes(RONet& net) {
 
 void
 ROLoader::processRoutes(const SUMOTime start, const SUMOTime end, const SUMOTime increment,
-                        RONet& net, SUMOAbstractRouter<ROEdge, ROVehicle>& router) {
+                        RONet& net, const RORouterProvider& provider) {
     const SUMOTime absNo = end - start;
     const bool endGiven = !OptionsCont::getOptions().isDefault("end");
     // skip routes that begin before the simulation's begin
@@ -213,7 +213,7 @@ ROLoader::processRoutes(const SUMOTime start, const SUMOTime end, const SUMOTime
         if (!net.furtherStored() || MsgHandler::getErrorInstance()->wasInformed()) {
             break;
         }
-        lastStep = net.saveAndRemoveRoutesUntil(myOptions, router, time);
+        lastStep = net.saveAndRemoveRoutesUntil(myOptions, provider, time);
         if ((!net.furtherStored() && myLoaders.haveAllLoaded()) || MsgHandler::getErrorInstance()->wasInformed()) {
             break;
         }

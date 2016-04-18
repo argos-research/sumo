@@ -5,12 +5,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mar, 2003
-/// @version $Id: netgen_main.cpp 19987 2016-02-16 10:05:54Z behrisch $
+/// @version $Id: netgen_main.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Main for NETGENERATE
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

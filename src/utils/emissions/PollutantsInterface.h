@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 19.08.2013
-/// @version $Id: PollutantsInterface.h 20279 2016-03-22 13:55:22Z behrisch $
+/// @version $Id: PollutantsInterface.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Interface to capsulate different emission models
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2013-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

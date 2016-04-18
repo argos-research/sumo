@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Fri, 19 Jul 2002
-/// @version $Id: NIImporter_VISUM.cpp 19699 2016-01-11 11:53:55Z namdre $
+/// @version $Id: NIImporter_VISUM.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A VISUM network importer
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

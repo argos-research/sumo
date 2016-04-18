@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2009
-/// @version $Id: RGBColorTest.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: RGBColorTest.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Tests the class RGBColor
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2009-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

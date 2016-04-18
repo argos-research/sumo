@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILoadThread.cpp 19791 2016-01-25 14:59:17Z namdre $
+/// @version $Id: GUILoadThread.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Class describing the thread that performs the loading of a simulation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

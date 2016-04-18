@@ -3,12 +3,12 @@
 /// @author  Matthias Heppner
 /// @author  Michael Behrisch
 /// @date    2009-03-24
-/// @version $Id: StringTokenizerTest.cpp 19910 2016-02-08 12:31:43Z behrisch $
+/// @version $Id: StringTokenizerTest.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // 
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

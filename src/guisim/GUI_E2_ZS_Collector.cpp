@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Okt 2003
-/// @version $Id: GUI_E2_ZS_Collector.cpp 20217 2016-03-17 07:04:07Z namdre $
+/// @version $Id: GUI_E2_ZS_Collector.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The gui-version of the MS_E2_ZS_Collector
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

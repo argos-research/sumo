@@ -3,13 +3,13 @@
 @file    nefz.py
 @author  daniel.krajzewicz@dlr.de
 @date    2014-01-14
-@version $Id: nefz.py 20118 2016-03-02 09:54:08Z martintaraz $
+@version $Id: nefz.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Generates a ';'-separated file that contains the time line of the NEFZ
  driving cycle.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2012-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

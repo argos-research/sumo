@@ -3,12 +3,12 @@
 @file    route.py
 @author  Michael Behrisch
 @date    2013-10-23
-@version $Id: route.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: route.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Route helper functions.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

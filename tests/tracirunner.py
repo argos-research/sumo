@@ -5,12 +5,12 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2008-05-12
-@version $Id: tracirunner.py 18715 2015-08-25 11:24:13Z behrisch $
+@version $Id: tracirunner.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Wrapper script for running TraCI tests with TextTest.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

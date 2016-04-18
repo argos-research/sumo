@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: FileHelpers.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: FileHelpers.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Functions for an easier usage of files
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -292,7 +292,7 @@ void FileHelpers::readEdgeVector(std::istream& in, std::vector<const E*>& edges,
         const unsigned int mask = (1 << bits) - 1;
         unsigned int edgeID;
         in.read((char*) &edgeID, sizeof(int));
-        const E* prev = E::dictionary(edgeID);
+        const E* prev = E::getAllEdges()[edgeID];
         assert(prev != 0);
         edges.push_back(prev);
         size--;
@@ -313,7 +313,7 @@ void FileHelpers::readEdgeVector(std::istream& in, std::vector<const E*>& edges,
         }
     } else {
         while (size > 0) {
-            const E* edge = E::dictionary(bitsOrEntry);
+            const E* edge = E::getAllEdges()[bitsOrEntry];
             if (edge == 0) {
                 throw ProcessError("An edge within the route '" + rid + "' is not known!");
             }

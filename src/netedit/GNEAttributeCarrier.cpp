@@ -2,12 +2,12 @@
 /// @file    GNEAttributeCarrier.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEAttributeCarrier.cpp 19947 2016-02-10 15:32:46Z behrisch $
+/// @version $Id: GNEAttributeCarrier.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Abstract Base class for gui objects which carry attributes
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

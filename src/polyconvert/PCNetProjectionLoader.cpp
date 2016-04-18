@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Thu, 02.11.2006
-/// @version $Id: PCNetProjectionLoader.cpp 18427 2015-05-21 08:24:03Z behrisch $
+/// @version $Id: PCNetProjectionLoader.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A reader for a SUMO network's projection description
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

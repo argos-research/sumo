@@ -11,12 +11,12 @@
 /// @author  Michael Behrisch
 /// @author  Mario Krumnow
 /// @date    2007/10/24
-/// @version $Id: TraCIServer.cpp 19956 2016-02-11 14:30:42Z namdre $
+/// @version $Id: TraCIServer.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 /// TraCI server used to control sumo by a remote TraCI client (e.g., ns2)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2007-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

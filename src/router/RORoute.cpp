@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Yun-Pang Floetteroed
 /// @date    Sept 2002
-/// @version $Id: RORoute.cpp 18467 2015-05-29 03:50:41Z behrisch $
+/// @version $Id: RORoute.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A complete router's route
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -55,6 +55,9 @@ RORoute::RORoute(const std::string& id, SUMOReal costs, SUMOReal prop,
     : Named(StringUtils::convertUmlaute(id)), myCosts(costs),
       myProbability(prop), myRoute(route), myColor(color), myStops(stops) {}
 
+RORoute::RORoute(const std::string& id, const ConstROEdgeVector& route)
+	: Named(StringUtils::convertUmlaute(id)), myCosts(0.0),
+	  myProbability(0.0), myRoute(route), myColor(0), myStops() {}
 
 RORoute::RORoute(const RORoute& src)
     : Named(src.myID), myCosts(src.myCosts),

@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    09.05.2011
-/// @version $Id: NBFrame.cpp 20291 2016-03-23 10:19:29Z behrisch $
+/// @version $Id: NBFrame.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Sets and checks options for netbuild
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

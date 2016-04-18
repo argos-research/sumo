@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: ROHelper.cpp 18627 2015-08-13 08:58:59Z namdre $
+/// @version $Id: ROHelper.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Some helping methods for router
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

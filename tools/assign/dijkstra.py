@@ -5,7 +5,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2007-10-25
-@version $Id: dijkstra.py 20118 2016-03-02 09:54:08Z martintaraz $
+@version $Id: dijkstra.py 20433 2016-04-13 08:00:14Z behrisch $
 
 This script is based on the script from David Eppstein, UC Irvine.
 This script is to find the shortest path from the given origin 'start' to the other nodes in the investigated network. 
@@ -14,7 +14,7 @@ the link information about the shortest paths and the corresponding travel times
 will be stored in the lists P and D respectively.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2007-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

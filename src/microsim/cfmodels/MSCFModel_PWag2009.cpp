@@ -5,12 +5,12 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    03.04.2010
-/// @version $Id: MSCFModel_PWag2009.cpp 20083 2016-02-25 15:47:51Z behrisch $
+/// @version $Id: MSCFModel_PWag2009.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Scalable model based on Krauss by Peter Wagner
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2010-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2010-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

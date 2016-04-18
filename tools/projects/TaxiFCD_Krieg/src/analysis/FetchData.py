@@ -6,13 +6,13 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-04-15
-@version $Id: FetchData.py 20036 2016-02-19 14:34:07Z behrisch $
+@version $Id: FetchData.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Fetches Information of the simulated Data and the FCD.
 For each taxi the time, speed and position of every step will be collected and stored in a file. 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

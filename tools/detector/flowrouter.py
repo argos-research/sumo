@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2007-06-28
-@version $Id: flowrouter.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: flowrouter.py 20433 2016-04-13 08:00:14Z behrisch $
 
 This script does flow routing similar to the dfrouter.
 It has three mandatory parameters, the SUMO net (.net.xml), a file
@@ -13,7 +13,7 @@ of the detectors (source, sink, inbetween) itself or read it from
 the detectors file.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2007-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

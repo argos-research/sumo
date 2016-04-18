@@ -2,12 +2,12 @@
 /// @file    FXWorkerThread.h
 /// @author  Michael Behrisch
 /// @date    2014-07-13
-/// @version $Id: FXWorkerThread.h 18913 2015-09-23 21:10:49Z behrisch $
+/// @version $Id: FXWorkerThread.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A thread class together with a pool and a task for parallelized computation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2004-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2004-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

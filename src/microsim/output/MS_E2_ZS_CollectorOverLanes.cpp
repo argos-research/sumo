@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Oct 2003
-/// @version $Id: MS_E2_ZS_CollectorOverLanes.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MS_E2_ZS_CollectorOverLanes.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A detector which joins E2Collectors over consecutive lanes (backward)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2003-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2003-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

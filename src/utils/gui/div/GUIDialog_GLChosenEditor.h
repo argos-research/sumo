@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Thu, 11.03.2004
-/// @version $Id: GUIDialog_GLChosenEditor.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: GUIDialog_GLChosenEditor.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Editor for the list of chosen objects
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

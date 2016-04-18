@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Yun-Pang Floetteroed
 /// @date    05. Apr. 2006
-/// @version $Id: ODMatrix.h 20059 2016-02-23 15:23:24Z behrisch $
+/// @version $Id: ODMatrix.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // An O/D (origin/destination) matrix
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2006-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2006-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

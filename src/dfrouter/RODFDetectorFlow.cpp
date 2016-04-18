@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Melanie Knocke
 /// @date    Thu, 16.03.2006
-/// @version $Id: RODFDetectorFlow.cpp 18213 2015-04-16 11:55:42Z behrisch $
+/// @version $Id: RODFDetectorFlow.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Storage for flows within the DFROUTER
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2006-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2006-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

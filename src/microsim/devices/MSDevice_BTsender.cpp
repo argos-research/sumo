@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    14.08.2013
-/// @version $Id: MSDevice_BTsender.cpp 18842 2015-09-17 10:43:51Z behrisch $
+/// @version $Id: MSDevice_BTsender.cpp 20447 2016-04-14 13:02:24Z luecken $
 ///
 // A BT sender
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2013-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -69,6 +69,14 @@ MSDevice_BTsender::buildVehicleDevices(SUMOVehicle& v, std::vector<MSDevice*>& i
         MSDevice_BTsender* device = new MSDevice_BTsender(v, "btsender_" + v.getID());
         into.push_back(device);
     }
+}
+
+void
+MSDevice_BTsender::cleanup() {
+	std::map<std::string, MSDevice_BTsender::VehicleInformation*>::iterator i;
+	for(i = sVehicles.begin(); i!=sVehicles.end(); i++){
+		delete i->second;
+	}
 }
 
 

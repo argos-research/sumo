@@ -4,12 +4,12 @@
 @file    main.py
 @author  Marek Heinrich
 @date    2014-11-17
-@version $Id: main.py 20038 2016-02-19 14:57:36Z behrisch $
+@version $Id: main.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Main module.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2014-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2014-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

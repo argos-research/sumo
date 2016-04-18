@@ -4,7 +4,7 @@
 @author  Yun-Pang Floetteroed
 @author  Michael Behrisch
 @date    2007-02-27
-@version $Id: routeChoices.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: routeChoices.py 20433 2016-04-13 08:00:14Z behrisch $
 
 This script is to calculate the route choice probabilities based on different methods.
 - Gawron
@@ -12,7 +12,7 @@ This script is to calculate the route choice probabilities based on different me
 - ......
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2007-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

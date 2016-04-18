@@ -5,12 +5,12 @@
 /// @author  Christoph Sommer
 /// @author  Michael Behrisch
 /// @date    Thu, 02.11.2006
-/// @version $Id: PCLoaderVisum.cpp 19339 2015-11-12 14:12:09Z behrisch $
+/// @version $Id: PCLoaderVisum.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A reader of pois and polygons stored in VISUM-format
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

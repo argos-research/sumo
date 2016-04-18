@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    2006-08-01
-/// @version $Id: GeoConvHelper.cpp 19403 2015-11-21 22:35:45Z namdre $
+/// @version $Id: GeoConvHelper.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // static methods for processing the coordinates conversion for the current net
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

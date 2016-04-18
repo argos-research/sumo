@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 13.12.2005
-/// @version $Id: MSStoppingPlace.cpp 19388 2015-11-19 21:33:01Z behrisch $
+/// @version $Id: MSStoppingPlace.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A lane area vehicles can halt at
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -140,6 +140,18 @@ MSStoppingPlace::computeLastFreePos() {
 }
 
 
+bool
+MSStoppingPlace::hasAccess(const MSEdge* edge) const {
+    if (edge == &myLane.getEdge()) {
+        return true;
+    }
+    for (std::multimap<MSLane*, SUMOReal>::const_iterator i = myAccessPos.begin(); i != myAccessPos.end(); ++i) {
+        if (edge == &i->first->getEdge()) {
+            return true;
+        }
+    }
+    return false;
+}
 
 /****************************************************************************/
 

@@ -2,12 +2,12 @@
 /// @file    MEVehicle.h
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MEVehicle.h 20216 2016-03-16 16:27:12Z namdre $
+/// @version $Id: MEVehicle.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A vehicle from the mesoscopic point of view
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -5,12 +5,12 @@
 /// @author  Jakob Erdmann
 /// @author  Yun-Pang Floetteroed
 /// @date    Tue, 20 Jan 2004
-/// @version $Id: RODUAEdgeBuilder.h 18394 2015-05-18 13:26:24Z behrisch $
+/// @version $Id: RODUAEdgeBuilder.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Interface for building instances of duarouter-edges
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2004-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2004-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

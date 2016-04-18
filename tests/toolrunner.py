@@ -4,12 +4,12 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2008-03-29
-@version $Id: toolrunner.py 19984 2016-02-15 18:53:57Z behrisch $
+@version $Id: toolrunner.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Wrapper script for running tool tests with TextTest.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

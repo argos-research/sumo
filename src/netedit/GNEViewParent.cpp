@@ -2,7 +2,7 @@
 /// @file    GNEViewParent.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEViewParent.cpp 18830 2015-09-11 08:57:34Z behrisch $
+/// @version $Id: GNEViewParent.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A single child window which contains a view of the edited network (adapted
 // from GUISUMOViewParent)
@@ -10,7 +10,7 @@
 // structures than to write everything from scratch.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

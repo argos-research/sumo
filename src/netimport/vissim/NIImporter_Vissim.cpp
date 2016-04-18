@@ -6,12 +6,12 @@
 /// @author  Lukas Grohmann (AIT)
 /// @author  Gerald Richter (AIT)
 /// @date    Sept 2002
-/// @version $Id: NIImporter_Vissim.cpp 18756 2015-08-31 19:16:33Z behrisch $
+/// @version $Id: NIImporter_Vissim.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // -------------------
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

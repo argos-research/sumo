@@ -6,13 +6,13 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2008-03-27
-@version $Id: __init__.py 20081 2016-02-25 15:16:02Z namdre $
+@version $Id: __init__.py 20433 2016-04-13 08:00:14Z behrisch $
 
 This file contains a content handler for parsing sumo network xml files.
 It uses other classes from this module to represent the road network.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

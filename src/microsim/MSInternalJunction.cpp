@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Wed, 12 Dez 2001
-/// @version $Id: MSInternalJunction.cpp 18635 2015-08-14 13:33:44Z namdre $
+/// @version $Id: MSInternalJunction.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // junction.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 27 Jul 2009
-/// @version $Id: MSCFModel.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MSCFModel.cpp 20447 2016-04-14 13:02:24Z luecken $
 ///
 // The car-following model abstraction
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -50,6 +50,9 @@ MSCFModel::MSCFModel(const MSVehicleType* vtype, const SUMOReal accel,
 
 
 MSCFModel::~MSCFModel() {}
+
+
+MSCFModel::VehicleVariables::~VehicleVariables() {}
 
 
 SUMOReal

@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2004-11-23
-/// @version $Id: MSInductLoop.h 19742 2016-01-18 07:31:28Z namdre $
+/// @version $Id: MSInductLoop.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // An unextended detector measuring at a fixed position on a fixed lane.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2004-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2004-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

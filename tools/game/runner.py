@@ -5,7 +5,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2010-01-30
-@version $Id: runner.py 20048 2016-02-22 12:08:12Z behrisch $
+@version $Id: runner.py 20433 2016-04-13 08:00:14Z behrisch $
 
 This script runs the gaming GUI for the LNdW traffic light game.
 It checks for possible scenarios in the current working directory
@@ -13,7 +13,7 @@ and lets the user start them as a game. Furthermore it
 saves highscores to local disc and to the central highscore server.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2010-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2010-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

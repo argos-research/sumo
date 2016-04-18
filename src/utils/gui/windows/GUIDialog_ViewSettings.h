@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Wed, 21. Dec 2005
-/// @version $Id: GUIDialog_ViewSettings.h 19379 2015-11-18 20:05:38Z namdre $
+/// @version $Id: GUIDialog_ViewSettings.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The dialog to change the view (gui) settings.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

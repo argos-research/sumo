@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLJunctionControlBuilder.h 19994 2016-02-17 08:53:32Z namdre $
+/// @version $Id: NLJunctionControlBuilder.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Builder of microsim-junctions and tls
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

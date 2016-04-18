@@ -7,12 +7,12 @@
 /// @author  Felix Brack
 /// @author  Jakob Erdmann
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: windows_config.h 19683 2016-01-07 09:30:31Z behrisch $
+/// @version $Id: windows_config.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The general windows configuration file
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

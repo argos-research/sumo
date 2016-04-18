@@ -3,12 +3,12 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Wed, 01.08.2014
-/// @version $Id: GUIContainerControl.h 18274 2015-04-22 15:00:44Z behrisch $
+/// @version $Id: GUIContainerControl.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // GUI-version of the container control for building gui containers
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

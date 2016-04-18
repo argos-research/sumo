@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    10.09.2009
-/// @version $Id: SUMOVTypeParameter.h 18516 2015-07-01 20:47:12Z behrisch $
+/// @version $Id: SUMOVTypeParameter.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Structure representing possible vehicle parameter
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    11.09.2009
-@version $Id: routes_Join.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: routes_Join.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Joins routes belonging to two networks.
 A map file with the following syntax is read first:
@@ -20,7 +20,7 @@ All other vehicles are kept, but if they pass one of the mapped edges, the
 Attention! The routes are not sorted in time!
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

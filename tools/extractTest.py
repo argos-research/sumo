@@ -5,14 +5,14 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2009-07-08
-@version $Id: extractTest.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: extractTest.py 20437 2016-04-13 11:24:00Z namdre $
 
 Extract all files for a test case into a new dir.
 It may copy more files than needed because it copies everything
 that is mentioned in the config under copy_test_path.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2015 DLR/TS, Germany
+Copyright (C) 2009-2016 DLR/TS, Germany
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -206,8 +206,6 @@ def main(options):
                    "netgen", "netgenerate", "od2trips", "polyconvert", "sumo", "activitygen"]:
             appOptions += ['--save-configuration', '%s.%scfg' %
                            (nameBase, app[:4])]
-            if "meso" in testPath and app == "sumo":
-                app = "meso"
             if app == "netgen":
                 # binary is now called differently but app still has the old
                 # name

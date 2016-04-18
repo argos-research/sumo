@@ -5,12 +5,12 @@
 /// @author  Lukas Grohmann (AIT)
 /// @author  Gerald Richter (AIT)
 /// @date    Sept 2002
-/// @version $Id: NIImporter_Vissim.h 18682 2015-08-21 13:53:36Z behrisch $
+/// @version $Id: NIImporter_Vissim.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Importer for networks stored in Vissim format
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Tue, 29.05.2005
-/// @version $Id: NBOwnTLDef.cpp 20085 2016-02-26 06:54:41Z namdre $
+/// @version $Id: NBOwnTLDef.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A traffic light logics which must be computed (only nodes/edges are given)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

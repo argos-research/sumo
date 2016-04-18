@@ -4,14 +4,14 @@
 @file    convert_detectors2SUMO.py
 @author  Lukas Grohmann <Lukas.Grohmann@ait.ac.at>
 @date    Aug 14 2015
-@version $Id: convert_detectors2SUMO.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: convert_detectors2SUMO.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Parses induction loops and travel time measurements from a VISSIM .inpx file
 and writes converted information to a given .add.xml file.
 see documentation
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

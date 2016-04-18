@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Tue, 04.05.2011
-/// @version $Id: NWWriter_OpenDrive.cpp 19700 2016-01-11 12:13:43Z namdre $
+/// @version $Id: NWWriter_OpenDrive.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Exporter writing networks using the openDRIVE format
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2011-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2011-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

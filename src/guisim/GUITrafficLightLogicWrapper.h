@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Oct/Nov 2003
-/// @version $Id: GUITrafficLightLogicWrapper.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: GUITrafficLightLogicWrapper.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A wrapper for tl-logics to allow their visualisation and interaction
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

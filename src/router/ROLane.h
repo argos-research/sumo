@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: ROLane.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: ROLane.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A single lane the router may use
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -34,7 +34,12 @@
 #include <vector>
 #include <utils/common/Named.h>
 #include <utils/common/SUMOVehicleClass.h>
-#include "ROEdge.h"
+
+
+// ===========================================================================
+// class declarations
+// ===========================================================================
+class ROEdge;
 
 
 // ===========================================================================

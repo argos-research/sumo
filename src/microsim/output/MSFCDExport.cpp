@@ -5,12 +5,12 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    2012-04-26
-/// @version $Id: MSFCDExport.cpp 20272 2016-03-22 08:07:46Z namdre $
+/// @version $Id: MSFCDExport.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Realises dumping Floating Car Data (FCD) Data
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -90,11 +90,11 @@ MSFCDExport::write(OutputDevice& of, SUMOTime timestep, bool elevation) {
             of.closeTag();
             if (microVeh != 0) {
                 // write persons and containers
-                const std::vector<MSTransportable*>& persons = microVeh->getSortedPersons();
+                const std::vector<MSTransportable*>& persons = microVeh->getPersons();
                 for (std::vector<MSTransportable*>::const_iterator it_p = persons.begin(); it_p != persons.end(); ++it_p) {
                     writeTransportable(of, &microVeh->getLane()->getEdge(), *it_p, SUMO_TAG_PERSON, useGeo, elevation);
                 }
-                const std::vector<MSTransportable*>& containers = microVeh->getSortedContainers();
+                const std::vector<MSTransportable*>& containers = microVeh->getContainers();
                 for (std::vector<MSTransportable*>::const_iterator it_c = containers.begin(); it_c != containers.end(); ++it_c) {
                     writeTransportable(of, &microVeh->getLane()->getEdge(), *it_c, SUMO_TAG_CONTAINER, useGeo, elevation);
                 }

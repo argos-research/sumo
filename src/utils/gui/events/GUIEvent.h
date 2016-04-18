@@ -2,12 +2,12 @@
 /// @file    GUIEvent.h
 /// @author  Daniel Krajzewicz
 /// @date    Sept 2002
-/// @version $Id: GUIEvent.h 18724 2015-08-25 21:00:09Z behrisch $
+/// @version $Id: GUIEvent.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Definition of an own event class
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

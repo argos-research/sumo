@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    2012
-/// @version $Id: BinaryFormatter.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: BinaryFormatter.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Output formatter for plain XML output
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -264,17 +264,17 @@ template <typename E>
 bool BinaryFormatter::writeHeader(std::ostream& into, const SumoXMLTag& rootElement) {
     if (myXMLStack.empty()) {
         writeStaticHeader(into);
-        const unsigned int numEdges = (const unsigned int)E::dictSize();
+        const unsigned int numEdges = (const unsigned int)E::getAllEdges().size();
         FileHelpers::writeByte(into, BF_LIST);
         FileHelpers::writeInt(into, numEdges);
         for (unsigned int i = 0; i < numEdges; i++) {
             FileHelpers::writeByte(into, BF_STRING);
-            FileHelpers::writeString(into, E::dictionary(i)->getID());
+            FileHelpers::writeString(into, E::getAllEdges()[i]->getID());
         }
         FileHelpers::writeByte(into, BF_LIST);
         FileHelpers::writeInt(into, numEdges);
         for (unsigned int i = 0; i < numEdges; i++) {
-            E* e = E::dictionary(i);
+            E* e = E::getAllEdges()[i];
             FileHelpers::writeByte(into, BF_LIST);
             FileHelpers::writeInt(into, e->getNumSuccessors());
             for (unsigned int j = 0; j < e->getNumSuccessors(); j++) {

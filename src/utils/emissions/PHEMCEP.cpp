@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Marek Heinrich
 /// @date    Thu, 13.06.2013
-/// @version $Id: PHEMCEP.cpp 18096 2015-03-17 09:50:59Z behrisch $
+/// @version $Id: PHEMCEP.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Helper class for PHEM Light, holds a specific CEP for a PHEM emission class
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2013-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

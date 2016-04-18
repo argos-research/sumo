@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: OptionsCont.cpp 20324 2016-03-31 12:34:29Z behrisch $
+/// @version $Id: OptionsCont.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A storage for options (typed value containers)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -73,7 +73,7 @@ OptionsCont::getOptions() {
 
 OptionsCont::OptionsCont()
     : myAddresses(), myValues(), myDeprecatedSynonymes(), myHaveInformedAboutDeprecatedDivider(false) {
-    myCopyrightNotices.push_back("Copyright (C) 2001-2015 DLR and contributors; http://sumo.dlr.de");
+    myCopyrightNotices.push_back("Copyright (C) 2001-2016 DLR and contributors; http://sumo.dlr.de");
 }
 
 

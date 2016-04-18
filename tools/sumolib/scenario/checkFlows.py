@@ -2,10 +2,10 @@
 @file    checkFlows.py
 @author  Daniel Krajzewicz
 @date    2014-09-11
-@version $Id: checkFlows.py 20116 2016-03-02 09:42:27Z martintaraz $
+@version $Id: checkFlows.py 20433 2016-04-13 08:00:14Z behrisch $
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2012-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

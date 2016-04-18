@@ -1,5 +1,3 @@
-#define _USE_MATH_DEFINES
-#include <cmath>
 #include "CEP.h"
 #include "Constants.h"
 #include "Helpers.h"
@@ -38,12 +36,12 @@ namespace PHEMlightdll {
         std::vector<std::vector<double> > normalizedPollutantMeasures;
 
         // init pollutant identifiers
-        for (int i = 0; i < headerLinePollutants.size(); i++) {
+        for (int i = 0; i < (int)headerLinePollutants.size(); i++) {
             pollutantIdentifier.push_back(headerLinePollutants[i]);
         }
 
         // initialize measures
-        for (int i = 0; i < headerLinePollutants.size(); i++) {
+        for (int i = 0; i < (int)headerLinePollutants.size(); i++) {
             pollutantMeasures.push_back(std::vector<double>());
             normalizedPollutantMeasures.push_back(std::vector<double>());
         }
@@ -52,7 +50,7 @@ namespace PHEMlightdll {
         _speedCurveRotational = std::vector<double>();
         _speedPatternRotational = std::vector<double>();
         _gearTransmissionCurve = std::vector<double>();
-        for (int i = 0; i < matrixSpeedRotational.size(); i++) {
+        for (int i = 0; i < (int)matrixSpeedRotational.size(); i++) {
             if (matrixSpeedRotational[i].size() != 3) {
                 return;
             }
@@ -65,7 +63,7 @@ namespace PHEMlightdll {
         // looping through matrix and assigning values for drag table
         _nNormTable = std::vector<double>();
         _dragNormTable = std::vector<double>();
-        for (int i = 0; i < normedDragTable.size(); i++) {
+        for (int i = 0; i < (int)normedDragTable.size(); i++) {
             if (normedDragTable[i].size() != 2) {
                 return;
             }
@@ -79,7 +77,7 @@ namespace PHEMlightdll {
         _normedCepCurveFC = std::vector<double>();
         _powerPatternFC = std::vector<double>();
         _normalizedPowerPatternFC = std::vector<double>();
-        for (int i = 0; i < matrixFC.size(); i++) {
+        for (int i = 0; i < (int)matrixFC.size(); i++) {
             if (matrixFC[i].size() != 2) {
                 return;
             }
@@ -112,9 +110,9 @@ namespace PHEMlightdll {
 
         _cepNormalizedCurvePollutants = std::map<std::string, std::vector<double> >();
 
-        int headerCount = headerLinePollutants.size();
-        for (int i = 0; i < matrixPollutants.size(); i++) {
-            for (int j = 0; j < matrixPollutants[i].size(); j++) {
+        int headerCount = (int)headerLinePollutants.size();
+        for (int i = 0; i < (int)matrixPollutants.size(); i++) {
+            for (int j = 0; j < (int)matrixPollutants[i].size(); j++) {
                 if (matrixPollutants[i].size() != headerCount + 1) {
                     return;
                 }
@@ -133,7 +131,7 @@ namespace PHEMlightdll {
         _cepCurvePollutants = std::map<std::string, std::vector<double> >();
         _idlingValuesPollutants = std::map<std::string, double>();
 
-        for (int i = 0; i < headerLinePollutants.size(); i++) {
+        for (int i = 0; i < (int)headerLinePollutants.size(); i++) {
             _cepCurvePollutants.insert(std::make_pair(pollutantIdentifier[i], pollutantMeasures[i]));
             _cepNormalizedCurvePollutants.insert(std::make_pair(pollutantIdentifier[i], normalizedPollutantMeasures[i]));
             _idlingValuesPollutants.insert(std::make_pair(pollutantIdentifier[i], idlingPollutants[i] * pollutantMultiplyer));
@@ -339,24 +337,6 @@ namespace PHEMlightdll {
         return Interpolate(speed, _speedPatternRotational[lowerIndex], _speedPatternRotational[upperIndex], _speedCurveRotational[lowerIndex], _speedCurveRotational[upperIndex]);
     }
 
-    double CEP::GetGearCoeffecient(double speed) {
-        //Declaration
-        int upperIndex;
-        int lowerIndex;
-
-        FindLowerUpperInPattern(lowerIndex, upperIndex, _speedPatternRotational, speed);
-        return Interpolate(speed, _speedPatternRotational[lowerIndex], _speedPatternRotational[upperIndex], _gearTransmissionCurve[lowerIndex], _gearTransmissionCurve[upperIndex]);
-    }
-
-    double CEP::GetDragCoeffecient(double nNorm) {
-        //Declaration
-        int upperIndex;
-        int lowerIndex;
-
-        FindLowerUpperInPattern(lowerIndex, upperIndex, _nNormTable, nNorm);
-        return Interpolate(nNorm, _nNormTable[lowerIndex], _nNormTable[upperIndex], _dragNormTable[lowerIndex], _dragNormTable[upperIndex]);
-    }
-
     void CEP::FindLowerUpperInPattern(int& lowerIndex, int& upperIndex, std::vector<double>& pattern, double value) {
         lowerIndex = 0;
         upperIndex = 0;
@@ -368,14 +348,14 @@ namespace PHEMlightdll {
         }
 
         if (value >= pattern.back()) {
-            lowerIndex = pattern.size() - 1;
-            upperIndex = pattern.size() - 1;
+            lowerIndex = (int)pattern.size() - 1;
+            upperIndex = (int)pattern.size() - 1;
             return;
         }
 
         // bisection search to find correct position in power pattern	
-        int middleIndex = (pattern.size() - 1) / 2;
-        upperIndex = pattern.size() - 1;
+        int middleIndex = ((int)pattern.size() - 1) / 2;
+        upperIndex = (int)pattern.size() - 1;
         lowerIndex = 0;
 
         while (upperIndex - lowerIndex > 1) {

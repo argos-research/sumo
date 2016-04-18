@@ -5,12 +5,12 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2014-14-10
-@version $Id: osmWebWizard.py 20164 2016-03-09 08:56:48Z behrisch $
+@version $Id: osmWebWizard.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Browser GUI for OSMget, OSMbuild, optionally randomTrips and SUMO GUI
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2014-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2014-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

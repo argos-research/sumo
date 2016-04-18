@@ -6,12 +6,12 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2009-03-26
-@version $Id: embedded.py 19904 2016-02-07 19:51:27Z behrisch $
+@version $Id: embedded.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Tutorial for traffic light control via the TraCI interface.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2015 DLR/TS, Germany
+Copyright (C) 2009-2016 DLR/TS, Germany
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

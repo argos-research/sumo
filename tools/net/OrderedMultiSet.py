@@ -3,14 +3,14 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2011-10-04
-@version $Id: OrderedMultiSet.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: OrderedMultiSet.py 20433 2016-04-13 08:00:14Z behrisch $
 
 multi set with insertion-order iteration
 based on OrderedSet by Raymond Hettinger (c) , MIT-License
 [http://code.activestate.com/recipes/576694/]
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2011-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2011-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 26.04.2004
-/// @version $Id: GUITriggerBuilder.h 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GUITriggerBuilder.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Builds trigger objects for guisim
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2004-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2004-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -104,36 +104,20 @@ protected:
 
     /** @brief Builds a bus stop
      *
-     * Simply calls the GUIBusStop constructor.
+     * Simply calls the GUIBusStop / GUIContainerStop constructor.
      *
-     * @param[in] net The net the bus stop belongs to
-     * @param[in] id The id of the bus stop
-     * @param[in] lines Names of the bus lines that halt on this bus stop
-     * @param[in] lane The lane the bus stop is placed on
-     * @param[in] frompos Begin position of the bus stop on the lane
-     * @param[in] topos End position of the bus stop on the lane
-     * @exception InvalidArgument If the bus stop can not be added to the net (is duplicate)
+     * @param[in] net The net the stop belongs to
+     * @param[in] id The id of the stop
+     * @param[in] lines Names of the lines that halt on this stop
+     * @param[in] lane The lane the stop is placed on
+     * @param[in] frompos Begin position of the stop on the lane
+     * @param[in] topos End position of the stop on the lane
+     * @param[in] element which kind of stop is to be built
+     * @exception InvalidArgument If the stop can not be added to the net (is duplicate)
      */
-    virtual void buildBusStop(MSNet& net, const std::string& id,
-                              const std::vector<std::string>& lines, MSLane* lane,
-                              SUMOReal frompos, SUMOReal topos);
-
-
-    /** @brief Builds a container stop
-     *
-     * Simply calls the GUIContainerStop constructor.
-     *
-     * @param[in] net The net the container stop belongs to
-     * @param[in] id The id of the container stop
-     * @param[in] lines Names of the lines that halt on this container stop
-     * @param[in] lane The lane the container stop is placed on
-     * @param[in] frompos Begin position of the container stop on the lane
-     * @param[in] topos End position of the container stop on the lane
-     * @exception InvalidArgument If the container stop can not be added to the net (is duplicate)
-     */
-    virtual void buildContainerStop(MSNet& net, const std::string& id,
+    virtual void buildStoppingPlace(MSNet& net, const std::string& id,
                                     const std::vector<std::string>& lines, MSLane* lane,
-                                    SUMOReal frompos, SUMOReal topos);
+                                    SUMOReal frompos, SUMOReal topos, const SumoXMLTag element);
 
 
     /** @brief Builds a charging station

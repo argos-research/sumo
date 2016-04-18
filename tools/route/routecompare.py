@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2008-03-25
-@version $Id: routecompare.py 20118 2016-03-02 09:54:08Z martintaraz $
+@version $Id: routecompare.py 20433 2016-04-13 08:00:14Z behrisch $
 
 This script compares two route sets by calculating
 a similarity for any two routes based on the number of common edges
@@ -14,7 +14,7 @@ Optionally a district file may be given, then only routes with
 the same origin and destination district are matched.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

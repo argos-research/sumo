@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Friedemann Wesner
 /// @date    Sept 2002
-/// @version $Id: MSTrafficLightLogic.h 20252 2016-03-18 09:33:46Z namdre $
+/// @version $Id: MSTrafficLightLogic.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The parent class for traffic light logics
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: MSPerson.cpp 19604 2015-12-13 20:49:24Z behrisch $
+/// @version $Id: MSPerson.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The class for modelling person-movements
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -264,8 +264,7 @@ MSPerson::MSPersonStage_Driving::getPosition(SUMOTime /* now */) const {
         }
         return getEdgePosition(myWaitingEdge, myWaitingPos, MSPModel::SIDEWALK_OFFSET);
     }
-    /// @bug this fails while vehicle is driving across a junction
-    return myVehicle->getEdge()->getLanes()[0]->getShape().positionAtOffset(myVehicle->getPositionOnLane());
+    return myVehicle->getPosition();
 }
 
 

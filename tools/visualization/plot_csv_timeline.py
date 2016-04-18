@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Laura Bieker
 @date    2014-01-14
-@version $Id: plot_csv_timeline.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: plot_csv_timeline.py 20433 2016-04-13 08:00:14Z behrisch $
 
 
 This script plots selected columns from a given .csv file (';'-separated).
@@ -13,7 +13,7 @@ matplotlib (http://matplotlib.org/) has to be installed for this purpose
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2014-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2014-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

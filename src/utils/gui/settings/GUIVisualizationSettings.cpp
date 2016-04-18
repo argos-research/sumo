@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVisualizationSettings.cpp 20308 2016-03-27 19:20:25Z luecken $
+/// @version $Id: GUIVisualizationSettings.cpp 20439 2016-04-13 11:39:22Z namdre $
 ///
 // Stores the information about how to visualize structures
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -224,8 +224,15 @@ GUIVisualizationSettings::GUIVisualizationSettings()
     scheme.addColor(RGBColor::BLUE, (SUMOReal)(1));
     scheme.addColor(RGBColor::MAGENTA, (SUMOReal)(1.25));
     laneColorer.addScheme(scheme);
+    scheme = GUIColorScheme("by routing device assumed speed ", RGBColor::RED);
+    scheme.addColor(RGBColor::YELLOW, (SUMOReal)(30 / 3.6));
+    scheme.addColor(RGBColor::GREEN, (SUMOReal)(55 / 3.6));
+    scheme.addColor(RGBColor::CYAN, (SUMOReal)(80 / 3.6));
+    scheme.addColor(RGBColor::BLUE, (SUMOReal)(120 / 3.6));
+    scheme.addColor(RGBColor::MAGENTA, (SUMOReal)(150 / 3.6));
+    laneColorer.addScheme(scheme);
     scheme = GUIColorScheme("by electricity consumption", RGBColor::GREEN);
-    scheme.addColor(RGBColor::RED, (SUMOReal)(.005 / 7.5 * 100.));
+    scheme.addColor(RGBColor::RED, (SUMOReal)(1 / 7.5 / 5.));
     laneColorer.addScheme(scheme);
 
 
@@ -251,7 +258,7 @@ GUIVisualizationSettings::GUIVisualizationSettings()
     scheme.addColor(RGBColor::YELLOW, (SUMOReal)200);
     scheme.addColor(RGBColor::RED, (SUMOReal)300);
     vehicleColorer.addScheme(scheme);
-    scheme = GUIColorScheme("by accumulated waiting time (% of waiting in 100 secs)", RGBColor::BLUE); // XXX: can we tie the number (100secs) to MSGlobals::gWaitingTimeMemory? (simply importing MSGlobals.h fails (Leo))
+    scheme = GUIColorScheme("by accumulated waiting time", RGBColor::BLUE);
     scheme.addColor(RGBColor::CYAN, (SUMOReal)25);
     scheme.addColor(RGBColor::GREEN, (SUMOReal)50);
     scheme.addColor(RGBColor::YELLOW, (SUMOReal)75);
@@ -328,10 +335,10 @@ GUIVisualizationSettings::GUIVisualizationSettings()
     scheme.addColor(RGBColor::YELLOW, (SUMOReal)200);
     scheme.addColor(RGBColor::RED, (SUMOReal)300);
     vehicleColorer.addScheme(scheme);
-    vehicleColorer.addScheme(GUIColorScheme("random", RGBColor::YELLOW, "", true));
     scheme = GUIColorScheme("by electricity consumption", RGBColor::GREEN);
-    scheme.addColor(RGBColor::RED, (SUMOReal).005);
+    scheme.addColor(RGBColor::RED, (SUMOReal)5);
     vehicleColorer.addScheme(scheme);
+    vehicleColorer.addScheme(GUIColorScheme("random", RGBColor::YELLOW, "", true));
 
     /// add person coloring schemes
     personColorer.addScheme(GUIColorScheme("given person/type color", RGBColor::YELLOW, "", true));
@@ -485,7 +492,7 @@ GUIVisualizationSettings::GUIVisualizationSettings()
         scheme.addColor(10, (SUMOReal)(2));
         laneScaler.addScheme(scheme);
         scheme = GUIScaleScheme("by electricity consumption", 0);
-        scheme.addColor(10, (SUMOReal)(.005 / 7.5 * 100.));
+        scheme.addColor(10, (SUMOReal)(1 / 7.5 / 5.));
         laneScaler.addScheme(scheme);
     }
 

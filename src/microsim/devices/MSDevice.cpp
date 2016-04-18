@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    14.08.2013
-/// @version $Id: MSDevice.cpp 18686 2015-08-21 14:52:03Z namdre $
+/// @version $Id: MSDevice.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Abstract in-vehicle device
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2013-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -35,8 +35,6 @@
 #include "MSDevice_Vehroutes.h"
 #include "MSDevice_Tripinfo.h"
 #include "MSDevice_Routing.h"
-#include "MSDevice_Person.h"
-#include "MSDevice_Container.h"
 #include "MSDevice_Emissions.h"
 #include "MSDevice_BTreceiver.h"
 #include "MSDevice_BTsender.h"

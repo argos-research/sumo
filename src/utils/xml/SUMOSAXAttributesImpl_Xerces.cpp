@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: SUMOSAXAttributesImpl_Xerces.cpp 18239 2015-04-20 11:37:12Z behrisch $
+/// @version $Id: SUMOSAXAttributesImpl_Xerces.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Encapsulated Xerces-SAX-attributes
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

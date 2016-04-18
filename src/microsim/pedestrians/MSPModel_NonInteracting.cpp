@@ -2,12 +2,12 @@
 /// @file    MSPModel_NonInteracting.h
 /// @author  Jakob Erdmann
 /// @date    Mon, 13 Jan 2014
-/// @version $Id: MSPModel_NonInteracting.cpp 19230 2015-10-30 21:59:38Z behrisch $
+/// @version $Id: MSPModel_NonInteracting.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The pedestrian following model (prototype)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2014-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2014-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -145,7 +145,7 @@ MSPModel_NonInteracting::PState::getEdgePos(const MSPerson::MSPersonStage_Walkin
 
 Position
 MSPModel_NonInteracting::PState::getPosition(const MSPerson::MSPersonStage_Walking& stage, SUMOTime now) const {
-    const MSLane* lane = getSidewalk(stage.getEdge());
+    const MSLane* lane = getSidewalk<MSEdge, MSLane>(stage.getEdge());
     const SUMOReal lateral_offset = lane->allowsVehicleClass(SVC_PEDESTRIAN) ? 0 : SIDEWALK_OFFSET;
     return stage.getLanePosition(lane, getEdgePos(stage, now), lateral_offset);
 }

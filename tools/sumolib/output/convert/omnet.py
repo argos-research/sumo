@@ -3,13 +3,13 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2013-01-15
-@version $Id: omnet.py 20165 2016-03-09 09:19:13Z behrisch $
+@version $Id: omnet.py 20433 2016-04-13 08:00:14Z behrisch $
 
 This module includes functions for converting SUMO's fcd-output into
 data files read by OMNET.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2013-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

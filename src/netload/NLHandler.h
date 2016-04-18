@@ -5,12 +5,12 @@
 /// @author  Clemens Honomichl
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NLHandler.h 19451 2015-11-27 13:39:24Z namdre $
+/// @version $Id: NLHandler.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The XML-Handler for network loading
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

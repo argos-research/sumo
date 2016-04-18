@@ -4,12 +4,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Wed, 12 Dez 2001
-/// @version $Id: MSRightOfWayJunction.h 18152 2015-03-26 07:54:46Z namdre $
+/// @version $Id: MSRightOfWayJunction.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A junction with right-of-way - rules
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

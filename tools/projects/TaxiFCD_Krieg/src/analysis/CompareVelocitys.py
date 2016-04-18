@@ -6,12 +6,12 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-04-29
-@version $Id: CompareVelocitys.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: CompareVelocitys.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Creates a file with a comparison of velocities between Taxi-FCD and vtypeprobe.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

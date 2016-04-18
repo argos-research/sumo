@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2006
-/// @version $Id: GUITexturesHelper.h 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GUITexturesHelper.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Global storage for textures; manages and draws them
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2006-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2006-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -2,12 +2,12 @@
 /// @file    MSRailCrossing.cpp
 /// @author  Jakob Erdmann
 /// @date    Dez 2015
-/// @version $Id: MSRailCrossing.cpp 19651 2015-12-18 08:50:54Z behrisch $
+/// @version $Id: MSRailCrossing.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A rail signal logic
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -10,12 +10,12 @@
 /// @author  Michael Behrisch
 /// @author  Axel Wegener
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSVehicle.h 20313 2016-03-28 22:17:48Z luecken $
+/// @version $Id: MSVehicle.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Representation of a vehicle in the micro simulation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -66,8 +66,7 @@ class MSDevice;
 class MSEdgeWeightsStorage;
 class OutputDevice;
 class Position;
-class MSDevice_Person;
-class MSDevice_Container;
+class MSDevice_Transportable;
 class MSContainer;
 class MSJunction;
 
@@ -155,12 +154,12 @@ public:
 
         // maximal memory time stored
         SUMOTime getMemorySize() const {
-        	return myMemorySize;
+           return myMemorySize;
         }
 
         // maximal memory time stored
         const waitingIntervalList& getWaitingIntervals() const {
-        	return myWaitingIntervals;
+           return myWaitingIntervals;
         }
 
     private:
@@ -833,10 +832,10 @@ public:
     void addContainer(MSTransportable* container);
 
     /// @brief retrieve riding persons
-    std::vector<MSTransportable*> getSortedPersons() const;
+    const std::vector<MSTransportable*>& getPersons() const;
 
     /// @brief retrieve riding containers
-    std::vector<MSTransportable*> getSortedContainers() const;
+    const std::vector<MSTransportable*>& getContainers() const;
 
     /** @brief Returns the number of persons
      * @return The number of passengers on-board
@@ -1290,10 +1289,10 @@ protected:
     std::list<Stop> myStops;
 
     /// @brief The passengers this vehicle may have
-    MSDevice_Person* myPersonDevice;
+    MSDevice_Transportable* myPersonDevice;
 
     /// @brief The containers this vehicle may have
-    MSDevice_Container* myContainerDevice;
+    MSDevice_Transportable* myContainerDevice;
 
     /// @brief The current acceleration after dawdling in m/s
     SUMOReal myAcceleration;
@@ -1417,18 +1416,6 @@ protected:
                        const SUMOReal seen, DriveProcessItem* const lastLink,
                        const MSLane* const lane, SUMOReal& v, SUMOReal& vLinkPass,
                        SUMOReal distToCrossing = -1) const;
-
-    /** @class transportable_by_position_sorter
-     * @brief Sorts transportables by their positions
-     */
-    class transportable_by_id_sorter {
-    public:
-        /// @brief constructor
-        explicit transportable_by_id_sorter() { }
-
-        /// @brief comparing operator
-        int operator()(const MSTransportable* const c1, const MSTransportable* const c2) const;
-    };
 
 
 

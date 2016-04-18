@@ -3,12 +3,12 @@
 @file    runner.py
 @author  Daniel Krajzewicz
 @date    2007-07-26
-@version $Id: runner.py 19977 2016-02-14 15:58:13Z behrisch $
+@version $Id: runner.py 20433 2016-04-13 08:00:14Z behrisch $
 
 test different traffic_light types
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2007-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

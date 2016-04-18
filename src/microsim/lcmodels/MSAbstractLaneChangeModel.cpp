@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 29.04.2005
-/// @version $Id: MSAbstractLaneChangeModel.cpp 19768 2016-01-21 07:15:29Z namdre $
+/// @version $Id: MSAbstractLaneChangeModel.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Interface for lane-change models
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

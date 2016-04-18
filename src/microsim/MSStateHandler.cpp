@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Thu, 13 Dec 2012
-/// @version $Id: MSStateHandler.cpp 19791 2016-01-25 14:59:17Z namdre $
+/// @version $Id: MSStateHandler.cpp 20447 2016-04-14 13:02:24Z luecken $
 ///
 // Parser and output filter for routes and vehicles state saving and loading
 /****************************************************************************/
@@ -68,6 +68,7 @@ MSStateHandler::MSStateHandler(const std::string& file, const SUMOTime offset) :
 
 
 MSStateHandler::~MSStateHandler() {
+	delete myCurrentVType;
 }
 
 
@@ -80,13 +81,13 @@ MSStateHandler::saveState(const std::string& file, SUMOTime step) {
     MSNet::getInstance()->getVehicleControl().saveState(out);
     if (MSGlobals::gUseMesoSim) {
         for (size_t i = 0; i < MSEdge::dictSize(); i++) {
-            for (MESegment* s = MSGlobals::gMesoNet->getSegmentForEdge(*MSEdge::dictionary(i)); s != 0; s = s->getNextSegment()) {
+            for (MESegment* s = MSGlobals::gMesoNet->getSegmentForEdge(*MSEdge::getAllEdges()[i]); s != 0; s = s->getNextSegment()) {
                 s->saveState(out);
             }
         }
     } else {
         for (size_t i = 0; i < MSEdge::dictSize(); i++) {
-            const std::vector<MSLane*>& lanes = MSEdge::dictionary(i)->getLanes();
+            const std::vector<MSLane*>& lanes = MSEdge::getAllEdges()[i]->getLanes();
             for (std::vector<MSLane*>::const_iterator it = lanes.begin(); it != lanes.end(); ++it) {
                 (*it)->saveState(out);
             }
@@ -199,9 +200,9 @@ MSStateHandler::myStartElement(int element, const SUMOSAXAttributes& attrs) {
         }
         case SUMO_TAG_SEGMENT: {
             if (mySegment == 0) {
-                mySegment = MSGlobals::gMesoNet->getSegmentForEdge(*MSEdge::dictionary(0));
+                mySegment = MSGlobals::gMesoNet->getSegmentForEdge(*MSEdge::getAllEdges()[0]);
             } else if (mySegment->getNextSegment() == 0) {
-                mySegment = MSGlobals::gMesoNet->getSegmentForEdge(*MSEdge::dictionary(mySegment->getEdge().getNumericalID() + 1));
+                mySegment = MSGlobals::gMesoNet->getSegmentForEdge(*MSEdge::getAllEdges()[mySegment->getEdge().getNumericalID() + 1]);
             } else {
                 mySegment = mySegment->getNextSegment();
             }
@@ -210,7 +211,7 @@ MSStateHandler::myStartElement(int element, const SUMOSAXAttributes& attrs) {
         }
         case SUMO_TAG_LANE: {
             myEdgeAndLane.second++;
-            if (myEdgeAndLane.second == (int)MSEdge::dictionary(myEdgeAndLane.first)->getLanes().size()) {
+            if (myEdgeAndLane.second == (int)MSEdge::getAllEdges()[myEdgeAndLane.first]->getLanes().size()) {
                 myEdgeAndLane.first++;
                 myEdgeAndLane.second = 0;
             }
@@ -222,7 +223,7 @@ MSStateHandler::myStartElement(int element, const SUMOSAXAttributes& attrs) {
             if (MSGlobals::gUseMesoSim) {
                 mySegment->loadState(vehIDs, MSNet::getInstance()->getVehicleControl(), TplConvert::_2long(attrs.getString(SUMO_ATTR_TIME).c_str()) - myOffset, myQueIndex++);
             } else {
-                MSEdge::dictionary(myEdgeAndLane.first)->getLanes()[myEdgeAndLane.second]->loadState(
+                MSEdge::getAllEdges()[myEdgeAndLane.first]->getLanes()[myEdgeAndLane.second]->loadState(
                     vehIDs, MSNet::getInstance()->getVehicleControl());
             }
             break;

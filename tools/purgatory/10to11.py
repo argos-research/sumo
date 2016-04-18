@@ -3,12 +3,12 @@
 @file    10to11.py
 @author  Michael Behrisch
 @date    2009-06-09
-@version $Id: 10to11.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: 10to11.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Transfers configuration files from character data to attribute style.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

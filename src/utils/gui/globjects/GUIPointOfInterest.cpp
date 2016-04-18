@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    June 2006
-/// @version $Id: GUIPointOfInterest.cpp 19974 2016-02-12 13:58:46Z namdre $
+/// @version $Id: GUIPointOfInterest.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The GUI-version of a point of interest
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

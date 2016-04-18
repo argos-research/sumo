@@ -3,12 +3,12 @@
 /// @file    ShapeHandler.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2015
-/// @version $Id: ShapeHandler.cpp 19234 2015-11-02 11:26:19Z behrisch $
+/// @version $Id: ShapeHandler.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The XML-Handler for network loading
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

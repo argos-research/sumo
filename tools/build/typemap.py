@@ -3,14 +3,14 @@
 @file    typemap.py
 @author  Michael Behrisch
 @date    2015-07-06
-@version $Id: typemap.py 20331 2016-04-02 20:45:24Z behrisch $
+@version $Id: typemap.py 20433 2016-04-13 08:00:14Z behrisch $
 
 This script rebuilds "../../src/netimport/typemap.h", the file 
 representing the default typemaps.
 It does this by parsing the data from the sumo data dir.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2015-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2015-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

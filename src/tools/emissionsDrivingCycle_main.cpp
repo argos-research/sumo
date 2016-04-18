@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Wed, 21.08.2013
-/// @version $Id: emissionsDrivingCycle_main.cpp 20253 2016-03-18 12:49:11Z behrisch $
+/// @version $Id: emissionsDrivingCycle_main.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Main for an emissions calculator
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2013-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -173,7 +173,7 @@ main(int argc, char** argv) {
         std::ostream* sumOut = 0;
         if (oc.isSet("sum-output")) {
             sumOut = new std::ofstream(oc.getString("sum-output").c_str());
-            (*sumOut) << "Vehicle,Cycle,Time,Speed,Gradient,Acceleration,FC,CO2,NOx,CO,HC,PM" << std::endl;
+            (*sumOut) << "Vehicle,Cycle,Time,Speed,Gradient,Acceleration,FC,FCel,CO2,NOx,CO,HC,PM" << std::endl;
         }
 
         const SUMOEmissionClass defaultClass = PollutantsInterface::getClassByName(oc.getString("emission-class"));

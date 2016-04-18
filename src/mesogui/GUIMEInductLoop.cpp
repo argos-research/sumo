@@ -2,12 +2,12 @@
 /// @file    GUIMEInductLoop.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Thu, 21.07.2005
-/// @version $Id: GUIMEInductLoop.cpp 19820 2016-01-28 08:48:03Z bieker $
+/// @version $Id: GUIMEInductLoop.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The gui-version of the MEInductLoop
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

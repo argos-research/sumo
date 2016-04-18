@@ -2,13 +2,13 @@
 /// @file    GNELoadThread.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNELoadThread.cpp 18845 2015-09-17 12:50:55Z behrisch $
+/// @version $Id: GNELoadThread.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The thread that performs the loading of a Netedit-net (adapted from
 // GUILoadThread)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

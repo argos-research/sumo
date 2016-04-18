@@ -2,12 +2,12 @@
 /// @file    OutputDevice_String.cpp
 /// @author  Michael Behrisch
 /// @date    2009
-/// @version $Id: OutputDevice_String.cpp 18375 2015-05-15 07:05:22Z behrisch $
+/// @version $Id: OutputDevice_String.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // An output device that encapsulates a stringstream
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2009-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

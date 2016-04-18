@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdge.cpp 20298 2016-03-24 08:57:26Z namdre $
+/// @version $Id: NBEdge.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Methods for the representation of a single edge
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -366,6 +366,15 @@ NBEdge::init(unsigned int noLanes, bool tryIgnoreNodePositions, const std::strin
     // prepare container
     myLength = myFrom->getPosition().distanceTo(myTo->getPosition());
     assert(myGeom.size() >= 2);
+    if (myLanes.size() > noLanes) {
+        // remove connections targeting the removed lanes
+        const EdgeVector& incoming = myFrom->getIncomingEdges();
+        for (EdgeVector::const_iterator i = incoming.begin(); i != incoming.end(); i++) {
+            for (int lane = noLanes; lane < (int)myLanes.size(); ++lane) {
+                (*i)->removeFromConnections(this, -1, lane);
+            }
+        }
+    }
     myLanes.clear();
     for (unsigned int i = 0; i < noLanes; i++) {
         myLanes.push_back(Lane(this, origID));
@@ -1584,6 +1593,10 @@ NBEdge::recheckLanes() {
                         i = myConnections.erase(i);
                     }
                 }
+            } else if (isRailway(getPermissions(c.fromLane)) && isRailway(c.toEdge->getPermissions(c.toLane))
+                    && isTurningDirectionAt(c.toEdge))  {
+                // do not allow sharp rail turns
+                i = myConnections.erase(i);
             } else {
                 ++i;
             }

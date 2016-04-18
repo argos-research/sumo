@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Wed, 12 Dez 2001
-/// @version $Id: MSBitSetLogic.h 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: MSBitSetLogic.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Container for holding a right-of-way matrix
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

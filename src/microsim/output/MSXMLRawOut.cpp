@@ -6,12 +6,12 @@
 /// @author  Bjoern Hendriks
 /// @author  Michael Behrisch
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSXMLRawOut.cpp 20272 2016-03-22 08:07:46Z namdre $
+/// @version $Id: MSXMLRawOut.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Realises dumping the complete network state
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -160,11 +160,11 @@ MSXMLRawOut::writeVehicle(OutputDevice& of, const MSBaseVehicle& veh) {
             if (containerNumber > 0) {
                 of.writeAttr(SUMO_ATTR_CONTAINER_NUMBER, containerNumber);
             }
-            const std::vector<MSTransportable*>& persons = microVeh.getSortedPersons();
+            const std::vector<MSTransportable*>& persons = microVeh.getPersons();
             for (std::vector<MSTransportable*>::const_iterator it_p = persons.begin(); it_p != persons.end(); ++it_p) {
                 writeTransportable(of, *it_p, SUMO_TAG_PERSON);
             }
-            const std::vector<MSTransportable*>& containers = microVeh.getSortedContainers();
+            const std::vector<MSTransportable*>& containers = microVeh.getContainers();
             for (std::vector<MSTransportable*>::const_iterator it_c = containers.begin(); it_c != containers.end(); ++it_c) {
                 writeTransportable(of, *it_c, SUMO_TAG_CONTAINER);
             }

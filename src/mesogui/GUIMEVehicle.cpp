@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIMEVehicle.cpp 20197 2016-03-15 14:16:49Z namdre $
+/// @version $Id: GUIMEVehicle.cpp 20439 2016-04-13 11:39:22Z namdre $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -69,7 +69,7 @@ GUIParameterTableWindow*
 GUIMEVehicle::getParameterWindow(GUIMainWindow& app,
                                GUISUMOAbstractView&) {
     GUIParameterTableWindow* ret =
-        new GUIParameterTableWindow(app, *this, 40);
+        new GUIParameterTableWindow(app, *this, 20);
     // add items
     ret->mkItem("edge [id]", false, getEdge()->getID());
     ret->mkItem("segment [#]", false, getSegment()->getIndex());
@@ -134,8 +134,18 @@ GUIMEVehicle::getParameterWindow(GUIMainWindow& app,
     ret->mkItem("event time [s]", true, new FunctionBinding<GUIMEVehicle, SUMOReal>(this, &MEVehicle::getEventTimeSeconds));
     ret->mkItem("entry time [s]", true, new FunctionBinding<GUIMEVehicle, SUMOReal>(this, &MEVehicle::getLastEntryTimeSeconds));
     ret->mkItem("block time [s]", true, new FunctionBinding<GUIMEVehicle, SUMOReal>(this, &MEVehicle::getBlockTimeSeconds));
+    // close building
+    ret->closeBuilding();
+    return ret;
+}
 
-    ret->mkItem("", false, "");
+
+GUIParameterTableWindow*
+GUIMEVehicle::getTypeParameterWindow(GUIMainWindow& app,
+                               GUISUMOAbstractView&) {
+    GUIParameterTableWindow* ret =
+        new GUIParameterTableWindow(app, *this, 10);
+    // add items
     ret->mkItem("Type Information:", false, "");
     ret->mkItem("type [id]", false, myType->getID());
     ret->mkItem("length", false, myType->getLength());
@@ -188,38 +198,38 @@ GUIMEVehicle::getColorValue(size_t activeScheme) const {
             return getSpeed();
         case 9:
             return getWaitingSeconds();
-        case 10:
-            return 0; // invalid getLastLaneChangeOffset();
         case 11:
-            return getSegment()->getEdge().getVehicleMaxSpeed(this);
+            return 0; // invalid getLastLaneChangeOffset();
         case 12:
-            return 0; // invalid getCO2Emissions();
+            return getSegment()->getEdge().getVehicleMaxSpeed(this);
         case 13:
-            return 0; // invalid getCOEmissions();
+            return 0; // invalid getCO2Emissions();
         case 14:
-            return 0; // invalid getPMxEmissions();
+            return 0; // invalid getCOEmissions();
         case 15:
-            return 0; // invalid  getNOxEmissions();
+            return 0; // invalid getPMxEmissions();
         case 16:
-            return 0; // invalid getHCEmissions();
+            return 0; // invalid  getNOxEmissions();
         case 17:
-            return 0; // invalid getFuelConsumption();
+            return 0; // invalid getHCEmissions();
         case 18:
+            return 0; // invalid getFuelConsumption();
+        case 19:
             return 0; // invalid getHarmonoise_NoiseEmissions();
-        case 19: // !!! unused!?
+        case 20: // !!! unused!?
             if (getNumberReroutes() == 0) {
                 return -1;
             }
             return getNumberReroutes();
-        case 20:
-            return gSelected.isSelected(GLO_VEHICLE, getGlID());
         case 21:
-            return 0; // invalid getBestLaneOffset();
+            return gSelected.isSelected(GLO_VEHICLE, getGlID());
         case 22:
-            return 0; // invalid getAcceleration();
+            return 0; // invalid getBestLaneOffset();
         case 23:
-            return 0; // invalid getTimeGap();
+            return 0; // invalid getAcceleration();
         case 24:
+            return 0; // invalid getTimeGap();
+        case 25:
             return STEPS2TIME(getDepartDelay());
     }
     return 0;

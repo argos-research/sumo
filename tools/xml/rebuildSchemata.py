@@ -3,12 +3,12 @@
 @file    rebuildSchemata.py
 @author  Michael Behrisch
 @date    2011-07-11
-@version $Id: rebuildSchemata.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: rebuildSchemata.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Let all SUMO binaries write the schema for their config
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2011-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2011-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

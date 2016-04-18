@@ -6,7 +6,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-04-08
-@version $Id: FCDvsCompleteRoute.py 20036 2016-02-19 14:34:07Z behrisch $
+@version $Id: FCDvsCompleteRoute.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Compares the FCD-route of an taxi with the generated route which is used in the simulation.
 The output data can be visualized with the script My_mpl_dump_onNet based on mpl_dump_onNet from Daniel.
@@ -15,7 +15,7 @@ The output data can be visualized with the script My_mpl_dump_onNet based on mpl
 Secondly the average of added Edges per route will be calculate (avg=True). 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

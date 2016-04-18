@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIBaseVehicle.cpp 19974 2016-02-12 13:58:46Z namdre $
+/// @version $Id: GUIBaseVehicle.cpp 20439 2016-04-13 11:39:22Z namdre $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -53,8 +53,6 @@
 #include <microsim/MSVehicleControl.h>
 #include <microsim/lcmodels/MSAbstractLaneChangeModel.h>
 #include <microsim/devices/MSDevice_Vehroutes.h>
-#include <microsim/devices/MSDevice_Person.h>
-#include <microsim/devices/MSDevice_Container.h>
 #include <microsim/devices/MSDevice_BTreceiver.h>
 #include <gui/GUIApplicationWindow.h>
 #include <gui/GUIGlobals.h>
@@ -318,7 +316,8 @@ GUIBaseVehicle::getPopUpMenu(GUIMainWindow& app,
 
     new FXMenuSeparator(ret);
     //
-    buildShowParamsPopupEntry(ret);
+    buildShowParamsPopupEntry(ret, false);
+    buildShowTypeParamsPopupEntry(ret);
     buildPositionCopyEntry(ret, false);
     return ret;
 }
@@ -1092,7 +1091,7 @@ GUIBaseVehicle::setFunctionalColor(size_t activeScheme, const MSBaseVehicle* veh
             GLHelper::setColor(RGBColor::fromHSV(hue, sat, 1.));
             return true;
         }
-        case 25: { // color randomly (by pointer)
+        case 27: { // color randomly (by pointer)
             const SUMOReal hue = (long)veh % 360; // [0-360]
             const SUMOReal sat = (((long)veh / 360) % 67) / 100.0 + 0.33; // [0.33-1]
             GLHelper::setColor(RGBColor::fromHSV(hue, sat, 1.));
@@ -1170,4 +1169,3 @@ GUIBaseVehicle::getSeatPosition(size_t personIndex) const {
 
 
 /****************************************************************************/
-

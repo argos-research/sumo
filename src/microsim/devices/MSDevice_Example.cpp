@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    11.06.2013
-/// @version $Id: MSDevice_Example.cpp 18361 2015-05-11 11:50:06Z namdre $
+/// @version $Id: MSDevice_Example.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A device which stands as an implementation example and which outputs movereminder calls
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2013-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

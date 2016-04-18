@@ -4,12 +4,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBLinkPossibilityMatrix.h 19395 2015-11-20 12:22:20Z namdre $
+/// @version $Id: NBLinkPossibilityMatrix.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A matric to describe whether two links are foes to each other
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

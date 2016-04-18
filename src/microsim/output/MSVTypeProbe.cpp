@@ -5,12 +5,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Wed, 24.10.2007
-/// @version $Id: MSVTypeProbe.cpp 18293 2015-04-24 10:11:37Z namdre $
+/// @version $Id: MSVTypeProbe.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Writes positions of vehicles that have a certain (named) type
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

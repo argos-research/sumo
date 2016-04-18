@@ -2,13 +2,13 @@
 /// @file    GNEPOI.h
 /// @author  Jakob Erdmann
 /// @date    Sept 2012
-/// @version $Id: GNEPOI.h 18830 2015-09-11 08:57:34Z behrisch $
+/// @version $Id: GNEPOI.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A class for visualizing and editing POIS in netedit (adapted from
 // GUIPointOfInterest and NLHandler)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

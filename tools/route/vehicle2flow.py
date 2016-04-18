@@ -3,14 +3,14 @@
 @file    vehicle2flow.py
 @author  Michael Behrisch
 @date    2012-11-15
-@version $Id: vehicle2flow.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: vehicle2flow.py 20433 2016-04-13 08:00:14Z behrisch $
 
 This script replaces all vehicle definitions in a route file by
 flow definitions, adding an XML ntity for the repeat interval for
 easy later modification.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2013-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

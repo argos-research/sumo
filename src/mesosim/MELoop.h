@@ -2,12 +2,12 @@
 /// @file    MELoop.h
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MELoop.h 19820 2016-01-28 08:48:03Z bieker $
+/// @version $Id: MELoop.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The main mesocopic simulation loop
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

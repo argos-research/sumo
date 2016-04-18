@@ -5,12 +5,12 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2010-03-06
-@version $Id: randomTrips.py 20293 2016-03-23 11:29:51Z behrisch $
+@version $Id: randomTrips.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Generates random trips for the given network.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2010-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2010-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -309,7 +309,7 @@ def main(options):
         return idx + 1
 
     with open(options.tripfile, 'w') as fouttrips:
-        sumolib.writeXMLHeader(fouttrips, "$Id: randomTrips.py 20293 2016-03-23 11:29:51Z behrisch $")
+        sumolib.writeXMLHeader(fouttrips, "$Id: randomTrips.py 20433 2016-04-13 08:00:14Z behrisch $")
         fouttrips.write("<trips>\n")
         if options.vehicle_class:
             fouttrips.write('    <vType id="%s" vClass="%s" />\n' %

@@ -5,12 +5,12 @@
 /// @author  Jakob Erdmann
 /// @author  Yun-Pang Floetteroed
 /// @date    Sept 2002
-/// @version $Id: RORoute.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: RORoute.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A complete router's route
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -75,6 +75,13 @@ public:
             const ConstROEdgeVector& route, const RGBColor* const color,
             const std::vector<SUMOVehicleParameter::Stop>& stops);
 
+
+    /** @brief Constructor
+     *
+     * @param[in] id The route's id
+     * @param[in] route The list of edges the route is made of
+	 */
+    RORoute(const std::string& id, const ConstROEdgeVector& route);
 
     /** @brief Copy constructor
      *
@@ -183,6 +190,16 @@ public:
      */
     const std::vector<SUMOVehicleParameter::Stop>& getStops() const {
         return myStops;
+    }
+
+    /** @brief Adapts the until time of all stops by the given offset
+     */
+    void addStopOffset(const SUMOTime offset) {
+        for (std::vector<SUMOVehicleParameter::Stop>::iterator stop = myStops.begin(); stop != myStops.end(); ++stop) {
+            if (stop->until >= 0) {
+                stop->until += offset;
+            }
+        }
     }
 
 private:

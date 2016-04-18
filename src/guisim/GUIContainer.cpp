@@ -3,12 +3,12 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Wed, 01.08.2014
-/// @version $Id: GUIContainer.cpp 19234 2015-11-02 11:26:19Z behrisch $
+/// @version $Id: GUIContainer.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A MSContainer extended by some values for usage within the gui
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -158,11 +158,7 @@ Boundary
 GUIContainer::getCenteringBoundary() const {
     Boundary b;
     // ensure that the vehicle is drawn, otherwise myPositionInVehicle will not be updated
-    if (getCurrentStageType() == DRIVING && !isWaiting4Vehicle()) {
-        b.add(getVehicle()->getPosition());
-    } else {
-        b.add(getPosition());
-    }
+    b.add(getPosition());
     b.grow(20);
     return b;
 }
@@ -173,6 +169,9 @@ GUIContainer::drawGL(const GUIVisualizationSettings& s) const {
     glPushName(getGlID());
     glPushMatrix();
     Position p1 = getPosition();
+    if (getCurrentStageType() == DRIVING && !isWaiting4Vehicle()) {
+        p1 = myPositionInVehicle;
+    }
     glTranslated(p1.x(), p1.y(), getType());
     glRotated(90, 0, 0, 1);
     // XXX use container specific gui settings
@@ -335,9 +334,6 @@ GUIContainer::getEdgePos() const {
 Position
 GUIContainer::getPosition() const {
     AbstractMutex::ScopedLocker locker(myLock);
-    if (getCurrentStageType() == DRIVING && !isWaiting4Vehicle()) {
-        return myPositionInVehicle;
-    }
     if (getCurrentStageType() == WAITING && getEdge()->getPermissions() == SVC_SHIP) {
         MSLane* lane = getEdge()->getLanes().front();   //the most right lane of the water way
         PositionVector laneShape = lane->getShape();

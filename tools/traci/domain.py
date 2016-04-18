@@ -7,12 +7,12 @@
 @author  Daniel Krajzewicz
 @author  Jakob Erdmann
 @date    2008-10-09
-@version $Id: domain.py 20202 2016-03-15 18:23:24Z behrisch $
+@version $Id: domain.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Python implementation of the TraCI interface.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

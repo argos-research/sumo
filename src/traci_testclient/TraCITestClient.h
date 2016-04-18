@@ -5,12 +5,12 @@
 /// @author  Axel Wegener
 /// @author  Michael Behrisch
 /// @date    2008/04/07
-/// @version $Id: TraCITestClient.h 19362 2015-11-17 10:21:50Z namdre $
+/// @version $Id: TraCITestClient.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 /// A test execution class
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

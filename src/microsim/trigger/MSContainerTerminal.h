@@ -3,13 +3,13 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Mon, 13.12.2005
-/// @version $Id: MSContainerTerminal.h 18096 2015-03-17 09:50:59Z behrisch $
+/// @version $Id: MSContainerTerminal.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A collection of stops for container where containers can be transhiped
 // from one stop to another within the terminal.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

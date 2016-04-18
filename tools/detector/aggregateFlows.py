@@ -3,7 +3,7 @@
 @file    aggregateFlows.py
 @author  Michael Behrisch
 @date    2007-06-28
-@version $Id: aggregateFlows.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: aggregateFlows.py 20433 2016-04-13 08:00:14Z behrisch $
 
 This script aggregates flows as they come from the Datenverteiler
 into files suitable for the dfrouter.
@@ -12,7 +12,7 @@ interest (one per line, additional whitespace separated entries
 do not hurt, for instance a bab_map.txt will do)
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2007-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

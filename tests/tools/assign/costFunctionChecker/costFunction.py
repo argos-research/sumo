@@ -2,11 +2,11 @@
 @file    costFunction.py
 @author  Michael Behrisch
 @date    2009-09-08
-@version $Id: costFunction.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: costFunction.py 20433 2016-04-13 08:00:14Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

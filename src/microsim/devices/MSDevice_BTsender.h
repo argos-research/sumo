@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    14.08.2013
-/// @version $Id: MSDevice_BTsender.h 19173 2015-10-27 08:47:27Z behrisch $
+/// @version $Id: MSDevice_BTsender.h 20447 2016-04-14 13:02:24Z luecken $
 ///
 // A BT sender
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2013-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -72,6 +72,11 @@ public:
      * @param[filled] into The vector to store the built device in
      */
     static void buildVehicleDevices(SUMOVehicle& v, std::vector<MSDevice*>& into);
+
+
+    /** @brief removes remaining vehicleInformation in sVehicles
+     */
+    static void cleanup();
 
 
     /// for accessing the maps of running/arrived vehicles
@@ -174,7 +179,7 @@ public:
         VehicleInformation(const std::string& id) : Named(id), amOnNet(true), haveArrived(false)  {}
 
         /// @brief Destructor
-        ~VehicleInformation() {}
+        virtual ~VehicleInformation() {}
 
         /** @brief Returns the boundary of passed positions
          * @return The positions boundary

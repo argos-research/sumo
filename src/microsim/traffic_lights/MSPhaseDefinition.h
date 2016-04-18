@@ -6,12 +6,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Jan 2004
-/// @version $Id: MSPhaseDefinition.h 19650 2015-12-18 08:34:31Z behrisch $
+/// @version $Id: MSPhaseDefinition.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The definition of a single phase of a tls logic
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

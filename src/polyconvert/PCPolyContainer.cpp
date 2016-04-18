@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Melanie Knocke
 /// @date    Mon, 05 Dec 2005
-/// @version $Id: PCPolyContainer.cpp 19234 2015-11-02 11:26:19Z behrisch $
+/// @version $Id: PCPolyContainer.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A storage for loaded polygons and pois
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

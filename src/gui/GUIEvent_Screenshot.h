@@ -2,12 +2,12 @@
 /// @file    GUIEvent_Screenshot.h
 /// @author  Michael Behrisch
 /// @date    2015-08-25
-/// @version $Id: GUIEvent_Screenshot.h 18761 2015-09-01 14:15:44Z behrisch $
+/// @version $Id: GUIEvent_Screenshot.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Event send when a screenshot should be made
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

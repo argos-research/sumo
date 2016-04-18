@@ -8,12 +8,12 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSFrame.cpp 20321 2016-03-29 14:04:15Z behrisch $
+/// @version $Id: MSFrame.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Sets and checks options for microsim; inits global outputs and settings
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -218,13 +218,13 @@ MSFrame::fillOptions() {
 
     // register the simulation settings
     oc.doRegister("begin", 'b', new Option_String("0", "TIME"));
-    oc.addDescription("begin", "Time", "Defines the begin time; The simulation starts at this time");
+    oc.addDescription("begin", "Time", "Defines the begin time in seconds; The simulation starts at this time");
 
     oc.doRegister("end", 'e', new Option_String("-1", "TIME"));
-    oc.addDescription("end", "Time", "Defines the end time; The simulation ends at this time");
+    oc.addDescription("end", "Time", "Defines the end time in seconds; The simulation ends at this time");
 
     oc.doRegister("step-length", new Option_String("1", "TIME"));
-    oc.addDescription("step-length", "Time", "Defines the step duration");
+    oc.addDescription("step-length", "Time", "Defines the step duration in seconds");
 
     // register the processing options
     oc.doRegister("route-steps", 's', new Option_String("200", "TIME"));
@@ -469,6 +469,9 @@ MSFrame::checkOptions() {
 #endif
     if (oc.getBool("sloppy-insert")) {
         WRITE_WARNING("The option 'sloppy-insert' is deprecated, because it is now activated by default, see the new option 'eager-insert'.");
+    }
+    if (oc.getBool("lanechange.allow-swap")) {
+        WRITE_WARNING("The option 'lanechange.allow-swap' is deprecated, and will not be supported in future versions of SUMO.");
     }
     if (oc.getBool("duration-log.statistics") && oc.isDefault("verbose")) {
         oc.set("verbose", "true");

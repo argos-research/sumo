@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: RORouteDef.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: RORouteDef.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Base class for a vehicle's route definition
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -94,8 +94,8 @@ public:
 
     /** @brief Builds the complete route
      * (or chooses her from the list of alternatives, when existing) */
-    void repairCurrentRoute(SUMOAbstractRouter<ROEdge, ROVehicle>& router, SUMOTime begin,
-                            const ROVehicle& veh) const;
+    bool repairCurrentRoute(SUMOAbstractRouter<ROEdge, ROVehicle>& router, SUMOTime begin,
+                            const ROVehicle& veh, ConstROEdgeVector oldEdges, ConstROEdgeVector& newEdges) const;
 
     /** @brief Adds an alternative to the list of routes
     *
@@ -106,7 +106,10 @@ public:
     const ROEdge* getDestination() const;
 
     const RORoute* getFirstRoute() const {
-        return myAlternatives.front();
+    	if (myAlternatives.empty()) {
+			return 0;
+    	}
+   		return myAlternatives.front();
     }
 
     /** @brief Saves the built route / route alternatives
@@ -136,9 +139,10 @@ public:
      * routes contained in this one
      *
      * @param[in] id The id for the new route definition
+     * @param[in] stopOffset The offset time for "until"-stops defined in the original route
      * @return the new route definition
      */
-    RORouteDef* copy(const std::string& id) const;
+    RORouteDef* copy(const std::string& id, const SUMOTime stopOffset) const;
 
     /** @brief Returns the sum of the probablities of the contained routes */
     SUMOReal getOverallProb() const;

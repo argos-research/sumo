@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Jun 2004
-/// @version $Id: Polygon.cpp 19234 2015-11-02 11:26:19Z behrisch $
+/// @version $Id: Polygon.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A 2D-polygon
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2004-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2004-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

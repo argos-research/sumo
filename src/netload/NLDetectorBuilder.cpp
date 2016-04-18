@@ -7,12 +7,12 @@
 /// @author  Christian Roessel
 /// @author  Jakob Erdmann
 /// @date    Mon, 15 Apr 2002
-/// @version $Id: NLDetectorBuilder.cpp 19791 2016-01-25 14:59:17Z namdre $
+/// @version $Id: NLDetectorBuilder.cpp 20447 2016-04-14 13:02:24Z luecken $
 ///
 // Builds detectors for microsim
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -93,7 +93,9 @@ NLDetectorBuilder::NLDetectorBuilder(MSNet& net)
     : myNet(net), myE3Definition(0) {}
 
 
-NLDetectorBuilder::~NLDetectorBuilder() {}
+NLDetectorBuilder::~NLDetectorBuilder() {
+	delete myE3Definition;
+}
 
 
 void

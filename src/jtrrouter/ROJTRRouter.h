@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Jan 2004
-/// @version $Id: ROJTRRouter.h 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: ROJTRRouter.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Computes routes using junction turning percentages
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -32,6 +32,7 @@
 #endif
 
 #include <utils/vehicle/SUMOAbstractRouter.h>
+#include <router/RORoutable.h>
 
 
 // ===========================================================================
@@ -66,7 +67,7 @@ public:
     /// @brief Destructor
     ~ROJTRRouter();
 
-    virtual SUMOAbstractRouter<ROEdge, ROVehicle>* clone() const {
+    virtual SUMOAbstractRouter<ROEdge, ROVehicle>* clone() {
         return new ROJTRRouter(myUnbuildIsWarningOnly, myAcceptAllDestination, myMaxEdges, myIgnoreClasses, myAllowLoops);
     }
 
@@ -82,7 +83,7 @@ public:
      * @param[in] time The departure time of the vehicle
      * @param[filled] into The list of edges to store the route into
      */
-    void compute(const ROEdge* from, const ROEdge* to, const ROVehicle* const vehicle,
+    bool compute(const ROEdge* from, const ROEdge* to, const ROVehicle* const vehicle,
                  SUMOTime time, ConstROEdgeVector& into);
 
 

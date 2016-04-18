@@ -3,11 +3,11 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2014-09-01
-@version $Id: basic_crossl.py 20116 2016-03-02 09:42:27Z martintaraz $
+@version $Id: basic_crossl.py 20433 2016-04-13 08:00:14Z behrisch $
 Perform smoothing of edge costs across successive iterations of duaIterate
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2012-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

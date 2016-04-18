@@ -4,12 +4,12 @@
 @author  Laura Bieker
 @author  Michael Behrisch
 @date    2013-11-11
-@version $Id: helpers.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: helpers.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Helper methods for plotting
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2013-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -266,9 +266,9 @@ def logNormalise(values, maxValue):
         if values[e] != 0:
             values[e] = log(values[e]) / log(maxValue)
         if not emin or emin > values[e]:
-            emin = edgeValuesC[e]
+            emin = values[e]
         if not emax or emax < values[e]:
-            emax = edgeValuesC[e]
+            emax = values[e]
     for e in values:
         values[e] = (values[e] - emin) / (emax - emin)
 

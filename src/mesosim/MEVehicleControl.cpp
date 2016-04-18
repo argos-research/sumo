@@ -2,12 +2,12 @@
 /// @file    MEVehicleControl.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Wed, 10. Dec 2003
-/// @version $Id: MEVehicleControl.cpp 19820 2016-01-28 08:48:03Z bieker $
+/// @version $Id: MEVehicleControl.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The class responsible for building and deletion of vehicles (meso-version)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

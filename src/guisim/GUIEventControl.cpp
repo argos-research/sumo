@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 04 Feb 2008
-/// @version $Id: GUIEventControl.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: GUIEventControl.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Stores time-dependant events and executes them at the proper time (guisim)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

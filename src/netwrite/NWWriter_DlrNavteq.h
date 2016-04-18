@@ -3,12 +3,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    26.10.2012
-/// @version $Id: NWWriter_DlrNavteq.h 18102 2015-03-18 11:55:16Z behrisch $
+/// @version $Id: NWWriter_DlrNavteq.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Exporter writing networks using DlrNavteq (Elmar) format
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -4,12 +4,12 @@
 /// @author  Andreas Kendziorra
 /// @author  Michael Behrisch
 /// @date    Thu, 12 Jun 2014
-/// @version $Id: MSTransportable.cpp 19388 2015-11-19 21:33:01Z behrisch $
+/// @version $Id: MSTransportable.cpp 20462 2016-04-15 12:20:52Z luecken $
 ///
 // The common superclass for modelling transportable objects like persons and containers
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -98,10 +98,13 @@ MSTransportable::MSTransportable(const SUMOVehicleParameter* pars, const MSVehic
 }
 
 MSTransportable::~MSTransportable() {
-    for (MSTransportablePlan::const_iterator i = myPlan->begin(); i != myPlan->end(); ++i) {
-        delete *i;
-    }
-    delete myPlan;
+	if(myPlan != 0){
+		for (MSTransportablePlan::const_iterator i = myPlan->begin(); i != myPlan->end(); ++i) {
+			delete *i;
+		}
+		delete myPlan;
+		myPlan = 0;
+	}
     delete myParameter;
 }
 

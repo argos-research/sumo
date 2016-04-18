@@ -2,12 +2,12 @@
 /// @file    TrajectoriesHandler.cpp
 /// @author  Michael Behrisch
 /// @date    14.03.2014
-/// @version $Id: TrajectoriesHandler.cpp 20279 2016-03-22 13:55:22Z behrisch $
+/// @version $Id: TrajectoriesHandler.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // An XML-Handler for amitran and netstate trajectories
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2014-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2014-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

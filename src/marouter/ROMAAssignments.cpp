@@ -4,12 +4,12 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    Feb 2013
-/// @version $Id: ROMAAssignments.cpp 20098 2016-02-26 19:53:38Z behrisch $
+/// @version $Id: ROMAAssignments.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Assignment methods
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -452,7 +452,7 @@ ROMAAssignments::getTravelTime(const ROEdge* const e, const ROVehicle* const v, 
 void
 ROMAAssignments::RoutingTask::run(FXWorkerThread* context) {
     ConstROEdgeVector edges;
-    static_cast<RONet::WorkerThread*>(context)->getRouter().compute(myAssign.myNet.getEdge(myCell->origin + "-source"), myAssign.myNet.getEdge(myCell->destination + "-sink"), myAssign.myDefaultVehicle, myBegin, edges);
+    static_cast<RONet::WorkerThread*>(context)->getVehicleRouter().compute(myAssign.myNet.getEdge(myCell->origin + "-source"), myAssign.myNet.getEdge(myCell->destination + "-sink"), myAssign.myDefaultVehicle, myBegin, edges);
     myAssign.addRoute(edges, myCell->pathsVector, myCell->origin + myCell->destination + toString(myCell->pathsVector.size()), myLinkFlow);
 }
 #endif

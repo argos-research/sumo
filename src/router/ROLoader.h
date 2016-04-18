@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: ROLoader.h 19003 2015-10-02 14:41:41Z behrisch $
+/// @version $Id: ROLoader.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Loader for networks and route imports
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -34,10 +34,10 @@
 #endif
 
 #include <utils/common/SUMOTime.h>
-#include <utils/vehicle/SUMOAbstractRouter.h>
 #include <utils/common/ValueTimeLine.h>
 #include <utils/xml/SAXWeightsHandler.h>
 #include <utils/xml/SUMORouteLoaderControl.h>
+#include "RORoutable.h"
 
 
 // ===========================================================================
@@ -86,7 +86,7 @@ public:
 
     /** @brief Loads routes from all previously build route loaders */
     void processRoutes(const SUMOTime start, const SUMOTime end, const SUMOTime increment,
-                       RONet& net, SUMOAbstractRouter<ROEdge, ROVehicle>& router);
+                       RONet& net, const RORouterProvider& provider);
 
 protected:
     /** @brief Opens route handler of the given type

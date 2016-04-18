@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    19.01.2012
-/// @version $Id: GUIOSGView.cpp 19843 2016-01-29 20:26:11Z behrisch $
+/// @version $Id: GUIOSGView.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // An OSG-based 3D view on the simulation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

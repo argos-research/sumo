@@ -4,12 +4,12 @@
 @author  Martin Taraz (martin@taraz.de)
 @author  Jakob Erdmann
 @date    2015-09-07
-@version $Id: tlsCoordinator.py 20160 2016-03-08 12:44:59Z behrisch $
+@version $Id: tlsCoordinator.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Coordinates traffic lights in a sumo net for a given demand
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2010-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2010-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

@@ -5,7 +5,7 @@
 @author  Melanie Knocke
 @author  Michael Behrisch
 @date    2013-02-08
-@version $Id: osmPopulationExtractor.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: osmPopulationExtractor.py 20433 2016-04-13 08:00:14Z behrisch $
 
 This script is to 
 - extract the popoulation data from a given Open Street Map (OSM).
@@ -14,7 +14,7 @@ The redundant information is removed and saved in the output file *_redundantOSM
 If there are data entries without names, they will be saved in *_nameNone.txt.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2013-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

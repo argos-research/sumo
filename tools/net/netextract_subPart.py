@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2007-02-21
-@version $Id: netextract_subPart.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: netextract_subPart.py 20433 2016-04-13 08:00:14Z behrisch $
 
 
 This script reads in the network given as first parameter.
@@ -15,7 +15,7 @@ It extracts nodes given on the command line as well as the edges
  for their reuse in NETCONVERT
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

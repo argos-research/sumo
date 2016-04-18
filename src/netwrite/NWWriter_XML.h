@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 11.05.2011
-/// @version $Id: NWWriter_XML.h 18432 2015-05-21 13:04:55Z behrisch $
+/// @version $Id: NWWriter_XML.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Exporter writing networks using XML (native input) format
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

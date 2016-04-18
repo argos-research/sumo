@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sep 2003
-/// @version $Id: MSVehicleTransfer.cpp 18842 2015-09-17 10:43:51Z behrisch $
+/// @version $Id: MSVehicleTransfer.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A mover of vehicles that got stucked due to grid locks
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

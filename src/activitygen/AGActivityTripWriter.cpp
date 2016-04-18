@@ -4,12 +4,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Walter Bamberger
 /// @date    July 2010
-/// @version $Id: AGActivityTripWriter.cpp 18096 2015-03-17 09:50:59Z behrisch $
+/// @version $Id: AGActivityTripWriter.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Class for writing Trip objects in a SUMO-route file.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 // activitygen module
 // Copyright 2010 TUM (Technische Universitaet Muenchen, http://www.tum.de/)
 /****************************************************************************/

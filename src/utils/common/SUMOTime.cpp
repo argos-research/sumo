@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Fri, 29.04.2005
-/// @version $Id: SUMOTime.cpp 19575 2015-12-09 08:22:14Z behrisch $
+/// @version $Id: SUMOTime.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Variables, methods, and tools for internal time representation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

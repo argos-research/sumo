@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIGLObjectPopupMenu.cpp 18897 2015-09-22 08:30:37Z namdre $
+/// @version $Id: GUIGLObjectPopupMenu.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The popup menu of a globject
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -59,6 +59,7 @@ FXDEFMAP(GUIGLObjectPopupMenu) GUIGLObjectPopupMenuMap[] = {
     FXMAPFUNC(SEL_COMMAND,  MID_COPY_CURSOR_POSITION,    GUIGLObjectPopupMenu::onCmdCopyCursorPosition),
     FXMAPFUNC(SEL_COMMAND,  MID_COPY_CURSOR_GEOPOSITION, GUIGLObjectPopupMenu::onCmdCopyCursorGeoPosition),
     FXMAPFUNC(SEL_COMMAND,  MID_SHOWPARS,                GUIGLObjectPopupMenu::onCmdShowPars),
+    FXMAPFUNC(SEL_COMMAND,  MID_SHOWTYPEPARS,            GUIGLObjectPopupMenu::onCmdShowTypePars),
     FXMAPFUNC(SEL_COMMAND,  MID_ADDSELECT,               GUIGLObjectPopupMenu::onCmdAddSelected),
     FXMAPFUNC(SEL_COMMAND,  MID_REMOVESELECT,            GUIGLObjectPopupMenu::onCmdRemoveSelected)
 };
@@ -131,7 +132,15 @@ GUIGLObjectPopupMenu::onCmdCopyCursorGeoPosition(FXObject*, FXSelector, void*) {
 
 long
 GUIGLObjectPopupMenu::onCmdShowPars(FXObject*, FXSelector, void*) {
-    myObject->getParameterWindow(*myApplication, *myParent); // !!! showParameterWindow would be more appropriate
+    myObject->getParameterWindow(*myApplication, *myParent); 
+    return 1;
+}
+
+
+
+long
+GUIGLObjectPopupMenu::onCmdShowTypePars(FXObject*, FXSelector, void*) {
+    myObject->getTypeParameterWindow(*myApplication, *myParent); 
     return 1;
 }
 

@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_OpenDrive.cpp 19672 2016-01-04 14:47:07Z namdre $
+/// @version $Id: NIImporter_OpenDrive.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Importer for networks stored in openDrive format
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

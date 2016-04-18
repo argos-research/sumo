@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    11.09.2009
-@version $Id: route2alts.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: route2alts.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Counts possible routes for all depart/arrival edges.
 Builds route alternatives assigning the so determined probabilities to use a route.
@@ -12,7 +12,7 @@ Builds route alternatives assigning the so determined probabilities to use a rou
 Please note that the cost of the route is not computed!
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

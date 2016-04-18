@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2011-10-20
-@version $Id: mirrorWiki.py 19847 2016-01-31 11:04:30Z behrisch $
+@version $Id: mirrorWiki.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Mirrors wiki-documentation.
 
@@ -23,7 +23,7 @@ After mirroring all pages, the images are downloaded and stored into
 MIRROR_FOLDER/images.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

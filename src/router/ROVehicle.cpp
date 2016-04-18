@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: ROVehicle.cpp 18136 2015-03-24 15:10:45Z behrisch $
+/// @version $Id: ROVehicle.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A vehicle as used by router
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -54,25 +54,29 @@
 // method definitions
 // ===========================================================================
 ROVehicle::ROVehicle(const SUMOVehicleParameter& pars,
-                     RORouteDef* route, const SUMOVTypeParameter* type, const RONet* net)
-    : myParameter(pars), myType(type), myRoute(route), myRoutingSuccess(false) {
+                     RORouteDef* route, const SUMOVTypeParameter* type,
+                     const RONet* net, MsgHandler* errorHandler)
+ : RORoutable(pars, type), myRoute(route) {
     myParameter.stops.clear();
-    if (route != 0) {
+    if (route != 0 && route->getFirstRoute() != 0) {
         for (std::vector<SUMOVehicleParameter::Stop>::const_iterator s = route->getFirstRoute()->getStops().begin(); s != route->getFirstRoute()->getStops().end(); ++s) {
-            addStop(*s, net);
+            addStop(*s, net, errorHandler);
         }
     }
     for (std::vector<SUMOVehicleParameter::Stop>::const_iterator s = pars.stops.begin(); s != pars.stops.end(); ++s) {
-        addStop(*s, net);
+        addStop(*s, net, errorHandler);
     }
 }
 
 
 void
-ROVehicle::addStop(const SUMOVehicleParameter::Stop& stopPar, const RONet* net) {
-    const ROEdge* stopEdge = net->getEdge(stopPar.lane.substr(0, stopPar.lane.rfind("_")));
-    if (stopEdge == 0) {
-        // warn here?
+ROVehicle::addStop(const SUMOVehicleParameter::Stop& stopPar, const RONet* net, MsgHandler* errorHandler) {
+    const ROEdge* stopEdge = net->getEdgeForLaneID(stopPar.lane);
+    assert(stopEdge != 0); // was checked when parsing the stop
+    if (stopEdge->prohibits(this)) {
+        if (errorHandler != 0) {
+            errorHandler->inform("Stop edge '" + stopEdge->getID() + "' does not allow vehicle '" + getID() + "'.");
+        }
         return;
     }
     // where to insert the stop
@@ -112,33 +116,67 @@ ROVehicle::addStop(const SUMOVehicleParameter::Stop& stopPar, const RONet* net) 
 ROVehicle::~ROVehicle() {}
 
 
-void
-ROVehicle::saveTypeAsXML(OutputDevice& os, OutputDevice* const altos,
-                         OutputDevice* const typeos) const {
-    // check whether the vehicle's type was saved before
-    if (myType != 0 && !myType->saved) {
-        // ... save if not
-        if (typeos != 0) {
-            myType->write(*typeos);
-        } else {
-            myType->write(os);
-            if (altos != 0) {
-                myType->write(*altos);
-            }
-        }
-        myType->saved = true;
-    }
+const ROEdge*
+ROVehicle:: getDepartEdge() const {
+    return myRoute->getFirstRoute()->getFirst();
 }
 
 
 void
-ROVehicle::saveAllAsXML(OutputDevice& os, bool asAlternatives, bool withExitTimes) const {
+ROVehicle::computeRoute(const RORouterProvider& provider,
+                        const bool removeLoops, MsgHandler* errorHandler) {
+    SUMOAbstractRouter<ROEdge, ROVehicle>& router = provider.getVehicleRouter();
+    std::string noRouteMsg = "The vehicle '" + getID() + "' has no valid route.";
+    RORouteDef* const routeDef = getRouteDefinition();
+    // check if the route definition is valid
+    if (routeDef == 0) {
+        errorHandler->inform(noRouteMsg);
+        myRoutingSuccess = false;
+        return;
+    }
+    RORoute* current = routeDef->buildCurrentRoute(router, getDepartureTime(), *this);
+    if (current == 0 || current->size() == 0) {
+        delete current;
+        errorHandler->inform(noRouteMsg);
+        myRoutingSuccess = false;
+        return;
+    }
+    // check whether we have to evaluate the route for not containing loops
+    if (removeLoops) {
+        current->recheckForLoops();
+        // check whether the route is still valid
+        if (current->size() == 0) {
+            delete current;
+            errorHandler->inform(noRouteMsg + " (after removing loops)");
+            myRoutingSuccess = false;
+            return;
+        }
+    }
+    // add built route
+    routeDef->addAlternative(router, this, current, getDepartureTime());
+    myRoutingSuccess = true;
+}
+
+
+void
+ROVehicle::saveAsXML(OutputDevice& os, OutputDevice* const typeos, bool asAlternatives, OptionsCont& options) const {
+    if (typeos != 0  && myType != 0 && !myType->saved) {
+        myType->write(*typeos);
+        myType->saved = true;
+    }
+    if (myType != 0 && !myType->saved) {
+        myType->write(os);
+        myType->saved = asAlternatives;
+    }
+
     // write the vehicle (new style, with included routes)
-    myParameter.write(os, OptionsCont::getOptions());
+    myParameter.write(os, options);
 
     // save the route
-    myRoute->writeXMLDefinition(os, this, asAlternatives, withExitTimes);
-    myParameter.writeStops(os);
+    myRoute->writeXMLDefinition(os, this, asAlternatives, options.getBool("exit-times"));
+    for (std::vector<SUMOVehicleParameter::Stop>::const_iterator stop = myParameter.stops.begin(); stop != myParameter.stops.end(); ++stop) {
+        stop->write(os);
+    }
     for (std::map<std::string, std::string>::const_iterator j = myParameter.getMap().begin(); j != myParameter.getMap().end(); ++j) {
         os.openTag(SUMO_TAG_PARAM);
         os.writeAttr(SUMO_ATTR_KEY, (*j).first);
@@ -146,12 +184,6 @@ ROVehicle::saveAllAsXML(OutputDevice& os, bool asAlternatives, bool withExitTime
         os.closeTag();
     }
     os.closeTag();
-}
-
-
-SUMOReal
-ROVehicle::getMaxSpeed() const {
-    return myType->maxSpeed;
 }
 
 

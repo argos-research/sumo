@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    June 2011
-/// @version $Id: MSCFModel_Wiedemann.cpp 18095 2015-03-17 09:39:00Z behrisch $
+/// @version $Id: MSCFModel_Wiedemann.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The psycho-physical model of Wiedemann
 // references:
@@ -13,7 +13,7 @@
 // Olstam, Tapani - Comparison of Car-following models
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2011-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2011-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

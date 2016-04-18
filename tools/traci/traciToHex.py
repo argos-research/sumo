@@ -4,12 +4,12 @@
 @file    traciToHex.py
 @author  Michael Behrisch
 @date    2010-09-08
-@version $Id: traciToHex.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: traciToHex.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Converts all testclient.prog inputs to hexadecimal values.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2010-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2010-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

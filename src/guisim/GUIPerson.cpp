@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIPerson.cpp 19974 2016-02-12 13:58:46Z namdre $
+/// @version $Id: GUIPerson.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A MSPerson extended by some values for usage within the gui
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -236,11 +236,7 @@ Boundary
 GUIPerson::getCenteringBoundary() const {
     Boundary b;
     // ensure that the vehicle is drawn, otherwise myPositionInVehicle will not be updated
-    if (getCurrentStageType() == DRIVING && !isWaiting4Vehicle()) {
-        b.add(getVehicle()->getPosition());
-    } else {
-        b.add(getPosition());
-    }
+    b.add(getPosition());
     b.grow(MAX2(getVehicleType().getWidth(), getVehicleType().getLength()));
     return b;
 }
@@ -251,9 +247,11 @@ GUIPerson::drawGL(const GUIVisualizationSettings& s) const {
     glPushName(getGlID());
     glPushMatrix();
     Position p1 = getPosition();
+    if (getCurrentStageType() == DRIVING && !isWaiting4Vehicle()) {
+        p1 = myPositionInVehicle;
+    }
     glTranslated(p1.x(), p1.y(), getType());
     glRotated(90, 0, 0, 1);
-    // XXX use person specific gui settings
     // set person color
     setColor(s);
     // scale
@@ -413,9 +411,6 @@ GUIPerson::getEdgePos() const {
 Position
 GUIPerson::getPosition() const {
     AbstractMutex::ScopedLocker locker(myLock);
-    if (getCurrentStageType() == DRIVING && !isWaiting4Vehicle()) {
-        return myPositionInVehicle;
-    }
     return MSPerson::getPosition();
 }
 

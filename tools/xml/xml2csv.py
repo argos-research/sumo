@@ -6,12 +6,12 @@
 @author  Michael Behrisch
 @author  Laura Bieker
 @date    2013-12-08
-@version $Id: xml2csv.py 20118 2016-03-02 09:54:08Z martintaraz $
+@version $Id: xml2csv.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Convert hierarchical xml files to csv. This only makes sense if the hierarchy has low depth.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2013-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

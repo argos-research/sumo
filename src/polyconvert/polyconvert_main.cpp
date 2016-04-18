@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Melanie Knocke
 /// @date    Mon, 05 Dec 2005
-/// @version $Id: polyconvert_main.cpp 20328 2016-04-02 20:39:26Z behrisch $
+/// @version $Id: polyconvert_main.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Main for POLYCONVERT
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

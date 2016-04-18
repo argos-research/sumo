@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    15 Feb 2004
-/// @version $Id: Command_SaveTLCoupledLaneDet.h 18213 2015-04-16 11:55:42Z behrisch $
+/// @version $Id: Command_SaveTLCoupledLaneDet.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Writes e2 state of a link for the time the link has yellow/red
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

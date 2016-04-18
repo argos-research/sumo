@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: SUMORouteHandler.cpp 18096 2015-03-17 09:50:59Z behrisch $
+/// @version $Id: SUMORouteHandler.cpp 20447 2016-04-14 13:02:24Z luecken $
 ///
 // Parser for routes during their loading
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -64,6 +64,7 @@ SUMORouteHandler::SUMORouteHandler(const std::string& file) :
 
 
 SUMORouteHandler::~SUMORouteHandler() {
+	delete myCurrentVType;
 }
 
 
@@ -87,7 +88,8 @@ SUMORouteHandler::checkLastDepart() {
 
 void
 SUMORouteHandler::registerLastDepart() {
-    if (myVehicleParameter->departProcedure == DEPART_GIVEN) {
+    // register only non public transport to parse all public transport lines in advance
+    if (myVehicleParameter->line == "" && myVehicleParameter->departProcedure == DEPART_GIVEN) {
         myLastDepart = myVehicleParameter->depart;
         if (myFirstDepart == -1) {
             myFirstDepart = myLastDepart;

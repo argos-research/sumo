@@ -4,12 +4,12 @@
 @author  Matthias Wagner
 @author  Michael Behrisch
 @date    2008-02-11
-@version $Id: testSuiteTools.py 18182 2015-04-01 09:14:18Z behrisch $
+@version $Id: testSuiteTools.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Test suite to run all tests in the detector package.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

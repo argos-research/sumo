@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 26.04.2004
-/// @version $Id: GUICalibrator.cpp 19200 2015-10-28 16:48:07Z behrisch $
+/// @version $Id: GUICalibrator.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Changes flow and speed on a set of lanes (gui version)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

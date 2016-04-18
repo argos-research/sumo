@@ -5,12 +5,12 @@
 /// @author  Jakob Erdmann
 /// @author  Melanie Knocke
 /// @date    Jun 2004
-/// @version $Id: Polygon.h 18096 2015-03-17 09:50:59Z behrisch $
+/// @version $Id: Polygon.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A 2D- or 3D-polygon
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2004-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2004-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

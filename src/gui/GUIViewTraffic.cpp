@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUIViewTraffic.cpp 19923 2016-02-09 13:01:26Z behrisch $
+/// @version $Id: GUIViewTraffic.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A view on the simulation; this view is a microscopic one
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

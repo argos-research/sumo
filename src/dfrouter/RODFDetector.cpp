@@ -8,12 +8,12 @@
 /// @author  Laura Bieker
 /// @author  Melanie Knocke
 /// @date    Thu, 16.03.2006
-/// @version $Id: RODFDetector.cpp 18627 2015-08-13 08:58:59Z namdre $
+/// @version $Id: RODFDetector.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Class representing a detector within the DFROUTER
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2006-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2006-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

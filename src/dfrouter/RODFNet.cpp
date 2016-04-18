@@ -5,12 +5,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Thu, 16.03.2006
-/// @version $Id: RODFNet.cpp 18842 2015-09-17 10:43:51Z behrisch $
+/// @version $Id: RODFNet.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A DFROUTER-network
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -32,6 +32,7 @@
 #include <cassert>
 #include <iostream>
 #include <map>
+#include <queue>
 #include <vector>
 #include <iterator>
 #include "RODFNet.h"

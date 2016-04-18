@@ -12,12 +12,12 @@
 /// @author  Jakob Erdmann
 /// @author  Laura Bieker
 /// @date    2007/10/24
-/// @version $Id: TraCIConstants.h 20191 2016-03-15 11:34:04Z namdre $
+/// @version $Id: TraCIConstants.h 20468 2016-04-15 13:04:01Z behrisch $
 ///
 /// holds codes used for TraCI
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2007-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -34,7 +34,7 @@
 // ****************************************
 // VERSION
 // ****************************************
-#define TRACI_VERSION 10
+#define TRACI_VERSION 11
 
 
 // ****************************************

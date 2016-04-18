@@ -2,12 +2,12 @@
 /// @file    NIVissimConflictArea.h
 /// @author  Lukas Grohmann
 /// @date    Aug 2015
-/// @version $Id: NIVissimConflictArea.h 18756 2015-08-31 19:16:33Z behrisch $
+/// @version $Id: NIVissimConflictArea.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // -------------------
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

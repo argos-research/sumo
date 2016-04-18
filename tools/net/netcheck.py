@@ -7,14 +7,14 @@
 @author  Jakob Erdmann
 @author  Greg Albiston
 @date    2007-03-20
-@version $Id: netcheck.py 20034 2016-02-19 13:57:59Z namdre $
+@version $Id: netcheck.py 20433 2016-04-13 08:00:14Z behrisch $
 
 This script does simple check for the network.
 It tests whether the network is (weakly) connected.
 It needs one parameter, the SUMO net (.net.xml).
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2007-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

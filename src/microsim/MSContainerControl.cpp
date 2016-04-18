@@ -3,12 +3,12 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Mon, 16 Jun 2014
-/// @version $Id: MSContainerControl.cpp 18842 2015-09-17 10:43:51Z behrisch $
+/// @version $Id: MSContainerControl.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Stores all containers in the net and handles their waiting for cars.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

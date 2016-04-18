@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Tue, 29.05.2005
-/// @version $Id: MSLCM_DK2008.cpp 19345 2015-11-13 05:56:56Z namdre $
+/// @version $Id: MSLCM_DK2008.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A lane change model developed by D. Krajzewicz between 2004 and 2010
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

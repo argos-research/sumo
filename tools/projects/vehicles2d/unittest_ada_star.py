@@ -3,12 +3,12 @@
 @file    unittest_ada_star.py
 @author  Marek Heinrich
 @date    2015-02-24
-@version $Id: unittest_ada_star.py 18096 2015-03-17 09:50:59Z behrisch $
+@version $Id: unittest_ada_star.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Test module for the standard path finding module.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2014-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2014-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 13.12.2005
-/// @version $Id: MSStoppingPlace.h 19388 2015-11-19 21:33:01Z behrisch $
+/// @version $Id: MSStoppingPlace.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // A lane area vehicles can halt at
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -155,6 +155,14 @@ public:
     /// @brief Removes a transportable from this stop
     void removeTransportable(MSTransportable* p);
 
+    /// @brief adds an access point to this stop
+    virtual void addAccess(MSLane* lane, const SUMOReal pos) {
+        myAccessPos.insert(std::make_pair(lane, pos));
+    }
+
+    /// @brief checks whether this stop provides access to the given edge
+    bool hasAccess(const MSEdge* edge) const;
+
 protected:
     /** @brief Computes the last free position on this stop
      *
@@ -190,6 +198,8 @@ protected:
     /// @brief Persons waiting at this stop
     std::vector<MSTransportable*> myWaitingTransportables;
 
+    /// @brief lanes and positions connected to this stop
+    std::multimap<MSLane*, SUMOReal> myAccessPos;
 
 private:
     /// @brief Invalidated copy constructor.

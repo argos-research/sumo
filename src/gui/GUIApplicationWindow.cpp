@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUIApplicationWindow.cpp 19987 2016-02-16 10:05:54Z behrisch $
+/// @version $Id: GUIApplicationWindow.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The main window of the SUMO-gui.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -691,8 +691,8 @@ GUIApplicationWindow::onCmdEditChosen(FXObject* menu, FXSelector, void*) {
     } else {
         if (!myAmLoading && myRunThread->simulationAvailable()) {
             const SUMOVehicleClass svc = SumoVehicleClassStrings.get(mc->getText().text());
-            for (size_t i = 0; i < MSEdge::dictSize(); ++i) {
-                const std::vector<MSLane*>& lanes = MSEdge::dictionary(i)->getLanes();
+            for (MSEdgeVector::const_iterator i = MSEdge::getAllEdges().begin(); i != MSEdge::getAllEdges().end(); ++i) {
+                const std::vector<MSLane*>& lanes = (*i)->getLanes();
                 for (std::vector<MSLane*>::const_iterator it = lanes.begin(); it != lanes.end(); ++it) {
                     GUILane* lane = dynamic_cast<GUILane*>(*it);
                     assert(lane != 0);

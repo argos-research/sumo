@@ -2,12 +2,12 @@
 /// @file    GNEInspector.cpp
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEInspector.cpp 19535 2015-12-05 13:47:18Z behrisch $
+/// @version $Id: GNEInspector.cpp 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The Widget for modifying network-element attributes (i.e. lane speed)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

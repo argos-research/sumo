@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2008-03-19
-@version $Id: route2trips.py 20166 2016-03-09 09:47:46Z behrisch $
+@version $Id: route2trips.py 20433 2016-04-13 08:00:14Z behrisch $
 
 This script converts SUMO routes back into SUMO trips which serve
 as input to one of the routing applications.
@@ -12,7 +12,7 @@ It reads the routes from a file given as first parameter
 and outputs the trips to stdout.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -60,7 +60,7 @@ class RouteReader(handler.ContentHandler):
                   file=self.outfile)
         elif name == 'routes':
             print("""<?xml version="1.0"?>
-<!-- generated on %s by $Id: route2trips.py 20166 2016-03-09 09:47:46Z behrisch $ -->
+<!-- generated on %s by $Id: route2trips.py 20433 2016-04-13 08:00:14Z behrisch $ -->
 <trips>""" % datetime.datetime.now(), file=self.outfile)
 
     def endElement(self, name):

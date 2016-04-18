@@ -3,11 +3,11 @@
 @file    runner.py
 @author  Michael Behrisch
 @date    2012-01-14
-@version $Id: runner.py 20317 2016-03-29 10:34:50Z behrisch $
+@version $Id: runner.py 20433 2016-04-13 08:00:14Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

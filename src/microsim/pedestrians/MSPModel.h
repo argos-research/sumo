@@ -2,12 +2,12 @@
 /// @file    MSPModel.h
 /// @author  Jakob Erdmann
 /// @date    Mon, 13 Jan 2014
-/// @version $Id: MSPModel.h 18209 2015-04-16 11:17:10Z namdre $
+/// @version $Id: MSPModel.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // The pedestrian following model (prototype)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2014-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2014-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -58,9 +58,6 @@ public:
 
     /// @brief remove state at simulation end
     static void cleanup();
-
-    /// @brief return the appropriate lane to walk on
-    static MSLane* getSidewalk(const MSEdge* edge);
 
     virtual ~MSPModel() {};
 

@@ -5,13 +5,13 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    03.12.2009
-@version $Id: schemaCheck.py 20118 2016-03-02 09:54:08Z martintaraz $
+@version $Id: schemaCheck.py 20433 2016-04-13 08:00:14Z behrisch $
 
 Checks schema for files matching certain file names using either
 lxml or SAX2Count.exe depending on availability.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

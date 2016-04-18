@@ -3,13 +3,13 @@
 /// @author  Gordon Thomlinson
 /// @author  Michael Behrisch
 /// @date    19.01.2012
-/// @version $Id: GUIOSGBoundingBoxCalculator.h 19820 2016-01-28 08:48:03Z bieker $
+/// @version $Id: GUIOSGBoundingBoxCalculator.h 20433 2016-04-13 08:00:14Z behrisch $
 ///
 // Calculates the bounding box of an osg node
 // original source: http://www.vis-sim.com/osg/code/osgcode_bbox1.htm
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2015 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

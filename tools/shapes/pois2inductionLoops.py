@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2010-02-18
-@version $Id: pois2inductionLoops.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: pois2inductionLoops.py 20433 2016-04-13 08:00:14Z behrisch $
 
 
 Converts a given pois located on lanes into induction loop detectors;
@@ -14,7 +14,7 @@ The detectors are named <POINAME>__l<LANE_INDEX>
 Call: pois2inductionLoops.py <NET> <POIS> <OUTPUT>
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2010-2015 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2010-2016 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
