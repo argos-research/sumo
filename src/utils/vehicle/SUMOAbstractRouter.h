@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    25.Jan 2006
-/// @version $Id: SUMOAbstractRouter.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: SUMOAbstractRouter.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // An abstract router base class
 /****************************************************************************/
@@ -63,8 +63,8 @@ public:
         myQueryVisits(0),
         myNumQueries(0),
         myQueryStartTime(0),
-        myQueryTimeSum(0)
-    { }
+        myQueryTimeSum(0) {
+    }
 
     /// Destructor
     virtual ~SUMOAbstractRouter() {

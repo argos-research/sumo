@@ -7,7 +7,7 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Fri, 30.01.2009
-/// @version $Id: MSDevice_Transportable.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSDevice_Transportable.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A device which is used to keep track of persons and containers riding with a vehicle
 /****************************************************************************/
@@ -117,7 +117,7 @@ MSDevice_Transportable::notifyEnter(SUMOVehicle& /*veh*/, MSMoveReminder::Notifi
 
 bool
 MSDevice_Transportable::notifyLeave(SUMOVehicle& veh, SUMOReal /*lastPos*/,
-                             MSMoveReminder::Notification reason) {
+                                    MSMoveReminder::Notification reason) {
     if (reason >= MSMoveReminder::NOTIFICATION_ARRIVED) {
         for (std::vector<MSTransportable*>::iterator i = myTransportables.begin(); i != myTransportables.end(); ++i) {
             MSTransportable* transportable = *i;

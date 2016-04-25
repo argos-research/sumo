@@ -4,7 +4,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2012-03-14
-@version $Id: costMemory.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: costMemory.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Perform smoothing of edge costs across successive iterations of duaIterate
 
@@ -84,7 +84,8 @@ class CostMemory(handler.ContentHandler):
             self.current_interval = self.intervals[float(attrs['begin'])]
         if name == 'edge':
             id = attrs['id']
-            if self.cost_attribute.decode('utf-8') in attrs:  # may be missing for some
+            # may be missing for some
+            if self.cost_attribute.decode('utf-8') in attrs:
                 self.num_loaded += 1
                 cost = float(attrs[self.cost_attribute.decode('utf-8')])
                 if id in self.current_interval:
@@ -156,8 +157,8 @@ class CostMemory(handler.ContentHandler):
         if not values:
             values = self.errors
         l = len(list(values))
-        if  l > 0:
-            return (sum(list(values))/l)
+        if l > 0:
+            return (sum(list(values)) / l)
         else:
             return 0
 

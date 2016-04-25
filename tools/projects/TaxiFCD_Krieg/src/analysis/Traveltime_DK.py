@@ -6,7 +6,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-04-21
-@version $Id: Traveltime_DK.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: Traveltime_DK.py 20482 2016-04-18 20:49:42Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -168,7 +168,8 @@ def processData():
                 data2[veh][
                     "simFCD"][-1][-2] = data2[veh]["simFCD"][-1][-2] + elm[2]
     data = data2
-    print("after remove double edges (simFCD)351_11 ", data["351_11"]["simFCD"])
+    print("after remove double edges (simFCD)351_11 ",
+          data["351_11"]["simFCD"])
 
     # make comparison table
     # cut data if edge in between belongs to the "bad driven" edges

@@ -2,7 +2,7 @@
 /// @file    GUIOSGBuilder.h
 /// @author  Daniel Krajzewicz
 /// @date    19.01.2012
-/// @version $Id: GUIOSGBuilder.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIOSGBuilder.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Builds OSG nodes from microsim objects
 /****************************************************************************/
@@ -68,7 +68,7 @@ public:
 
     static void buildLight(const GUISUMOAbstractView::Decal& d, osg::Group& addTo);
 
-    static osg::PositionAttitudeTransform* getTrafficLight(const GUISUMOAbstractView::Decal& d, osg::Node* tl, const osg::Vec4& color, const SUMOReal size=0.5);
+    static osg::PositionAttitudeTransform* getTrafficLight(const GUISUMOAbstractView::Decal& d, osg::Node* tl, const osg::Vec4& color, const SUMOReal size = 0.5);
 
     static GUIOSGView::OSGMovable buildMovable(const MSVehicleType& type);
 

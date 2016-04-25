@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Tue, 17.11.2009
-/// @version $Id: MSMeanData.h 20447 2016-04-14 13:02:24Z luecken $
+/// @version $Id: MSMeanData.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Data collector for edges/lanes
 /****************************************************************************/
@@ -281,8 +281,8 @@ public:
                 : myNumVehicleEntered(0), myNumVehicleLeft(0), myValues(values) {}
 
             /** @brief Constructor */
-            virtual ~TrackerEntry(){
-            	delete myValues;
+            virtual ~TrackerEntry() {
+                delete myValues;
             }
 
             /// @brief The number of vehicles which entered in the current interval

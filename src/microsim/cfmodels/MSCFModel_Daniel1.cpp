@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 05 Jun 2012
-/// @version $Id: MSCFModel_Daniel1.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSCFModel_Daniel1.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The original Krauss (1998) car-following model and parameter
 /****************************************************************************/
@@ -43,7 +43,7 @@
 MSCFModel_Daniel1::MSCFModel_Daniel1(const MSVehicleType* vtype,  SUMOReal accel, SUMOReal decel,
                                      SUMOReal dawdle, SUMOReal headwayTime,
                                      SUMOReal tmp1, SUMOReal tmp2, SUMOReal tmp3, SUMOReal tmp4, SUMOReal tmp5)
-    : MSCFModel(vtype, accel, decel, headwayTime), myDawdle(dawdle), myTauDecel(decel* headwayTime),
+    : MSCFModel(vtype, accel, decel, headwayTime), myDawdle(dawdle), myTauDecel(decel * headwayTime),
       myTmp1(tmp1), myTmp2(tmp2), myTmp3(tmp3), myTmp4(tmp4), myTmp5(tmp5) {
 }
 

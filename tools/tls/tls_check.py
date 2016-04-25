@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2009-08-01
-@version $Id: tls_check.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: tls_check.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Verifies the traffic lights in the given network.
 Currently verified:
@@ -43,4 +43,5 @@ for tlsID in net1._id2tls:
         prog = tls._programs[prog]
         for i, phase in enumerate(prog._phases):
             if len(phase[0]) != noConnections:
-                print("      Error: phase %s describes %s signals instead of %s." % (i, len(phase[0]), noConnections))
+                print("      Error: phase %s describes %s signals instead of %s." % (
+                    i, len(phase[0]), noConnections))

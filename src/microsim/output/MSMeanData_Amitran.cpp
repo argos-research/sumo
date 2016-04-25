@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSMeanData_Amitran.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSMeanData_Amitran.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Network state mean data collector for edges/lanes
 /****************************************************************************/
@@ -154,7 +154,7 @@ MSMeanData_Amitran::MSMeanData_Amitran(const std::string& id,
                                        const std::set<std::string> vTypes)
     : MSMeanData(id, dumpBegin, dumpEnd, useLanes, withEmpty, printDefaults,
                  withInternal, trackVehicles, maxTravelTime, minSamples, vTypes),
-    myHaltSpeed(haltSpeed) {
+      myHaltSpeed(haltSpeed) {
 }
 
 

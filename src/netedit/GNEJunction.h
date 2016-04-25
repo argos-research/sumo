@@ -2,7 +2,7 @@
 /// @file    GNEJunction.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEJunction.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEJunction.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A class for visualizing and editing junctions in netedit (adapted from
 // GUIJunctionWrapper)
@@ -126,7 +126,7 @@ public:
 
 
     /** @brief Update the boundary of the junction */
-    void updateBoundary(); 
+    void updateBoundary();
 
 
     /** @brief marks as first junction in createEdge-mode

@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdge.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBEdge.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Methods for the representation of a single edge
 /****************************************************************************/
@@ -1393,7 +1393,7 @@ NBEdge::computeAngle() {
                             (myLaneSpreadFunction == LANESPREAD_RIGHT ?
                              myLanes[getNumLanes() - 1].shape
                              : myLanes[getNumLanes() / 2].shape)
-                                : myGeom);
+                            : myGeom);
 
     // if the junction shape is suspicious we cannot trust the angle to the centroid
     if ((hasFromShape && (myFrom->getShape().distance(shape[0]) > 2 * POSITION_EPS
@@ -1594,7 +1594,7 @@ NBEdge::recheckLanes() {
                     }
                 }
             } else if (isRailway(getPermissions(c.fromLane)) && isRailway(c.toEdge->getPermissions(c.toLane))
-                    && isTurningDirectionAt(c.toEdge))  {
+                       && isTurningDirectionAt(c.toEdge))  {
                 // do not allow sharp rail turns
                 i = myConnections.erase(i);
             } else {
@@ -2556,7 +2556,7 @@ NBEdge::shiftPositionAtNode(NBNode* node, NBEdge* other) {
 }
 
 
-SUMOReal 
+SUMOReal
 NBEdge::getFinalLength() const {
     SUMOReal result = getLoadedLength();
     if (OptionsCont::getOptions().getBool("no-internal-links") && !hasLoadedLength()) {

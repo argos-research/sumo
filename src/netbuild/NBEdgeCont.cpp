@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdgeCont.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBEdgeCont.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Storage for edges, including some functionality operating on multiple edges
 /****************************************************************************/
@@ -68,8 +68,8 @@ NBEdgeCont::NBEdgeCont(NBTypeCont& tc) :
     myEdgesSplit(0),
     myVehicleClasses2Keep(0),
     myVehicleClasses2Remove(0),
-    myNeedGeoTransformedPrunningBoundary(false)
-{}
+    myNeedGeoTransformedPrunningBoundary(false) {
+}
 
 
 NBEdgeCont::~NBEdgeCont() {

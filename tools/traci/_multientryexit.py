@@ -3,7 +3,7 @@
 @file    multientryexit.py
 @author  Michael Behrisch
 @date    2011-03-16
-@version $Id: _multientryexit.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: _multientryexit.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Python implementation of the TraCI interface.
 
@@ -28,6 +28,7 @@ _RETURN_VALUE_FUNC = {tc.LAST_STEP_VEHICLE_NUMBER:         Storage.readInt,
 
 
 class MultiEntryExitDomain(Domain):
+
     def __init__(self):
         Domain.__init__(self, "multientryexit", tc.CMD_GET_MULTI_ENTRY_EXIT_DETECTOR_VARIABLE, None,
                         tc.CMD_SUBSCRIBE_MULTI_ENTRY_EXIT_DETECTOR_VARIABLE, tc.RESPONSE_SUBSCRIBE_MULTI_ENTRY_EXIT_DETECTOR_VARIABLE,
@@ -41,7 +42,6 @@ class MultiEntryExitDomain(Domain):
         """
         return self._getUniversal(tc.LAST_STEP_VEHICLE_NUMBER, detID)
 
-
     def getLastStepMeanSpeed(self, detID):
         """getLastStepMeanSpeed(string) -> double
 
@@ -49,14 +49,12 @@ class MultiEntryExitDomain(Domain):
         """
         return self._getUniversal(tc.LAST_STEP_MEAN_SPEED, detID)
 
-
     def getLastStepVehicleIDs(self, detID):
         """getLastStepVehicleIDs(string) -> list(string)
 
         Returns the list of ids of vehicles that have been within the named multi-entry/multi-exit detector in the last simulation step.
         """
         return self._getUniversal(tc.LAST_STEP_VEHICLE_ID_LIST, detID)
-
 
     def getLastStepHaltingNumber(self, detID):
         """getLastStepHaltingNumber(string) -> integer

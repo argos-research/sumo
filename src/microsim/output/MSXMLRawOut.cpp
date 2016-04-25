@@ -6,7 +6,7 @@
 /// @author  Bjoern Hendriks
 /// @author  Michael Behrisch
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSXMLRawOut.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSXMLRawOut.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Realises dumping the complete network state
 /****************************************************************************/
@@ -174,7 +174,7 @@ MSXMLRawOut::writeVehicle(OutputDevice& of, const MSBaseVehicle& veh) {
 }
 
 
-void 
+void
 MSXMLRawOut::writeTransportable(OutputDevice& of, const MSTransportable* p, SumoXMLTag tag) {
     of.openTag(tag);
     of.writeAttr(SUMO_ATTR_ID, p->getID());

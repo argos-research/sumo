@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBConnection.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBConnection.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The class holds a description of a connection between two edges
 /****************************************************************************/
@@ -55,8 +55,8 @@ NBConnection::NBConnection(NBEdge* from, NBEdge* to) :
     myFrom(from), myTo(to),
     myFromID(from->getID()), myToID(to->getID()),
     myFromLane(-1), myToLane(-1),
-    myTlIndex(InvalidTlIndex)
-{}
+    myTlIndex(InvalidTlIndex) {
+}
 
 
 NBConnection::NBConnection(const std::string& fromID, NBEdge* from,
@@ -64,8 +64,8 @@ NBConnection::NBConnection(const std::string& fromID, NBEdge* from,
     myFrom(from), myTo(to),
     myFromID(fromID), myToID(toID),
     myFromLane(-1), myToLane(-1),
-    myTlIndex(InvalidTlIndex)
-{}
+    myTlIndex(InvalidTlIndex) {
+}
 
 
 NBConnection::NBConnection(NBEdge* from, int fromLane,
@@ -89,8 +89,8 @@ NBConnection::NBConnection(const NBConnection& c) :
     myFrom(c.myFrom), myTo(c.myTo),
     myFromID(c.myFromID), myToID(c.myToID),
     myFromLane(c.myFromLane), myToLane(c.myToLane),
-    myTlIndex(c.myTlIndex)
-{}
+    myTlIndex(c.myTlIndex) {
+}
 
 
 NBEdge*
@@ -257,13 +257,13 @@ NBConnection::shiftLaneIndex(NBEdge* edge, int offset) {
 
 std::ostream&
 operator<<(std::ostream& os, const NBConnection& c) {
-    os 
-        << "Con(from=" << Named::getIDSecure(c.getFrom())
-        << " fromLane=" << c.getFromLane()
-        << " to=" << Named::getIDSecure(c.getTo())
-        << " toLane=" << c.getToLane()
-        << " tlIndex=" << c.getTLIndex()
-        << ")";
+    os
+            << "Con(from=" << Named::getIDSecure(c.getFrom())
+            << " fromLane=" << c.getFromLane()
+            << " to=" << Named::getIDSecure(c.getTo())
+            << " toLane=" << c.getToLane()
+            << " tlIndex=" << c.getTLIndex()
+            << ")";
     return os;
 }
 

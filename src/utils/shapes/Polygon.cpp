@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Jun 2004
-/// @version $Id: Polygon.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: Polygon.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A 2D-polygon
 /****************************************************************************/
@@ -49,8 +49,8 @@ Polygon::Polygon(const std::string& id, const std::string& type,
                  SUMOReal layer, SUMOReal angle, const std::string& imgFile) :
     Shape(id, type, color, layer, angle, imgFile),
     myShape(shape),
-    myFill(fill)
-{}
+    myFill(fill) {
+}
 
 
 Polygon::~Polygon() {}

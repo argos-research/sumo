@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: SUMORouteHandler.cpp 20447 2016-04-14 13:02:24Z luecken $
+/// @version $Id: SUMORouteHandler.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Parser for routes during their loading
 /****************************************************************************/
@@ -64,7 +64,7 @@ SUMORouteHandler::SUMORouteHandler(const std::string& file) :
 
 
 SUMORouteHandler::~SUMORouteHandler() {
-	delete myCurrentVType;
+    delete myCurrentVType;
 }
 
 

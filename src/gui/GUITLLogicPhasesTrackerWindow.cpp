@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Oct/Nov 2003
-/// @version $Id: GUITLLogicPhasesTrackerWindow.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUITLLogicPhasesTrackerWindow.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A window displaying the phase diagram of a tl-logic
 /****************************************************************************/
@@ -157,7 +157,7 @@ GUITLLogicPhasesTrackerWindow::GUITLLogicPhasesTrackerWindow(
     ValueSource<std::pair<SUMOTime, MSPhaseDefinition> >* src)
     : FXMainWindow(app.getApp(), "TLS-Tracker", NULL, NULL, DECOR_ALL,
                    20, 20, 300, 200),
-    myApplication(&app), myTLLogic(&logic), myAmInTrackingMode(true) {
+      myApplication(&app), myTLLogic(&logic), myAmInTrackingMode(true) {
     // build the toolbar
     myToolBarDrag = new FXToolBarShell(this, FRAME_NORMAL);
     myToolBar = new FXToolBar(this, myToolBarDrag, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | FRAME_RAISED);
@@ -194,8 +194,8 @@ GUITLLogicPhasesTrackerWindow::GUITLLogicPhasesTrackerWindow(
     const MSSimpleTrafficLightLogic::Phases& /*phases*/)
     : FXMainWindow(app.getApp(), "TLS-Tracker", NULL, NULL, DECOR_ALL,
                    20, 20, 300, 200),
-    myApplication(&app), myTLLogic(&logic), myAmInTrackingMode(false),
-    myToolBarDrag(0), myBeginOffset(0) {
+      myApplication(&app), myTLLogic(&logic), myAmInTrackingMode(false),
+      myToolBarDrag(0), myBeginOffset(0) {
     myConnector = 0;
     FXint height = (FXint)(myTLLogic->getLinks().size() * 20 + 30 + 8);
     setTitle("TLS-Tracker");

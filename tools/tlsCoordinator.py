@@ -4,7 +4,7 @@
 @author  Martin Taraz (martin@taraz.de)
 @author  Jakob Erdmann
 @date    2015-09-07
-@version $Id: tlsCoordinator.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: tlsCoordinator.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Coordinates traffic lights in a sumo net for a given demand
 
@@ -54,7 +54,8 @@ def pair2str(p, full=True):
 
 
 def logAddedPair(TLSP, sets, operation):
-    print("added pair %s,%s with operation %s" % (TLSP.otl.getID(), TLSP.tl.getID(), operation))
+    print("added pair %s,%s with operation %s" %
+          (TLSP.otl.getID(), TLSP.tl.getID(), operation))
     for s in sets:
         print("    " + "   ".join([pair2str(p, False) for p in s]))
 

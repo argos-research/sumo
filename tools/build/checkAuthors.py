@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2011-11-07
-@version $Id: checkAuthors.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: checkAuthors.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Checks authors for all files.
 
@@ -124,7 +124,8 @@ def setAuthors(fullName, removal, add, pattern):
                     print("%s  %s" % (pattern, a), file=out)
                 out.write(line)
             elif add:
-                print("need to add author %s to %s" % (add, fullName), file=log)
+                print("need to add author %s to %s" %
+                      (add, fullName), file=log)
             authors = []
         elif options.fix:
             out.write(line)

@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2007-06-28
-@version $Id: flowFromRoutes.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: flowFromRoutes.py 20482 2016-04-18 20:49:42Z behrisch $
 
 This script recreates a flow file from routes and emitters.
 
@@ -83,7 +83,8 @@ class DetectorRouteEmitterReader(handler.ContentHandler):
                             sumSquaredPercent += dev * dev / dFlow / dFlow
                         n += 1
         print('# avgRouteFlow avgDetFlow avgDev RMSE RMSPE')
-        print('#', rSum / n, dSum / n, sumAbsDev / n, math.sqrt(sumSquaredDev / n), math.sqrt(sumSquaredPercent / n))
+        print('#', rSum / n, dSum / n, sumAbsDev / n,
+              math.sqrt(sumSquaredDev / n), math.sqrt(sumSquaredPercent / n))
 
     def printFlows(self, includeDets):
         if includeDets:

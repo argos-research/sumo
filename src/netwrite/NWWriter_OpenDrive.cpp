@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Tue, 04.05.2011
-/// @version $Id: NWWriter_OpenDrive.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NWWriter_OpenDrive.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Exporter writing networks using the openDRIVE format
 /****************************************************************************/
@@ -297,9 +297,9 @@ NWWriter_OpenDrive::getLaneType(SVCPermissions permissions) {
     switch (permissions) {
         case SVC_PEDESTRIAN:
             return "sidewalk";
-            //case (SVC_BICYCLE | SVC_PEDESTRIAN):
-            //    WRITE_WARNING("Ambiguous lane type (biking+driving) for road '" + roadID + "'");
-            //    return "sidewalk";
+        //case (SVC_BICYCLE | SVC_PEDESTRIAN):
+        //    WRITE_WARNING("Ambiguous lane type (biking+driving) for road '" + roadID + "'");
+        //    return "sidewalk";
         case SVC_BICYCLE:
             return "biking";
         case 0:
@@ -319,19 +319,19 @@ NWWriter_OpenDrive::getLeftLaneBorder(const NBEdge* edge, int laneIndex) {
         // leftmost lane
         laneIndex = (int)edge->getNumLanes() - 1;
     }
-	const int leftmost = (int)edge->getNumLanes() - 1;
-	SUMOReal widthOffset = -(edge->getLaneWidth(leftmost) / 2);
-	
-	// collect lane widths from left border of edge to left border of lane to connect to
-	for (int i = leftmost; i > laneIndex; i--) {
-		widthOffset += edge->getLaneWidth(i);
-	}
-	
-	PositionVector result = edge->getLaneShape(leftmost);
-	try {
-		result.move2side(widthOffset);
-	} catch (InvalidArgument&) { }
-	return result;
+    const int leftmost = (int)edge->getNumLanes() - 1;
+    SUMOReal widthOffset = -(edge->getLaneWidth(leftmost) / 2);
+
+    // collect lane widths from left border of edge to left border of lane to connect to
+    for (int i = leftmost; i > laneIndex; i--) {
+        widthOffset += edge->getLaneWidth(i);
+    }
+
+    PositionVector result = edge->getLaneShape(leftmost);
+    try {
+        result.move2side(widthOffset);
+    } catch (InvalidArgument&) { }
+    return result;
 }
 
 

@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2009-06-12
-@version $Id: visum_convertTurnPercentages.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: visum_convertTurnPercentages.py 20482 2016-04-18 20:49:42Z behrisch $
 
 
 Converts VISUM turning percentages into
@@ -86,7 +86,8 @@ for line in fd:
             continue
         if tonode not in nmap[fromnode]:
             if number != 0:
-                print("No connection between from-node '" + fromnode + "' and to-node '" + tonode + "'; skipping")
+                print("No connection between from-node '" + fromnode +
+                      "' and to-node '" + tonode + "'; skipping")
             missing = missing + 1
             missingN = missingN + number
             continue

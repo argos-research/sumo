@@ -2,7 +2,7 @@
 /// @file    GUIEvent_Screenshot.h
 /// @author  Michael Behrisch
 /// @date    2015-08-25
-/// @version $Id: GUIEvent_Screenshot.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIEvent_Screenshot.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Event send when a screenshot should be made
 /****************************************************************************/
@@ -55,8 +55,8 @@ public:
     GUIEvent_Screenshot(GUISUMOAbstractView* view,
                         const std::string& file)
         : GUIEvent(EVENT_SCREENSHOT),
-          myView(view), myFile(file)
-    { }
+          myView(view), myFile(file) {
+    }
 
     /// destructor
     ~GUIEvent_Screenshot() { }

@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Wed, 12 Dez 2001
-/// @version $Id: MSJunction.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSJunction.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The base class for an intersection
 /****************************************************************************/
@@ -56,8 +56,8 @@ MSJunction::MSJunction(const std::string& id, SumoXMLNodeType type, const Positi
     Named(id),
     myType(type),
     myPosition(position),
-    myShape(shape)
-{}
+    myShape(shape) {
+}
 
 
 MSJunction::~MSJunction() {}

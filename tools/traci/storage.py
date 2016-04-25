@@ -7,7 +7,7 @@
 @author  Daniel Krajzewicz
 @author  Jakob Erdmann
 @date    2008-10-09
-@version $Id: storage.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: storage.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Python implementation of the TraCI interface.
 
@@ -25,6 +25,7 @@ from __future__ import absolute_import
 import struct
 
 _DEBUG = False
+
 
 class Storage:
 

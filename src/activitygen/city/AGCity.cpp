@@ -6,7 +6,7 @@
 /// @author  Walter Bamberger
 /// @author  Jakob Erdmann
 /// @date    July 2010
-/// @version $Id: AGCity.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: AGCity.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // City class that contains all other objects of the city: in particular
 // streets, households, bus lines, work positions and school
@@ -412,13 +412,13 @@ AGCity::getStreet(const std::string& edge) {
         ++it;
     }
     std::cout << "===> ERROR: WRONG STREET EDGE (" << edge << ") given and not found in street set." << std::endl;
-    throw(std::runtime_error("Street not found with edge id " + edge));
+    throw (std::runtime_error("Street not found with edge id " + edge));
 }
 
 const AGStreet&
 AGCity::getRandomStreet() {
     if (streets.empty()) {
-        throw(std::runtime_error("No street found in this city"));
+        throw (std::runtime_error("No street found in this city"));
     }
     return *streets[RandHelper::rand(streets.size())];
 }

@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: OptionsLoader.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: OptionsLoader.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A SAX-Handler for loading options
 /****************************************************************************/
@@ -55,7 +55,7 @@ class OptionsLoader : public XERCES_CPP_NAMESPACE::HandlerBase {
 public:
     /** @brief Constructor
      */
-    OptionsLoader(const bool routeOnly=false);
+    OptionsLoader(const bool routeOnly = false);
 
 
     /** destructor */

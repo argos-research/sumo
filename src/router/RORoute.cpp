@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Yun-Pang Floetteroed
 /// @date    Sept 2002
-/// @version $Id: RORoute.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: RORoute.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A complete router's route
 /****************************************************************************/
@@ -56,8 +56,8 @@ RORoute::RORoute(const std::string& id, SUMOReal costs, SUMOReal prop,
       myProbability(prop), myRoute(route), myColor(color), myStops(stops) {}
 
 RORoute::RORoute(const std::string& id, const ConstROEdgeVector& route)
-	: Named(StringUtils::convertUmlaute(id)), myCosts(0.0),
-	  myProbability(0.0), myRoute(route), myColor(0), myStops() {}
+    : Named(StringUtils::convertUmlaute(id)), myCosts(0.0),
+      myProbability(0.0), myRoute(route), myColor(0), myStops() {}
 
 RORoute::RORoute(const RORoute& src)
     : Named(src.myID), myCosts(src.myCosts),

@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIMEVehicle.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIMEVehicle.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -68,7 +68,7 @@ public:
      * @exception ProcessError If a value is wrong
      */
     GUIMEVehicle(SUMOVehicleParameter* pars, const MSRoute* route,
-               const MSVehicleType* type, const SUMOReal speedFactor);
+                 const MSVehicleType* type, const SUMOReal speedFactor);
 
 
     /// @brief destructor
@@ -126,13 +126,13 @@ public:
      */
     GUIParameterTableWindow* getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent);
 
-    /** @brief Returns an own type parameter window 
+    /** @brief Returns an own type parameter window
      *
      * @param[in] app The application needed to build the parameter window
      * @param[in] parent The parent window needed to build the parameter window
      * @return The built parameter window
      */
-    GUIParameterTableWindow* getTypeParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent); 
+    GUIParameterTableWindow* getTypeParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent);
 
 
     /// @brief set position and angle for drawing

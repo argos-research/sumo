@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_OpenStreetMap.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIImporter_OpenStreetMap.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Importer for networks stored in OpenStreetMap format
 /****************************************************************************/
@@ -560,8 +560,8 @@ NIImporter_OpenStreetMap::NodesHandler::NodesHandler(
     myIsInValidNodeTag(false),
     myHierarchyLevel(0),
     myUniqueNodes(uniqueNodes),
-    myImportElevation(importElevation)
-{ }
+    myImportElevation(importElevation) {
+}
 
 
 NIImporter_OpenStreetMap::NodesHandler::~NodesHandler() {}

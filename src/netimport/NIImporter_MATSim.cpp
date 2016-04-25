@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 26.04.2011
-/// @version $Id: NIImporter_MATSim.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIImporter_MATSim.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Importer for networks stored in MATSim format
 /****************************************************************************/
@@ -177,9 +177,9 @@ NIImporter_MATSim::EdgesHandler::EdgesHandler(const NBNodeCont& nc, NBEdgeCont& 
         NBCapacity2Lanes capacity2Lanes)
     : GenericSAXHandler(matsimTags, MATSIM_TAG_NOTHING,
                         matsimAttrs, MATSIM_ATTR_NOTHING, "matsim - file"),
-    myNodeCont(nc), myEdgeCont(toFill), myCapacityNorm(3600),
-    myKeepEdgeLengths(keepEdgeLengths), myLanesFromCapacity(lanesFromCapacity),
-    myCapacity2Lanes(capacity2Lanes) {
+      myNodeCont(nc), myEdgeCont(toFill), myCapacityNorm(3600),
+      myKeepEdgeLengths(keepEdgeLengths), myLanesFromCapacity(lanesFromCapacity),
+      myCapacity2Lanes(capacity2Lanes) {
 }
 
 

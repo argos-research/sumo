@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBTrafficLightDefinition.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBTrafficLightDefinition.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The base class for traffic light logic definitions
 /****************************************************************************/
@@ -91,8 +91,7 @@ NBTrafficLightDefinition::NBTrafficLightDefinition(const std::string& id,
     myOffset(offset),
     myType(type),
     myNeedsContRelationReady(false),
-    myRightOnRedConflictsReady(false) 
-{
+    myRightOnRedConflictsReady(false) {
     addNode(junction);
 }
 
@@ -104,8 +103,8 @@ NBTrafficLightDefinition::NBTrafficLightDefinition(const std::string& id, const 
     myOffset(offset),
     myType(type),
     myNeedsContRelationReady(false),
-    myRightOnRedConflictsReady(false) 
-{}
+    myRightOnRedConflictsReady(false) {
+}
 
 
 NBTrafficLightDefinition::~NBTrafficLightDefinition() {}
@@ -156,7 +155,7 @@ NBTrafficLightDefinition::setParticipantsInformation() {
     collectLinks();
 }
 
-std::set<NBEdge*> 
+std::set<NBEdge*>
 NBTrafficLightDefinition::collectReachable(EdgeVector outer, const EdgeVector& within, bool checkControlled) {
     std::set<NBEdge*> reachable;
     while (outer.size() > 0) {
@@ -202,7 +201,7 @@ NBTrafficLightDefinition::collectEdges() {
             outer.push_back(edge);
         }
     }
-    // collect edges that are reachable from the outside via controlled connections 
+    // collect edges that are reachable from the outside via controlled connections
     std::set<NBEdge*> reachable = collectReachable(outer, myEdgesWithin, true);
     // collect edges that are reachable from the outside regardless of controllability
     std::set<NBEdge*> reachable2 = collectReachable(outer, myEdgesWithin, false);

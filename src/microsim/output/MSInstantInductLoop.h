@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    2011-09.08
-/// @version $Id: MSInstantInductLoop.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSInstantInductLoop.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // An instantaneous induction loop
 /****************************************************************************/
@@ -58,7 +58,7 @@ class OutputDevice;
  * @see MSDetectorFileOutput
  */
 class MSInstantInductLoop
-        : public MSMoveReminder, public MSDetectorFileOutput {
+    : public MSMoveReminder, public MSDetectorFileOutput {
 public:
     /**
      * @brief Constructor.

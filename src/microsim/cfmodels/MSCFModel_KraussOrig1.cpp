@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 04 Aug 2009
-/// @version $Id: MSCFModel_KraussOrig1.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSCFModel_KraussOrig1.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The original Krauss (1998) car-following model and parameter
 /****************************************************************************/
@@ -44,7 +44,7 @@
 // ===========================================================================
 MSCFModel_KraussOrig1::MSCFModel_KraussOrig1(const MSVehicleType* vtype,  SUMOReal accel, SUMOReal decel,
         SUMOReal dawdle, SUMOReal headwayTime)
-    : MSCFModel(vtype, accel, decel, headwayTime), myDawdle(dawdle), myTauDecel(decel* headwayTime) {
+    : MSCFModel(vtype, accel, decel, headwayTime), myDawdle(dawdle), myTauDecel(decel * headwayTime) {
 }
 
 

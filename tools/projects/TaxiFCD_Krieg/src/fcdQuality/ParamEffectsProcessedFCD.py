@@ -6,7 +6,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-07-26
-@version $Id: ParamEffectsProcessedFCD.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: ParamEffectsProcessedFCD.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Creates files with a comparison of speeds for each edge between the taxis and the average speed from the current edge.
 Dependent of the frequency and the taxi quota.
@@ -77,7 +77,8 @@ def main():
         path.FQvehPickle, path.FQvtypePickle, getVehicleList, False, vtypeDict)
     vehSum = len(vehList)
     if mode == U_FCD:
-        print("load source: ", os.path.basename(path.FQprocessedFCD), "...", end=' ')
+        print("load source: ", os.path.basename(
+            path.FQprocessedFCD), "...", end=' ')
         procFcdDict = readProcessedFCD()
         print("Done!")
 

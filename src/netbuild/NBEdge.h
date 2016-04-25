@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdge.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBEdge.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The representation of a single edge during network building
 /****************************************************************************/
@@ -415,7 +415,7 @@ public:
     }
 
     /// @brief length that will be assigned to the lanes in the final network
-    SUMOReal getFinalLength() const; 
+    SUMOReal getFinalLength() const;
 
     /** @brief Returns whether a length was set explicitly
      * @return Wether the edge's length was specified

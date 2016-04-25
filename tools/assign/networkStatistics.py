@@ -4,7 +4,7 @@
 @author  Yun-Pang Floetteroed
 @author  Michael Behrisch
 @date    2007-02-27
-@version $Id: networkStatistics.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: networkStatistics.py 20482 2016-04-18 20:49:42Z behrisch $
 
 This script is to calculate the global performance indices according to the SUMO-based simulation results.
 Besides, this script is also to execute the significance test for evaluating the results from different assignment methods.
@@ -137,7 +137,8 @@ def doTTestForAvg(verbose, tValueAvg, assignments):
                         A.avgWaitTime - B.avgWaitTime) / sdABWaitTime * tempvalue
                 else:
                     avgwaittime = 0.
-                    print('check if the information about veh.waittime exists!')
+                    print(
+                        'check if the information about veh.waittime exists!')
                 freedomdegree = A.totalVeh + B.totalVeh - 2
                 if freedomdegree > 30 and freedomdegree <= 40:
                     freedomdegree = 31

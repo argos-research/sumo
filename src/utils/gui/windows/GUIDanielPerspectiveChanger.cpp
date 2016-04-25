@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIDanielPerspectiveChanger.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIDanielPerspectiveChanger.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A class that allows to steer the visual output in dependence to
 /****************************************************************************/
@@ -54,8 +54,8 @@ GUIDanielPerspectiveChanger::GUIDanielPerspectiveChanger(
     myMouseButtonState(MOUSEBTN_NONE),
     myMoveOnClick(false),
     myZoomBase(viewPort.getCenter()),
-    myDragDelay(0)
-{}
+    myDragDelay(0) {
+}
 
 
 GUIDanielPerspectiveChanger::~GUIDanielPerspectiveChanger() {}

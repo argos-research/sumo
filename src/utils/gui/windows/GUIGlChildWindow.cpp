@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 29.05.2005
-/// @version $Id: GUIGlChildWindow.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIGlChildWindow.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 //
 /****************************************************************************/
@@ -161,9 +161,9 @@ GUIGlChildWindow::buildScreenshotToolBar() {
     new FXToolBarGrip(myNavigationToolBar, NULL, 0, TOOLBARGRIP_SINGLE | FRAME_SUNKEN);
     // snapshot
     new MFXCheckableButton(false, myNavigationToolBar,
-                 "\tMake Snapshot\tMakes a snapshot of the view.",
-                 GUIIconSubSys::getIcon(ICON_CAMERA), this, MID_MAKESNAPSHOT,
-                 ICON_ABOVE_TEXT | BUTTON_TOOLBAR | FRAME_RAISED | LAYOUT_TOP | LAYOUT_LEFT);
+                           "\tMake Snapshot\tMakes a snapshot of the view.",
+                           GUIIconSubSys::getIcon(ICON_CAMERA), this, MID_MAKESNAPSHOT,
+                           ICON_ABOVE_TEXT | BUTTON_TOOLBAR | FRAME_RAISED | LAYOUT_TOP | LAYOUT_LEFT);
 }
 
 

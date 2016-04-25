@@ -2,7 +2,7 @@
 /// @file    NIVissimConflictArea.cpp
 /// @author  Lukas Grohmann
 /// @date    Aug 2015
-/// @version $Id: NIVissimConflictArea.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIVissimConflictArea.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A temporary storage for conflict areas imported from Vissim
 /****************************************************************************/
@@ -57,8 +57,8 @@ NIVissimConflictArea::NIVissimConflictArea(int id,
         const std::string& link1,
         const std::string& link2,
         const std::string& status)
-    : myConflictID(id), myFirstLink(link1), mySecondLink(link2), myStatus(status)
-{}
+    : myConflictID(id), myFirstLink(link1), mySecondLink(link2), myStatus(status) {
+}
 
 
 NIVissimConflictArea::~NIVissimConflictArea() {}

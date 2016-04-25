@@ -6,7 +6,7 @@
 @author  Michael Behrisch
 @author  Laura Bieker
 @date    2013-12-08
-@version $Id: xml2csv.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: xml2csv.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Convert hierarchical xml files to csv. This only makes sense if the hierarchy has low depth.
 
@@ -38,6 +38,7 @@ except ImportError:
 import xsd
 
 PY3 = sys.version_info > (3,)
+
 
 class NestingHandler(xml.sax.handler.ContentHandler):
 

@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    20 Nov 2001
-/// @version $Id: NBNetBuilder.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBNetBuilder.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Instance responsible for building networks
 /****************************************************************************/
@@ -65,8 +65,8 @@
 // ===========================================================================
 NBNetBuilder::NBNetBuilder() :
     myEdgeCont(myTypeCont),
-    myHaveLoadedNetworkWithoutInternalEdges(false)
-{}
+    myHaveLoadedNetworkWithoutInternalEdges(false) {
+}
 
 
 NBNetBuilder::~NBNetBuilder() {}

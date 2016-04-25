@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 26.04.2004
-/// @version $Id: GUITriggerBuilder.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUITriggerBuilder.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Builds trigger objects for guisim
 /****************************************************************************/
@@ -80,7 +80,7 @@ void
 GUITriggerBuilder::buildStoppingPlace(MSNet& net, const std::string& id, const std::vector<std::string>& lines,
                                       MSLane* lane, SUMOReal frompos, SUMOReal topos, const SumoXMLTag element) {
     bool success = false;
-    GUIGlObject* o = 0; 
+    GUIGlObject* o = 0;
     if (element == SUMO_TAG_CONTAINER_STOP) {
         GUIContainerStop* stop = new GUIContainerStop(id, lines, *lane, frompos, topos);
         success = net.addContainerStop(stop);

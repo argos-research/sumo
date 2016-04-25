@@ -6,7 +6,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2008-03-27
-@version $Id: __init__.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: __init__.py 20482 2016-04-18 20:49:42Z behrisch $
 
 This file contains a content handler for parsing sumo network xml files.
 It uses other classes from this module to represent the road network.
@@ -216,7 +216,8 @@ class Net:
                     edges.append((e, d))
         except ImportError:
             if not self.hasWarnedAboutMissingRTree:
-                print("Warning: Module 'rtree' not available. Using brute-force fallback")
+                print(
+                    "Warning: Module 'rtree' not available. Using brute-force fallback")
                 self.hasWarnedAboutMissingRTree = True
 
             for edge in self._edges:

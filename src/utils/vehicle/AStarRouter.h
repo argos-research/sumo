@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    January 2012
-/// @version $Id: AStarRouter.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: AStarRouter.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A* Algorithm using euclidean distance heuristic.
 // Based on DijkstraRouterTT. For routing by effort a novel heuristic would be needed.
@@ -87,8 +87,8 @@ public:
             traveltime(std::numeric_limits<SUMOReal>::max()),
             heuristicTime(std::numeric_limits<SUMOReal>::max()),
             prev(0),
-            visited(false)
-        {}
+            visited(false) {
+        }
 
         /// The current edge
         const E* edge;

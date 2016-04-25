@@ -2,7 +2,7 @@
 /// @file    IntermodalRouter.h
 /// @author  Jakob Erdmann
 /// @date    Mon, 03 March 2014
-/// @version $Id: IntermodalRouter.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: IntermodalRouter.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The Pedestrian Router build a special network and (delegegates to a SUMOAbstractRouter)
 /****************************************************************************/
@@ -66,7 +66,7 @@ private:
 
 public:
     struct TripItem {
-        TripItem(const std::string& _line="") : line(_line) {}
+        TripItem(const std::string& _line = "") : line(_line) {}
         std::string line;
         std::string destStop;
         std::vector<const E*> edges;
@@ -91,7 +91,7 @@ public:
     }
 
     int splitEdge(_IntermodalEdge* const toSplit, _IntermodalEdge* afterSplit, const SUMOReal pos,
-                  _IntermodalEdge* const fwdConn, _IntermodalEdge* const backConn=0) {
+                  _IntermodalEdge* const fwdConn, _IntermodalEdge* const backConn = 0) {
         int splitIndex = 1;
         std::vector<_IntermodalEdge*>& splitList = myAccessSplits[toSplit];
         if (splitList.empty()) {
@@ -247,8 +247,8 @@ public:
         _IntermodalTrip trip(from, to, departPos, arrivalPos, speed, msTime, 0, vehicle, modeSet);
         std::vector<const _IntermodalEdge*> intoPed;
         const bool success = myInternalRouter->compute(myIntermodalNet->getDepartEdge(from, departPos),
-                                                       myIntermodalNet->getArrivalEdge(to, arrivalPos),
-                                                       &trip, msTime, intoPed);
+                             myIntermodalNet->getArrivalEdge(to, arrivalPos),
+                             &trip, msTime, intoPed);
         if (success) {
             std::string lastLine = "";
             for (size_t i = 0; i < intoPed.size(); ++i) {
@@ -401,8 +401,8 @@ public:
 
     RouterProvider(const RouterProvider& original)
         : myVehRouter(original.getVehicleRouter().clone()),
-        myPedRouter(static_cast<PedestrianRouterDijkstra<E, L, N, V>*>(original.myPedRouter == 0 ? 0 : original.getPedestrianRouter().clone())),
-        myInterRouter(static_cast<IntermodalRouter<E, L, N, V>*>(original.myInterRouter == 0 ? 0 : original.getIntermodalRouter().clone())) {}
+          myPedRouter(static_cast<PedestrianRouterDijkstra<E, L, N, V>*>(original.myPedRouter == 0 ? 0 : original.getPedestrianRouter().clone())),
+          myInterRouter(static_cast<IntermodalRouter<E, L, N, V>*>(original.myInterRouter == 0 ? 0 : original.getIntermodalRouter().clone())) {}
 
     SUMOAbstractRouter<E, V>& getVehicleRouter() const {
         return *myVehRouter;

@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    14.08.2013
-/// @version $Id: MSDevice_BTsender.cpp 20447 2016-04-14 13:02:24Z luecken $
+/// @version $Id: MSDevice_BTsender.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A BT sender
 /****************************************************************************/
@@ -73,10 +73,10 @@ MSDevice_BTsender::buildVehicleDevices(SUMOVehicle& v, std::vector<MSDevice*>& i
 
 void
 MSDevice_BTsender::cleanup() {
-	std::map<std::string, MSDevice_BTsender::VehicleInformation*>::iterator i;
-	for(i = sVehicles.begin(); i!=sVehicles.end(); i++){
-		delete i->second;
-	}
+    std::map<std::string, MSDevice_BTsender::VehicleInformation*>::iterator i;
+    for (i = sVehicles.begin(); i != sVehicles.end(); i++) {
+        delete i->second;
+    }
 }
 
 

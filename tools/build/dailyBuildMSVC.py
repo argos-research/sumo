@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Laura Bieker
 @date    2008
-@version $Id: dailyBuildMSVC.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: dailyBuildMSVC.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Does the nightly svn update on the windows server and the visual
 studio build. The script is also used for the meso build.
@@ -38,6 +38,7 @@ import sys
 import status
 import wix
 
+
 def repositoryUpdate(options, repoLogFile):
     if options.no_update:
         return ""
@@ -65,6 +66,7 @@ def repositoryUpdate(options, repoLogFile):
         print("No changes since last update, skipping build and test")
         sys.exit()
     return svnrev
+
 
 def runTests(options, env, testLog, svnrev):
     if options.no_tests:
@@ -147,7 +149,8 @@ if "VS100COMNTOOLS" in env:
 if "VS120COMNTOOLS" in env:
     compiler = os.path.join(env["VS120COMNTOOLS"], "..", "IDE", "devenv.exe")
     msvcVersion = "msvc12"
-svnrev = repositoryUpdate(options, os.path.join(options.remoteDir, msvcVersion + options.suffix + "Update.log"))
+svnrev = repositoryUpdate(options, os.path.join(
+    options.remoteDir, msvcVersion + options.suffix + "Update.log"))
 
 maxTime = 0
 sumoAllZip = None
@@ -217,7 +220,8 @@ for platform, dllDir in platformDlls:
             zipf.close()
             if options.suffix == "":
                 # installers only for the vanilla build
-                wix.buildMSI(binaryZip, binaryZip.replace(".zip", ".msi"), log=log)
+                wix.buildMSI(
+                    binaryZip, binaryZip.replace(".zip", ".msi"), log=log)
         except IOError as ziperr:
             (errno, strerror) = ziperr.args
             print("Warning: Could not zip to %s!" % binaryZip, file=log)
@@ -227,7 +231,8 @@ for platform, dllDir in platformDlls:
         subprocess.call(
             ['python', setup, binaryZip], stdout=log, stderr=subprocess.STDOUT)
     except Exception as e:
-        print("Warning: Could not create nightly sumo-game.zip! (%s)" % e, file=log)
+        print("Warning: Could not create nightly sumo-game.zip! (%s)" %
+              e, file=log)
     log.close()
     subprocess.call(compiler + " /rebuild Debug|%s %s\\%s /out %s" %
                     (platform, options.rootDir, options.project, makeAllLog))

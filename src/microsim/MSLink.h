@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSLink.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSLink.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A connnection between lanes
 /****************************************************************************/
@@ -113,8 +113,8 @@ public:
             arrivalTimeBraking(_arrivalTimeBraking),
             arrivalSpeedBraking(_arrivalSpeedBraking),
             waitingTime(_waitingTime),
-            dist(_dist)
-        {}
+            dist(_dist) {
+        }
 
         /// @brief The time the vehicle's front arrives at the link
         const SUMOTime arrivalTime;

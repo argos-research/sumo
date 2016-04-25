@@ -4,7 +4,7 @@
 /// @author  Anna Chiara Bellini
 /// @author  Federico Caselli
 /// @date    Jun 2013
-/// @version $Id: MSSOTLPolicy.cpp 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSSOTLPolicy.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The class for low-level policy
 /****************************************************************************/
@@ -122,8 +122,8 @@ SUMOReal MSSOTLPolicy::computeDesirability(SUMOReal vehInMeasure, SUMOReal vehOu
 }
 
 int MSSOTLPolicy::decideNextPhase(SUMOTime elapsed,
-                                     const MSPhaseDefinition* stage, int currentPhaseIndex,
-                                     int phaseMaxCTS, bool thresholdPassed, bool pushButtonPressed, int vehicleCount) {
+                                  const MSPhaseDefinition* stage, int currentPhaseIndex,
+                                  int phaseMaxCTS, bool thresholdPassed, bool pushButtonPressed, int vehicleCount) {
 
     //If the junction was in a commit step
     //=> go to the target step that gives green to the set with the current highest CTS

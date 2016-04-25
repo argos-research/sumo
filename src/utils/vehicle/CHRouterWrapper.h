@@ -4,7 +4,7 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    March 2012
-/// @version $Id: CHRouterWrapper.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: CHRouterWrapper.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Wraps multiple CHRouters for different vehicle types
 /****************************************************************************/
@@ -78,8 +78,8 @@ public:
         myEdges(edges),
         myIgnoreErrors(ignoreErrors),
         myBegin(begin),
-        myWeightPeriod(weightPeriod)
-    {}
+        myWeightPeriod(weightPeriod) {
+    }
 
     ~CHRouterWrapper() {
         for (typename RouterMap::iterator i = myRouters.begin(); i != myRouters.end(); ++i) {

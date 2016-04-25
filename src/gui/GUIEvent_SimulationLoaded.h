@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: GUIEvent_SimulationLoaded.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIEvent_SimulationLoaded.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Event send when the simulation has been loaded by GUILadThread
 /****************************************************************************/
@@ -65,8 +65,8 @@ public:
         : GUIEvent(EVENT_SIMULATION_LOADED),
           myNet(net), myBegin(startTime), myEnd(endTime),
           myFile(file), mySettingsFiles(settingsFiles),
-          myOsgView(osgView)
-    { }
+          myOsgView(osgView) {
+    }
 
     /// destructor
     ~GUIEvent_SimulationLoaded() { }

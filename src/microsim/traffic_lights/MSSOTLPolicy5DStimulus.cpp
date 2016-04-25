@@ -3,7 +3,7 @@
 /// @author  Riccardo Belletti
 /// @author  Simone Bacchilega
 /// @date    2014-09-30
-/// @version $Id: MSSOTLPolicy5DStimulus.cpp 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSSOTLPolicy5DStimulus.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The class for Swarm-based low-level policy
 /****************************************************************************/
@@ -59,21 +59,21 @@ SUMOReal MSSOTLPolicy5DStimulus::computeDesirability(SUMOReal vehInMeasure, SUMO
         return -1;
     } else {
         SUMOReal stimulus = getStimCox()
-                          * exp(
-                              -getStimCoxExpIn()
-                              * pow(vehInMeasure - getStimOffsetIn(), 2)
-                              / getStimDivisorIn()
-                              - getStimCoxExpOut()
-                              * pow(vehOutMeasure - getStimOffsetOut(), 2)
-                              / getStimDivisorOut()
-                              - getStimCoxExpDispersionIn()
-                              * pow(vehInDispersionMeasure - getStimOffsetDispersionIn(), 2)
-                              / getStimDivisorDispersionIn()
-                              - getStimCoxExpDispersionOut()
-                              * pow(vehOutDispersionMeasure - getStimOffsetDispersionOut(), 2)
-                              / getStimDivisorDispersionOut()
+                            * exp(
+                                -getStimCoxExpIn()
+                                * pow(vehInMeasure - getStimOffsetIn(), 2)
+                                / getStimDivisorIn()
+                                - getStimCoxExpOut()
+                                * pow(vehOutMeasure - getStimOffsetOut(), 2)
+                                / getStimDivisorOut()
+                                - getStimCoxExpDispersionIn()
+                                * pow(vehInDispersionMeasure - getStimOffsetDispersionIn(), 2)
+                                / getStimDivisorDispersionIn()
+                                - getStimCoxExpDispersionOut()
+                                * pow(vehOutDispersionMeasure - getStimOffsetDispersionOut(), 2)
+                                / getStimDivisorDispersionOut()
 
-                          );
+                            );
         return stimulus;
     }
 }

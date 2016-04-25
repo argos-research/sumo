@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    11.09.2009
-@version $Id: routes_Join.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: routes_Join.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Joins routes belonging to two networks.
 A map file with the following syntax is read first:
@@ -132,7 +132,8 @@ def writeVehicle(fdo, route, conts1, conts2, replacements):
 
 
 if len(sys.argv) < 6:
-    print("Usage: " + sys.argv[0] + " <prefix#1> <routes#1> <prefix#2> <routes#2> <mapfile>")
+    print("Usage: " +
+          sys.argv[0] + " <prefix#1> <routes#1> <prefix#2> <routes#2> <mapfile>")
     sys.exit()
 # read mapping
 mmap = {}

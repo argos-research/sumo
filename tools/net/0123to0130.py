@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2007
-@version $Id: 0123to0130.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: 0123to0130.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Changes xml network files from version 0.12.3 to version 0.13.0.
 
@@ -267,17 +267,20 @@ def changeFile(fname):
         print("Patching " + fname + " ...")
     if (("_deprecated_" in fname and not "net.netconvert" in fname) or
             (os.path.join('tools', 'net', '0') in fname)):
-        print("Skipping file (looks like intentionally deprecated input): " + fname)
+        print(
+            "Skipping file (looks like intentionally deprecated input): " + fname)
         return
     has_no_destination = False
     if "SUMO_NO_DESTINATION" in open(fname).read():
-        print("Partial conversion (cannot convert SUMO_NO_DESTINATION): " + fname)
+        print(
+            "Partial conversion (cannot convert SUMO_NO_DESTINATION): " + fname)
         has_no_destination = True
     net = NetConverter(fname + ".chg", getBegin(fname), has_no_destination)
     try:
         parse(fname, net)
     except xml.sax._exceptions.SAXParseException:
-        print("Could not parse '%s' maybe it contains non-ascii chars?" % fname)
+        print("Could not parse '%s' maybe it contains non-ascii chars?" %
+              fname)
     if options.inplace:
         os.remove(fname)
         os.rename(fname + ".chg", fname)

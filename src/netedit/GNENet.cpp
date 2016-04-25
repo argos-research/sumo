@@ -2,7 +2,7 @@
 /// @file    GNENet.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNENet.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNENet.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A visual container for GNE-network-components such as GNEEdge and GNEJunction.
 // GNE components wrap netbuild-components and supply visualisation and editing
@@ -1018,7 +1018,7 @@ GNENet::computeAndUpdate(OptionsCont& oc) {
         it->second->setLogicValid(true);
         // updated shape
         it->second->updateBoundary();
-        refreshElement(it->second); 
+        refreshElement(it->second);
     }
     myNeedRecompute = false;
 }

@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: ROLane.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ROLane.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A single lane the router may use
 /****************************************************************************/
@@ -64,8 +64,8 @@ public:
      * @param[in] permissions Vehicle classes that may pass this lane
      */
     ROLane(const std::string& id, ROEdge* edge, SUMOReal length, SUMOReal maxSpeed, SVCPermissions permissions) :
-        Named(id), myEdge(edge), myLength(length), myMaxSpeed(maxSpeed), myPermissions(permissions)
-    {}
+        Named(id), myEdge(edge), myLength(length), myMaxSpeed(maxSpeed), myPermissions(permissions) {
+    }
 
 
     /// @brief Destructor

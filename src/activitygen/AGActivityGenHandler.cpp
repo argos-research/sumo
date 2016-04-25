@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    July 2010
-/// @version $Id: AGActivityGenHandler.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: AGActivityGenHandler.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The handler for parsing the statistics file.
 /****************************************************************************/
@@ -113,9 +113,9 @@ AGActivityGenHandler::myStartElement(int element, const SUMOSAXAttributes& attrs
             case AGEN_TAG_POPULATION:
                 parsePopulation();
                 break;
-                /*case AGEN_TAG_CHILD_ACOMP:
-                    parseChildrenAccompaniment();
-                    break;*/
+            /*case AGEN_TAG_CHILD_ACOMP:
+                parseChildrenAccompaniment();
+                break;*/
             case AGEN_TAG_BRACKET:
                 parseBracket(attrs);
                 break;

@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    2004-03-19
-/// @version $Id: FXSevenSegment.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: FXSevenSegment.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 //
 /****************************************************************************/
@@ -45,7 +45,7 @@ namespace FXEX {
  * Seven-segment (eg LCD/watch style) widget
  */
 class /* FXAPI // patch by Daniel Krajzewicz 24.02.2004 */
-        FXSevenSegment : public FXFrame {
+    FXSevenSegment : public FXFrame {
     FXDECLARE(FXSevenSegment)
 
 private:

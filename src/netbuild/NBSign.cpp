@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Nov 2012
-/// @version $Id: NBSign.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBSign.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A class representing a street sign
 /****************************************************************************/
@@ -71,8 +71,8 @@ StringBijection<NBSign::SignType> NBSign::SignTypeStrings(
 NBSign::NBSign(SignType type, SUMOReal offset, const std::string label) :
     myType(type),
     myOffset(offset),
-    myLabel(label)
-{ }
+    myLabel(label) {
+}
 
 
 NBSign::~NBSign() {}

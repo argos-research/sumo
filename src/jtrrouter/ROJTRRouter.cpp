@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Jan 2004
-/// @version $Id: ROJTRRouter.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ROJTRRouter.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Computes routes using junction turning percentages
 /****************************************************************************/
@@ -48,8 +48,8 @@ ROJTRRouter::ROJTRRouter(bool unbuildIsWarningOnly, bool acceptAllDestinations,
     SUMOAbstractRouter<ROEdge, ROVehicle>(0, "JTRRouter"),
     myUnbuildIsWarningOnly(unbuildIsWarningOnly),
     myAcceptAllDestination(acceptAllDestinations), myMaxEdges(maxEdges),
-    myIgnoreClasses(ignoreClasses), myAllowLoops(allowLoops)
-{ }
+    myIgnoreClasses(ignoreClasses), myAllowLoops(allowLoops) {
+}
 
 
 ROJTRRouter::~ROJTRRouter() {}

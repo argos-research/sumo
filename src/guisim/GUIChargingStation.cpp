@@ -6,7 +6,7 @@
 /// @author  Tamas Kurczveil
 /// @author  Pablo Alvarez Lopez
 /// @date    20-12-13
-/// @version $Id: GUIChargingStation.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIChargingStation.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A lane area vehicles can halt at (gui-version)
 /****************************************************************************/
@@ -95,8 +95,8 @@ GUIChargingStation::GUIChargingStation(const std::string& id, const std::vector<
 }
 
 
-GUIChargingStation::~GUIChargingStation()
-{}
+GUIChargingStation::~GUIChargingStation() {
+}
 
 
 GUIParameterTableWindow*

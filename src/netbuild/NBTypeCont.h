@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBTypeCont.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBTypeCont.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A storage for available types of edges
 /****************************************************************************/
@@ -239,8 +239,8 @@ private:
             oneWay(true), discard(false),
             width(NBEdge::UNSPECIFIED_WIDTH),
             sidewalkWidth(NBEdge::UNSPECIFIED_WIDTH),
-            bikeLaneWidth(NBEdge::UNSPECIFIED_WIDTH)
-        { }
+            bikeLaneWidth(NBEdge::UNSPECIFIED_WIDTH) {
+        }
 
         /// @brief Constructor
         TypeDefinition(int _numLanes, SUMOReal _speed, int _priority,
@@ -251,8 +251,8 @@ private:
             permissions(_permissions),
             oneWay(_oneWay), discard(false), width(_width),
             sidewalkWidth(_sideWalkWidth),
-            bikeLaneWidth(_bikeLaneWidth)
-        { }
+            bikeLaneWidth(_bikeLaneWidth) {
+        }
 
         /// @brief The number of lanes of an edge
         int numLanes;

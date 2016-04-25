@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2011
-@version $Id: wix.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: wix.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Builds the installer based on the nightly zip.
 
@@ -36,7 +36,8 @@ WXS_DEFAULT = os.path.join(
 LICENSE = os.path.join(
     os.path.dirname(__file__), "..", "..", "build", "wix", "License.rtf")
 
-SKIP_FILES = ["osmWebWizard.py", "sumo-gui.exe", "netedit.exe", "start-command-line.bat"]
+SKIP_FILES = ["osmWebWizard.py", "sumo-gui.exe",
+              "netedit.exe", "start-command-line.bat"]
 
 
 def buildFragment(wixBin, sourceDir, targetLabel, tmpDir, log=None):

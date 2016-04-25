@@ -5,7 +5,7 @@
 @author  Daniel Krajzewicz
 @author  Jakob Erdmann
 @date    2009-08-31
-@version $Id: costFunctionChecker.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: costFunctionChecker.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Run duarouter repeatedly and simulate weight changes via a cost function.
 
@@ -69,7 +69,8 @@ def writeRouteConf(step, options, file, output):
         <gBeta value="%s"/>
         <gA value="%s"/>
     </processing>""" % (options.continueOnUnbuild, options.gBeta, options.gA), file=fd)
-    print('    <random_number><abs-rand value="%s"/></random_number>' % options.absrand, file=fd)
+    print('    <random_number><abs-rand value="%s"/></random_number>' %
+          options.absrand, file=fd)
     print('    <time><begin value="%s"/>' % options.begin, end=' ', file=fd)
     if options.end:
         print('<end value="%s"/>' % options.end, end=' ', file=fd)

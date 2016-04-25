@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2010-05-23
-@version $Id: setup.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: setup.py 20482 2016-04-18 20:49:42Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -75,7 +75,8 @@ if osgPlugins:
     subprocess.call([sevenZip, 'x', os.path.join(
         os.path.dirname(inZip), '..', '3D_Modell_Forschungskreuzung_BS.7z')])
     os.chdir("..")
-zipf = zipfile.ZipFile(inZip.replace("sumo-", "sumo-game-"), 'w', zipfile.ZIP_DEFLATED)
+zipf = zipfile.ZipFile(
+    inZip.replace("sumo-", "sumo-game-"), 'w', zipfile.ZIP_DEFLATED)
 
 root_len = len(os.path.abspath("."))
 for root, dirs, files in os.walk("."):

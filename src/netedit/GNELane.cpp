@@ -2,7 +2,7 @@
 /// @file    GNELane.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNELane.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNELane.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A class for visualizing Lane geometry (adapted from GNELaneWrapper)
 /****************************************************************************/
@@ -88,8 +88,8 @@ GNELane::GNELane() :
     myParentEdge(*static_cast<GNEEdge*>(0)),
     myIndex(-1),
     mySpecialColor(0),
-    myTLSEditor(0)
-{ }
+    myTLSEditor(0) {
+}
 
 GNELane::~GNELane() {}
 

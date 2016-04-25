@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Thu, 02.11.2006
-/// @version $Id: PCNetProjectionLoader.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: PCNetProjectionLoader.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A reader for a SUMO network's projection description
 /****************************************************************************/
@@ -93,8 +93,8 @@ PCNetProjectionLoader::load(const std::string& file, int shift) {
 PCNetProjectionLoader::PCNetProjectionLoader(int shift) :
     SUMOSAXHandler("sumo-network"),
     myFoundLocation(false),
-    myShift(shift)
-{}
+    myShift(shift) {
+}
 
 
 PCNetProjectionLoader::~PCNetProjectionLoader() {}

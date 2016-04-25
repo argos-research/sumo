@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2004-11-23
-/// @version $Id: MSInductLoop.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSInductLoop.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // An unextended detector measuring at a fixed position on a fixed lane.
 /****************************************************************************/
@@ -69,7 +69,7 @@ class OutputDevice;
  * @see MSDetectorFileOutput
  */
 class MSInductLoop
-        : public MSMoveReminder, public MSDetectorFileOutput {
+    : public MSMoveReminder, public MSDetectorFileOutput {
 public:
     /**
      * @brief Constructor.

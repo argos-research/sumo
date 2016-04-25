@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Fri, 19 Jul 2002
-/// @version $Id: NIImporter_VISUM.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIImporter_VISUM.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A VISUM network importer
 /****************************************************************************/
@@ -1205,7 +1205,7 @@ NIImporter_VISUM::getEdge(NBNode* FromNode, NBNode* ToNode) {
     EdgeVector::const_iterator i;
     for (i = FromNode->getOutgoingEdges().begin(); i != FromNode->getOutgoingEdges().end(); i++) {
         if (ToNode == (*i)->getToNode()) {
-            return(*i);
+            return (*i);
         }
     }
     //!!!

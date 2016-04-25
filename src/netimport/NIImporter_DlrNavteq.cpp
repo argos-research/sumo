@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_DlrNavteq.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIImporter_DlrNavteq.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Importer for networks stored in Elmar's format
 /****************************************************************************/
@@ -211,8 +211,8 @@ NIImporter_DlrNavteq::EdgesHandler::EdgesHandler(NBNodeCont& nc, NBEdgeCont& ec,
     myGeoms(geoms),
     myStreetNames(streetNames),
     myVersion(0),
-    myFile(file)
-{ }
+    myFile(file) {
+}
 
 
 NIImporter_DlrNavteq::EdgesHandler::~EdgesHandler() {}

@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2007-11-25
-@version $Id: assign.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: assign.py 20482 2016-04-18 20:49:42Z behrisch $
 
 This script is for executing traffic assignment according to the required assignment model.
 The incremental assignment model, the C-Logit assignment model and the Lohse assignment model are included in this script. 
@@ -274,7 +274,8 @@ def doSUEVehAssign(net, vehicles, options, counter, matrixPshort, startVertices,
                 if options.verbose:
                     foutpath.write('\n')
     if options.verbose:
-        print('total Number of the used paths for the current matrix:', TotalPath)
+        print(
+            'total Number of the used paths for the current matrix:', TotalPath)
         foutpath.write(
             '\ntotal Number of the used paths for the current matrix:%s' % TotalPath)
         foutpath.close()

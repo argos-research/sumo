@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    2004-03-19
-/// @version $Id: FXBaseObject.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: FXBaseObject.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 //
 /****************************************************************************/
@@ -60,7 +60,7 @@ namespace FXEX {
  * This is a base class for ojects which can send messages to the application
  */
 class /* FXAPI // patch by Daniel Krajzewicz 24.02.2004 */
-        FXBaseObject : public FXObject {
+    FXBaseObject : public FXObject {
     FXDECLARE(FXBaseObject)
 
 protected:

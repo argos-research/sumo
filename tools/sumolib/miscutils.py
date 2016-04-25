@@ -3,7 +3,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2012-05-08
-@version $Id: miscutils.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: miscutils.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Common utility functions
 
@@ -32,6 +32,7 @@ from collections import defaultdict
 #sys.path.append(os.path.join(THIS_DIR, 'foo', 'bar'))
 
 # http://www.python.org/dev/peps/pep-0326/
+
 
 class _ExtremeType(object):
 

@@ -1,3 +1,0 @@
-Error: Invalid departPos definition for vehicle '';
- must be one of ("random", "random_free", "free", "base", "last" or a float)
-Quitting (on error).

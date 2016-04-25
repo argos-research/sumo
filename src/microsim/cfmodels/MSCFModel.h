@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 27 Jul 2009
-/// @version $Id: MSCFModel.h 20447 2016-04-14 13:02:24Z luecken $
+/// @version $Id: MSCFModel.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The car-following model abstraction
 /****************************************************************************/
@@ -61,7 +61,7 @@ public:
 
     class VehicleVariables {
     public:
-    	virtual ~VehicleVariables();
+        virtual ~VehicleVariables();
     };
 
     /** @brief Constructor

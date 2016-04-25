@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    2004-03-19
-/// @version $Id: FXLCDLabel.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: FXLCDLabel.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 //
 /****************************************************************************/
@@ -54,7 +54,7 @@ enum {
  * number.  Also supports the 'JUSTIFY_RIGHT' option, for right alignment.
  */
 class /* FXAPI // patch by Daniel Krajzewicz 24.02.2004 */
-        FXLCDLabel : public FXHorizontalFrame {
+    FXLCDLabel : public FXHorizontalFrame {
     FXDECLARE(FXLCDLabel)
 
 protected:

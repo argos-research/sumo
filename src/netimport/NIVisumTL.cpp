@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Thr, 08 May 2003
-/// @version $Id: NIVisumTL.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIVisumTL.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Intermediate class for storing visum traffic lights during their import
 /****************************************************************************/
@@ -48,8 +48,8 @@
 NIVisumTL::NIVisumTL(const std::string& name, SUMOTime cycleTime, SUMOTime offset,
                      SUMOTime intermediateTime, bool phaseDefined)
     : myName(name), myCycleTime(cycleTime), myOffset(offset),
-      myIntermediateTime(intermediateTime), myPhaseDefined(phaseDefined)
-{}
+      myIntermediateTime(intermediateTime), myPhaseDefined(phaseDefined) {
+}
 
 
 NIVisumTL::~NIVisumTL() {

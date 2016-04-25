@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSInsertionControl.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSInsertionControl.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Inserts vehicles into the network when their departure time is reached
 /****************************************************************************/
@@ -59,8 +59,8 @@ MSInsertionControl::MSInsertionControl(MSVehicleControl& vc,
     myVehicleControl(vc),
     myMaxDepartDelay(maxDepartDelay),
     myCheckEdgesOnce(checkEdgesOnce),
-    myMaxVehicleNumber(maxVehicleNumber)
-{}
+    myMaxVehicleNumber(maxVehicleNumber) {
+}
 
 
 MSInsertionControl::~MSInsertionControl() {

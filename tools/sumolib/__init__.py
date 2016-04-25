@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2011-06-23
-@version $Id: __init__.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: __init__.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Python interface to SUMO especially for parsing xml input and output files.
 
@@ -221,10 +221,11 @@ def _intTime(tStr):
 def _laneID2edgeID(laneID):
     return laneID[:laneID.rfind("_")]
 
+
 def writeXMLHeader(outf, script):
     outf.write("""<?xml version="1.0"?>
 <!-- generated on %s by %s
   options: %s
 -->
 """ % (datetime.datetime.now(), script,
-            (' '.join(sys.argv[1:]).replace('--', '<doubleminus>'))))
+       (' '.join(sys.argv[1:]).replace('--', '<doubleminus>'))))

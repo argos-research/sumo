@@ -5,7 +5,7 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    03.04.2010
-/// @version $Id: MSCFModel_PWag2009.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSCFModel_PWag2009.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Scalable model based on Krauss by Peter Wagner
 /****************************************************************************/
@@ -43,7 +43,7 @@
 MSCFModel_PWag2009::MSCFModel_PWag2009(const MSVehicleType* vtype,  SUMOReal accel, SUMOReal decel,
                                        SUMOReal dawdle, SUMOReal headwayTime, SUMOReal tauLast, SUMOReal apProb)
     : MSCFModel(vtype, accel, decel, headwayTime), myDawdle(dawdle),
-      myTauDecel(decel* headwayTime), myDecelDivTau(decel / headwayTime), myTauLastDecel(decel* tauLast),
+      myTauDecel(decel * headwayTime), myDecelDivTau(decel / headwayTime), myTauLastDecel(decel * tauLast),
       myActionPointProbability(apProb) {
 }
 

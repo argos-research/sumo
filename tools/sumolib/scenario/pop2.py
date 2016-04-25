@@ -3,7 +3,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2014-08-22
-@version $Id: pop2.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: pop2.py 20482 2016-04-18 20:49:42Z behrisch $
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
 Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
 
@@ -1538,7 +1538,8 @@ class ScenarioSet_DemandStep(ScenarioSet):
                     for f2duration in range(self.getInt("f2durationFrom"), self.getInt("f2durationTo"), self.getInt("f2durationStep")):
                         if f1 == 0 and f2begin == 0 and f2end == 0:
                             continue
-                        print("Computing for %s<->%s->%s@%s" % (f1, f2begin, f2end, f2duration))
+                        print("Computing for %s<->%s->%s@%s" %
+                              (f1, f2begin, f2end, f2duration))
                         sID = "DemandStep(%s-%s-%s-%s)" % (f1,
                                                            f2begin, f2end, f2duration)
                         s = getScenario("BasicCross", {}, False)

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Wed, 10. Dec 2003
-/// @version $Id: MSVehicleControl.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSVehicleControl.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The class responsible for building and deletion of vehicles
 /****************************************************************************/
@@ -414,7 +414,7 @@ public:
         myEmergencyStops++;
     }
 
-    /// @name State I/O 
+    /// @name State I/O
     /// @{
 
     /** @brief Sets the current state variables as loaded from the stream

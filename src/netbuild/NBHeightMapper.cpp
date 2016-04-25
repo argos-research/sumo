@@ -4,7 +4,7 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    Sept 2011
-/// @version $Id: NBHeightMapper.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBHeightMapper.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Set z-values for all network positions based on data from a height map
 /****************************************************************************/
@@ -62,8 +62,8 @@ NBHeightMapper NBHeightMapper::Singleton;
 
 
 NBHeightMapper::NBHeightMapper():
-    myRTree(&Triangle::addSelf), myRaster(0)
-{ }
+    myRTree(&Triangle::addSelf), myRaster(0) {
+}
 
 
 NBHeightMapper::~NBHeightMapper() {

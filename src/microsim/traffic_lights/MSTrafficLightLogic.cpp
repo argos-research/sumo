@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSTrafficLightLogic.cpp 20476 2016-04-18 08:36:33Z behrisch $
+/// @version $Id: MSTrafficLightLogic.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The parent class for traffic light logics
 /****************************************************************************/
@@ -306,7 +306,7 @@ void MSTrafficLightLogic::initMesoTLSPenalties() {
                 redDuration[j] = 0;
             }
         }
-    } 
+    }
     /// XXX penalty for wrap-around red phases is underestimated
     for (int j = 0; j < numLinks; ++j) {
         if (redDuration[j] > 0) {

@@ -5,7 +5,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    July 2010
-/// @version $Id: AGAdult.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: AGAdult.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Person in working age: can be linked to a work position.
 /****************************************************************************/
@@ -120,7 +120,7 @@ AGAdult::getWorkPosition() const {
     }
 
     else {
-        throw(std::runtime_error("AGAdult::getWorkPosition: Adult is unemployed."));
+        throw (std::runtime_error("AGAdult::getWorkPosition: Adult is unemployed."));
     }
 }
 

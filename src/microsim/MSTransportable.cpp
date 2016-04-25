@@ -4,7 +4,7 @@
 /// @author  Andreas Kendziorra
 /// @author  Michael Behrisch
 /// @date    Thu, 12 Jun 2014
-/// @version $Id: MSTransportable.cpp 20462 2016-04-15 12:20:52Z luecken $
+/// @version $Id: MSTransportable.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The common superclass for modelling transportable objects like persons and containers
 /****************************************************************************/
@@ -98,13 +98,13 @@ MSTransportable::MSTransportable(const SUMOVehicleParameter* pars, const MSVehic
 }
 
 MSTransportable::~MSTransportable() {
-	if(myPlan != 0){
-		for (MSTransportablePlan::const_iterator i = myPlan->begin(); i != myPlan->end(); ++i) {
-			delete *i;
-		}
-		delete myPlan;
-		myPlan = 0;
-	}
+    if (myPlan != 0) {
+        for (MSTransportablePlan::const_iterator i = myPlan->begin(); i != myPlan->end(); ++i) {
+            delete *i;
+        }
+        delete myPlan;
+        myPlan = 0;
+    }
     delete myParameter;
 }
 

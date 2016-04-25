@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: MSLink.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSLink.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A connnection between lanes
 /****************************************************************************/
@@ -79,7 +79,7 @@ MSLink::MSLink(MSLane* succLane, LinkDirection dir, LinkState state, SUMOReal le
     myMesoTLSPenalty(0),
     myJunction(0)
 #else
-MSLink::MSLink(MSLane* succLane, MSLane* via, LinkDirection dir, LinkState state, SUMOReal length, bool keepClear) :
+MSLink::MSLink(MSLane * succLane, MSLane * via, LinkDirection dir, LinkState state, SUMOReal length, bool keepClear) :
     myLane(succLane),
     myIndex(-1),
     myState(state),
@@ -532,19 +532,19 @@ MSLink::getViaLane() const {
 }
 
 
-bool 
+bool
 MSLink::isExitLink() const {
     /// XXX this only works in networks with internal lanes
     return MSGlobals::gUsingInternalLanes && myJunctionInlane == 0 && getLane()->getEdge().getPurpose() == MSEdge::EDGEFUNCTION_NORMAL;
 }
 
 
-bool 
+bool
 MSLink::isInternalJunctionLink() const {
     return (MSGlobals::gUsingInternalLanes && myJunctionInlane != 0 && myJunctionInlane->getLogicalPredecessorLane()->getEdge().isInternal());
 }
 
-bool 
+bool
 MSLink::fromInternalLane() const {
     return (MSGlobals::gUsingInternalLanes && (
                 (myJunctionInlane == 0 && getLane()->getEdge().getPurpose() == MSEdge::EDGEFUNCTION_NORMAL)
@@ -718,8 +718,7 @@ MSLink::getZipperSpeed(const MSVehicle* ego, const SUMOReal dist, SUMOReal vSafe
             // also ignore vehicles that are behind us and are able to brake for us
             couldBrakeForLeader(avi.dist, dist, foe, ego) ||
             // resolve ties by lane index
-            (avi.arrivalTime == arrivalTime && avi.dist == dist && ego->getLane()->getIndex() < foe->getLane()->getIndex()))
-        {
+            (avi.arrivalTime == arrivalTime && avi.dist == dist && ego->getLane()->getIndex() < foe->getLane()->getIndex())) {
             //if (gDebugFlag1) std::cout
             //    << "    ignoring foe=" << foe->getID()
             //        << " foeAT=" << avi.arrivalTime

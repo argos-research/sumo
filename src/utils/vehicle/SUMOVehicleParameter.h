@@ -5,7 +5,7 @@
 /// @author  Axel Wegener
 /// @author  Michael Behrisch
 /// @date    2006-01-24
-/// @version $Id: SUMOVehicleParameter.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: SUMOVehicleParameter.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Structure representing possible vehicle parameter
 /****************************************************************************/
@@ -256,7 +256,7 @@ public:
      * @param[in] tag The "root" tag to write (defaults to vehicle)
      * @exception IOError not yet implemented
      */
-    void write(OutputDevice& dev, const OptionsCont& oc, const SumoXMLTag tag=SUMO_TAG_VEHICLE) const;
+    void write(OutputDevice& dev, const OptionsCont& oc, const SumoXMLTag tag = SUMO_TAG_VEHICLE) const;
 
 
     /** @brief Returns whether the defaults shall be used

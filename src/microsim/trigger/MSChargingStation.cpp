@@ -4,7 +4,7 @@
 /// @author  Tamas Kurzveil
 /// @author  Pablo Alvarez Lopez
 /// @date    20-12-13
-/// @version $Id: MSChargingStation.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSChargingStation.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Chargin Station for Electric vehicles
 /****************************************************************************/
@@ -69,8 +69,8 @@ MSChargingStation::MSChargingStation(const std::string& new_ChargingStationID,
 }
 
 
-MSChargingStation::~MSChargingStation()
-{}
+MSChargingStation::~MSChargingStation() {
+}
 
 
 // GET FUNCTIONS

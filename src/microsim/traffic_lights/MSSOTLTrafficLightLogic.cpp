@@ -4,7 +4,7 @@
 /// @author  Anna Chiara Bellini
 /// @author  Federico Caselli
 /// @date    Apr 2013
-/// @version $Id: MSSOTLTrafficLightLogic.cpp 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSSOTLTrafficLightLogic.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The base abstract class for SOTL logics
 /****************************************************************************/
@@ -230,8 +230,8 @@ MSSOTLTrafficLightLogic::updateCTS() {
     SUMOTime now = MSNet::getInstance()->getCurrentTimeStep();
     //Iterate over the target phase map and update CTS value for every target phase except for the one belonging to the current steps chain
     for (std::map<int, SUMOTime>::iterator mapIterator = targetPhasesCTS.begin();
-             mapIterator != targetPhasesCTS.end();
-             mapIterator++) {
+            mapIterator != targetPhasesCTS.end();
+            mapIterator++) {
         int chain = mapIterator->first;
         SUMOTime oldVal = mapIterator->second;
         if (chain != lastChain) {
@@ -328,8 +328,8 @@ MSSOTLTrafficLightLogic::isThresholdPassed() {
     if (isDecayThresholdActivated()) {
     std::ostringstream str;
     str << time2string(MSNet::getInstance()->getCurrentTimeStep()) << "\tMSSOTLTrafficLightLogic::isThresholdPassed()::  "
-        << " tlsid=" << getID() << " decayThreshold=" << decayThreshold << " random=" << random << ">" << (1 - decayThreshold)
-        << (random > (1 - decayThreshold) ? " true" : " false");
+            << " tlsid=" << getID() << " decayThreshold=" << decayThreshold << " random=" << random << ">" << (1 - decayThreshold)
+            << (random > (1 - decayThreshold) ? " true" : " false");
 
         WRITE_MESSAGE(str.str());
     }

@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2009-08-01
-@version $Id: tls_csv2SUMO.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: tls_csv2SUMO.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Converts a csv-tls-description into one SUMO can read as additional file.
 Format of the csv-file:
@@ -208,7 +208,8 @@ for keyIndex, key in enumerate(allKeys):
                 l, linkMap[l]), file=sys.stderr)
             sys.exit()
 
-    print('    <tlLogic id="' + key + '" type="static" programID="' + subkey + '" offset="' + offset + '">')
+    print('    <tlLogic id="' + key + '" type="static" programID="' +
+          subkey + '" offset="' + offset + '">')
     for p in params:
         print('        <param key="' + p[0] + '" value="' + p[1] + '"/>')
 

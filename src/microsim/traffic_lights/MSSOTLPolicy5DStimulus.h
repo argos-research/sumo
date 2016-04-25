@@ -3,7 +3,7 @@
 /// @author  Riccardo Belletti
 /// @author  Simone Bacchilega
 /// @date    2014-09-30
-/// @version $Id: MSSOTLPolicy5DStimulus.h 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSSOTLPolicy5DStimulus.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The class the low-level policy stimulus
 /****************************************************************************/
@@ -50,9 +50,9 @@ class MSSOTLPolicy5DStimulus: public MSSOTLPolicyDesirability {
 private:
 
     SUMOReal stimCoxDVal,
-           stimOffsetInDVal, stimOffsetOutDVal, stimOffsetDispersionInDVal, stimOffsetDispersionOutDVal,
-           stimDivInDVal, stimDivOutDVal, stimDivDispersionInDVal, stimDivDispersionOutDVal,
-           stimCoxExpInDVal, stimCoxExpOutDVal, stimCoxExpDispersionInDVal, stimCoxExpDispersionOutDVal;
+             stimOffsetInDVal, stimOffsetOutDVal, stimOffsetDispersionInDVal, stimOffsetDispersionOutDVal,
+             stimDivInDVal, stimDivOutDVal, stimDivDispersionInDVal, stimDivDispersionOutDVal,
+             stimCoxExpInDVal, stimCoxExpOutDVal, stimCoxExpDispersionInDVal, stimCoxExpDispersionOutDVal;
 
 public:
 
@@ -164,7 +164,7 @@ public:
      *  stimulus = cox * exp(-pow(pheroIn - offsetIn, 2)/divisor -pow(pheroOut - offsetOut, 2)/divisor);
      */
     virtual SUMOReal computeDesirability(SUMOReal vehInMeasure,
-                                       SUMOReal vehOutMeasure);
+                                         SUMOReal vehOutMeasure);
 
     virtual SUMOReal computeDesirability(SUMOReal vehInMeasure, SUMOReal vehOutMeasure, SUMOReal vehInDispersionMeasure, SUMOReal vehOutDispersionMeasure);
 };

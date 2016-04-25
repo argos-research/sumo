@@ -5,7 +5,7 @@
 @author  Mario Krumnow
 @author  Jakob Erdmann
 @date    2011-03-17
-@version $Id: _junction.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: _junction.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Python implementation of the TraCI interface.
 
@@ -28,6 +28,7 @@ _RETURN_VALUE_FUNC = {tc.VAR_POSITION: lambda result: result.read("!dd"),
 
 
 class JunctionDomain(Domain):
+
     def __init__(self):
         Domain.__init__(self, "junction", tc.CMD_GET_JUNCTION_VARIABLE, tc.CMD_SET_JUNCTION_VARIABLE,
                         tc.CMD_SUBSCRIBE_JUNCTION_VARIABLE, tc.RESPONSE_SUBSCRIBE_JUNCTION_VARIABLE,
@@ -40,7 +41,6 @@ class JunctionDomain(Domain):
         Returns the coordinates of the center of the junction.
         """
         return self._getUniversal(tc.VAR_POSITION, junctionID)
-
 
     def getShape(self, junctionID):
         """getShape(string) -> list((double, double))

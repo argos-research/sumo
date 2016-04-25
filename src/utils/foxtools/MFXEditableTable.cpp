@@ -2,7 +2,7 @@
 /// @file    MFXEditableTable.cpp
 /// @author  Daniel Krajzewicz
 /// @date    2004-07-02
-/// @version $Id: MFXEditableTable.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MFXEditableTable.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // missing_desc
 /****************************************************************************/
@@ -136,7 +136,7 @@ MFXEditableTable::onLeftBtnPress(FXObject* sender, FXSelector sel, void* ptr) {
 
 
 long
-MFXEditableTable::onLeftBtnClicked(FXObject* , FXSelector , void* ptr) {
+MFXEditableTable::onLeftBtnClicked(FXObject*, FXSelector , void* ptr) {
     FXTablePos* e = (FXTablePos*)ptr;
     int r = e->row;
     int c = e->col;

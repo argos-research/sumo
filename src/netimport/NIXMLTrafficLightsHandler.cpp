@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2011-10-05
-/// @version $Id: NIXMLTrafficLightsHandler.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIXMLTrafficLightsHandler.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Importer for traffic lights stored in XML
 /****************************************************************************/
@@ -67,8 +67,8 @@ NIXMLTrafficLightsHandler::NIXMLTrafficLightsHandler(
     myTLLCont(tlCont),
     myEdgeCont(ec),
     myCurrentTL(0),
-    myResetPhases(false)
-{}
+    myResetPhases(false) {
+}
 
 
 NIXMLTrafficLightsHandler::~NIXMLTrafficLightsHandler() {}

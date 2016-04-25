@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    2004-11-23
-/// @version $Id: MSInductLoop.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSInductLoop.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // An unextended detector measuring at a fixed position on a fixed lane.
 /****************************************************************************/
@@ -82,7 +82,7 @@ MSInductLoop::reset() {
 }
 
 
-bool 
+bool
 MSInductLoop::notifyEnter(SUMOVehicle& veh, Notification reason) {
     if (reason == NOTIFICATION_DEPARTED ||
             reason == NOTIFICATION_TELEPORT ||

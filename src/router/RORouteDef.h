@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: RORouteDef.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: RORouteDef.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Base class for a vehicle's route definition
 /****************************************************************************/
@@ -106,10 +106,10 @@ public:
     const ROEdge* getDestination() const;
 
     const RORoute* getFirstRoute() const {
-    	if (myAlternatives.empty()) {
-			return 0;
-    	}
-   		return myAlternatives.front();
+        if (myAlternatives.empty()) {
+            return 0;
+        }
+        return myAlternatives.front();
     }
 
     /** @brief Saves the built route / route alternatives

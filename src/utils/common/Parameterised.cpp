@@ -2,7 +2,7 @@
 /// @file    Parameterised.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Sept 2002
-/// @version $Id: Parameterised.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: Parameterised.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A super class for objects with additional parameters
 /****************************************************************************/
@@ -45,8 +45,8 @@ Parameterised::~Parameterised() {}
 
 
 Parameterised::Parameterised(const std::map<std::string, std::string>& mapArg)
-    : myMap(mapArg)
-{ }
+    : myMap(mapArg) {
+}
 
 
 void

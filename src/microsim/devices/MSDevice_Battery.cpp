@@ -3,7 +3,7 @@
 /// @author  Tamas Kurczveil
 /// @author  Pablo Alvarez Lopez
 /// @date    20.12.2013
-/// @version $Id: MSDevice_Battery.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSDevice_Battery.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The Battery parameters for the vehicle
 /****************************************************************************/
@@ -339,8 +339,8 @@ MSDevice_Battery::MSDevice_Battery(SUMOVehicle& holder, const std::string& id, c
 }
 
 
-MSDevice_Battery::~MSDevice_Battery()
-{}
+MSDevice_Battery::~MSDevice_Battery() {
+}
 
 
 // SET FUNCTIONS
@@ -637,7 +637,7 @@ SUMOReal MSDevice_Battery::getPropEnergy(SUMOVehicle& veh) {
     EnergyLoss = EnergyLoss / 3600 ; // EnergyLoss[Ws] * 1[h]/3600[s] * 1[k]/1000
 
     // Return calculated energy
-    return(EnergyLoss);
+    return (EnergyLoss);
 }
 
 

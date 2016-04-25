@@ -3,7 +3,7 @@
 @file    configTemplateToWiki.py
 @author  Michael Behrisch
 @date    2012-01-26
-@version $Id: configTemplateToWiki.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: configTemplateToWiki.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Generate Wiki table from configuration template.
 
@@ -71,12 +71,14 @@ class ConfigReader(handler.ContentHandler):
                 if len(s) == 1:
                     a = s
             if a != "":
-                print('{{Option|-%s {{DT_%s}}}}<br/>' % (a, attrs['type']), end=' ')
+                print('{{Option|-%s {{DT_%s}}}}<br/>' %
+                      (a, attrs['type']), end=' ')
             print('{{Option|--%s {{DT_%s}}}}' % (name, attrs['type']))
             suffix = ""
             if attrs['value']:
                 suffix = "; ''default: '''%s'''''" % attrs['value']
-            print('| style="vertical-align:top" | %s%s' % (attrs['help'], suffix))
+            print('| style="vertical-align:top" | %s%s' %
+                  (attrs['help'], suffix))
         self._level += 1
 
     def endElement(self, name):

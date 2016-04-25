@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Christian Roessel
 /// @date    Sept 2002
-/// @version $Id: ROLoader.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ROLoader.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Loader for networks and route imports
 /****************************************************************************/
@@ -112,8 +112,8 @@ ROLoader::ROLoader(OptionsCont& oc, const bool emptyDestinationsAllowed, const b
     myOptions(oc),
     myEmptyDestinationsAllowed(emptyDestinationsAllowed),
     myLogSteps(logSteps),
-    myLoaders(oc.exists("unsorted-input") && oc.getBool("unsorted-input") ? 0 : DELTA_T)
-{}
+    myLoaders(oc.exists("unsorted-input") && oc.getBool("unsorted-input") ? 0 : DELTA_T) {
+}
 
 
 ROLoader::~ROLoader() {

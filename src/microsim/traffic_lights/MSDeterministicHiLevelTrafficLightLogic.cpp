@@ -2,7 +2,7 @@
 /// @file    MSDeterministicHiLevelTrafficLightLogic.cpp
 /// @author  Riccardo Belletti
 /// @date    Mar 2014
-/// @version $Id: MSDeterministicHiLevelTrafficLightLogic.cpp 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSDeterministicHiLevelTrafficLightLogic.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The class for deterministic high level traffic light logic
 /****************************************************************************/
@@ -160,7 +160,7 @@ void MSDeterministicHiLevelTrafficLightLogic::choosePolicy(
     // Compute simulus for each policy
     for (unsigned int i = 0; i < getPolicies().size(); i++) {
         SUMOReal stimulus = getPolicies()[i]->computeDesirability(mean_vSpeed_in,
-                          mean_vSpeed_out);
+                            mean_vSpeed_out);
         if (stimulus > maxStimulus) {
             maxStimulus = stimulus;
             index_maxStimulus = i;

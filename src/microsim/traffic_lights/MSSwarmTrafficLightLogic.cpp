@@ -3,7 +3,7 @@
 /// @author  Gianfilippo Slager
 /// @author  Federico Caselli
 /// @date    Mar 2010
-/// @version $Id: MSSwarmTrafficLightLogic.cpp 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSSwarmTrafficLightLogic.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The class for Swarm-based logics
 /****************************************************************************/
@@ -229,7 +229,7 @@ int MSSwarmTrafficLightLogic::decideNextPhase() {
     if (getCurrentPolicy()->getName().compare("Congestion") == 0 && getCurrentPhaseDef().isCommit()) {
         congestion_steps += 1;	//STEPS2TIME(getCurrentPhaseDef().duration);
         DBG(
-    WRITE_MESSAGE("\n" + time2string(MSNet::getInstance()->getCurrentTimeStep()) + " MSSwarmTrafficLightLogic decideNextPhase()"); std: ostringstream dnp; dnp << (MSNet::getInstance()->getCurrentTimeStep()) << " MSSwarmTrafficLightLogic::decideNextPhase:: " << "tlsid=" << getID() << " congestion_steps=" << congestion_steps; WRITE_MESSAGE(dnp.str());)
+            WRITE_MESSAGE("\n" + time2string(MSNet::getInstance()->getCurrentTimeStep()) + " MSSwarmTrafficLightLogic decideNextPhase()"); std: ostringstream dnp; dnp << (MSNet::getInstance()->getCurrentTimeStep()) << " MSSwarmTrafficLightLogic::decideNextPhase:: " << "tlsid=" << getID() << " congestion_steps=" << congestion_steps; WRITE_MESSAGE(dnp.str());)
         if (congestion_steps >= getMaxCongestionDuration()) {
             resetPheromone();
             congestion_steps = 0;
@@ -293,7 +293,7 @@ void MSSwarmTrafficLightLogic::updatePheromoneLevels() {
     //BETA_SP, GAMMA_SP
     //Updating output lanes pheromone: only input lanes currently having green light. Pheromone for non green lanes is "freezed"
 //    if (getCurrentPhaseDef().isDecisional()) {
-        updatePheromoneLevels(pheromoneOutputLanes, "PheroOut", getBetaSp(), getGammaSp());
+    updatePheromoneLevels(pheromoneOutputLanes, "PheroOut", getBetaSp(), getGammaSp());
 //    }
 }
 

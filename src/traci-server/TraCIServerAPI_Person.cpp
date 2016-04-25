@@ -2,7 +2,7 @@
 /// @file    TraCIServerAPI_Person.cpp
 /// @author  Daniel Krajzewicz
 /// @date    26.05.2014
-/// @version $Id: TraCIServerAPI_Person.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: TraCIServerAPI_Person.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // APIs for getting/setting person values via TraCI
 /****************************************************************************/
@@ -62,7 +62,7 @@ TraCIServerAPI_Person::processGet(TraCIServer& server, tcpip::Storage& inputStor
             && variable != VAR_WAITING_TIME && variable != VAR_PARAMETER
             && variable != VAR_NEXT_EDGE
        ) {
-        return server.writeErrorStatusCmd(CMD_GET_PERSON_VARIABLE, "Get Person Variable: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
+        return server.writeErrorStatusCmd(CMD_GET_PERSON_VARIABLE, "Get Person Variable: unsupported variable " + toHex(variable, 2) + " specified", outputStorage);
     }
     // begin response building
     tcpip::Storage tempMsg;
@@ -163,7 +163,7 @@ TraCIServerAPI_Person::processSet(TraCIServer& server, tcpip::Storage& inputStor
     int variable = inputStorage.readUnsignedByte();
     if (variable != VAR_PARAMETER
        ) {
-        return server.writeErrorStatusCmd(CMD_SET_PERSON_VARIABLE, "Change Person State: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
+        return server.writeErrorStatusCmd(CMD_SET_PERSON_VARIABLE, "Change Person State: unsupported variable " + toHex(variable, 2) + " specified", outputStorage);
     }
     // id
     MSPersonControl& c = MSNet::getInstance()->getPersonControl();

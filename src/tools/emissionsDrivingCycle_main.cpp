@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Wed, 21.08.2013
-/// @version $Id: emissionsDrivingCycle_main.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: emissionsDrivingCycle_main.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Main for an emissions calculator
 /****************************************************************************/
@@ -214,21 +214,19 @@ main(int argc, char** argv) {
                         totalS += s;
                         time++;
                     }
-                }
-                catch (EmptyData&) {
+                } catch (EmptyData&) {
                     throw ProcessError("Missing an entry in line '" + line + "'.");
-                }
-                catch (NumberFormatException&) {
+                } catch (NumberFormatException&) {
                     throw ProcessError("Not numeric entry in line '" + line + "'.");
                 }
             }
             if (!quiet) {
                 std::cout << "sums" << std::endl
-                    << "length:" << l << std::endl;
+                          << "length:" << l << std::endl;
             }
             if (sumOut != 0) {
                 (*sumOut) << oc.getString("emission-class") << "," << lr.getFileName() << "," << time << ","
-                    << (l / time * 3.6) << "," << (totalS / time) << "," << (totalA / time) << ",";
+                          << (l / time * 3.6) << "," << (totalS / time) << "," << (totalA / time) << ",";
                 handler.writeNormedSums(*sumOut, "", l);
             }
         }

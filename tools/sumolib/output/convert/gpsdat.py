@@ -3,7 +3,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2013-01-15
-@version $Id: gpsdat.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: gpsdat.py 20482 2016-04-18 20:49:42Z behrisch $
 
 This module includes functions for converting SUMO's fcd-output into
 csv data files used by dlr-fcd processing chain
@@ -35,4 +35,4 @@ def fcd2gpsdat(inpFCD, outSTRM, further):
                 date + datetime.timedelta(seconds=int(float(timestep.time))))
             for v in timestep.vehicle:
                 print('%s\t%s\t%s\t%s\t%s\t%.3f' % (v.id, mtime, v.x, v.y,
-                      TAXI_STATUS_FREE_FLOW, float(v.speed) * 3.6), file=outSTRM)
+                                                    TAXI_STATUS_FREE_FLOW, float(v.speed) * 3.6), file=outSTRM)

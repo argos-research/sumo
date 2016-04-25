@@ -2,7 +2,7 @@
 /// @file    MESegment.h
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MESegment.h 20459 2016-04-15 09:25:41Z namdre $
+/// @version $Id: MESegment.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A single mesoscopic segment (cell)
 /****************************************************************************/
@@ -79,7 +79,7 @@ public:
               unsigned int idx,
               SUMOTime tauff, SUMOTime taufj,
               SUMOTime taujf, SUMOTime taujj,
-              SUMOReal jamThresh, 
+              SUMOReal jamThresh,
               bool multiQueue, bool junctionControl,
               SUMOReal lengthGeometryFactor);
 
@@ -229,7 +229,7 @@ public:
      * @param[in] tlsPenalty Whether the link should be returned for computing tlsPenalty
      * @return The link to use or 0 without junction control
      */
-    MSLink* getLink(const MEVehicle* veh, bool tlsPenalty=false) const;
+    MSLink* getLink(const MEVehicle* veh, bool tlsPenalty = false) const;
 
     /** @brief Returns whether the vehicle may use the next link
      *

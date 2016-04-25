@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_InductionLoop.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: TraCIServerAPI_InductionLoop.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // APIs for getting/setting induction loop values via TraCI
 /****************************************************************************/
@@ -58,7 +58,7 @@ TraCIServerAPI_InductionLoop::processGet(TraCIServer& server, tcpip::Storage& in
             && variable != LAST_STEP_LENGTH && variable != LAST_STEP_TIME_SINCE_DETECTION
             && variable != LAST_STEP_VEHICLE_DATA && variable != ID_COUNT
             && variable != VAR_POSITION && variable != VAR_LANE_ID) {
-        return server.writeErrorStatusCmd(CMD_GET_INDUCTIONLOOP_VARIABLE, "Get Induction Loop Variable: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
+        return server.writeErrorStatusCmd(CMD_GET_INDUCTIONLOOP_VARIABLE, "Get Induction Loop Variable: unsupported variable " + toHex(variable, 2) + " specified", outputStorage);
     }
     // begin response building
     tcpip::Storage tempMsg;

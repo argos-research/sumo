@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Melanie Knocke
 /// @date    Wed, 19.11.2008
-/// @version $Id: PCLoaderOSM.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: PCLoaderOSM.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A reader of pois and polygons stored in OSM-format
 /****************************************************************************/
@@ -356,8 +356,8 @@ PCLoaderOSM::RelationsHandler::RelationsHandler(RelationsMap& additionalWays,
     myRelations(relations),
     myWithAttributes(withAttributes),
     myErrorHandler(errorHandler),
-    myCurrentRelation(0)
-{ }
+    myCurrentRelation(0) {
+}
 
 
 PCLoaderOSM::RelationsHandler::~RelationsHandler() {
@@ -442,8 +442,8 @@ PCLoaderOSM::EdgesHandler::EdgesHandler(const std::map<long long int, PCOSMNode*
     myErrorHandler(errorHandler),
     myOSMNodes(osmNodes),
     myEdgeMap(toFill),
-    myAdditionalWays(additionalWays)
-{ }
+    myAdditionalWays(additionalWays) {
+}
 
 
 PCLoaderOSM::EdgesHandler::~EdgesHandler() {

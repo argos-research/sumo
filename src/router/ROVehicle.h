@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: ROVehicle.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ROVehicle.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A vehicle as used by router
 /****************************************************************************/
@@ -67,7 +67,7 @@ public:
      */
     ROVehicle(const SUMOVehicleParameter& pars,
               RORouteDef* route, const SUMOVTypeParameter* type,
-              const RONet* net, MsgHandler* errorHandler=0);
+              const RONet* net, MsgHandler* errorHandler = 0);
 
 
     /// @brief Destructor

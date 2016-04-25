@@ -10,7 +10,7 @@
 /// @author  Michael Behrisch
 /// @author  Axel Wegener
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSVehicle.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSVehicle.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Representation of a vehicle in the micro simulation
 /****************************************************************************/
@@ -147,19 +147,19 @@ public:
         WaitingTimeCollector& operator=(SUMOTime t);
 
         // return the waiting time within the last memory millisecs
-        SUMOTime cumulatedWaitingTime(SUMOTime memory=-1) const;
+        SUMOTime cumulatedWaitingTime(SUMOTime memory = -1) const;
 
         // process time passing for dt millisecs
         void passTime(SUMOTime dt, bool waiting);
 
         // maximal memory time stored
         SUMOTime getMemorySize() const {
-           return myMemorySize;
+            return myMemorySize;
         }
 
         // maximal memory time stored
         const waitingIntervalList& getWaitingIntervals() const {
-           return myWaitingIntervals;
+            return myWaitingIntervals;
         }
 
     private:
@@ -1120,7 +1120,7 @@ public:
             return myOriginalSpeed;
         }
 
-        void setVTDControlled(MSLane* l, SUMOReal pos, SUMOReal angle, int edgeOffset, const ConstMSEdgeVector& route, SUMOTime t); 
+        void setVTDControlled(MSLane* l, SUMOReal pos, SUMOReal angle, int edgeOffset, const ConstMSEdgeVector& route, SUMOTime t);
 
         SUMOTime getLastAccessTimeStep() const {
             return myLastVTDAccess;
@@ -1209,7 +1209,7 @@ public:
                                 const SUMOReal seen, const MSLane* const lane, SUMOReal distToCrossing) const;
 
     /// @brief get a numerical value for the priority of the  upcoming link
-    static int nextLinkPriority(const std::vector<MSLane*>& conts); 
+    static int nextLinkPriority(const std::vector<MSLane*>& conts);
 
 #endif
 

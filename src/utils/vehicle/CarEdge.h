@@ -2,7 +2,7 @@
 /// @file    CarEdge.h
 /// @author  Michael Behrisch
 /// @date    Mon, 03 March 2014
-/// @version $Id: CarEdge.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: CarEdge.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The CarEdge is a special intermodal edge representing the SUMO network edge
 /****************************************************************************/
@@ -46,7 +46,7 @@ private:
     typedef IntermodalEdge<E, L, N, V> _IntermodalEdge;
 
 public:
-    CarEdge(unsigned int numericalID, const E* edge, const SUMOReal pos=-1.) :
+    CarEdge(unsigned int numericalID, const E* edge, const SUMOReal pos = -1.) :
         _IntermodalEdge(edge->getID() + "_car" + toString(pos), numericalID, edge, "!car"),
         myStartPos(pos >= 0 ? pos : 0.) { }
 

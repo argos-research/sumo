@@ -7,7 +7,7 @@
 /// @author  Christian Roessel
 /// @author  Jakob Erdmann
 /// @date    Mon, 15 Apr 2002
-/// @version $Id: NLDetectorBuilder.cpp 20447 2016-04-14 13:02:24Z luecken $
+/// @version $Id: NLDetectorBuilder.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Builds detectors for microsim
 /****************************************************************************/
@@ -94,7 +94,7 @@ NLDetectorBuilder::NLDetectorBuilder(MSNet& net)
 
 
 NLDetectorBuilder::~NLDetectorBuilder() {
-	delete myE3Definition;
+    delete myE3Definition;
 }
 
 

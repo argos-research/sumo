@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    2004-03-19
-/// @version $Id: FXRealSpinDial.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: FXRealSpinDial.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 //
 /****************************************************************************/
@@ -42,7 +42,7 @@
 * License along with this library; if not, write to the Free Software           *
 * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA.    *
 *********************************************************************************
-* $Id: FXRealSpinDial.cpp 20433 2016-04-13 08:00:14Z behrisch $                   *
+* $Id: FXRealSpinDial.cpp 20482 2016-04-18 20:49:42Z behrisch $                   *
 ********************************************************************************/
 
 /* =========================================================================
@@ -458,7 +458,7 @@ FXIMPLEMENT(FXRealSpinDial, FXPacker, FXRealSpinDialMap, ARRAYNUMBER(FXRealSpinD
 
 // Construct spinner out of two buttons and a text field
 FXRealSpinDial::FXRealSpinDial() {
-    flags = (flags | FLAG_ENABLED | FLAG_SHOWN)&~FLAG_UPDATE;
+    flags = (flags | FLAG_ENABLED | FLAG_SHOWN) & ~FLAG_UPDATE;
     textField = 0;
     dial = 0;
     upButton = 0;
@@ -475,8 +475,8 @@ FXRealSpinDial::FXRealSpinDial() {
 
 // Construct spinner out of dial and a text field
 FXRealSpinDial::FXRealSpinDial(FXComposite* p, FXint cols, FXObject* tgt, FXSelector sel, FXuint opts, FXint x, FXint y, FXint w, FXint h, FXint pl, FXint pr, FXint pt, FXint pb):
-    FXPacker(p, opts&~(FRAME_RIDGE), x, y, w, h, 0, 0, 0, 0, 0, 0) {
-    flags = (flags | FLAG_ENABLED | FLAG_SHOWN)&~FLAG_UPDATE;
+    FXPacker(p, opts & ~(FRAME_RIDGE), x, y, w, h, 0, 0, 0, 0, 0, 0) {
+    flags = (flags | FLAG_ENABLED | FLAG_SHOWN) & ~FLAG_UPDATE;
     target = tgt;
     message = sel;
     dial = new FXRealSpinDialDial(this, this, ID_DIAL, DIAL_VERTICAL, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -1052,7 +1052,7 @@ FXbool FXRealSpinDial::isTextVisible() const {
 
 // Change text visibility
 void FXRealSpinDial::setTextVisible(FXbool shown) {
-    FXuint opts = shown ? (options&~SPINDIAL_NOTEXT) : (options | SPINDIAL_NOTEXT);
+    FXuint opts = shown ? (options & ~SPINDIAL_NOTEXT) : (options | SPINDIAL_NOTEXT);
     if (options != opts) {
         options = opts;
         recalc();
@@ -1105,7 +1105,7 @@ FXString FXRealSpinDial::getTipText() const {
 
 // Change spinner style
 void FXRealSpinDial::setSpinnerStyle(FXuint style) {
-    FXuint opts = (options&~SPINDIAL_MASK) | (style & SPINDIAL_MASK);
+    FXuint opts = (options & ~SPINDIAL_MASK) | (style & SPINDIAL_MASK);
     if (options != opts) {
         if (opts & SPINDIAL_NOMIN) {
             range[0] = -DBL_MAX;

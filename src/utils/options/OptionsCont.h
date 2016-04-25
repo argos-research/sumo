@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: OptionsCont.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: OptionsCont.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A storage for options (typed value containers)
 /****************************************************************************/
@@ -269,7 +269,7 @@ public:
      * @param[in] name The option name
      * @param[in] xmlRoot The name of the xml root element to handle
      */
-    void addXMLDefault(const std::string& name, const std::string& xmlRoot="");
+    void addXMLDefault(const std::string& name, const std::string& xmlRoot = "");
 
 
     /** @brief Adds a description for an option

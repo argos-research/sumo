@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    11.09.2009
-@version $Id: route_departOffset.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: route_departOffset.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Applies a given offset to the given route's departure time
 
@@ -57,6 +57,7 @@ def main(infile, outfile, offset):
 
 if __name__ == "__main__":
     if len(sys.argv) < 4:
-        print("Usage: route_departOffset.py <INPUT_FILE> <OUTPUT_FILE> <OFFSET>")
+        print(
+            "Usage: route_departOffset.py <INPUT_FILE> <OUTPUT_FILE> <OFFSET>")
         sys.exit()
     main(sys.argv[1], sys.argv[2], int(sys.argv[3]))

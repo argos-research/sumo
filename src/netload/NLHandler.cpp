@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Felix Brack
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLHandler.cpp 20462 2016-04-15 12:20:52Z luecken $
+/// @version $Id: NLHandler.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The XML-Handler for network loading
 /****************************************************************************/
@@ -81,8 +81,8 @@ NLHandler::NLHandler(const std::string& file, MSNet& net,
     myHaveSeenInternalEdge(false),
     myLefthand(false),
     myNetworkVersion(0),
-    myNetIsLoaded(false)
-{}
+    myNetIsLoaded(false) {
+}
 
 
 NLHandler::~NLHandler() {}

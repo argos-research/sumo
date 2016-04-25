@@ -2,7 +2,7 @@
 @file    __init__.py
 @author  Daniel Krajzewicz
 @date    2014-07-01
-@version $Id: __init__.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: __init__.py 20482 2016-04-18 20:49:42Z behrisch $
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
 Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
@@ -271,17 +271,21 @@ class Scenario:
         else:
             i = minIdx
             print("!")
-            print("  %s %s %s %s" % (i, rel[i], program[i], streamsNS[i] + streamsWE[i]))
+            print("  %s %s %s %s" %
+                  (i, rel[i], program[i], streamsNS[i] + streamsWE[i]))
             while i > 0 and rel[i] < REL_THRESHOLD and program[i] == 0 and streamsNS[i] + streamsWE[i] > MORNING_MIN:
                 program[i] = MORNING
                 i = i - 1
-                print("  %s %s %s %s" % (i, rel[i], program[i], streamsNS[i] + streamsWE[i]))
+                print("  %s %s %s %s" %
+                      (i, rel[i], program[i], streamsNS[i] + streamsWE[i]))
             i = minIdx + 1
-            print("  %s %s %s %s" % (i, rel[i], program[i], streamsNS[i] + streamsWE[i]))
+            print("  %s %s %s %s" %
+                  (i, rel[i], program[i], streamsNS[i] + streamsWE[i]))
             while i < len(rel) and rel[i] < REL_THRESHOLD and program[i] == 0 and streamsNS[i] + streamsWE[i] > MORNING_MIN:
                 program[i] = MORNING
                 i = i + 1
-                print("  %s %s %s %s" % (i, rel[i], program[i], streamsNS[i] + streamsWE[i]))
+                print("  %s %s %s %s" %
+                      (i, rel[i], program[i], streamsNS[i] + streamsWE[i]))
 
         print(rel)
         print(program)

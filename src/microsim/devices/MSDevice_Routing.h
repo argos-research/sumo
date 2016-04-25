@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Tue, 04 Dec 2007
-/// @version $Id: MSDevice_Routing.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSDevice_Routing.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A device that performs vehicle rerouting based on current edge speeds
 /****************************************************************************/
@@ -111,7 +111,7 @@ public:
 
     /// @brief return the router instance
     static SUMOAbstractRouter<MSEdge, SUMOVehicle>& getRouterTT(
-            const MSEdgeVector& prohibited = MSEdgeVector());
+        const MSEdgeVector& prohibited = MSEdgeVector());
 
 #ifdef HAVE_FOX
     static void waitForAll();

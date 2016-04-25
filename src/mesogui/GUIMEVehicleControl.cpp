@@ -2,7 +2,7 @@
 /// @file    GUIMEVehicleControl.h
 /// @author  Jakob Erdmann
 /// @date    Okt 2012
-/// @version $Id: GUIMEVehicleControl.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIMEVehicleControl.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The class responsible for building and deletion of meso vehicles (gui-version)
 /****************************************************************************/
@@ -57,8 +57,8 @@ GUIMEVehicleControl::~GUIMEVehicleControl() {
 
 SUMOVehicle*
 GUIMEVehicleControl::buildVehicle(SUMOVehicleParameter* defs,
-                                const MSRoute* route, const MSVehicleType* type,
-                                const bool ignoreStopErrors, const bool fromRouteFile) {
+                                  const MSRoute* route, const MSVehicleType* type,
+                                  const bool ignoreStopErrors, const bool fromRouteFile) {
     myLoadedVehNo++;
     if (fromRouteFile) {
         defs->depart += computeRandomDepartOffset();

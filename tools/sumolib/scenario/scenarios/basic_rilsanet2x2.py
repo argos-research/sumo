@@ -2,7 +2,7 @@
 @file    basic_rilsanet2x2.py
 @author  Daniel Krajzewicz
 @date    2014-09-01
-@version $Id: basic_rilsanet2x2.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: basic_rilsanet2x2.py 20482 2016-04-18 20:49:42Z behrisch $
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
 Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
@@ -67,7 +67,8 @@ class Scenario_BasicRiLSANet2x2(Scenario):
         self.netName = self.fullPath(self.NET_FILE)
         # network
         if fileNeedsRebuild(self.fullPath(self.NET_FILE), "netconvert"):
-            print("Network in '%s' needs to be rebuild" % self.fullPath(self.NET_FILE))
+            print("Network in '%s' needs to be rebuild" %
+                  self.fullPath(self.NET_FILE))
             # , Lane(dirs="l", disallowed="pedestrian")]
             lanes = [Lane(dirs="s", allowed="pedestrian"), Lane(
                 dirs="rs", disallowed="pedestrian")]

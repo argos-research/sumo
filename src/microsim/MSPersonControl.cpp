@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: MSPersonControl.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSPersonControl.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Stores all persons in the net and handles their waiting for cars.
 /****************************************************************************/
@@ -52,8 +52,8 @@
 MSPersonControl::MSPersonControl():
     myLoadedPersonNumber(0),
     myRunningPersonNumber(0),
-    myJammedPersonNumber(0)
-{}
+    myJammedPersonNumber(0) {
+}
 
 
 MSPersonControl::~MSPersonControl() {

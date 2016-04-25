@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NIVissimDisturbance.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIVissimDisturbance.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // -------------------
 /****************************************************************************/
@@ -48,7 +48,7 @@ class NBEdge;
 class NBDistrictCont;
 
 class NIVissimDisturbance
-        : public NIVissimBoundedClusterObject {
+    : public NIVissimBoundedClusterObject {
 public:
     NIVissimDisturbance(int id, const std::string& name,
                         const NIVissimExtendedEdgePoint& edge,

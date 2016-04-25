@@ -2,7 +2,7 @@
 /// @file    GNEPOI.cpp
 /// @author  Jakob Erdmann
 /// @date    Sept 2012
-/// @version $Id: GNEPOI.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEPOI.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A class for visualizing and editing POIS in netedit (adapted from
 // GUIPointOfInterest and NLHandler)
@@ -74,8 +74,8 @@ GNEPOI::GNEPOI(const std::string& id, const std::string& type,
                const RGBColor& color, SUMOReal layer, SUMOReal angle, const std::string& imgFile,
                const Position& pos, SUMOReal width, SUMOReal height) :
     GUIPointOfInterest(id, type, color, pos, layer, angle, imgFile, width, height),
-    GNEAttributeCarrier(SUMO_TAG_POI)
-{}
+    GNEAttributeCarrier(SUMO_TAG_POI) {
+}
 
 
 GNEPOI::~GNEPOI() { }

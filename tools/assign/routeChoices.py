@@ -4,7 +4,7 @@
 @author  Yun-Pang Floetteroed
 @author  Michael Behrisch
 @date    2007-02-27
-@version $Id: routeChoices.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: routeChoices.py 20482 2016-04-18 20:49:42Z behrisch $
 
 This script is to calculate the route choice probabilities based on different methods.
 - Gawron
@@ -271,7 +271,8 @@ class vehrouteReader(handler.ContentHandler):
                 # calcuate the probabilites for the new routes
                 if not r.probability:
                     r.probability = 1. / float(len(self._vehObj.routesList))
-                    print('new probability for route', r.label, 'for veh', self._vehObj.label)
+                    print('new probability for route', r.label,
+                          'for veh', self._vehObj.label)
                     self._newroutesList.append(r)
 
             # adjust the probabilites of the existing routes due to the new

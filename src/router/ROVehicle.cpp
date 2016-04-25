@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: ROVehicle.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ROVehicle.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A vehicle as used by router
 /****************************************************************************/
@@ -56,7 +56,7 @@
 ROVehicle::ROVehicle(const SUMOVehicleParameter& pars,
                      RORouteDef* route, const SUMOVTypeParameter* type,
                      const RONet* net, MsgHandler* errorHandler)
- : RORoutable(pars, type), myRoute(route) {
+    : RORoutable(pars, type), myRoute(route) {
     myParameter.stops.clear();
     if (route != 0 && route->getFirstRoute() != 0) {
         for (std::vector<SUMOVehicleParameter::Stop>::const_iterator s = route->getFirstRoute()->getStops().begin(); s != route->getFirstRoute()->getStops().end(); ++s) {

@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NIXMLNodesHandler.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIXMLNodesHandler.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Importer for network nodes stored in XML
 /****************************************************************************/
@@ -67,8 +67,8 @@ NIXMLNodesHandler::NIXMLNodesHandler(NBNodeCont& nc,
     myOptions(options),
     myNodeCont(nc),
     myTLLogicCont(tlc),
-    myLocation(0)
-{}
+    myLocation(0) {
+}
 
 
 NIXMLNodesHandler::~NIXMLNodesHandler() {

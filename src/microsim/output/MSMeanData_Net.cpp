@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSMeanData_Net.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSMeanData_Net.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Network state mean data collector for edges/lanes
 /****************************************************************************/
@@ -219,7 +219,7 @@ MSMeanData_Net::MSMeanData_Net(const std::string& id,
                                const std::set<std::string> vTypes)
     : MSMeanData(id, dumpBegin, dumpEnd, useLanes, withEmpty, printDefaults,
                  withInternal, trackVehicles, maxTravelTime, minSamples, vTypes),
-    myHaltSpeed(haltSpeed) {
+      myHaltSpeed(haltSpeed) {
 }
 
 

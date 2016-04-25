@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_MeMeDetector.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: TraCIServerAPI_MeMeDetector.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // APIs for getting/setting multi-entry/multi-exit detector values via TraCI
 /****************************************************************************/
@@ -53,7 +53,7 @@ TraCIServerAPI_MeMeDetector::processGet(TraCIServer& server, tcpip::Storage& inp
     if (variable != ID_LIST && variable != LAST_STEP_VEHICLE_NUMBER && variable != LAST_STEP_MEAN_SPEED
             && variable != LAST_STEP_VEHICLE_ID_LIST && variable != LAST_STEP_VEHICLE_HALTING_NUMBER
             && variable != ID_COUNT) {
-        return server.writeErrorStatusCmd(CMD_GET_MULTI_ENTRY_EXIT_DETECTOR_VARIABLE, "Get MeMeDetector Variable: unsupported variable " + toHex(variable,2) + " specified", outputStorage);
+        return server.writeErrorStatusCmd(CMD_GET_MULTI_ENTRY_EXIT_DETECTOR_VARIABLE, "Get MeMeDetector Variable: unsupported variable " + toHex(variable, 2) + " specified", outputStorage);
     }
     // begin response building
     tcpip::Storage tempMsg;

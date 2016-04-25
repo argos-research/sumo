@@ -2,7 +2,7 @@
 /// @file    MSSOTLPolicyDesirability.h
 /// @author  Riccardo Belletti
 /// @date    2014-03-20
-/// @version $Id: MSSOTLPolicyDesirability.h 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSSOTLPolicyDesirability.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The class a low-level policy desirability
 /****************************************************************************/
@@ -60,13 +60,13 @@ public:
      * \brief Calculates the desirability of the policy
      */
     virtual SUMOReal computeDesirability(SUMOReal vehInMeasure,
-                                       SUMOReal vehOutMeasure) = 0;
+                                         SUMOReal vehOutMeasure) = 0;
     /**
      * \brief Calculates the desirability of the policy
      */
     virtual SUMOReal computeDesirability(SUMOReal vehInMeasure, SUMOReal vehOutMeasure,
-                                       SUMOReal vehInDispersionMeasure,
-                                       SUMOReal vehOutDispersionMeasure) = 0;
+                                         SUMOReal vehInDispersionMeasure,
+                                         SUMOReal vehOutDispersionMeasure) = 0;
     virtual std::string getMessage() = 0;
     void setKeyPrefix(std::string val) {
         myKeyPrefix = val;

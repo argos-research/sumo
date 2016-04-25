@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBNode.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBNode.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The representation of a single node
 /****************************************************************************/
@@ -237,8 +237,8 @@ NBNode::NBNode(const std::string& id, const Position& position,
     myRadius(OptionsCont::getOptions().isDefault("default.junctions.radius") ? UNSPECIFIED_RADIUS : OptionsCont::getOptions().getFloat("default.junctions.radius")),
     myKeepClear(OptionsCont::getOptions().getBool("default.junctions.keep-clear")),
     myDiscardAllCrossings(false),
-    myCrossingsLoadedFromSumoNet(0)
-{ }
+    myCrossingsLoadedFromSumoNet(0) {
+}
 
 
 NBNode::NBNode(const std::string& id, const Position& position, NBDistrict* district) :
@@ -251,8 +251,8 @@ NBNode::NBNode(const std::string& id, const Position& position, NBDistrict* dist
     myRadius(OptionsCont::getOptions().isDefault("default.junctions.radius") ? UNSPECIFIED_RADIUS : OptionsCont::getOptions().getFloat("default.junctions.radius")),
     myKeepClear(OptionsCont::getOptions().getBool("default.junctions.keep-clear")),
     myDiscardAllCrossings(false),
-    myCrossingsLoadedFromSumoNet(0)
-{ }
+    myCrossingsLoadedFromSumoNet(0) {
+}
 
 
 NBNode::~NBNode() {

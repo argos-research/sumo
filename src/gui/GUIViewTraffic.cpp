@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUIViewTraffic.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIViewTraffic.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A view on the simulation; this view is a microscopic one
 /****************************************************************************/
@@ -101,7 +101,7 @@ GUIViewTraffic::GUIViewTraffic(
 #ifdef HAVE_FFMPEG
     , myCurrentVideo(0)
 #endif
-    {}
+{}
 
 
 GUIViewTraffic::~GUIViewTraffic() {

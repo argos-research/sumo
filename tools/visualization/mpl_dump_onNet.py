@@ -5,7 +5,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2007-10-25
-@version $Id: mpl_dump_onNet.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: mpl_dump_onNet.py 20482 2016-04-18 20:49:42Z behrisch $
 
 
 This script reads a network and a dump file and
@@ -375,8 +375,10 @@ class WeightsReader(handler.ContentHandler):
                     self._unaggEdge2value1[i], self._unaggEdge2value2[i])
         # norm
         if options.verbose:
-            print("w range: " + str(self._minValue1) + " - " + str(self._maxValue1))
-            print("c range: " + str(self._minValue2) + " - " + str(self._maxValue2))
+            print("w range: " + str(self._minValue1) +
+                  " - " + str(self._maxValue1))
+            print("c range: " + str(self._minValue2) +
+                  " - " + str(self._maxValue2))
         if options.join:
             self.valueDependantNorm(
                 self._edge2value1, self._minValue1, self._maxValue1, False, percSpeed and self._value1 == "speed")

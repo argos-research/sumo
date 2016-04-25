@@ -2,7 +2,7 @@
 /// @file    GNEJunction.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEJunction.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEJunction.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A class for visualizing and editing junctions in netedit (adapted from
 // GUIJunctionWrapper)
@@ -97,7 +97,7 @@ GNEJunction::~GNEJunction() {
 }
 
 
-void 
+void
 GNEJunction::updateBoundary() {
     const double EXTENT = 2;
     myBoundary = Boundary(

@@ -3,7 +3,7 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Wed, 01.08.2014
-/// @version $Id: GUIContainer.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIContainer.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A MSContainer extended by some values for usage within the gui
 /****************************************************************************/
@@ -110,8 +110,8 @@ GUIContainer::GUIContainerPopupMenu::~GUIContainerPopupMenu() {}
  * ----------------------------------------------------------------------- */
 GUIContainer::GUIContainer(const SUMOVehicleParameter* pars, const MSVehicleType* vtype, MSTransportable::MSTransportablePlan* plan) :
     MSContainer(pars, vtype, plan),
-    GUIGlObject(GLO_CONTAINER, pars->id)
-{ }
+    GUIGlObject(GLO_CONTAINER, pars->id) {
+}
 
 
 GUIContainer::~GUIContainer() {

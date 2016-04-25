@@ -3,7 +3,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Oct 2012
-/// @version $Id: Shape.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: Shape.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A 2D- or 3D-Shape
 /****************************************************************************/
@@ -56,8 +56,8 @@ Shape::Shape(const std::string& id, const std::string& type,
     myColor(color),
     myLayer(layer),
     myNaviDegreeAngle(angle),
-    myImgFile(imgFile)
-{}
+    myImgFile(imgFile) {
+}
 
 
 Shape::~Shape() {}

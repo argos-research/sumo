@@ -2,7 +2,7 @@
 /// @file    GNEAttributeCarrier.h
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEAttributeCarrier.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEAttributeCarrier.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Abstract Base class for gui objects which carry attributes
 /****************************************************************************/
@@ -121,11 +121,9 @@ public:
     static bool canParse(const std::string& string) {
         try {
             parse<T>(string);
-        }
-        catch (NumberFormatException&) {
+        } catch (NumberFormatException&) {
             return false;
-        }
-        catch (EmptyData&) {
+        } catch (EmptyData&) {
             return false;
         }
         return true;

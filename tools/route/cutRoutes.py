@@ -4,7 +4,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2012-08-15
-@version $Id: cutRoutes.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: cutRoutes.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Cut down routes from a large scenario to a sub-scenario optionally using exitTimes
 Output can be a route file or a tripfile.
@@ -121,7 +121,8 @@ def cut_routes(areaEdges, orig_net, options, busStopEdges=None):
                                        (orig_net.getEdge(e).getSpeed() * options.speed_factor))
                                       for e in edges[:fromIndex]]))
                 else:
-                    print("Could not reconstruct new departure time for vehicle '%s'. Using old departure time." % vehicle.id)
+                    print(
+                        "Could not reconstruct new departure time for vehicle '%s'. Using old departure time." % vehicle.id)
                     newDepart = float(vehicle.depart)
             else:
                 exitTimes = vehicle.route[0].exitTimes.split()
@@ -137,10 +138,12 @@ def cut_routes(areaEdges, orig_net, options, busStopEdges=None):
                 for stop in vehicle.stop:
                     if stop.busStop:
                         if not busStopEdges:
-                            print("No bus stop locations parsed, skipping bus stop '%s'." % stop.busStop)
+                            print(
+                                "No bus stop locations parsed, skipping bus stop '%s'." % stop.busStop)
                             continue
                         if stop.busStop not in busStopEdges:
-                            print("Skipping bus stop '%s', which could not be located." % stop.busStop)
+                            print(
+                                "Skipping bus stop '%s', which could not be located." % stop.busStop)
                             continue
                         if busStopEdges[stop.busStop] in remaining:
                             stops.append(stop)
@@ -158,10 +161,13 @@ def cut_routes(areaEdges, orig_net, options, busStopEdges=None):
     else:
         teleports = ""
 
-    print("Parsed %s vehicles and kept %s routes%s" % (num_vehicles, num_returned, teleports))
+    print("Parsed %s vehicles and kept %s routes%s" %
+          (num_vehicles, num_returned, teleports))
     if too_short > 0:
-        print("Discarded %s routes because they have less than %s edges" % (too_short, options.min_length))
-    print("Number of disconnected routes: %s. Most frequent missing edges:" % multiAffectedRoutes)
+        print("Discarded %s routes because they have less than %s edges" %
+              (too_short, options.min_length))
+    print("Number of disconnected routes: %s. Most frequent missing edges:" %
+          multiAffectedRoutes)
     printTop(missingEdgeOccurences)
 
 

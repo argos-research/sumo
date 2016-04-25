@@ -4,7 +4,7 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    February 2012
-/// @version $Id: CHRouter.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: CHRouter.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Shortest Path search using a Contraction Hierarchy
 /****************************************************************************/
@@ -111,8 +111,8 @@ public:
             edge(e),
             traveltime(std::numeric_limits<SUMOReal>::max()),
             prev(0),
-            visited(false)
-        {}
+            visited(false) {
+        }
 
         /// The current edge
         const E* edge;
@@ -475,8 +475,8 @@ public:
             level(0),
             underlyingTotal(0),
             visited(false),
-            traveltime(std::numeric_limits<SUMOReal>::max())
-        {}
+            traveltime(std::numeric_limits<SUMOReal>::max()) {
+        }
 
         /// @brief recompute the contraction priority and report whether it changed
         bool updatePriority(SPTree<CHInfo, CHConnection>* spTree) {

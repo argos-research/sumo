@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVehicle.cpp 20439 2016-04-13 11:39:22Z namdre $
+/// @version $Id: GUIVehicle.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -86,7 +86,7 @@
 GUIVehicle::GUIVehicle(SUMOVehicleParameter* pars, const MSRoute* route,
                        const MSVehicleType* type, const SUMOReal speedFactor) :
     MSVehicle(pars, route, type, speedFactor),
-    GUIBaseVehicle((MSBaseVehicle&)*this) {
+    GUIBaseVehicle((MSBaseVehicle&) * this) {
 }
 #ifdef _MSC_VER
 #pragma warning(default: 4355)
@@ -176,7 +176,7 @@ GUIVehicle::getParameterWindow(GUIMainWindow& app,
 
 GUIParameterTableWindow*
 GUIVehicle::getTypeParameterWindow(GUIMainWindow& app,
-                               GUISUMOAbstractView&) {
+                                   GUISUMOAbstractView&) {
     GUIParameterTableWindow* ret =
         new GUIParameterTableWindow(app, *this, 14);
     // add items
@@ -371,7 +371,7 @@ GUIVehicle::getColorValue(size_t activeScheme) const {
             return getFuelConsumption();
         case 19:
             return getHarmonoise_NoiseEmissions();
-        case 20: 
+        case 20:
             if (getNumberReroutes() == 0) {
                 return -1;
             }

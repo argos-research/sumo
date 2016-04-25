@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: RORouteDef.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: RORouteDef.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Base class for a vehicle's route definition
 /****************************************************************************/
@@ -63,8 +63,8 @@ bool RORouteDef::myUsingJTRR(false);
 RORouteDef::RORouteDef(const std::string& id, const unsigned int lastUsed,
                        const bool tryRepair, const bool mayBeDisconnected) :
     Named(StringUtils::convertUmlaute(id)),
-    myPrecomputed(0), myLastUsed(lastUsed), myTryRepair(tryRepair), myMayBeDisconnected(mayBeDisconnected)
-{}
+    myPrecomputed(0), myLastUsed(lastUsed), myTryRepair(tryRepair), myMayBeDisconnected(mayBeDisconnected) {
+}
 
 
 RORouteDef::~RORouteDef() {

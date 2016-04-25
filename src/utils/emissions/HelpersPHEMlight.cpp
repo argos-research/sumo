@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Nikolaus Furian
 /// @date    Sat, 20.04.2013
-/// @version $Id: HelpersPHEMlight.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: HelpersPHEMlight.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Helper methods for PHEMlight-based emission computation
 /****************************************************************************/
@@ -43,7 +43,7 @@
 #include <foreign/nvwa/debug_new.h>
 #endif // CHECK_MEMORY_LEAKS
 
-// idle speed is usually given in rpm (but may depend on electrical consumers). Actual speed depends on the gear so this number is only a rough estimate 
+// idle speed is usually given in rpm (but may depend on electrical consumers). Actual speed depends on the gear so this number is only a rough estimate
 #define IDLE_SPEED (10 / 3.6)
 
 // ===========================================================================
@@ -263,7 +263,7 @@ HelpersPHEMlight::compute(const SUMOEmissionClass c, const PollutantsInterface::
     const PHEMCEP* const oldCep = PHEMCEPHandler::getHandlerInstance().GetCep(c);
     if (oldCep != 0) {
         if (v > IDLE_SPEED && a < oldCep->GetDecelCoast(corrSpeed, a, slope, 0)) {
-            // coasting without power use only works if the engine runs above idle speed and 
+            // coasting without power use only works if the engine runs above idle speed and
             // the vehicle does not accelerate beyond friction losses
             return 0;
         }

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILoadThread.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUILoadThread.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Class describing the thread that performs the loading of a simulation
 /****************************************************************************/
@@ -168,8 +168,9 @@ GUILoadThread::run() {
     GUIVisualizationSettings::UseMesoSim = MSGlobals::gUseMesoSim;
     if (MSGlobals::gUseMesoSim) {
         vehControl = new GUIMEVehicleControl();
-    } else
+    } else {
         vehControl = new GUIVehicleControl();
+    }
 
     GUINet* net = 0;
     int simStartTime = 0;

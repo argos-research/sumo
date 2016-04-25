@@ -3,7 +3,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-03-31
-@version $Id: rmsd.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: rmsd.py 20482 2016-04-18 20:49:42Z behrisch $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -37,7 +37,7 @@ def superpose(nodes1, nodes2, select1, select2):
 
     is_reflection = (det(V) * det(W_trans)) < 0.0
     if is_reflection:
-        V[-1, :] = V[-1,:] * (-1.0)
+        V[-1, :] = V[-1, :] * (-1.0)
 
     optimal_rotation = dot(V, W_trans)
     return dot(array(nodes2) - center2, optimal_rotation) + center1

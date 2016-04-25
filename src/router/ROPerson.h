@@ -3,7 +3,7 @@
 /// @author  Robert Hilbrich
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: ROPerson.h 20476 2016-04-18 08:36:33Z behrisch $
+/// @version $Id: ROPerson.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A person as used by router
 /****************************************************************************/
@@ -154,8 +154,8 @@ public:
     class Ride : public TripItem {
     public:
         Ride(const ROEdge* const _from, const ROEdge* const _to,
-             const std::string& _lines, const std::string& _destStop="")
-             : from(_from), to(_to), lines(_lines), destStop(_destStop) {}
+             const std::string& _lines, const std::string& _destStop = "")
+            : from(_from), to(_to), lines(_lines), destStop(_destStop) {}
 
         const ROEdge* getOrigin() const {
             return from;
@@ -183,7 +183,7 @@ public:
      */
     class Walk : public TripItem {
     public:
-        Walk(const ConstROEdgeVector& _edges, const std::string& _destStop="")
+        Walk(const ConstROEdgeVector& _edges, const std::string& _destStop = "")
             : edges(_edges), dur(-1), v(-1), dep(std::numeric_limits<SUMOReal>::infinity()), arr(std::numeric_limits<SUMOReal>::infinity()), destStop(_destStop) {}
         Walk(const ConstROEdgeVector& edges, const SUMOReal duration, const SUMOReal speed,
              const SUMOReal departPos, const SUMOReal arrivalPos, const std::string& _destStop)

@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Thu, 13 Dec 2012
-/// @version $Id: MSStateHandler.cpp 20447 2016-04-14 13:02:24Z luecken $
+/// @version $Id: MSStateHandler.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Parser and output filter for routes and vehicles state saving and loading
 /****************************************************************************/
@@ -68,7 +68,7 @@ MSStateHandler::MSStateHandler(const std::string& file, const SUMOTime offset) :
 
 
 MSStateHandler::~MSStateHandler() {
-	delete myCurrentVType;
+    delete myCurrentVType;
 }
 
 
@@ -109,11 +109,11 @@ MSStateHandler::myStartElement(int element, const SUMOSAXAttributes& attrs) {
             break;
         }
         case SUMO_TAG_DELAY: {
-            vc.setState(attrs.getInt(SUMO_ATTR_NUMBER), 
-                    attrs.getInt(SUMO_ATTR_BEGIN),
-                    attrs.getInt(SUMO_ATTR_END),
-                    attrs.getFloat(SUMO_ATTR_DEPART), 
-                    attrs.getFloat(SUMO_ATTR_TIME));
+            vc.setState(attrs.getInt(SUMO_ATTR_NUMBER),
+                        attrs.getInt(SUMO_ATTR_BEGIN),
+                        attrs.getInt(SUMO_ATTR_END),
+                        attrs.getFloat(SUMO_ATTR_DEPART),
+                        attrs.getFloat(SUMO_ATTR_TIME));
             break;
         }
         case SUMO_TAG_ROUTE: {

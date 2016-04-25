@@ -5,7 +5,7 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    2012-04-26
-/// @version $Id: MSFCDExport.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSFCDExport.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Realises dumping Floating Car Data (FCD) Data
 /****************************************************************************/
@@ -127,7 +127,7 @@ MSFCDExport::write(OutputDevice& of, SUMOTime timestep, bool elevation) {
 }
 
 
-void 
+void
 MSFCDExport::writeTransportable(OutputDevice& of, const MSEdge* e, MSTransportable* p, SumoXMLTag tag, bool useGeo, bool elevation) {
     Position pos = p->getPosition();
     if (useGeo) {

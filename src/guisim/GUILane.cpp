@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILane.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUILane.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Representation of a lane in the micro simulation (gui-version)
 /****************************************************************************/
@@ -568,8 +568,9 @@ void
 GUILane::drawMarkings(const GUIVisualizationSettings& s, SUMOReal scale) const {
     glPushMatrix();
     glTranslated(0, 0, GLO_EDGE);
-    if (!MSGlobals::gUseMesoSim)
+    if (!MSGlobals::gUseMesoSim) {
         setColor(s);
+    }
     // optionally draw inverse markings
     if (myIndex > 0 && (myEdge->getLanes()[myIndex - 1]->getPermissions() & myPermissions) != 0) {
         SUMOReal mw = (myHalfLaneWidth + SUMO_const_laneOffset + .01) * scale * (MSNet::getInstance()->lefthand() ? -1 : 1);

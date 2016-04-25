@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2011-06-23
-@version $Id: __init__.py 20464 2016-04-15 12:35:23Z behrisch $
+@version $Id: __init__.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Python interface to SUMO especially for parsing output files.
 
@@ -83,7 +83,8 @@ def compound_object(element_name, attrnames):
             return "<%s,child_dict=%s>" % (self.getAttributes(), dict(self._child_dict))
 
         def toXML(self, initialIndent="", indent="    "):
-            fields = ['%s="%s"' % (k, getattr(self, k)) for k in self._fields if getattr(self, k) is not None]
+            fields = ['%s="%s"' % (k, getattr(self, k))
+                      for k in self._fields if getattr(self, k) is not None]
             if not self._child_dict:
                 return "%s<%s %s/>\n" % (initialIndent, element_name, " ".join(fields))
             else:

@@ -9,7 +9,7 @@
 /// @author  Christoph Sommer
 /// @author  Mario Krumnow
 /// @date    Mon, 05 Mar 2001
-/// @version $Id: MSLane.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSLane.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Representation of a lane in the micro simulation
 /****************************************************************************/
@@ -148,7 +148,7 @@ MSLane::lastInsertion(MSVehicle& veh, SUMOReal mspeed) {
     if (myVehicles.size() == 0) {
         return isInsertionSuccess(&veh, mspeed, basePos(veh), adaptSpeed, MSMoveReminder::NOTIFICATION_DEPARTED);
     }
-    // try to insert behind the last vehicle 
+    // try to insert behind the last vehicle
     const MSVehicle* leader = myVehicles.front();
     const SUMOReal leaderBack = leader->getPositionOnLane() - leader->getVehicleType().getLength();
     const SUMOReal frontGapNeeded = veh.getCarFollowModel().getSecureGap(mspeed, leader->getSpeed(), leader->getCarFollowModel().getMaxDecel()) + veh.getVehicleType().getMinGap() + POSITION_EPS;
@@ -314,9 +314,9 @@ MSLane::insertVehicle(MSVehicle& veh) {
 }
 
 
-SUMOReal 
+SUMOReal
 MSLane::basePos(const MSVehicle& veh) const {
-            return MIN2(veh.getVehicleType().getLength() + POSITION_EPS, myLength);
+    return MIN2(veh.getVehicleType().getLength() + POSITION_EPS, myLength);
 }
 
 bool
@@ -1036,7 +1036,7 @@ MSLane::isApproachedFrom(MSEdge* const edge, MSLane* const lane) {
 
 class by_second_sorter {
 public:
-    inline int operator()(const std::pair<const MSVehicle* , SUMOReal>& p1, const std::pair<const MSVehicle* , SUMOReal>& p2) const {
+    inline int operator()(const std::pair<const MSVehicle*, SUMOReal>& p1, const std::pair<const MSVehicle*, SUMOReal>& p2) const {
         return p1.second < p2.second;
     }
 };
@@ -1570,8 +1570,8 @@ MSLane::vehicle_position_sorter::operator()(MSVehicle* v1, MSVehicle* v2) const 
 
 MSLane::by_connections_to_sorter::by_connections_to_sorter(const MSEdge* const e) :
     myEdge(e),
-    myLaneDir(e->getLanes()[0]->getShape().angleAt2D(0))
-{ }
+    myLaneDir(e->getLanes()[0]->getShape().angleAt2D(0)) {
+}
 
 
 int

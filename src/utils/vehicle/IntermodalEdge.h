@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Robert Hilbrich
 /// @date    Mon, 03 March 2014
-/// @version $Id: IntermodalEdge.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: IntermodalEdge.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The Edge definition for the Intermodal Router
 /****************************************************************************/
@@ -70,7 +70,7 @@ struct IntermodalTrip {
 
     IntermodalTrip(const E* _from, const E* _to, SUMOReal _departPos, SUMOReal _arrivalPos,
                    SUMOReal _speed, SUMOTime _departTime, const N* _node,
-                   const V* _vehicle=0, const SVCPermissions _modeSet=SVC_PEDESTRIAN) :
+                   const V* _vehicle = 0, const SVCPermissions _modeSet = SVC_PEDESTRIAN) :
         from(_from),
         to(_to),
         departPos(_departPos < 0 ? _from->getLength() + _departPos : _departPos),
@@ -79,8 +79,8 @@ struct IntermodalTrip {
         departTime(_departTime),
         node(_node),
         vehicle(_vehicle),
-        modeSet(_modeSet)
-    {}
+        modeSet(_modeSet) {
+    }
 
     // exists just for debugging purposes
     std::string getID() const {
@@ -208,7 +208,7 @@ private:
 template<class E, class L, class N, class V>
 class PedestrianEdge : public IntermodalEdge<E, L, N, V> {
 public:
-    PedestrianEdge(unsigned int numericalID, const E* edge, const L* lane, bool forward, const SUMOReal pos=-1.) :
+    PedestrianEdge(unsigned int numericalID, const E* edge, const L* lane, bool forward, const SUMOReal pos = -1.) :
         IntermodalEdge<E, L, N, V>(edge->getID() + (edge->isWalkingArea() ? "" : (forward ? "_fwd" : "_bwd")) + toString(pos), numericalID, edge, "!ped"),
         myLane(lane),
         myForward(forward),

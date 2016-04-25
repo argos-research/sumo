@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2011-03-15
-@version $Id: simulation.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: simulation.py 20482 2016-04-18 20:49:42Z behrisch $
 
 Python implementation of the TraCI interface.
 
@@ -305,7 +305,7 @@ def getDistance2D(x1, y1, x2, y2, isGeo=False, isDriving=False):
 
     If isGeo=True, coordinates are interpreted as longitude and latitude rather
     than cartesian coordinates in meters.
-    
+
     If isDriving=True, the coordinates are mapped onto the road network and the
     length of the shortest route in the network is returned. Otherwise, the
     straight-line distance is returned.
@@ -365,6 +365,7 @@ def clearPending(routeID=""):
                         1 + 4 + len(routeID))
     traci._message.packString(routeID)
     traci._sendExact()
+
 
 def saveState(fileName):
     traci._beginMessage(tc.CMD_SET_SIM_VARIABLE, tc.CMD_SAVE_SIMSTATE, "",

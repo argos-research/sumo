@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIPerson.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIPerson.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A MSPerson extended by some values for usage within the gui
 /****************************************************************************/
@@ -92,8 +92,8 @@ GUIPerson::GUIPersonPopupMenu::GUIPersonPopupMenu(
     GUIMainWindow& app, GUISUMOAbstractView& parent,
     GUIGlObject& o, std::map<GUISUMOAbstractView*, int>& additionalVisualizations) :
     GUIGLObjectPopupMenu(app, parent, o),
-    myVehiclesAdditionalVisualizations(additionalVisualizations)
-{}
+    myVehiclesAdditionalVisualizations(additionalVisualizations) {
+}
 
 
 GUIPerson::GUIPersonPopupMenu::~GUIPersonPopupMenu() {}
@@ -160,8 +160,8 @@ GUIPerson::GUIPersonPopupMenu::onCmdStopTrack(FXObject*, FXSelector, void*) {
 GUIPerson::GUIPerson(const SUMOVehicleParameter* pars, const MSVehicleType* vtype, MSTransportable::MSTransportablePlan* plan) :
     MSPerson(pars, vtype, plan),
     GUIGlObject(GLO_PERSON, pars->id),
-    myPositionInVehicle(Position::INVALID)
-{ }
+    myPositionInVehicle(Position::INVALID) {
+}
 
 
 GUIPerson::~GUIPerson() {

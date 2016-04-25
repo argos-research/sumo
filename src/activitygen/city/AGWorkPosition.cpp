@@ -5,7 +5,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    July 2010
-/// @version $Id: AGWorkPosition.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: AGWorkPosition.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Location and schedules of a work position: linked with one adult
 /****************************************************************************/
@@ -132,7 +132,7 @@ AGWorkPosition::take(AGAdult* worker) {
         myStatData->workPositions--;
         myAdult = worker;
     } else {
-        throw(std::runtime_error("Work position already occupied. Cannot give it to another adult."));
+        throw (std::runtime_error("Work position already occupied. Cannot give it to another adult."));
     }
 }
 

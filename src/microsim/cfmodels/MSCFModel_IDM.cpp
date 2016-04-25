@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Thu, 03 Sep 2009
-/// @version $Id: MSCFModel_IDM.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSCFModel_IDM.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The Intelligent Driver Model (IDM) car-following model
 /****************************************************************************/
@@ -47,7 +47,7 @@ MSCFModel_IDM::MSCFModel_IDM(const MSVehicleType* vtype,
     : MSCFModel(vtype, accel, decel, headwayTime), myDelta(delta),
       myAdaptationFactor(1.), myAdaptationTime(0.),
       myIterations(MAX2(1, int(TS / internalStepping + .5))),
-      myTwoSqrtAccelDecel(SUMOReal(2 * sqrt(accel* decel))) {
+      myTwoSqrtAccelDecel(SUMOReal(2 * sqrt(accel * decel))) {
 }
 
 
@@ -59,7 +59,7 @@ MSCFModel_IDM::MSCFModel_IDM(const MSVehicleType* vtype,
     : MSCFModel(vtype, accel, decel, headwayTime), myDelta(4.),
       myAdaptationFactor(adaptationFactor), myAdaptationTime(adaptationTime),
       myIterations(MAX2(1, int(TS / internalStepping + .5))),
-      myTwoSqrtAccelDecel(SUMOReal(2 * sqrt(accel* decel))) {
+      myTwoSqrtAccelDecel(SUMOReal(2 * sqrt(accel * decel))) {
 }
 
 

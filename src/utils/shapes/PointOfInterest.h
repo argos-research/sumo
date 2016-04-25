@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Melanie Knocke
 /// @date    2005-09-15
-/// @version $Id: PointOfInterest.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: PointOfInterest.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A point-of-interest (2D)
 /****************************************************************************/
@@ -71,8 +71,8 @@ public:
         Shape(id, type, color, layer, angle, imgFile),
         Position(pos),
         myHalfImgWidth(width / 2.0),
-        myHalfImgHeight(height / 2.0)
-    {}
+        myHalfImgHeight(height / 2.0) {
+    }
 
 
     /// @brief Destructor

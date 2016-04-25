@@ -3,7 +3,7 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    February 2012
-/// @version $Id: SPTree.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: SPTree.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Shortest Path tree of limited depth using Dijkstras algorithm
 /****************************************************************************/
@@ -71,8 +71,8 @@ public:
      */
     SPTree(int maxDepth, bool validatePermissions) :
         myMaxDepth(maxDepth),
-        myValidatePermissions(validatePermissions)
-    { }
+        myValidatePermissions(validatePermissions) {
+    }
 
 
     void init() {

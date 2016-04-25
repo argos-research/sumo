@@ -3,7 +3,7 @@
 /// @author  Alessio Bonfietti
 /// @author  Riccardo Belletti
 /// @date    2014-03-20
-/// @version $Id: MSSOTLCongestionPolicy.h 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSSOTLCongestionPolicy.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // The class for SOTL Congestion logics
 /****************************************************************************/
@@ -50,8 +50,8 @@ public:
                            const std::map<std::string, std::string>& parameters);
 
     int decideNextPhase(SUMOTime elapsed, const MSPhaseDefinition* stage,
-                           int currentPhaseIndex, int phaseMaxCTS, bool thresholdPassed, bool pushButtonPressed,
-                           int vehicleCount);
+                        int currentPhaseIndex, int phaseMaxCTS, bool thresholdPassed, bool pushButtonPressed,
+                        int vehicleCount);
 
     bool canRelease(SUMOTime elapsed, bool thresholdPassed, bool pushButtonPressed,
                     const MSPhaseDefinition* stage, int vehicleCount);

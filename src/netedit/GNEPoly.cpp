@@ -2,7 +2,7 @@
 /// @file    GNEPoly.cpp
 /// @author  Jakob Erdmann
 /// @date    Sept 2012
-/// @version $Id: GNEPoly.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEPoly.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A class for visualizing and editing POIS in netedit (adapted from
 // GUIPolygon and NLHandler)
@@ -77,8 +77,8 @@ GNEPoly::GNEPoly(GNENet* net, GNEJunction* junction, const std::string& id, cons
     GUIPolygon(id, type, color, shape, fill, layer, angle, imgFile),
     GNEAttributeCarrier(SUMO_TAG_POLY),
     myNet(net),
-    myJunction(junction)
-{}
+    myJunction(junction) {
+}
 
 
 GNEPoly::~GNEPoly() { }

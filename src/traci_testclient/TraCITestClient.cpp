@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2008/04/07
-/// @version $Id: TraCITestClient.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: TraCITestClient.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 /// A test execution class
 /****************************************************************************/
@@ -693,7 +693,7 @@ TraCITestClient::testAPI() {
     answerLog << "  gui:\n";
     try {
         answerLog << "    setScheme: \n";
-        gui.setSchema("View #0", "real world"); 
+        gui.setSchema("View #0", "real world");
         answerLog << "    getScheme: " << gui.getSchema("View #0") << "\n";
     } catch (tcpip::SocketException&) {
         answerLog << "    no support for gui commands\n";

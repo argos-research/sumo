@@ -6,7 +6,7 @@
 /// @author  Christoph Sommer
 /// @author  Jakob Erdmann
 /// @date    Tue, 04 Dec 2007
-/// @version $Id: MSDevice_Routing.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSDevice_Routing.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A device that performs vehicle rerouting based on current edge speeds
 /****************************************************************************/
@@ -272,7 +272,7 @@ MSDevice_Routing::getEffort(const MSEdge* const e, const SUMOVehicle* const v, S
 }
 
 
-SUMOReal 
+SUMOReal
 MSDevice_Routing::getAssumedSpeed(const MSEdge* edge) {
     return edge->getLength() / getEffort(edge, 0, 0);
 }
@@ -398,7 +398,7 @@ SUMOAbstractRouter<MSEdge, SUMOVehicle>&
 MSDevice_Routing::getRouterTT(const MSEdgeVector& prohibited) {
     if (myRouterWithProhibited == 0) {
         myRouterWithProhibited = new AStarRouter<MSEdge, SUMOVehicle, prohibited_withPermissions<MSEdge, SUMOVehicle> >(
-                MSEdge::getAllEdges(), true, &MSDevice_Routing::getEffort);
+            MSEdge::getAllEdges(), true, &MSDevice_Routing::getEffort);
     }
     myRouterWithProhibited->prohibit(prohibited);
     return *myRouterWithProhibited;

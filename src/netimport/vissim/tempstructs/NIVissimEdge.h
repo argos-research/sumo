@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    End of 2002
-/// @version $Id: NIVissimEdge.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIVissimEdge.h 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // A temporary storage for edges imported from Vissim
 /****************************************************************************/
@@ -59,7 +59,7 @@ class NBDistrictCont;
  * @brief A temporary storage for edges imported from Vissim
  */
 class NIVissimEdge
-        : public NIVissimAbstractEdge {
+    : public NIVissimAbstractEdge {
 public:
     /// Constructor
     NIVissimEdge(int id, const std::string& name,

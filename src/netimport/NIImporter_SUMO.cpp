@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_SUMO.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIImporter_SUMO.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // Importer for networks stored in SUMO format
 /****************************************************************************/
@@ -86,8 +86,8 @@ NIImporter_SUMO::NIImporter_SUMO(NBNetBuilder& nb)
       myHaveSeenInternalEdge(false),
       myAmLefthand(false),
       myCornerDetail(0),
-      myLinkDetail(-1)
-{}
+      myLinkDetail(-1) {
+}
 
 
 NIImporter_SUMO::~NIImporter_SUMO() {

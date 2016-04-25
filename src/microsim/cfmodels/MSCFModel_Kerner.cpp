@@ -4,7 +4,7 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    03.04.2010
-/// @version $Id: MSCFModel_Kerner.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSCFModel_Kerner.cpp 20482 2016-04-18 20:49:42Z behrisch $
 ///
 // car-following model by B. Kerner
 /****************************************************************************/
@@ -42,7 +42,7 @@
 MSCFModel_Kerner::MSCFModel_Kerner(const MSVehicleType* vtype, SUMOReal accel,
                                    SUMOReal decel, SUMOReal headwayTime, SUMOReal k, SUMOReal phi)
     : MSCFModel(vtype, accel, decel, headwayTime), myK(k), myPhi(phi),
-      myTauDecel(decel* headwayTime) {
+      myTauDecel(decel * headwayTime) {
 }
 
 

@@ -3,7 +3,7 @@
 @file    typemap.py
 @author  Michael Behrisch
 @date    2015-07-06
-@version $Id: typemap.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: typemap.py 20482 2016-04-18 20:49:42Z behrisch $
 
 This script rebuilds "../../src/netimport/typemap.h", the file 
 representing the default typemaps.
@@ -24,6 +24,7 @@ from __future__ import absolute_import
 import sys
 from os.path import dirname, exists, getmtime, join
 
+
 def writeTypeMap(typemapFile, typemap):
     with open(typemapFile, 'w') as f:
         for format, mapFile in sorted(typemap.iteritems()):
@@ -32,6 +33,7 @@ def writeTypeMap(typemapFile, typemap):
                 print('"%s"' %
                       line.replace('"', r'\"').replace('\n', r'\n'), file=f)
             print(";", file=f)
+
 
 def main():
     typemapDir = join(dirname(__file__), '..', '..', 'data', 'typemap')
