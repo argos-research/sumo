@@ -1174,13 +1174,12 @@ TraCIAPI::RouteScope::getEdges(const std::string& routeID) const {
     return myParent.getStringVector(CMD_GET_ROUTE_VARIABLE, VAR_EDGES, routeID);
 }
 
-
 void
 TraCIAPI::RouteScope::add(const std::string& routeID, const std::vector<std::string>& edges) const {
     tcpip::Storage content;
     content.writeUnsignedByte(TYPE_STRINGLIST);
     content.writeStringList(edges);
-    myParent.send_commandSetValue(CMD_SET_ROUTE_VARIABLE, VAR_POSITION, routeID, content);
+    myParent.send_commandSetValue(CMD_SET_ROUTE_VARIABLE, ADD, routeID, content);
     tcpip::Storage inMsg;
     myParent.check_resultState(inMsg, CMD_SET_ROUTE_VARIABLE);
 }
@@ -1763,6 +1762,26 @@ TraCIAPI::VehicleScope::setSpeed(const std::string& typeID, SUMOReal speed) cons
     content.writeUnsignedByte(TYPE_DOUBLE);
     content.writeDouble(speed);
     myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_SPEED, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
+}
+
+void
+TraCIAPI::VehicleScope::changeRouteID(const std::string& typeID, const std::string& routeID) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_STRING);
+    content.writeString(routeID);
+    myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_ROUTE_ID, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
+}
+
+void
+TraCIAPI::VehicleScope::changeRoute(const std::string& typeID, const std::vector<std::string>& edges) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_STRINGLIST);
+    content.writeStringList(edges);
+    myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_ROUTE, typeID, content);
     tcpip::Storage inMsg;
     myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
 }
