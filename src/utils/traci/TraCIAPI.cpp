@@ -1808,6 +1808,15 @@ TraCIAPI::VehicleScope::add(const std::string& typeID, const std::string& routeI
     myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
 }
 
+void TraCIAPI::VehicleScope::remove(const std::string& typeID, int reason) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_BYTE);
+    content.writeByte(reason);
+    myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, REMOVE, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
+}
+
 
 /****************************************************************************/
 
