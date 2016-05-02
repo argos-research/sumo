@@ -1786,6 +1786,27 @@ TraCIAPI::VehicleScope::changeRoute(const std::string& typeID, const std::vector
     myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
 }
 
+void
+TraCIAPI::VehicleScope::add(const std::string& typeID, const std::string& routeID, int departTime, double departPosition, double departSpeed, int departLane) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_COMPOUND);
+    content.writeInt(6);
+    content.writeUnsignedByte(TYPE_STRING);
+    content.writeString(typeID);
+    content.writeUnsignedByte(TYPE_STRING);
+    content.writeString(routeID);
+    content.writeUnsignedByte(TYPE_INTEGER);
+    content.writeInt(departTime);
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(departPosition);
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(departSpeed);
+    content.writeUnsignedByte(TYPE_BYTE);
+    content.writeByte(departLane);
+    myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, ADD, typeID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
+}
 
 
 /****************************************************************************/

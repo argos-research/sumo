@@ -716,6 +716,7 @@ public:
         void setSpeed(const std::string& typeID, SUMOReal speed) const;
         void changeRouteID(const std::string& typeID, const std::string& routeID) const;
         void changeRoute(const std::string& typeID, const std::vector<std::string>& edges) const;
+	void add(const std::string& typeID, const std::string& routeID, int departTime, double departPosition, double departSpeed, int departLane) const;
 
     private:
         /// @brief invalidated copy constructor
