@@ -806,7 +806,7 @@ TraCIAPI::LaneScope::getShape(const std::string& laneID) const {
 
 std::string
 TraCIAPI::LaneScope::getEdgeID(const std::string& laneID) const {
-    throw myParent.getString(CMD_GET_LANE_VARIABLE, LANE_EDGE_ID, laneID);
+    return myParent.getString(CMD_GET_LANE_VARIABLE, LANE_EDGE_ID, laneID);
 }
 
 SUMOReal
@@ -1787,12 +1787,12 @@ TraCIAPI::VehicleScope::changeRoute(const std::string& typeID, const std::vector
 }
 
 void
-TraCIAPI::VehicleScope::add(const std::string& typeID, const std::string& routeID, int departTime, double departPosition, double departSpeed, int departLane) const {
+TraCIAPI::VehicleScope::add(const std::string& typeID, const std::string& vehTypeID, const std::string& routeID, int departTime, double departPosition, double departSpeed, int departLane) const {
     tcpip::Storage content;
     content.writeUnsignedByte(TYPE_COMPOUND);
     content.writeInt(6);
     content.writeUnsignedByte(TYPE_STRING);
-    content.writeString(typeID);
+    content.writeString(vehTypeID);
     content.writeUnsignedByte(TYPE_STRING);
     content.writeString(routeID);
     content.writeUnsignedByte(TYPE_INTEGER);
