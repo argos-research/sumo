@@ -799,6 +799,25 @@ TraCIAPI::LaneScope::getLinkNumber(const std::string& /* laneID */) const {
     throw tcpip::SocketException("Not implemented!");
 }
 
+std::vector<std::string>
+TraCIAPI::LaneScope::getLinks(const std::string& laneID) const {
+    tcpip::Storage inMsg;
+    myParent.send_commandGetVariable(CMD_GET_LANE_VARIABLE, LANE_LINKS, laneID);
+    myParent.processGET(inMsg, CMD_GET_LANE_VARIABLE, TYPE_COMPOUND);
+    std::vector<std::string> ret;
+    /* length of packet */
+    inMsg.readInt();
+    /* get number of links */
+    inMsg.readUnsignedByte(); // type
+    int linkCount = inMsg.readInt(); // value
+    /* iterate over the links */
+    for (int i = 0; i < linkCount; ++i) {
+        inMsg.readUnsignedByte(); // type
+        ret.push_back(inMsg.readString()); // value
+    }
+    return ret;
+}
+
 TraCIAPI::TraCIPositionVector
 TraCIAPI::LaneScope::getShape(const std::string& laneID) const {
     throw myParent.getPolygon(CMD_GET_LANE_VARIABLE, VAR_SHAPE, laneID);
