@@ -7,7 +7,7 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Fri, 30.01.2009
-/// @version $Id: MSDevice_Transportable.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSDevice_Transportable.cpp 20768 2016-05-20 08:38:44Z behrisch $
 ///
 // A device which is used to keep track of persons and containers riding with a vehicle
 /****************************************************************************/
@@ -35,9 +35,8 @@
 #include <microsim/MSNet.h>
 #include <microsim/MSEdge.h>
 #include <microsim/pedestrians/MSPerson.h>
-#include <microsim/MSPersonControl.h>
+#include <microsim/MSTransportableControl.h>
 #include <microsim/MSContainer.h>
-#include <microsim/MSContainerControl.h>
 #include "MSDevice_Transportable.h"
 
 #ifdef CHECK_MEMORY_LEAKS

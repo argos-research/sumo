@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLEdgeControlBuilder.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NLEdgeControlBuilder.cpp 20550 2016-04-26 10:57:45Z namdre $
 ///
 // Interface for building edges
 /****************************************************************************/
@@ -91,6 +91,12 @@ NLEdgeControlBuilder::addLane(const std::string& id,
 }
 
 
+void
+NLEdgeControlBuilder::addNeigh(const std::string id) {
+    myLaneStorage->back()->addNeigh(id);
+}
+
+
 MSEdge*
 NLEdgeControlBuilder::closeEdge() {
     std::vector<MSLane*>* lanes = new std::vector<MSLane*>();
@@ -106,6 +112,9 @@ MSEdgeControl*
 NLEdgeControlBuilder::build() {
     for (MSEdgeVector::iterator i1 = myEdges.begin(); i1 != myEdges.end(); i1++) {
         (*i1)->closeBuilding();
+    }
+    for (MSEdgeVector::iterator i1 = myEdges.begin(); i1 != myEdges.end(); i1++) {
+        (*i1)->buildLaneChanger();
     }
     // mark internal edges belonging to a roundabout (after all edges are build)
     if (MSGlobals::gUsingInternalLanes) {

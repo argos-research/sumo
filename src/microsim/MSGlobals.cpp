@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    late summer 2003
-/// @version $Id: MSGlobals.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSGlobals.cpp 20550 2016-04-26 10:57:45Z namdre $
 ///
 // Some static variables for faster access
 /****************************************************************************/
@@ -53,6 +53,8 @@ bool MSGlobals::gCheck4Accidents;
 bool MSGlobals::gCheckRoutes;
 
 SUMOTime MSGlobals::gLaneChangeDuration;
+
+SUMOReal MSGlobals::gLateralResolution;
 
 bool MSGlobals::gStateLoaded;
 bool MSGlobals::gUseMesoSim;

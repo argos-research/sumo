@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<!-- generated on 2016-03-09 10:46:41.388605 by $Id: route2trips.py 20118 2016-03-02 09:54:08Z martintaraz $ -->
+<trips>
+    <vType accel="0.8" decel="4.5" id="DEFAULT_VEHTYPE" length="3" maxSpeed="10" minGap="2" sigma="0"/>
+    <trip id="0" depart="0" departPos="100" departSpeed="10" from="4/1to3/1" to="1/1to0/1"/>
+</trips>

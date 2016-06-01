@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Thu, 06 Jun 2002
-/// @version $Id: duarouter_main.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: duarouter_main.cpp 20811 2016-05-30 11:05:58Z behrisch $
 ///
 // Main for DUAROUTER
 /****************************************************************************/
@@ -184,11 +184,11 @@ computeRoutes(RONet& net, ROLoader& loader, OptionsCont& oc) {
                 ROEdge::getAllEdges(), oc.getBool("ignore-errors"), op, &ROEdge::getTravelTimeStatic);
         }
     }
-    net.openOutput(filename, altFilename, oc.getString("vtype-output"));
     RORouterProvider provider(router, new PedestrianRouterDijkstra<ROEdge, ROLane, RONode, ROVehicle>(),
                               new ROIntermodalRouter(RONet::adaptIntermodalRouter));
     // process route definitions
     try {
+        net.openOutput(oc, altFilename);
         loader.processRoutes(string2time(oc.getString("begin")), string2time(oc.getString("end")),
                              string2time(oc.getString("route-steps")), net, provider);
         // end the processing

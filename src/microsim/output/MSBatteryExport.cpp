@@ -4,7 +4,7 @@
 /// @author  Tamas Kurczveil
 /// @author  Pablo Alvarez Lopez
 /// @date    20-12-13
-/// @version $Id: MSBatteryExport.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSBatteryExport.cpp 20576 2016-04-28 08:31:00Z palcraft $
 ///
 // Realises dumping Battery Data
 /****************************************************************************/
@@ -97,18 +97,18 @@ MSBatteryExport::write(OutputDevice& of, SUMOTime timestep, int precision) {
                 of.writeAttr("chargingStationId", batteryToExport->getChargingStationID());
 
                 // Write Charge charged in the Battery
-                of.writeAttr("energyCharged", batteryToExport->getChrgEnergy());
+                of.writeAttr("energyCharged", batteryToExport->getEnergyCharged());
 
                 // Write ChargeInTransit
                 if (batteryToExport->isChargingInTransit()) {
-                    of.writeAttr("energyChargedInTransit", batteryToExport->getChrgEnergy());
+                    of.writeAttr("energyChargedInTransit", batteryToExport->getEnergyCharged());
                 } else {
                     of.writeAttr("energyChargedInTransit", 0.00);
                 }
 
                 // Write ChargingStopped
                 if (batteryToExport->isChargingStopped()) {
-                    of.writeAttr("energyChargedStopped", batteryToExport->getChrgEnergy());
+                    of.writeAttr("energyChargedStopped", batteryToExport->getEnergyCharged());
                 } else {
                     of.writeAttr("energyChargedStopped", 0.00);
                 }

@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2014-14-10
-@version $Id: osmWebWizard.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: osmWebWizard.py 20733 2016-05-18 06:38:43Z namdre $
 
 Browser GUI for OSMget, OSMbuild, optionally randomTrips and SUMO GUI
 
@@ -246,6 +246,7 @@ class Builder(object):
 
         self.filename("config", ".sumocfg")
         opts = [sumo, "-n", self.files["net"], "--gui-settings-file", self.files["guisettings"],
+                "--duration-log.statistics",
                 "-v", "--no-step-log", "--save-configuration", self.files["config"], "--ignore-route-errors"]
 
         if self.data["vehicles"]:
@@ -346,6 +347,7 @@ class OSMImporterWebSocket(WebSocket):
 
                 self.sendMessage(unicode("zip " + data))
         except:
+            print(traceback.format_exc())
             # reset 'Generate Scenario' button
             while self.steps > 0:
                 self.report("Recovering")

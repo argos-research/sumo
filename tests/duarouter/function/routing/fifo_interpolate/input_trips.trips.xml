@@ -1,0 +1,4 @@
+<trips>
+	<trip depart="780" from="beg" to="rend"/>
+	<trip depart="810" from="beg" to="rend"/>
+</trips>

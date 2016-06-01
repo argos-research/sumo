@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Yun-Pang Floetteroed
 /// @date    Sept 2002
-/// @version $Id: RONet.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: RONet.h 20811 2016-05-30 11:05:58Z behrisch $
 ///
 // The router's network representation
 /****************************************************************************/
@@ -404,11 +404,10 @@ public:
      *  will be opened.
      * If one of the file outputs can not be build, an IOError is thrown.
      *
-     * @param[in] filename The (base) name of the file(s) to create
+     * @param[in] options The options to be asked for "output-file" and "vtype-output"
      * @param[in] altFilename The name of the file for writing alternatives, "" means no alternatives
-     * @param[in] filename The name of the vtype file to create, "" means no separate types
      */
-    void openOutput(const std::string& filename, const std::string altFilename, const std::string typeFilename);
+    void openOutput(const OptionsCont& options, const std::string altFilename="");
 
 
     /** @brief closes the file output for computed routes and deletes associated threads if necessary */

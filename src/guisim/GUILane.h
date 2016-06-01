@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILane.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUILane.h 20687 2016-05-10 11:27:00Z behrisch $
 ///
 // Representation of a lane in the micro simulation (gui-version)
 /****************************************************************************/
@@ -247,11 +247,12 @@ protected:
      * @param[in] veh The vehicle to be incorporated
      * @param[in] pos The position of the vehicle
      * @param[in] speed The speed of the vehicle
+     * @param[in] posLat The lateral position of the vehicle
      * @param[in] at
      * @param[in] notification The cause of insertion (i.e. departure, teleport, parking) defaults to departure
      * @see MSLane::incorporateVehicle
      */
-    virtual void incorporateVehicle(MSVehicle* veh, SUMOReal pos, SUMOReal speed,
+    virtual void incorporateVehicle(MSVehicle* veh, SUMOReal pos, SUMOReal speed, SUMOReal posLat,
                                     const MSLane::VehCont::iterator& at,
                                     MSMoveReminder::Notification notification = MSMoveReminder::NOTIFICATION_DEPARTED);
 
@@ -266,6 +267,8 @@ private:
     void drawLane2LaneConnections() const;
 
 
+    /// @brief add intermediate points at segment borders
+    PositionVector splitAtSegments(const PositionVector& shape);
 
 private:
     /// @brief gets the color value according to the current scheme index
@@ -297,6 +300,9 @@ private:
 
     /// The color of the shape parts (cached)
     mutable std::vector<RGBColor> myShapeColors;
+
+    /// @brief the meso segment index for each geometry segment
+    std::vector<int> myShapeSegments;
 
     /// @brief Half of lane width, for speed-up
     SUMOReal myHalfLaneWidth;

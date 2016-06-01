@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NIFrame.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIFrame.cpp 20661 2016-05-09 08:48:28Z namdre $
 ///
 // Sets and checks options for netimport
 /****************************************************************************/
@@ -309,10 +309,10 @@ NIFrame::checkOptions() {
         } else {
             const std::string path = sumoPath + std::string("/data/typemap/");
             if (oc.isSet("osm-files")) {
-                oc.set("type-files", path + "osmNetconvert.typ.xml");
+                oc.setDefault("type-files", path + "osmNetconvert.typ.xml");
             }
             if (oc.isSet("opendrive-files")) {
-                oc.set("type-files", path + "opendriveNetconvert.typ.xml");
+                oc.setDefault("type-files", path + "opendriveNetconvert.typ.xml");
             }
         }
     }

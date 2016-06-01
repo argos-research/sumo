@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    06.05.2011
-/// @version $Id: NGFrame.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NGFrame.cpp 20507 2016-04-20 11:40:48Z namdre $
 ///
 // Sets and checks options for netgen
 /****************************************************************************/
@@ -89,6 +89,8 @@ NGFrame::fillOptions() {
     oc.addSynonyme("grid.attach-length", "attach-length", true);
     oc.addDescription("grid.attach-length", "Grid Network", "The length of streets attached at the boundary; 0 means no streets are attached");
 
+    oc.doRegister("grid.alphanumerical-ids", new Option_Bool(false));
+    oc.addDescription("grid.alphanumerical-ids", "Grid Network", "The Ids of generated nodes use letters for the X axis");
 
     //  register spider-net options
     oc.doRegister("spider", 's', new Option_Bool(false));

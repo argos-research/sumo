@@ -4,7 +4,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2013-02-25
-@version $Id: geomhelper.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: geomhelper.py 20604 2016-05-02 06:13:40Z behrisch $
 
 Some helper functions for geometrical computations.
 
@@ -50,8 +50,8 @@ def lineOffsetWithMinimumDistanceToPoint(point, line_start, line_end, perpendicu
     return u / l
 
 
-def polygonOffsetWithMinimumDistanceToPoint(point, polygon, perpendicular=False):
-    """Return the offset from the polygon start where the distance to point is minimal"""
+def polygonOffsetAndDistanceToPoint(point, polygon, perpendicular=False):
+    """Return the offset and the distancefrom the polygon start where the distance to point is minimal"""
     p = point
     s = polygon
     seen = 0
@@ -78,7 +78,12 @@ def polygonOffsetWithMinimumDistanceToPoint(point, polygon, perpendicular=False)
                     minOffset = seen
                     minDist = cornerDist
         seen += distance(s[i], s[i + 1])
-    return minOffset
+    return minOffset, minDist
+
+
+def polygonOffsetWithMinimumDistanceToPoint(point, polygon, perpendicular=False):
+    """Return the offset from the polygon start where the distance to point is minimal"""
+    return polygonOffsetAndDistanceToPoint(point, polygon, perpendicular)[0]
 
 
 def distancePointToLine(point, line_start, line_end, perpendicular=False):

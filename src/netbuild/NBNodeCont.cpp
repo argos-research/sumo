@@ -8,7 +8,7 @@
 /// @author  Michael Behrisch
 /// @author  Sascha Krieg
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBNodeCont.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBNodeCont.cpp 20687 2016-05-10 11:27:00Z behrisch $
 ///
 // Container for nodes during the netbuilding process
 /****************************************************************************/
@@ -46,6 +46,8 @@
 #include <utils/common/StringTokenizer.h>
 #include <utils/common/StdDefs.h>
 #include <utils/common/ToString.h>
+#include <utils/common/TplConvert.h>
+#include <utils/common/IDSupplier.h>
 #include <utils/xml/SUMOXMLDefinitions.h>
 #include <utils/geom/GeoConvHelper.h>
 #include <utils/iodevices/OutputDevice.h>
@@ -1218,6 +1220,27 @@ NBNodeCont::discardTrafficLights(NBTrafficLightLogicCont& tlc, bool geometryLike
             node->reinit(node->getPosition(), NODETYPE_UNKNOWN);
         }
     }
+}
+
+
+int
+NBNodeCont::mapToNumericalIDs() {
+    IDSupplier idSupplier("", getAllNames());
+    std::vector<NBNode*> toChange;
+    for (NodeCont::iterator it = myNodes.begin(); it != myNodes.end(); it++) {
+        try {
+            TplConvert::_str2int(it->first);
+        } catch (NumberFormatException&) {
+            toChange.push_back(it->second);
+        }
+    }
+    for (std::vector<NBNode*>::iterator it = toChange.begin(); it != toChange.end(); ++it) {
+        NBNode* node = *it;
+        myNodes.erase(node->getID());
+        node->setID(idSupplier.getNext());
+        myNodes[node->getID()] = node;
+    }
+    return (int)toChange.size();
 }
 
 /****************************************************************************/

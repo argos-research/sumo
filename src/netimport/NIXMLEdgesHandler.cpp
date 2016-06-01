@@ -6,7 +6,7 @@
 /// @author  Walter Bamberger
 /// @author  Laura Bieker
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NIXMLEdgesHandler.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NIXMLEdgesHandler.cpp 20687 2016-05-10 11:27:00Z behrisch $
 ///
 // Importer for network edges stored in XML
 /****************************************************************************/
@@ -95,6 +95,9 @@ NIXMLEdgesHandler::myStartElement(int element,
             break;
         case SUMO_TAG_LANE:
             addLane(attrs);
+            break;
+        case SUMO_TAG_NEIGH:
+            myCurrentEdge->getLaneStruct((int)myCurrentEdge->getNumLanes() - 1).oppositeID = attrs.getString(SUMO_ATTR_LANE);
             break;
         case SUMO_TAG_SPLIT:
             addSplit(attrs);

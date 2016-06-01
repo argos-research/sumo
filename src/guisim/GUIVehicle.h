@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVehicle.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GUIVehicle.h 20689 2016-05-10 13:20:11Z behrisch $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -96,7 +96,7 @@ public:
     void drawRouteHelper(const MSRoute& r, SUMOReal exaggeration) const;
 
     void drawAction_drawVehicleBlinker(SUMOReal length) const;
-    void drawAction_drawVehicleBrakeLight(SUMOReal length) const;
+    void drawAction_drawVehicleBrakeLight(SUMOReal length, bool onlyOne = 1) const;
     void drawAction_drawPersonsAndContainers(const GUIVisualizationSettings& s) const;
     void drawAction_drawLinkItems(const GUIVisualizationSettings& s) const;
     void drawAction_drawVehicleBlueLight() const;
@@ -153,9 +153,6 @@ private:
      * @param[in,out] routeIndex The index of the current or previous non-internal edge in the route
      */
     MSLane* getPreviousLane(MSLane* current, int& furtherIndex) const;
-
-    /// @brief return the current angle in navigational degrees
-    SUMOReal getNaviDegree() const;
 
     /// @brief return the number of passengers
     int getNumPassengers() const;

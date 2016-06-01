@@ -2,7 +2,7 @@
 /// @file    MSTransportable.h
 /// @author  Michael Behrisch
 /// @date    Tue, 21 Apr 2015
-/// @version $Id: MSTransportable.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSTransportable.h 20768 2016-05-20 08:38:44Z behrisch $
 ///
 // The common superclass for modelling transportable objects like persons and containers
 /****************************************************************************/
@@ -29,6 +29,10 @@
 #include <config.h>
 #endif
 
+#include <set>
+#include <utils/common/SUMOTime.h>
+#include <utils/geom/Position.h>
+
 
 // ===========================================================================
 // class declarations
@@ -39,7 +43,6 @@ class MSNet;
 class MSStoppingPlace;
 class MSVehicleType;
 class OutputDevice;
-class Position;
 class SUMOVehicleParameter;
 class SUMOVehicle;
 
@@ -57,7 +60,8 @@ public:
     enum StageType {
         DRIVING = 0,
         WAITING = 1,
-        MOVING_WITHOUT_VEHICLE = 2 // walking for persons, tranship for containers
+        MOVING_WITHOUT_VEHICLE = 2, // walking for persons, tranship for containers
+        WAITING_FOR_DEPART = 3
     };
 
     /**
@@ -192,6 +196,165 @@ public:
 
     };
 
+    /**
+    * A "real" stage performing a waiting over the specified time
+    */
+    class Stage_Waiting : public Stage {
+    public:
+        /// constructor
+        Stage_Waiting(const MSEdge& destination, SUMOTime duration, SUMOTime until,
+                      SUMOReal pos, const std::string& actType, const bool initial);
+
+        /// destructor
+        virtual ~Stage_Waiting();
+
+        /// Returns the current edge
+        const MSEdge* getEdge() const;
+        const MSEdge* getFromEdge() const;
+        SUMOReal getEdgePos(SUMOTime now) const;
+        SUMOTime getUntil() const;
+
+        ///
+        Position getPosition(SUMOTime now) const;
+
+        SUMOReal getAngle(SUMOTime now) const;
+
+        SUMOTime getWaitingTime(SUMOTime now) const;
+
+        SUMOReal getSpeed() const;
+
+        std::string getStageDescription() const {
+            return "waiting (" + myActType + ")";
+        }
+
+        /// proceeds to the next step
+        virtual void proceed(MSNet* net, MSTransportable* transportable, SUMOTime now, Stage* previous);
+
+        /** @brief Called on writing tripinfo output
+        *
+        * @param[in] os The stream to write the information into
+        * @exception IOError not yet implemented
+        */
+        virtual void tripInfoOutput(OutputDevice& os) const;
+
+        /** @brief Called on writing vehroute output
+        *
+        * @param[in] os The stream to write the information into
+        * @exception IOError not yet implemented
+        */
+        virtual void routeOutput(OutputDevice& os) const;
+
+        /** @brief Called for writing the events output
+        * @param[in] os The stream to write the information into
+        * @exception IOError not yet implemented
+        */
+        virtual void beginEventOutput(const MSTransportable& p, SUMOTime t, OutputDevice& os) const;
+
+        /** @brief Called for writing the events output (end of an action)
+        * @param[in] os The stream to write the information into
+        * @exception IOError not yet implemented
+        */
+        virtual void endEventOutput(const MSTransportable& p, SUMOTime t, OutputDevice& os) const;
+
+    private:
+        /// the time the person is waiting
+        SUMOTime myWaitingDuration;
+
+        /// the time until the person is waiting
+        SUMOTime myWaitingUntil;
+
+        /// the time the person is waiting
+        SUMOTime myWaitingStart;
+
+        /// @brief The type of activity
+        std::string myActType;
+
+    private:
+        /// @brief Invalidated copy constructor.
+        Stage_Waiting(const Stage_Waiting&);
+
+        /// @brief Invalidated assignment operator.
+        Stage_Waiting& operator=(const Stage_Waiting&);
+
+    };
+
+    /**
+    * A "real" stage performing the travelling by a transport system
+    * The given route will be chosen. The travel time is computed by the simulation
+    */
+    class Stage_Driving : public Stage {
+    public:
+        /// constructor
+        Stage_Driving(const MSEdge& destination, MSStoppingPlace* toStop,
+            const SUMOReal arrivalPos, const std::vector<std::string>& lines);
+
+        /// destructor
+        virtual ~Stage_Driving();
+
+        /// Returns the current edge
+        const MSEdge* getEdge() const;
+        const MSEdge* getFromEdge() const;
+        SUMOReal getEdgePos(SUMOTime now) const;
+
+        ///
+        Position getPosition(SUMOTime now) const;
+
+        SUMOReal getAngle(SUMOTime now) const;
+
+        /// Whether the person waits for a vehicle of the line specified.
+        bool isWaitingFor(const std::string& line) const;
+
+        /// @brief Whether the person waits for a vehicle
+        bool isWaiting4Vehicle() const;
+
+        /// @brief The vehicle the person is riding or 0
+        SUMOVehicle* getVehicle() const {
+            return myVehicle;
+        }
+
+        /// @brief time spent waiting for a ride
+        SUMOTime getWaitingTime(SUMOTime now) const;
+
+        SUMOReal getSpeed() const;
+
+        void setVehicle(SUMOVehicle* v) {
+            myVehicle = v;
+        }
+
+        /** @brief Called for writing the events output
+        * @param[in] os The stream to write the information into
+        * @exception IOError not yet implemented
+        */
+        virtual void beginEventOutput(const MSTransportable& p, SUMOTime t, OutputDevice& os) const;
+
+        /** @brief Called for writing the events output (end of an action)
+        * @param[in] os The stream to write the information into
+        * @exception IOError not yet implemented
+        */
+        virtual void endEventOutput(const MSTransportable& p, SUMOTime t, OutputDevice& os) const;
+
+    protected:
+        /// the lines  to choose from
+        const std::set<std::string> myLines;
+
+        /// @brief The taken vehicle
+        SUMOVehicle* myVehicle;
+
+        SUMOReal myWaitingPos;
+        /// @brief The time since which this person is waiting for a ride
+        SUMOTime myWaitingSince;
+        const MSEdge* myWaitingEdge;
+        Position myStopWaitPos;
+
+    private:
+        /// @brief Invalidated copy constructor.
+        Stage_Driving(const Stage_Driving&);
+
+        /// @brief Invalidated assignment operator.
+        Stage_Driving& operator=(const Stage_Driving&);
+
+    };
+
     /// the structure holding the plan of a transportable
     typedef std::vector<MSTransportable::Stage*> MSTransportablePlan;
 
@@ -277,7 +440,7 @@ public:
      * @param[in] os The stream to write the information into
      * @exception IOError not yet implemented
      */
-    void tripInfoOutput(OutputDevice& os) const;
+    virtual void tripInfoOutput(OutputDevice& os) const = 0;
 
     /** @brief Called on writing vehroute output
      *
@@ -302,6 +465,9 @@ public:
     }
 
 protected:
+    /// @brief the offset for computing positions when standing at an edge
+    static const SUMOReal ROADSIDE_OFFSET;
+
     /// the plan of the transportable
     const SUMOVehicleParameter* myParameter;
 

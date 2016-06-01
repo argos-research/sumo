@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_SUMO.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIImporter_SUMO.h 20550 2016-04-26 10:57:45Z namdre $
 ///
 // Importer for networks stored in SUMO format
 /****************************************************************************/
@@ -214,6 +214,8 @@ private:
         SUMOReal width;
         /// @brief This lane's offset from the intersection
         SUMOReal endOffset;
+        /// @brief This lane's opposite lane
+        std::string oppositeID;
     };
 
 

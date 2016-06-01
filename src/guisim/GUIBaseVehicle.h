@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIBaseVehicle.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GUIBaseVehicle.h 20689 2016-05-10 13:20:11Z behrisch $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -36,13 +36,14 @@
 #include <vector>
 #include <set>
 #include <string>
-#include <utils/gui/globjects/GUIGlObject.h>
 #include <utils/common/RGBColor.h>
-#include <utils/geom/PositionVector.h>
-#include <microsim/MSVehicle.h>
-#include <utils/gui/globjects/GUIGLObjectPopupMenu.h>
 #include <utils/foxtools/MFXMutex.h>
+#include <utils/geom/GeomHelper.h>
+#include <utils/geom/PositionVector.h>
+#include <utils/gui/globjects/GUIGlObject.h>
+#include <utils/gui/globjects/GUIGLObjectPopupMenu.h>
 #include <utils/gui/settings/GUIPropertySchemeStorage.h>
+#include <microsim/MSVehicle.h>
 
 
 // ===========================================================================
@@ -88,6 +89,11 @@ public:
      */
     virtual SUMOReal getAngle() const = 0;
 
+    /// @brief return the current angle in navigational degrees
+    SUMOReal getNaviDegree() const {
+        return GeomHelper::naviDegree(getAngle());
+    }
+
     /// @brief gets the color value according to the current scheme index
     virtual SUMOReal getColorValue(size_t activeScheme) const = 0;
 
@@ -129,7 +135,10 @@ public:
     virtual GUIParameterTableWindow* getTypeParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent) = 0;
 
     virtual void drawAction_drawVehicleBlinker(SUMOReal /*length*/) const {}
-    virtual void drawAction_drawVehicleBrakeLight(SUMOReal /*length*/) const {}
+    virtual void drawAction_drawVehicleBrakeLight(SUMOReal length, bool onlyOne = false) const {
+        UNUSED_PARAMETER(length);
+        UNUSED_PARAMETER(onlyOne);
+    }
     virtual void drawAction_drawLinkItems(const GUIVisualizationSettings& /*s*/) const {}
     virtual void drawAction_drawPersonsAndContainers(const GUIVisualizationSettings& /*s*/) const {}
     /** @brief Draws the vehicle's best lanes */
@@ -161,12 +170,19 @@ public:
     Boundary getCenteringBoundary() const;
 
 
+    /** @brief Draws the object on the specified position with the specified angle
+     * @param[in] s The settings for the current view (may influence drawing)
+     * @param[in] pos The position to draw the vehicle on
+     * @param[in] angle The drawing angle of the vehicle
+     */
+    void drawOnPos(const GUIVisualizationSettings& s, const Position& pos, const SUMOReal angle) const;
+
+
     /** @brief Draws the object
      * @param[in] s The settings for the current view (may influence drawing)
      * @see GUIGlObject::drawGL
      */
     void drawGL(const GUIVisualizationSettings& s) const;
-
 
 
     /** @brief Draws additionally triggered visualisations

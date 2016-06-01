@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2009-08-01
-@version $Id: osmBuild.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: osmBuild.py 20687 2016-05-10 11:27:00Z behrisch $
 
 Builds a sumo network and polygons from a downloaded area from OpenStreetMap.
 
@@ -110,14 +110,14 @@ def build(args=None, bindir=None):
 
     subprocess.call(netconvertOpts)
     # write config
-    subprocess.call(
-        netconvertOpts + ["--save-configuration", basename + ".netccfg"])
+    subprocess.call(netconvertOpts +
+                    ["--save-configuration", basename + ".netccfg"])
     if options.typemap:
         polyconvertOpts += ["-n", netfile, "-o", basename + '.poly.xml']
         subprocess.call(polyconvertOpts)
         # write config
-        subprocess.call(
-            polyconvertOpts + ["--save-configuration", basename + ".polycfg"])
+        subprocess.call(polyconvertOpts +
+                        ["--save-configuration", basename + ".polycfg"])
 
 
 if __name__ == "__main__":

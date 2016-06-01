@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSInsertionControl.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSInsertionControl.h 20626 2016-05-03 12:49:04Z namdre $
 ///
 // Inserts vehicles into the network when their departure time is reached
 /****************************************************************************/
@@ -132,8 +132,10 @@ public:
      */
     int getPendingFlowCount() const;
 
+    /// @brief stops trying to emit the given vehicle (because it already departed)
+    void alreadyDeparted(SUMOVehicle* veh);
 
-    /// @brief stops trying to emit the given vehicle
+    /// @brief stops trying to emit the given vehicle (and delete it)
     void descheduleDeparture(SUMOVehicle* veh);
 
 

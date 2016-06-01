@@ -5,7 +5,7 @@
 /// @author  Christian Roessel
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIApplicationWindow.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIApplicationWindow.h 20749 2016-05-19 08:32:05Z behrisch $
 ///
 // The main window of the SUMO-gui.
 /****************************************************************************/
@@ -232,6 +232,9 @@ public:
     /// @brief Called on menu commands from the Locator menu
     long onCmdLocate(FXObject*, FXSelector, void*);
 
+    /// @brief Called on commands from the statistic buttons
+    long onCmdShowStats(FXObject*, FXSelector, void*);
+
     /// @brief Called on an event from the loading thread
     long onLoadThreadEvent(FXObject*, FXSelector, void*);
 
@@ -319,6 +322,9 @@ protected:
                 *myLocatorMenu, *myControlMenu,
                 *myWindowsMenu, *myHelpMenu;
 
+    /// Buttons showing and running values and triggering statistic windows
+    FXButton* myNetStatButton, *myVehStatButton, *myPedStatButton;
+
     /// A window to display messages, warnings and error in
     GUIMessageWindow* myMessageWindow;
 
@@ -385,10 +391,12 @@ protected:
     /// @name game related things
     /// {
     RandomDistributor<std::string> myJamSounds;
+    RandomDistributor<std::string> myCollisionSounds;
     /// @brief waiting time after which vehicles trigger jam sounds
     SUMOReal myJamSoundTime;
     /// @brief A random number generator used to choose a gaming sound
     static MTRand myGamingRNG;
+    unsigned int myPreviousCollisionNumber;
 
     /// performance indicators
     FXEX::FXLCDLabel* myWaitingTimeLabel;

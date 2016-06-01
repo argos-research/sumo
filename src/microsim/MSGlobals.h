@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    late summer 2003
-/// @version $Id: MSGlobals.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSGlobals.h 20550 2016-04-26 10:57:45Z namdre $
 ///
 // Some static variables for faster access
 /****************************************************************************/
@@ -79,6 +79,9 @@ public:
 
     /** information Duration of a lane change maneuver */
     static SUMOTime gLaneChangeDuration;
+
+    /** Lateral resolution within a lane */
+    static SUMOReal gLateralResolution;
 
     /// Information whether a state has been loaded
     static bool gStateLoaded;

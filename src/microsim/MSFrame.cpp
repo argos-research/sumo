@@ -8,7 +8,7 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSFrame.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSFrame.cpp 20824 2016-05-31 11:03:54Z namdre $
 ///
 // Sets and checks options for microsim; inits global outputs and settings
 /****************************************************************************/
@@ -226,6 +226,9 @@ MSFrame::fillOptions() {
     oc.doRegister("step-length", new Option_String("1", "TIME"));
     oc.addDescription("step-length", "Time", "Defines the step duration in seconds");
 
+    oc.doRegister("lateral-resolution", new Option_Float(-1));
+    oc.addDescription("lateral-resolution", "Processing", "Defines the resolution in m when handling lateral positioning within a lane (with -1 all vehicles drive at the center of their lane");
+
     // register the processing options
     oc.doRegister("route-steps", 's', new Option_String("200", "TIME"));
     oc.addDescription("route-steps", "Processing", "Load routes for the next number of seconds ahead");
@@ -238,11 +241,17 @@ MSFrame::fillOptions() {
     oc.addDescription("ignore-junction-blocker", "Processing", "Ignore vehicles which block the junction after they have been standing for SECONDS (-1 means never ignore)");
 #endif
 
+    oc.doRegister("ignore-route-errors", new Option_Bool(false));
+    oc.addDescription("ignore-route-errors", "Processing", "Do not check whether routes are connected");
+
     oc.doRegister("ignore-accidents", new Option_Bool(false));
     oc.addDescription("ignore-accidents", "Processing", "Do not check whether accidents occur");
 
-    oc.doRegister("ignore-route-errors", new Option_Bool(false));
-    oc.addDescription("ignore-route-errors", "Processing", "Do not check whether routes are connected");
+    oc.doRegister("collision.action", new Option_String("teleport"));
+    oc.addDescription("collision.action", "Processing", "How to deal with collisions: [none,warn,teleport,remove]");
+
+    oc.doRegister("collision.check-junctions", new Option_Bool(false));
+    oc.addDescription("collision.check-junctions", "Processing", "Enables collisions checks on junctions");
 
     oc.doRegister("max-num-vehicles", new Option_Integer(-1));
     oc.addDescription("max-num-vehicles", "Processing", "Delay vehicle insertion to stay within the given maximum number");
@@ -337,13 +346,13 @@ MSFrame::fillOptions() {
     oc.addDescription("mesosim", "Mesoscopic", "Enables mesoscopic simulation");
     oc.doRegister("meso-edgelength", new Option_Float(98.0f));
     oc.addDescription("meso-edgelength", "Mesoscopic", "Length of an edge segment in mesoscopic simulation");
-    oc.doRegister("meso-tauff", new Option_String("1.4", "TIME"));
-    oc.addDescription("meso-tauff", "Mesoscopic", "Factor for calculating the free-free headway time");
-    oc.doRegister("meso-taufj", new Option_String("1.4", "TIME"));
-    oc.addDescription("meso-taufj", "Mesoscopic", "Factor for calculating the free-jam headway time");
+    oc.doRegister("meso-tauff", new Option_String("1.13", "TIME"));
+    oc.addDescription("meso-tauff", "Mesoscopic", "Factor for calculating the net free-free headway time");
+    oc.doRegister("meso-taufj", new Option_String("1.13", "TIME"));
+    oc.addDescription("meso-taufj", "Mesoscopic", "Factor for calculating the net free-jam headway time");
     oc.doRegister("meso-taujf", new Option_String("2", "TIME"));
     oc.addDescription("meso-taujf", "Mesoscopic", "Factor for calculating the jam-free headway time");
-    oc.doRegister("meso-taujj", new Option_String("2", "TIME"));
+    oc.doRegister("meso-taujj", new Option_String("1.4", "TIME"));
     oc.addDescription("meso-taujj", "Mesoscopic", "Factor for calculating the jam-jam headway time");
     oc.doRegister("meso-jam-threshold", new Option_Float(-1));
     oc.addDescription("meso-jam-threshold", "Mesoscopic",
@@ -470,8 +479,14 @@ MSFrame::checkOptions() {
     if (oc.getBool("sloppy-insert")) {
         WRITE_WARNING("The option 'sloppy-insert' is deprecated, because it is now activated by default, see the new option 'eager-insert'.");
     }
+    if (string2time(oc.getString("lanechange.duration")) > 0 && oc.getFloat("lateral-resolution") > 0) {
+        WRITE_ERROR("Only one of the options 'lanechange.duration' or 'lateral-resolution' may be given.");
+    }
     if (oc.getBool("lanechange.allow-swap")) {
         WRITE_WARNING("The option 'lanechange.allow-swap' is deprecated, and will not be supported in future versions of SUMO.");
+    }
+    if (oc.getBool("ignore-accidents")) {
+        WRITE_WARNING("The option 'ignore-accidents' is deprecated. Use 'collision.action none' instead.");
     }
     if (oc.getBool("duration-log.statistics") && oc.isDefault("verbose")) {
         oc.set("verbose", "true");
@@ -500,6 +515,7 @@ MSFrame::setMSGlobals(OptionsCont& oc) {
     MSGlobals::gCheck4Accidents = !oc.getBool("ignore-accidents");
     MSGlobals::gCheckRoutes = !oc.getBool("ignore-route-errors");
     MSGlobals::gLaneChangeDuration = string2time(oc.getString("lanechange.duration"));
+    MSGlobals::gLateralResolution = oc.getFloat("lateral-resolution");
     MSGlobals::gStateLoaded = oc.isSet("load-state");
     MSGlobals::gUseMesoSim = oc.getBool("mesosim");
     MSGlobals::gMesoLimitedJunctionControl = oc.getBool("meso-junction-control.limited");
@@ -510,6 +526,7 @@ MSFrame::setMSGlobals(OptionsCont& oc) {
     }
     MSGlobals::gWaitingTimeMemory = string2time(oc.getString("waiting-time-memory"));
     MSAbstractLaneChangeModel::initGlobalOptions(oc);
+    MSLane::initCollisionOptions(oc);
 
 
     DELTA_T = string2time(oc.getString("step-length"));

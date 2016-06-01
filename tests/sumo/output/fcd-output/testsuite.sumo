@@ -1,0 +1,16 @@
+# output fcd data in cartesian coordinates
+cartesian
+
+# output fcd data in geo-coordinates
+geo
+
+# check whether slope works
+cartesian_slope
+cartesian_slope_geom
+cartesian_slope_length
+
+# test output of vehicle signals
+signals
+
+# test angle output in all cardinal directions
+angle

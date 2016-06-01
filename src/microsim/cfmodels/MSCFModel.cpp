@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 27 Jul 2009
-/// @version $Id: MSCFModel.cpp 20447 2016-04-14 13:02:24Z luecken $
+/// @version $Id: MSCFModel.cpp 20680 2016-05-10 07:53:01Z namdre $
 ///
 // The car-following model abstraction
 /****************************************************************************/
@@ -110,7 +110,8 @@ MSCFModel::maximumSafeStopSpeed(SUMOReal gap) const {
     if (gap <= 0) {
         return 0;
     } else if (gap <= ACCEL2SPEED(myDecel)) {
-        return gap;
+        // workaround for #2310
+        return MIN2(ACCEL2SPEED(myDecel), DIST2SPEED(gap));
     }
     const SUMOReal g = gap;
     const SUMOReal b = ACCEL2SPEED(myDecel);

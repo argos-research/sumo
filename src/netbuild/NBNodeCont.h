@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBNodeCont.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBNodeCont.h 20640 2016-05-04 10:17:39Z namdre $
 ///
 // Container for nodes during the netbuilding process
 /****************************************************************************/
@@ -326,6 +326,9 @@ public:
     void markAsSplit(const NBNode* node) {
         mySplit.insert(node);
     }
+
+    /// @brief ensure that all node ids are integers
+    int mapToNumericalIDs();
 
 private:
     /// @name Helper methods for for joining nodes

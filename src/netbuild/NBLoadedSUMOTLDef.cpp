@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: NBLoadedSUMOTLDef.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NBLoadedSUMOTLDef.cpp 20551 2016-04-26 11:19:47Z namdre $
 ///
 // A complete traffic light logic loaded from a sumo-net. (opted to reimplement
 // since NBLoadedTLDef is quite vissim specific)
@@ -124,7 +124,9 @@ NBLoadedSUMOTLDef::setTLControllingInformation() const {
                                "' with " + toString(myTLLogic->getNumLinks()) + " links.");
         }
         NBEdge* edge = c.getFrom();
-        edge->setControllingTLInformation(c, getID());
+        if (edge != 0) {
+            edge->setControllingTLInformation(c, getID());
+        }
     }
 }
 

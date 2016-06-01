@@ -6,7 +6,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2011-11-28
-@version $Id: lane.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: lane.py 20604 2016-05-02 06:13:40Z behrisch $
 
 This file contains a Python-representation of a single lane.
 
@@ -19,6 +19,8 @@ it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 3 of the License, or
 (at your option) any later version.
 """
+
+import sumolib.geomhelper
 
 # taken from sumo/src/utils/common/SUMOVehicleClass.cpp
 SUMO_VEHICLE_CLASSES = (
@@ -121,6 +123,9 @@ class Lane:
             ymax = max(ymax, p[1])
         assert(xmin != xmax or ymin != ymax)
         return (xmin, ymin, xmax, ymax)
+
+    def getClosestLanePosAndDist(self, point, perpendicular=False):
+        return sumolib.geomhelper.polygonOffsetAndDistanceToPoint(point, self.getShape(), perpendicular)
 
     def getIndex(self):
         return self._edge._lanes.index(self)

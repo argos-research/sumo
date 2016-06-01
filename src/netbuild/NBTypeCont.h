@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBTypeCont.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NBTypeCont.h 20687 2016-05-10 11:27:00Z behrisch $
 ///
 // A storage for available types of edges
 /****************************************************************************/
@@ -71,10 +71,11 @@ public:
 
     /** @brief Sets the default values
      * @param[in] defaultNumLanes The default number of lanes an edge has
+     * @param[in] defaultLaneWidth The default width of lanes
      * @param[in] defaultSpeed The default speed allowed on an edge
      * @param[in] defaultPriority The default priority of an edge
      */
-    void setDefaults(int defaultNumLanes,
+    void setDefaults(int defaultNumLanes, SUMOReal defaultLaneWidth,
                      SUMOReal defaultSpeed, int defaultPriority);
 
 

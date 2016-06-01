@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Andreas Gaubatz
 /// @date    Mon, 08.03.2004
-/// @version $Id: GUIAppEnum.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIAppEnum.h 20749 2016-05-19 08:32:05Z behrisch $
 ///
 // Message and object IDs used by the FOX-version of the gui
 /****************************************************************************/
@@ -148,8 +148,14 @@ enum {
     //@}
 
 
-    // Clear simulation settings
+    /// Clear simulation output
     MID_CLEARMESSAGEWINDOW,
+    /// Show network statistics
+    MID_SHOWNETSTATS,
+    /// Show vehicle statistics
+    MID_SHOWVEHSTATS,
+    /// Show person statistics
+    MID_SHOWPERSONSTATS,
 
 
     /// @name Common View Settings - IDs

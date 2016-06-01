@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NWFrame.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NWFrame.cpp 20550 2016-04-26 10:57:45Z namdre $
 ///
 // Sets and checks options for netwrite
 /****************************************************************************/
@@ -53,7 +53,7 @@
 // ===========================================================================
 // static members
 // ===========================================================================
-const std::string NWFrame::MAJOR_VERSION = "version=\"0.25\"";
+const std::string NWFrame::MAJOR_VERSION = "version=\"0.27\"";
 
 
 // ===========================================================================

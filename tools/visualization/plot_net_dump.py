@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Laura Bieker
 @date    2013-10-14
-@version $Id: plot_net_dump.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: plot_net_dump.py 20724 2016-05-17 05:32:31Z namdre $
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
 Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
@@ -117,6 +117,8 @@ def main(args=None):
         times = hw._edge2value
 
     for t in times:
+        if options.verbose:
+            print("Processing timestep %s" % t)
         colors = {}
         maxColorValue = None
         minColorValue = None

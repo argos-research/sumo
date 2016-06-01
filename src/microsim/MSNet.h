@@ -8,7 +8,7 @@
 /// @author  Clemens Honomichl
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSNet.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSNet.h 20768 2016-05-20 08:38:44Z behrisch $
 ///
 // The simulated network and simulation perfomer
 /****************************************************************************/
@@ -70,8 +70,7 @@ class MSEdgeControl;
 class MSJunctionControl;
 class MSInsertionControl;
 class SUMORouteLoaderControl;
-class MSPersonControl;
-class MSContainerControl;
+class MSTransportableControl;
 class MSVehicle;
 class MSRoute;
 class MSLane;
@@ -164,8 +163,7 @@ public:
     void closeBuilding(MSEdgeControl* edges, MSJunctionControl* junctions,
                        SUMORouteLoaderControl* routeLoaders, MSTLLogicControl* tlc,
                        std::vector<SUMOTime> stateDumpTimes, std::vector<std::string> stateDumpFiles,
-                       bool hasInternalLinks,
-                       bool lefthand,
+                       bool hasInternalLinks, bool hasNeighs, bool lefthand,
                        SUMOReal version);
 
 
@@ -318,7 +316,7 @@ public:
      * @see MSPersonControl
      * @see myPersonControl
      */
-    virtual MSPersonControl& getPersonControl();
+    virtual MSTransportableControl& getPersonControl();
 
     /** @brief Returns the container control
      *
@@ -328,7 +326,7 @@ public:
      * @see MSContainerControl
      * @see myContainerControl
      */
-    virtual MSContainerControl& getContainerControl();
+    virtual MSTransportableControl& getContainerControl();
 
 
     /** @brief Returns the edge control
@@ -629,7 +627,12 @@ public:
         return myHasInternalLinks;
     }
 
-    /// @brief return whether the network contains internal links
+    /// @brief return whether the network contains explicit neighbor lanes
+    bool hasNeighs() const {
+        return myHasNeighs;
+    }
+
+    /// @brief return whether the network contains elevation data
     bool hasElevation() const {
         return myHasElevation;
     }
@@ -665,10 +668,10 @@ protected:
 
     /// @brief Controls vehicle building and deletion; @see MSVehicleControl
     MSVehicleControl* myVehicleControl;
-    /// @brief Controls person building and deletion; @see MSPersonControl
-    MSPersonControl* myPersonControl;
-    /// @brief Controls container building and deletion; @see MSContainerControl
-    MSContainerControl* myContainerControl;
+    /// @brief Controls person building and deletion; @see MSTransportableControl
+    MSTransportableControl* myPersonControl;
+    /// @brief Controls container building and deletion; @see MSTransportableControl
+    MSTransportableControl* myContainerControl;
     /// @brief Controls edges, performs vehicle movement; @see MSEdgeControl
     MSEdgeControl* myEdges;
     /// @brief Controls junctions, realizes right-of-way rules; @see MSJunctionControl
@@ -733,6 +736,9 @@ protected:
 
     /// @brief Whether the network contains internal links/lanes/edges
     bool myHasInternalLinks;
+
+    /// @brief Whether the network contains explicit neighbor lanes
+    bool myHasNeighs;
 
     /// @brief Whether the network contains elevation data
     bool myHasElevation;

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVisualizationSettings.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIVisualizationSettings.h 20687 2016-05-10 11:27:00Z behrisch $
 ///
 // Stores the information about how to visualize structures
 /****************************************************************************/
@@ -106,7 +106,7 @@ struct GUIVisualizationSizeSettings {
     }
 
     /// @brief return the drawing size including exaggeration and constantSize values
-    SUMOReal getExaggeration(const GUIVisualizationSettings& s) const;
+    SUMOReal getExaggeration(const GUIVisualizationSettings& s, SUMOReal factor = 20) const;
 };
 
 

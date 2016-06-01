@@ -1,0 +1,55 @@
+Running 'PHEMlight/zero'
+sums
+length:11041.9
+CO:0
+CO2:0
+HC:0
+NOx:0
+PMx:0
+fuel:0
+electricity:0
+Success.
+Running 'PHEMlight/PKW_D_EU4'
+sums
+length:11041.9
+CO:395.501
+CO2:2.21204e+006
+HC:142.736
+NOx:6685.1
+PMx:258.476
+fuel:839.993
+electricity:0
+Success.
+Running 'PHEMlight/PKW_G_EU4'
+sums
+length:11041.9
+CO:4494.32
+CO2:2.22308e+006
+HC:77.7354
+NOx:638.97
+PMx:14.975
+fuel:951.13
+electricity:0
+Success.
+Running 'PHEMlight/PC_D_EU4'
+sums
+length:11041.9
+CO:332.889
+CO2:2.06155e+006
+HC:129.306
+NOx:5840.12
+PMx:222.288
+fuel:780.432
+electricity:0
+Success.
+Running 'PHEMlight/PC_G_EU4'
+sums
+length:11041.9
+CO:4008.39
+CO2:2.15471e+006
+HC:69.171
+NOx:533.949
+PMx:13.4947
+fuel:919.272
+electricity:0
+Success.

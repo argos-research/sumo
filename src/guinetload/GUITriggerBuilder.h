@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 26.04.2004
-/// @version $Id: GUITriggerBuilder.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUITriggerBuilder.h 20687 2016-05-10 11:27:00Z behrisch $
 ///
 // Builds trigger objects for guisim
 /****************************************************************************/
@@ -126,20 +126,18 @@ protected:
      *
      * @param[in] net The net the charging station belongs to
      * @param[in] id The id of the charging station
-     * @param[in] lines Names of the bus lines that halt on this charging station
      * @param[in] lane The lane the charging station is placed on
      * @param[in] frompos Begin position of the charging station on the lane
      * @param[in] topos End position of the charging station on the lane
-     * @param[in]
-     * @param[in] FALTAN ARGUMENTOS DE LA LLAMADA A FUNCION
-     * @param[in]
-     * @param[in]
+     * @param[in] chargingPower energy charged in every timeStep
+     * @param[in] efficiency efficiency of the charge
+     * @param[in] chargeInTransit enable or disable charge in transit
+     * @param[in] chargeDelay delay in the charge
      * @exception InvalidArgument If the charging station can not be added to the net (is duplicate)
      */
-    virtual void buildChargingStation(MSNet& net, const std::string& id,
-                                      const std::vector<std::string>& lines, MSLane* lane,
-                                      SUMOReal frompos, SUMOReal topos, SUMOReal chrgpower, SUMOReal efficiency,
-                                      SUMOReal chargeInTransit, SUMOReal chargeDelay);
+    virtual void buildChargingStation(MSNet& net, const std::string& id, MSLane* lane,
+                                      SUMOReal frompos, SUMOReal topos, SUMOReal chargingPower, SUMOReal efficiency,
+                                      bool chargeInTransit, int chargeDelay);
 
     /** @brief builds a microscopic calibrator
      *

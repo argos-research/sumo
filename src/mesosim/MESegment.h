@@ -2,7 +2,7 @@
 /// @file    MESegment.h
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MESegment.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MESegment.h 20824 2016-05-31 11:03:54Z namdre $
 ///
 // A single mesoscopic segment (cell)
 /****************************************************************************/
@@ -393,7 +393,7 @@ private:
 
     bool overtake();
 
-    SUMOTime getTimeHeadway(bool predecessorIsFree);
+    SUMOTime getTimeHeadway(bool predecessorIsFree, SUMOReal leaderLength);
 
     void setSpeedForQueue(SUMOReal newSpeed, SUMOTime currentTime,
                           SUMOTime blockTime, const std::vector<MEVehicle*>& vehs);
@@ -409,8 +409,8 @@ private:
      */
     void recomputeJamThreshold(SUMOReal jamThresh);
 
-    /// @brief compute jam threshold for the given speed
-    SUMOReal jamThresholdForSpeed(SUMOReal speed) const;
+    /// @brief compute jam threshold for the given speed and jam-threshold option
+    SUMOReal jamThresholdForSpeed(SUMOReal speed, SUMOReal jamThresh) const;
 
     /// @brief whether the given link may be passed because the option meso-junction-control.limited is set
     bool limitedControlOverride(const MSLink* link) const;
@@ -437,6 +437,11 @@ private:
 
     /// @brief The time headway parameters, see the Eissfeldt thesis
     const SUMOTime myTau_ff, myTau_fj, myTau_jf, myTau_jj;
+    /// @brief Headway paramter for computing gross time headyway from net time heawdway, length and edge speed
+    const SUMOReal myTau_length;
+
+    /// @brief slope and axis offset for the jam-jam headway function
+    SUMOReal myA, myB;
 
     /// @brief The capacity of the segment in number of cars, used only in time headway calculation
     /// This parameter has only an effect if tau_jf != tau_jj, which is not(!) the case per default

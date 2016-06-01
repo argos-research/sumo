@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 30.01.2009
-/// @version $Id: MSDevice_Tripinfo.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSDevice_Tripinfo.cpp 20674 2016-05-09 14:44:37Z namdre $
 ///
 // A device which collects info on the vehicle trip
 /****************************************************************************/
@@ -99,6 +99,9 @@ MSDevice_Tripinfo::~MSDevice_Tripinfo() {
 bool
 MSDevice_Tripinfo::notifyMove(SUMOVehicle& veh, SUMOReal /*oldPos*/,
                               SUMOReal /*newPos*/, SUMOReal newSpeed) {
+    if (veh.isStopped()) {
+        return true;
+    }
     if (newSpeed <= SUMO_const_haltingSpeed) {
         myWaitingSteps++;
     }

@@ -1,0 +1,10 @@
+# tests for finding edges in districts
+edgesInDistricts
+
+# tests for mapping districts between networks
+districtMapper
+
+# test generating polygons from a district file
+districts2poly
+
+generateBidiDistricts

@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIEdgeControlBuilder.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIEdgeControlBuilder.h 20550 2016-04-26 10:57:45Z namdre $
 ///
 // Derivation of NLEdgeControlBuilder which builds gui-edges
 /****************************************************************************/
@@ -86,7 +86,6 @@ public:
                             const PositionVector& shape, SUMOReal width,
                             SVCPermissions permissions,
                             int index);
-
 
 
 

@@ -5,7 +5,7 @@
 @author  Karol Stosiek
 @author  Michael Behrisch
 @date    2011-11-28
-@version $Id: roundabout.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: roundabout.py 20637 2016-05-04 07:40:50Z luecken $
 
 This file contains a Python-representation of a single roundabout.
 
@@ -22,8 +22,12 @@ the Free Software Foundation; either version 3 of the License, or
 
 class Roundabout:
 
-    def __init__(self, nodes):
+    def __init__(self, nodes, edges=None):
         self._nodes = nodes
+        self._edges = edges
 
     def getNodes(self):
         return self._nodes
+
+    def getEdges(self):
+        return self._edges

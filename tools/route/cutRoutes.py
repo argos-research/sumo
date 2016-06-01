@@ -4,7 +4,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2012-08-15
-@version $Id: cutRoutes.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: cutRoutes.py 20632 2016-05-03 14:17:01Z behrisch $
 
 Cut down routes from a large scenario to a sub-scenario optionally using exitTimes
 Output can be a route file or a tripfile.
@@ -23,7 +23,6 @@ from __future__ import print_function
 
 import os
 import sys
-PY3 = sys.version_info > (3,)
 import codecs
 from optparse import OptionParser
 from collections import defaultdict
@@ -85,7 +84,8 @@ extrapolated based on edge-lengths and maximum speeds multiplied with --speed-fa
     return options
 
 
-def cut_routes(areaEdges, orig_net, options, busStopEdges=None):
+def cut_routes(aEdges, orig_net, options, busStopEdges=None):
+    areaEdges = set(aEdges)
     num_vehicles = 0
     num_returned = 0
     missingEdgeOccurences = defaultdict(lambda: 0)

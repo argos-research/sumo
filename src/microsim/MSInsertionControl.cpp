@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSInsertionControl.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSInsertionControl.cpp 20687 2016-05-10 11:27:00Z behrisch $
 ///
 // Inserts vehicles into the network when their departure time is reached
 /****************************************************************************/
@@ -298,6 +298,14 @@ void
 MSInsertionControl::descheduleDeparture(SUMOVehicle* veh) {
     myAbortedEmits.insert(veh);
 }
+
+
+void
+MSInsertionControl::alreadyDeparted(SUMOVehicle* veh) {
+    myPendingEmits.erase(std::remove(myPendingEmits.begin(), myPendingEmits.end(), veh), myPendingEmits.end());
+    myAllVeh.remove(veh);
+}
+
 
 void
 MSInsertionControl::clearPendingVehicles(std::string& route) {

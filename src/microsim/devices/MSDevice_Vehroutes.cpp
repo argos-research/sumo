@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 30.01.2009
-/// @version $Id: MSDevice_Vehroutes.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSDevice_Vehroutes.cpp 20687 2016-05-10 11:27:00Z behrisch $
 ///
 // A device which collects info on the vehicle trip
 /****************************************************************************/
@@ -155,10 +155,15 @@ MSDevice_Vehroutes::notifyLeave(SUMOVehicle& veh, SUMOReal /*lastPos*/, MSMoveRe
 
 void
 MSDevice_Vehroutes::writeXMLRoute(OutputDevice& os, int index) const {
+    if (index == 0 && myReplacedRoutes[index].route->size() == 2 &&
+            myReplacedRoutes[index].route->getEdges().front()->getPurpose() == MSEdge::EDGEFUNCTION_DISTRICT &&
+            myReplacedRoutes[index].route->getEdges().back()->getPurpose() == MSEdge::EDGEFUNCTION_DISTRICT) {
+        return;
+    }
     // check if a previous route shall be written
     os.openTag(SUMO_TAG_ROUTE);
     if (index >= 0) {
-        assert((int) myReplacedRoutes.size() > index);
+        assert((int)myReplacedRoutes.size() > index);
         // write edge on which the vehicle was when the route was valid
         os << " replacedOnEdge=\"";
         if (myReplacedRoutes[index].edge) {
@@ -276,6 +281,12 @@ MSDevice_Vehroutes::generateOutput() const {
         if (myReplacedRoutes.size() > 0) {
             od.closeTag();
         }
+    }
+    for (std::map<std::string, std::string>::const_iterator j = myHolder.getParameter().getMap().begin(); j != myHolder.getParameter().getMap().end(); ++j) {
+        od.openTag(SUMO_TAG_PARAM);
+        od.writeAttr(SUMO_ATTR_KEY, (*j).first);
+        od.writeAttr(SUMO_ATTR_VALUE, (*j).second);
+        od.closeTag();
     }
     od.closeTag();
     od.lf();

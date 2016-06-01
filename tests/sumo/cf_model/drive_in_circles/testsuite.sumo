@@ -1,0 +1,20 @@
+# the standard structure for model tests
+circle
+
+# idm model test
+idm
+
+# idm model with memory test
+idmm
+
+# kerner model test
+kerner
+
+# original krauss model test
+krauss
+
+# krauss "plus slope" model test
+kraussPS
+
+# wiedemann model test
+wiedemann

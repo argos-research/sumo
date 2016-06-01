@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Melanie Knocke
 /// @date    Mon, 05 Dec 2005
-/// @version $Id: polyconvert_main.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: polyconvert_main.cpp 20801 2016-05-28 05:31:30Z behrisch $
 ///
 // Main for POLYCONVERT
 /****************************************************************************/
@@ -208,8 +208,8 @@ fillOptions() {
     oc.doRegister("fill", new Option_Bool("false"));
     oc.addDescription("fill", "Building Defaults", "Fills polygons by default");
 
-    oc.doRegister("layer", new Option_Integer(-1));
-    oc.addDescription("layer", "Building Defaults", "Sets INT as default layer");
+    oc.doRegister("layer", new Option_Float(-1));
+    oc.addDescription("layer", "Building Defaults", "Sets FLOAT as default layer");
 
     oc.doRegister("discard", new Option_Bool(false));
     oc.addDescription("discard", "Building Defaults", "Sets default action to discard");
@@ -297,13 +297,13 @@ main(int argc, char** argv) {
             } else {
                 const std::string path = sumoPath + std::string("/data/typemap/");
                 if (oc.isSet("dlr-navteq-poly-files")) {
-                    oc.set("type-file", path + "navteqPolyconvert.typ.xml");
+                    oc.setDefault("type-file", path + "navteqPolyconvert.typ.xml");
                 }
                 if (oc.isSet("osm-files")) {
-                    oc.set("type-file", path + "osmPolyconvert.typ.xml");
+                    oc.setDefault("type-file", path + "osmPolyconvert.typ.xml");
                 }
                 if (oc.isSet("visum-files")) {
-                    oc.set("type-file", path + "visumPolyconvert.typ.xml");
+                    oc.setDefault("type-file", path + "visumPolyconvert.typ.xml");
                 }
             }
         }
@@ -336,15 +336,10 @@ main(int argc, char** argv) {
         PCLoaderArcView::loadIfSet(oc, toFill, tm); // shape-files
         GeoConvHelper::computeFinal();
         // error processing
-        if (MsgHandler::getErrorInstance()->wasInformed() && oc.getBool("ignore-errors")) {
-            MsgHandler::getErrorInstance()->clear();
-        }
-        if (!MsgHandler::getErrorInstance()->wasInformed()) {
-            // no? ok, save
-            toFill.save(oc.getString("output-file"), oc.getBool("proj.plain-geo"));
-        } else {
+        if (MsgHandler::getErrorInstance()->wasInformed() && !oc.getBool("ignore-errors")) {
             throw ProcessError();
         }
+        toFill.save(oc.getString("output-file"), oc.getBool("proj.plain-geo"));
     } catch (const ProcessError& e) {
         if (std::string(e.what()) != std::string("Process Error") && std::string(e.what()) != std::string("")) {
             WRITE_ERROR(e.what());

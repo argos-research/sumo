@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    19.01.2012
-/// @version $Id: GUIOSGView.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GUIOSGView.cpp 20768 2016-05-20 08:38:44Z behrisch $
 ///
 // An OSG-based 3D view on the simulation
 /****************************************************************************/
@@ -73,7 +73,7 @@
 #include <microsim/MSEdgeControl.h>
 #include <microsim/MSLane.h>
 #include <microsim/MSJunctionControl.h>
-#include <microsim/MSPersonControl.h>
+#include <microsim/MSTransportableControl.h>
 #include <microsim/traffic_lights/MSTLLogicControl.h>
 #include <microsim/traffic_lights/MSSimpleTrafficLightLogic.h>
 #include <utils/common/RGBColor.h>
@@ -386,7 +386,7 @@ GUIOSGView::onPaint(FXObject*, FXSelector, void*) {
         myCameraManipulator->setByInverseMatrix(m);
     }
 
-    for (std::map<std::string, MSTransportable*>::const_iterator it = MSNet::getInstance()->getPersonControl().loadedPersonsBegin(); it != MSNet::getInstance()->getPersonControl().loadedPersonsEnd(); ++it) {
+    for (std::map<std::string, MSTransportable*>::const_iterator it = MSNet::getInstance()->getPersonControl().loadedBegin(); it != MSNet::getInstance()->getPersonControl().loadedEnd(); ++it) {
         MSTransportable* person = (*it).second;
         // XXX if not departed: continue
         if (myPersons.find(person) == myPersons.end()) {

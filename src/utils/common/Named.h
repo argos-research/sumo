@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: Named.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: Named.h 20804 2016-05-30 07:26:54Z namdre $
 ///
 // Base class for objects which have an id.
 /****************************************************************************/
@@ -31,6 +31,7 @@
 #include <config.h>
 #endif
 
+#include <iostream>
 #include <string>
 #include <set>
 
@@ -76,6 +77,7 @@ public:
 
 
     /// @brief Function-object for stable sorting in containers
+    // @note Numbers of different lenghts will not be ordered by alphanumerical sorting
     struct ComparatorIdLess {
         bool operator()(Named* const a, Named* const b) const {
             return a->getID() < b->getID();
@@ -83,6 +85,7 @@ public:
     };
 
     /// @brief Function-object for stable sorting of objects acting like Named without being derived (SUMOVehicle)
+    // @note Numbers of different lenghts will not be ordered by alphanumerical sorting
     template <class NamedLike>
     struct NamedLikeComparatorIdLess {
         bool operator()(const NamedLike* const a, const NamedLike* const b) const {

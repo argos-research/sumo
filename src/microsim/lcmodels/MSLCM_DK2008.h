@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 29.04.2005
-/// @version $Id: MSLCM_DK2008.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSLCM_DK2008.h 20550 2016-04-26 10:57:45Z namdre $
 ///
 // A lane change model developed by D. Krajzewicz between 2004 and 2010
 /****************************************************************************/
@@ -94,7 +94,7 @@ public:
     virtual SUMOReal patchSpeed(const SUMOReal min, const SUMOReal wanted, const SUMOReal max,
                                 const MSCFModel& cfModel);
 
-    virtual void changed(int dir);
+    virtual void changed();
 
     virtual void prepareStep();
 

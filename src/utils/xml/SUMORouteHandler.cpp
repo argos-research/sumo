@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: SUMORouteHandler.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: SUMORouteHandler.cpp 20596 2016-04-29 08:47:23Z palcraft $
 ///
 // Parser for routes during their loading
 /****************************************************************************/
@@ -248,8 +248,9 @@ SUMORouteHandler::checkStopPos(SUMOReal& startPos, SUMOReal& endPos, const SUMOR
 void
 SUMORouteHandler::addParam(const SUMOSAXAttributes& attrs) {
     bool ok = true;
-    std::string key = attrs.get<std::string>(SUMO_ATTR_KEY, 0, ok);
-    std::string val = attrs.get<std::string>(SUMO_ATTR_VALUE, 0, ok);
+    const std::string key = attrs.get<std::string>(SUMO_ATTR_KEY, 0, ok);
+    // circumventing empty string test
+    const std::string val = attrs.hasAttribute(SUMO_ATTR_VALUE) ? attrs.getString(SUMO_ATTR_VALUE) : "";
     if (myVehicleParameter != 0) {
         myVehicleParameter->addParameter(key, val);
     } else if (myCurrentVType != 0) {
@@ -284,9 +285,12 @@ SUMORouteHandler::parseStop(SUMOVehicleParameter::Stop& stop, const SUMOSAXAttri
     }
     bool ok = true;
     stop.busstop = attrs.getOpt<std::string>(SUMO_ATTR_BUS_STOP, 0, ok, "");
+    stop.chargingStation = attrs.getOpt<std::string>(SUMO_ATTR_CHARGING_STATION, 0, ok, "");
     stop.containerstop = attrs.getOpt<std::string>(SUMO_ATTR_CONTAINER_STOP, 0, ok, "");
     if (stop.busstop != "") {
         errorSuffix = " at '" + stop.busstop + "'" + errorSuffix;
+    } else if (stop.chargingStation != "") {
+        errorSuffix = " at '" + stop.chargingStation + "'" + errorSuffix;
     } else if (stop.containerstop != "") {
         errorSuffix = " at '" + stop.containerstop + "'" + errorSuffix;
     } else {

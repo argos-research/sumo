@@ -1,0 +1,60 @@
+Loading configuration... done.
+step 0
+step 1
+step 2
+persons ['horiz']
+person count 1
+examining horiz
+speed 1.38888888889
+pos (758.7222222222222, 504.975)
+angle 270.0
+road 2fi
+type DEFAULT_PEDTYPE
+lanePos 241.277777778
+color (255, 255, 0, 255)
+length 0.215
+MinGap 0.25
+width 0.478
+waiting time 0.0
+{0: ['horiz']}
+step 3
+{0: ['horiz']}
+step 4
+{0: ['horiz']}
+step 5
+{0: ['horiz']}
+persons ['horiz']
+person count 1
+examining horiz
+speed 1.38888888889
+pos (754.5555555555555, 504.975)
+angle 270.0
+road 2fi
+type DEFAULT_PEDTYPE
+lanePos 245.444444444
+color (255, 255, 0, 255)
+length 0.215
+MinGap 0.25
+width 0.478
+waiting time 0.0
+persons ['horiz']
+person count 1
+examining bla
+recovering from exception after asking for unknown person
+step 6
+getIDList ['horiz']
+step 7
+{0: ['horiz']}
+step 8
+{0: ['horiz']}
+step 9
+{0: ['horiz']}
+step 10
+{0: ['horiz']}
+step 11
+{0: ['horiz']}
+step 12
+{0: ['horiz']}
+:0_w1
+9.97012861603
+:0_c0

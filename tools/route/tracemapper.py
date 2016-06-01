@@ -3,7 +3,7 @@
 @file    tracemapper.py
 @author  Michael Behrisch
 @date    2013-10-23
-@version $Id: tracemapper.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: tracemapper.py 20687 2016-05-10 11:27:00Z behrisch $
 
 This script tries to match a list of positions to a route in a sumo network.
 
@@ -44,11 +44,11 @@ if __name__ == "__main__":
         optParser.exit("missing input or output")
 
     if options.verbose:
-        print ("Reading net ...")
+        print("Reading net ...")
     net = sumolib.net.readNet(options.net)
 
     if options.verbose:
-        print ("Reading traces ...")
+        print("Reading traces ...")
 
     f = open(options.output, "w")
     with open(options.trace) as traces:

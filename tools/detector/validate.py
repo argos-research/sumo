@@ -3,7 +3,7 @@
 @file    validate.py
 @author  Michael Behrisch
 @date    2013-06-12
-@version $Id: validate.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: validate.py 20687 2016-05-10 11:27:00Z behrisch $
 
 This script validates detector data resulting from dfrouter 
 validation detectors against the original data fed into dfrouter
@@ -123,7 +123,7 @@ if options.validation:
     print("simIn: %s simOut: %s" % (countIn, countOut))
 
 for det, vals in dets.iteritems():
-    print ("Plotting", det, 'totaldet', totals[det], 'totalSim', totalSim[det])
+    print("Plotting", det, 'totaldet', totals[det], 'totalSim', totalSim[det])
     plt.bar(*(zip(*vals)[:2]))  # select first and second entry (time and flow)
     if det in sims:
         plt.plot(*(zip(*sims[det])[:2]))

@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    2014-01-07
-/// @version $Id: StdDefs.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: StdDefs.cpp 20550 2016-04-26 10:57:45Z namdre $
 ///
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -90,6 +90,8 @@ const RGBColor& getLinkColor(const LinkState& ls) {
 
 bool gDebugFlag1 = false;
 bool gDebugFlag2 = false;
+bool gDebugFlag3 = false;
+bool gDebugFlag4 = false;
 std::string gDebugSelectedVehicle = "";
 
 /****************************************************************************/

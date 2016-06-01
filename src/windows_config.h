@@ -7,7 +7,7 @@
 /// @author  Felix Brack
 /// @author  Jakob Erdmann
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: windows_config.h 20483 2016-04-18 20:55:17Z behrisch $
+/// @version $Id: windows_config.h 20489 2016-04-19 08:56:08Z behrisch $
 ///
 // The general windows configuration file
 /****************************************************************************/
@@ -62,7 +62,7 @@
 #define GEO_OUTPUT_ACCURACY 6
 
 /* Define if auto-generated version.h should be used. */
-//#define HAVE_VERSION_H 1
+#define HAVE_VERSION_H 1
 
 /* Version number of package */
 #ifndef HAVE_VERSION_H

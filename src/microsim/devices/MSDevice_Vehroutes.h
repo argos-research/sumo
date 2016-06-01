@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 30.01.2009
-/// @version $Id: MSDevice_Vehroutes.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSDevice_Vehroutes.h 20813 2016-05-30 11:52:09Z namdre $
 ///
 // A device which collects info on the vehicle trip
 /****************************************************************************/
@@ -191,7 +191,7 @@ private:
         void vehicleStateChanged(const SUMOVehicle* const vehicle, MSNet::VehicleState to);
 
         /// @brief A map for internal notification
-        std::map<const SUMOVehicle*, MSDevice_Vehroutes*, Named::NamedLikeComparatorIdLess<SUMOVehicle> > myDevices;
+        std::map<const SUMOVehicle*, MSDevice_Vehroutes*, SUMOVehicle::ComparatorIdLess> myDevices;
 
     };
 

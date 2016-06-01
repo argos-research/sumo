@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIPerson.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GUIPerson.cpp 20679 2016-05-10 07:33:10Z namdre $
 ///
 // A MSPerson extended by some values for usage within the gui
 /****************************************************************************/
@@ -255,7 +255,7 @@ GUIPerson::drawGL(const GUIVisualizationSettings& s) const {
     // set person color
     setColor(s);
     // scale
-    const SUMOReal upscale = s.personSize.getExaggeration(s);
+    const SUMOReal upscale = s.personSize.getExaggeration(s, 80);
     glScaled(upscale, upscale, 1);
     switch (s.personQuality) {
         case 0:

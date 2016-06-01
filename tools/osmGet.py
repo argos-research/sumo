@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2009-08-01
-@version $Id: osmGet.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: osmGet.py 20687 2016-05-10 11:27:00Z behrisch $
 
 Retrieves an area from OpenStreetMap.
 

@@ -7,7 +7,7 @@
 /// @author  Laura Bieker
 /// @author  Mario Krumnow
 /// @date    Sept 2002
-/// @version $Id: TraCIServerAPI_Edge.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: TraCIServerAPI_Edge.cpp 20822 2016-05-31 07:02:29Z namdre $
 ///
 // APIs for getting/setting edge values via TraCI
 /****************************************************************************/
@@ -247,13 +247,8 @@ TraCIServerAPI_Edge::processGet(TraCIServer& server, tcpip::Storage& inputStorag
             }
             break;
             case LAST_STEP_MEAN_SPEED: {
-                SUMOReal sum = 0;
-                const std::vector<MSLane*>& lanes = e->getLanes();
-                for (std::vector<MSLane*>::const_iterator i = lanes.begin(); i != lanes.end(); ++i) {
-                    sum += (*i)->getMeanSpeed();
-                }
                 tempMsg.writeUnsignedByte(TYPE_DOUBLE);
-                tempMsg.writeDouble(sum / (SUMOReal) lanes.size());
+                tempMsg.writeDouble(e->getMeanSpeed());
             }
             break;
             case LAST_STEP_OCCUPANCY: {

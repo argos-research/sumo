@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSVehicleContainer.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSVehicleContainer.h 20626 2016-05-03 12:49:04Z namdre $
 ///
 // vehicles sorted by their departures
 /****************************************************************************/
@@ -69,6 +69,9 @@ public:
 
     /// Adds a single vehicle
     void add(SUMOVehicle* veh);
+
+    /// Removes a single vehicle
+    void remove(SUMOVehicle* veh);
 
     /// Adds a container with vehicles departing at the given time
     void add(SUMOTime time, const VehicleVector& cont);

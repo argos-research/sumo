@@ -2,7 +2,7 @@
 /// @file    MEVehicle.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MEVehicle.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MEVehicle.cpp 20687 2016-05-10 11:27:00Z behrisch $
 ///
 // A vehicle from the mesoscopic point of view
 /****************************************************************************/
@@ -71,6 +71,12 @@ MEVehicle::MEVehicle(SUMOVehicleParameter* pars, const MSRoute* route,
                                "' is too high for the vehicle type '" + type->getID() + "'.");
         }
     }
+}
+
+
+SUMOReal
+MEVehicle::getBackPositionOnLane(const MSLane* /* lane */) const {
+    return getPositionOnLane() - getVehicleType().getLength();
 }
 
 

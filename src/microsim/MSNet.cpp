@@ -10,7 +10,7 @@
 /// @author  Mario Krumnow
 /// @author  Christoph Sommer
 /// @date    Tue, 06 Mar 2001
-/// @version $Id: MSNet.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSNet.cpp 20768 2016-05-20 08:38:44Z behrisch $
 ///
 // The simulated network and simulation perfomer
 /****************************************************************************/
@@ -46,8 +46,7 @@
 #include <ctime>
 #include <utils/common/UtilExceptions.h>
 #include "MSNet.h"
-#include "MSPersonControl.h"
-#include "MSContainerControl.h"
+#include "MSTransportableControl.h"
 #include "MSEdgeControl.h"
 #include "MSJunctionControl.h"
 #include "MSInsertionControl.h"
@@ -217,6 +216,7 @@ MSNet::closeBuilding(MSEdgeControl* edges, MSJunctionControl* junctions,
                      std::vector<SUMOTime> stateDumpTimes,
                      std::vector<std::string> stateDumpFiles,
                      bool hasInternalLinks,
+                     bool hasNeighs,
                      bool lefthand,
                      SUMOReal version) {
     myEdges = edges;
@@ -235,6 +235,7 @@ MSNet::closeBuilding(MSEdgeControl* edges, MSJunctionControl* junctions,
         mySimBeginMillis = SysUtils::getCurrentMillis();
     }
     myHasInternalLinks = hasInternalLinks;
+    myHasNeighs = hasNeighs;
     myHasElevation = checkElevation();
     myLefthand = lefthand;
     myVersion = version;
@@ -370,7 +371,7 @@ MSNet::closeSimulation(SUMOTime start) {
             << " Running: " << myVehicleControl->getRunningVehicleNo() << "\n"
             << " Waiting: " << myInserter->getWaitingVehicleNo() << "\n";
 
-        if (myVehicleControl->getTeleportCount() > 0) {
+        if (myVehicleControl->getTeleportCount() > 0 || myVehicleControl->getCollisionCount() > 0) {
             // print optional teleport statistics
             std::vector<std::string> reasons;
             if (myVehicleControl->getCollisionCount() > 0) {
@@ -390,12 +391,12 @@ MSNet::closeSimulation(SUMOTime start) {
         if (myVehicleControl->getEmergencyStops() > 0) {
             msg << "Emergency Stops: " << myVehicleControl->getEmergencyStops() << "\n";
         }
-        if (myPersonControl != 0 && myPersonControl->getLoadedPersonNumber() > 0) {
+        if (myPersonControl != 0 && myPersonControl->getLoadedNumber() > 0) {
             msg << "Persons: " << "\n"
-                << " Inserted: " << myPersonControl->getLoadedPersonNumber() << "\n"
-                << " Running: " << myPersonControl->getRunningPersonNumber() << "\n";
-            if (myPersonControl->getJammedPersonNumber() > 0) {
-                msg << " Jammed: " << myPersonControl->getJammedPersonNumber() << "\n";
+                << " Inserted: " << myPersonControl->getLoadedNumber() << "\n"
+                << " Running: " << myPersonControl->getRunningNumber() << "\n";
+            if (myPersonControl->getJammedNumber() > 0) {
+                msg << " Jammed: " << myPersonControl->getJammedNumber() << "\n";
             }
         }
         if (OptionsCont::getOptions().getBool("duration-log.statistics")) {
@@ -471,20 +472,22 @@ MSNet::simulationStep() {
     loadRoutes();
 
     // persons
-    if (myPersonControl != 0 && myPersonControl->hasPersons()) {
-        myPersonControl->checkWaitingPersons(this, myStep);
+    if (myPersonControl != 0 && myPersonControl->hasTransportables()) {
+        myPersonControl->checkWaiting(this, myStep);
+    }
+    // containers
+    if (myContainerControl != 0 && myContainerControl->hasTransportables()) {
+        myContainerControl->checkWaiting(this, myStep);
     }
     // insert vehicles
-    myInserter->determineCandidates(myStep);    // containers
-    if (myContainerControl != 0) {
-        myContainerControl->checkWaitingContainers(this, myStep);
-    }
+    myInserter->determineCandidates(myStep);
     myInsertionEvents->execute(myStep);
 #ifdef HAVE_FOX
     MSDevice_Routing::waitForAll();
 #endif
     myInserter->emitVehicles(myStep);
     if (MSGlobals::gCheck4Accidents) {
+        //myEdges->patchActiveLanes(); // @note required to detect collisions on lanes that were empty before insertion. wasteful?
         myEdges->detectCollisions(myStep, STAGE_INSERTIONS);
     }
     MSVehicleTransfer::getInstance()->checkInsertions(myStep);
@@ -686,18 +689,18 @@ MSNet::logSimulationDuration() const {
 }
 
 
-MSPersonControl&
+MSTransportableControl&
 MSNet::getPersonControl() {
     if (myPersonControl == 0) {
-        myPersonControl = new MSPersonControl();
+        myPersonControl = new MSTransportableControl();
     }
     return *myPersonControl;
 }
 
-MSContainerControl&
+MSTransportableControl&
 MSNet::getContainerControl() {
     if (myContainerControl == 0) {
-        myContainerControl = new MSContainerControl();
+        myContainerControl = new MSTransportableControl();
     }
     return *myContainerControl;
 }

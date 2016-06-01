@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Tue, 29.05.2005
-/// @version $Id: NBOwnTLDef.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NBOwnTLDef.cpp 20691 2016-05-10 13:38:51Z behrisch $
 ///
 // A traffic light logics which must be computed (only nodes/edges are given)
 /****************************************************************************/
@@ -563,7 +563,8 @@ NBOwnTLDef::initNeedsContRelation() const {
         myNeedsContRelation.clear();
         NBOwnTLDef dummy(DummyID, myControlledNodes, 0, TLTYPE_STATIC);
         dummy.setParticipantsInformation();
-        dummy.computeLogicAndConts(0, true);
+        NBTrafficLightLogic* tllDummy = dummy.computeLogicAndConts(0, true);
+        delete tllDummy;
         myNeedsContRelation = dummy.myNeedsContRelation;
         for (std::vector<NBNode*>::const_iterator i = myControlledNodes.begin(); i != myControlledNodes.end(); i++) {
             (*i)->removeTrafficLight(&dummy);

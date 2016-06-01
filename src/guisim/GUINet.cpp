@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: GUINet.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUINet.cpp 20772 2016-05-20 10:07:31Z behrisch $
 ///
 // A MSNet extended by some values for usage within the gui
 /****************************************************************************/
@@ -53,8 +53,7 @@
 #include <microsim/MSJunctionControl.h>
 #include <guisim/GUIEdge.h>
 #include <guisim/GUILane.h>
-#include <guisim/GUIPersonControl.h>
-#include <guisim/GUIContainerControl.h>
+#include <guisim/GUITransportableControl.h>
 #include <guisim/GUILaneSpeedTrigger.h>
 #include <guisim/GUIDetectorWrapper.h>
 #include <guisim/GUITrafficLightLogicWrapper.h>
@@ -121,19 +120,19 @@ GUINet::getBoundary() const {
 }
 
 
-MSPersonControl&
+MSTransportableControl&
 GUINet::getPersonControl() {
     if (myPersonControl == 0) {
-        myPersonControl = new GUIPersonControl();
+        myPersonControl = new GUITransportableControl();
     }
     return *myPersonControl;
 }
 
 
-MSContainerControl&
+MSTransportableControl&
 GUINet::getContainerControl() {
     if (myContainerControl == 0) {
-        myContainerControl = new GUIContainerControl();
+        myContainerControl = new GUITransportableControl();
     }
     return *myContainerControl;
 }
@@ -224,7 +223,6 @@ void
 GUINet::guiSimulationStep() {
     GLObjectValuePassConnector<SUMOReal>::updateAll();
     GLObjectValuePassConnector<std::pair<SUMOTime, MSPhaseDefinition> >::updateAll();
-    GUIParameterTableWindow::updateAll();
 }
 
 
@@ -444,11 +442,11 @@ GUINet::getParameterWindow(GUIMainWindow& app,
                 new FunctionBinding<MSVehicleControl, unsigned int>(&getVehicleControl(), &MSVehicleControl::getTeleportCount));
     if (myPersonControl != 0) {
         ret->mkItem("loaded persons [#]", true,
-                    new FunctionBinding<MSPersonControl, unsigned int>(&getPersonControl(), &MSPersonControl::getLoadedPersonNumber));
+            new FunctionBinding<MSTransportableControl, unsigned int>(&getPersonControl(), &MSTransportableControl::getLoadedNumber));
         ret->mkItem("running persons [#]", true,
-                    new FunctionBinding<MSPersonControl, unsigned int>(&getPersonControl(), &MSPersonControl::getRunningPersonNumber));
+            new FunctionBinding<MSTransportableControl, unsigned int>(&getPersonControl(), &MSTransportableControl::getRunningNumber));
         ret->mkItem("jammed persons [#]", true,
-                    new FunctionBinding<MSPersonControl, unsigned int>(&getPersonControl(), &MSPersonControl::getJammedPersonNumber));
+            new FunctionBinding<MSTransportableControl, unsigned int>(&getPersonControl(), &MSTransportableControl::getJammedNumber));
     }
     ret->mkItem("end time [s]", false, OptionsCont::getOptions().getString("end"));
     ret->mkItem("begin time [s]", false, OptionsCont::getOptions().getString("begin"));

@@ -5,7 +5,7 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    2012-04-26
-/// @version $Id: MSFCDExport.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSFCDExport.cpp 20768 2016-05-20 08:38:44Z behrisch $
 ///
 // Realises dumping Floating Car Data (FCD) Data
 /****************************************************************************/
@@ -43,9 +43,8 @@
 #include <microsim/MSNet.h>
 #include <microsim/MSVehicle.h>
 #include <microsim/pedestrians/MSPerson.h>
-#include <microsim/MSPersonControl.h>
+#include <microsim/MSTransportableControl.h>
 #include <microsim/MSContainer.h>
-#include <microsim/MSContainerControl.h>
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
 #endif // CHECK_MEMORY_LEAKS
@@ -101,7 +100,7 @@ MSFCDExport::write(OutputDevice& of, SUMOTime timestep, bool elevation) {
             }
         }
     }
-    if (MSNet::getInstance()->getPersonControl().hasPersons()) {
+    if (MSNet::getInstance()->getPersonControl().hasTransportables()) {
         // write persons
         MSEdgeControl& ec = MSNet::getInstance()->getEdgeControl();
         const MSEdgeVector& edges = ec.getEdges();
@@ -112,7 +111,7 @@ MSFCDExport::write(OutputDevice& of, SUMOTime timestep, bool elevation) {
             }
         }
     }
-    if (MSNet::getInstance()->getContainerControl().hasContainers()) {
+    if (MSNet::getInstance()->getContainerControl().hasTransportables()) {
         // write containers
         MSEdgeControl& ec = MSNet::getInstance()->getEdgeControl();
         const std::vector<MSEdge*>& edges = ec.getEdges();

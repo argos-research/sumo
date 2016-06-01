@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_Polygon.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: TraCIServerAPI_Polygon.h 20801 2016-05-28 05:31:30Z behrisch $
 ///
 // APIs for getting/setting polygon values via TraCI
 /****************************************************************************/
@@ -87,7 +87,7 @@ private:
      * @param[in] id The id of the searched polygon
      * @return The named polygon, or 0 if it is not known
      */
-    static Polygon* getPolygon(const std::string& id);
+    static SUMO::Polygon* getPolygon(const std::string& id);
 
 
 private:

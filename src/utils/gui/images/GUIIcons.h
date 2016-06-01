@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Andreas Gaubatz
 /// @date    2004
-/// @version $Id: GUIIcons.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIIcons.h 20749 2016-05-19 08:32:05Z behrisch $
 ///
 // An enumeration of icons used by the gui applications
 /****************************************************************************/
@@ -69,6 +69,13 @@ enum GUIIcon {
     ICON_LOCATEADD,
     ICON_LOCATEPOI,
     ICON_LOCATEPOLY,
+
+    ICON_GREENEDGE,
+    ICON_GREENVEHICLE,
+    ICON_GREENPERSON,
+    ICON_YELLOWEDGE,
+    ICON_YELLOWVEHICLE,
+    ICON_YELLOWPERSON,
 
     ICON_COLORWHEEL,
     ICON_SAVEDB,

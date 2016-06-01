@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on Tue May 31 12:55:37 2016 by SUMO Version dev-SVN-r20823
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="three_split.net.xml"/>
+        <route-files value="input_routes.rou.xml"/>
+        <additional-files value="input_additional.add.xml"/>
+    </input>
+
+    <time>
+        <end value="5401"/>
+    </time>
+
+    <report>
+        <xml-validation value="never"/>
+        <duration-log.disable value="true"/>
+        <no-step-log value="true"/>
+    </report>
+
+    <mesoscopic>
+        <mesosim value="true"/>
+    </mesoscopic>
+
+</configuration>
+-->
+
+<calibratorstats>
+   <interval begin="0.00" end="3600.00" id="swallow_jam" nVehContrib="550" removed="0" inserted="0" cleared="1440" flow="550.00" aspiredFlow="-1.00" speed="1.39" aspiredSpeed="27.80"/>
+   <interval begin="3600.00" end="5400.00" id="swallow_jam" nVehContrib="3" removed="0" inserted="0" cleared="7" flow="6.00" aspiredFlow="-1.00" speed="0.64" aspiredSpeed="27.80"/>
+</calibratorstats>

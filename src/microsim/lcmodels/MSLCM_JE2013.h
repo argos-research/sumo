@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Fri, 08.10.2013
-/// @version $Id: MSLCM_JE2013.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSLCM_JE2013.h 20647 2016-05-04 13:35:57Z behrisch $
 ///
 // A lane change model developed by J. Erdmann
 // based on the model of D. Krajzewicz developed between 2004 and 2011 (MSLCM_DK2004)
@@ -98,10 +98,12 @@ public:
     SUMOReal _patchSpeed(const SUMOReal min, const SUMOReal wanted, const SUMOReal max,
                          const MSCFModel& cfModel);
 
-    void changed(int dir);
+    void changed();
 
     void prepareStep();
 
+    /// @brief whether the current vehicles shall be debugged
+    bool debugVehicle() const;
 
 protected:
 
@@ -188,6 +190,20 @@ protected:
     std::vector<SUMOReal> myVSafes;
     bool myDontBrake;
 
+    /// @name user configurable model parameters
+    //@{
+    const SUMOReal myStrategicParam;
+    const SUMOReal myCooperativeParam;
+    const SUMOReal mySpeedGainParam;
+    const SUMOReal myKeepRightParam;
+    //@}
+
+    /// @name derived parameters
+    //@{
+    // @brief willingness to encroach on other vehicles laterally (pushing them around)
+    const SUMOReal myChangeProbThresholdRight;
+    const SUMOReal myChangeProbThresholdLeft;
+    //@}
 };
 
 

@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mar, 2003
-/// @version $Id: NGNet.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NGNet.h 20507 2016-04-20 11:40:48Z namdre $
 ///
 // The class storing the generated network
 /****************************************************************************/
@@ -117,9 +117,10 @@ public:
      * @param[in] spaceX The space between nodes in x-direction
      * @param[in] spaceY The space between nodes in y-direction
      * @param[in] attachLength The length of streets attached at the border
+     * @param[in] alphaIDs Whether to use alphanumerial node ids
      * @see NGNet::connect
      */
-    void createChequerBoard(int numX, int numY, SUMOReal spaceX, SUMOReal spaceY, SUMOReal attachLength);
+    void createChequerBoard(int numX, int numY, SUMOReal spaceX, SUMOReal spaceY, SUMOReal attachLength, bool alphaIDs);
 
 
     /** @brief Creates a spider network

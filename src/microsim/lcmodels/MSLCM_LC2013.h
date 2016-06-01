@@ -6,7 +6,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Fri, 08.10.2013
-/// @version $Id: MSLCM_LC2013.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSLCM_LC2013.h 20765 2016-05-20 07:49:28Z luecken $
 ///
 // A lane change model developed by D. Krajzewicz, J. Erdmann et al. between 2004 and 2013
 /****************************************************************************/
@@ -69,6 +69,8 @@ public:
 
     virtual ~MSLCM_LC2013();
 
+    bool debugVehicle() const;
+
     /** @brief Called to examine whether the vehicle wants to change
      * using the given laneOffset.
      * This method gets the information about the surrounding vehicles
@@ -100,7 +102,7 @@ public:
     SUMOReal _patchSpeed(const SUMOReal min, const SUMOReal wanted, const SUMOReal max,
                          const MSCFModel& cfModel);
 
-    void changed(int dir);
+    void changed();
 
     void prepareStep();
 
@@ -190,6 +192,20 @@ protected:
     std::vector<SUMOReal> myVSafes;
     bool myDontBrake;
 
+    /// @name user configurable model parameters
+    //@{
+    const SUMOReal myStrategicParam;
+    const SUMOReal myCooperativeParam;
+    const SUMOReal mySpeedGainParam;
+    const SUMOReal myKeepRightParam;
+    //@}
+
+    /// @name derived parameters
+    //@{
+    // @brief willingness to encroach on other vehicles laterally (pushing them around)
+    const SUMOReal myChangeProbThresholdRight;
+    const SUMOReal myChangeProbThresholdLeft;
+    //@}
 };
 
 

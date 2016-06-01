@@ -2,7 +2,7 @@
 /// @file    GNELane.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNELane.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GNELane.cpp 20725 2016-05-17 10:39:01Z namdre $
 ///
 // A class for visualizing Lane geometry (adapted from GNELaneWrapper)
 /****************************************************************************/
@@ -530,7 +530,7 @@ GNELane::isValid(SumoXMLAttr key, const std::string& value) {
         case SUMO_ATTR_DISALLOW:
             return canParseVehicleClasses(value);
         case SUMO_ATTR_WIDTH:
-            return isPositive<SUMOReal>(value) || parse<SUMOReal>(value) == NBEdge::UNSPECIFIED_WIDTH;
+            return canParse<SUMOReal>(value) && (isPositive<SUMOReal>(value) || parse<SUMOReal>(value) == NBEdge::UNSPECIFIED_WIDTH);
         case SUMO_ATTR_ENDOFFSET:
             return canParse<SUMOReal>(value);
         case SUMO_ATTR_INDEX:

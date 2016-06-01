@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Melanie Knocke
 /// @date    Jun 2004
-/// @version $Id: Polygon.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: Polygon.h 20801 2016-05-28 05:31:30Z behrisch $
 ///
 // A 2D- or 3D-polygon
 /****************************************************************************/
@@ -37,7 +37,12 @@
 #include <utils/common/Parameterised.h>
 #include "Shape.h"
 
+
+// ===========================================================================
+// class declarations
+// ===========================================================================
 class OutputDevice;
+
 
 // we need to put this into a namespace to avoid clashing with wingdi.h::Polygon function
 namespace SUMO {

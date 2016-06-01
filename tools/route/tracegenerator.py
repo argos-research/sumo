@@ -3,7 +3,7 @@
 @file    tracemapper.py
 @author  Michael Behrisch
 @date    2013-10-23
-@version $Id: tracegenerator.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: tracegenerator.py 20687 2016-05-10 11:27:00Z behrisch $
 
 This script tries to generate traces for routes in a sumo network.
 
@@ -59,7 +59,7 @@ if __name__ == "__main__":
         optParser.exit("missing input or output")
 
     if options.verbose:
-        print ("Reading net ...")
+        print("Reading net ...")
     net = sumolib.net.readNet(options.net)
     net2 = None
     if options.net2:
@@ -68,7 +68,7 @@ if __name__ == "__main__":
         net2.move(-net2.getLocationOffset()[0], -net2.getLocationOffset()[1])
 
     if options.verbose:
-        print ("Reading routes ...")
+        print("Reading routes ...")
 
     f = open(options.output, "w")
     for route in sumolib.output.parse_fast(options.routes, "vehicle", ["id", "edges"]):

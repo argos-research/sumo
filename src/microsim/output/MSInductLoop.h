@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2004-11-23
-/// @version $Id: MSInductLoop.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSInductLoop.h 20818 2016-05-30 14:45:36Z namdre $
 ///
 // An unextended detector measuring at a fixed position on a fixed lane.
 /****************************************************************************/
@@ -283,9 +283,11 @@ public:
     /** @brief Returns vehicle data for vehicles that have been on the detector starting at the given time
      *
      * @param[in] t The time from which vehicles shall be counted
+     * @param[in] full Whether entryTime or leaveTime shall be compaired against t 
+     *            (the latter gives a more complete picture but may include vehicles in multiple steps  even if they did not stay on the detectort)
      * @return The list of vehicles
      */
-    virtual std::vector<VehicleData> collectVehiclesOnDet(SUMOTime t) const;
+    virtual std::vector<VehicleData> collectVehiclesOnDet(SUMOTime t, bool leaveTime=false) const;
 
 
 protected:

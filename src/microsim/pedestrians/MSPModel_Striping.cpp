@@ -3,7 +3,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 13 Jan 2014
-/// @version $Id: MSPModel_Striping.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSPModel_Striping.cpp 20768 2016-05-20 08:38:44Z behrisch $
 ///
 // The pedestrian following model (prototype)
 /****************************************************************************/
@@ -38,7 +38,7 @@
 #include <microsim/MSLane.h>
 #include <microsim/MSJunction.h>
 #include <microsim/MSGlobals.h>
-#include <microsim/MSPersonControl.h>
+#include <microsim/MSTransportableControl.h>
 #include "MSPModel_Striping.h"
 
 

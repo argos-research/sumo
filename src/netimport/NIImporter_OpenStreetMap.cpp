@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_OpenStreetMap.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NIImporter_OpenStreetMap.cpp 20730 2016-05-17 12:16:49Z namdre $
 ///
 // Importer for networks stored in OpenStreetMap format
 /****************************************************************************/
@@ -743,7 +743,7 @@ NIImporter_OpenStreetMap::EdgesHandler::myStartElement(int element,
             }
             if ((myCurrentEdge->myCyclewayType & WAY_BOTH) != 0) {
                 // now we have some info on directionality
-                myCurrentEdge->myCyclewayType = (WayType)(myCurrentEdge->myCyclewayType & !WAY_UNKNOWN);
+                myCurrentEdge->myCyclewayType = (WayType)(myCurrentEdge->myCyclewayType & ~WAY_UNKNOWN);
             }
         } else if (key.size() > 6 && StringUtils::startsWith(key, "busway:")) {
             // handle special busway keys

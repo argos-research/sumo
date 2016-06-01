@@ -2,7 +2,7 @@
 /// @file    MSRailCrossing.cpp
 /// @author  Jakob Erdmann
 /// @date    Dez 2015
-/// @version $Id: MSRailCrossing.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSRailCrossing.cpp 20550 2016-04-26 10:57:45Z namdre $
 ///
 // A rail signal logic
 /****************************************************************************/
@@ -112,7 +112,7 @@ MSRailCrossing::updateCurrentPhase() {
             }
         }
 #ifdef HAVE_INTERNAL_LANES
-        if ((*it_link)->getViaLane() != 0 && (*it_link)->getViaLane()->getLastVehicleInformation().first != 0) {
+        if ((*it_link)->getViaLane() != 0 && (*it_link)->getViaLane()->getVehicleNumberWithPartials() > 0) {
             // do not open if there is still a train on the crossing
             stayRedUntil = MAX2(stayRedUntil, now + DELTA_T);
         }

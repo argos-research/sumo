@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 8 Nov 2010
-/// @version $Id: MSBaseVehicle.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSBaseVehicle.h 20687 2016-05-10 11:27:00Z behrisch $
 ///
 // A base class for vehicle implementations
 /****************************************************************************/
@@ -41,6 +41,10 @@
 #include "MSMoveReminder.h"
 #include "MSVehicleType.h"
 
+// ===========================================================================
+// class declarations
+// ===========================================================================
+class MSLane;
 
 // ===========================================================================
 // class definitions
@@ -115,7 +119,7 @@ public:
      * @param[in] nSuccs The number of edge to look forward
      * @return The nSuccs'th following edge in the vehicle's route
      */
-    const MSEdge* succEdge(unsigned int nSuccs) const;
+    const MSEdge* succEdge(int nSuccs) const;
 
     /** @brief Returns the edge the vehicle is currently at
      *
@@ -131,6 +135,20 @@ public:
         return true;
     }
 
+    /** @brief Returns the information whether the front of the vehhicle is on the given lane
+     * @return Whether the vehicle's front is on that lane
+     */
+    virtual bool isFrontOnLane(const MSLane*) const {
+        return true;
+    }
+
+    /** @brief Get the vehicle's lateral position on the lane
+     * @return The lateral position of the vehicle (in m relative to the
+     * centerline of the lane)
+     */
+    virtual SUMOReal getLateralPositionOnLane() const {
+        return 0;
+    }
 
     /** @brief Returns the starting point for reroutes (usually the current edge)
      *
@@ -169,10 +187,11 @@ public:
      *  into the routes container (see in-line comments).
      *
      * @param[in] edges The new list of edges to pass
-     * @param[in] simTime The time at which the route was replaced
+     * @param[in] onInit Whether the vehicle starts with this route
+     * @param[in] check Whether the route should be checked for validity
      * @return Whether the new route was accepted
      */
-    bool replaceRouteEdges(ConstMSEdgeVector& edges, bool onInit = false);
+    bool replaceRouteEdges(ConstMSEdgeVector& edges, bool onInit = false, bool check = false);
 
 
     /** @brief Returns the vehicle's acceleration
@@ -274,11 +293,12 @@ public:
      */
     virtual void addContainer(MSTransportable* container);
 
-    /** @brief Validates the current route
+    /** @brief Validates the current or given route
      * @param[out] msg Description why the route is not valid (if it is the case)
+     * @param[in] route The route to check (or 0 if the current route shall be checked)
      * @return Whether the vehicle's current route is valid
      */
-    bool hasValidRoute(std::string& msg) const;
+    bool hasValidRoute(std::string& msg, const MSRoute* route = 0) const;
 
     /** @brief Adds a MoveReminder dynamically
      *

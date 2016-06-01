@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSVehicleType.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSVehicleType.h 20550 2016-04-26 10:57:45Z namdre $
 ///
 // The car-following model and parameter
 /****************************************************************************/
@@ -133,6 +133,13 @@ public:
      */
     SUMOReal getMinGap() const {
         return myParameter.minGap;
+    }
+
+    /** @brief Get the minimum lateral gap that vehicles of this type maintain
+     * @return The place before the vehicle
+     */
+    SUMOReal getMinGapLat() const {
+        return myParameter.minGapLat;
     }
 
 
@@ -301,6 +308,19 @@ public:
         return myParameter.loadingDuration;
     }
 
+    /** @brief Get vehicle's maximum lateral speed [m/s].
+     * @return The maximum lateral speed (in m/s) of vehicles of this class
+     */
+    SUMOReal getMaxSpeedLat() const {
+        return myParameter.maxSpeedLat;
+    }
+
+    /** @brief Get vehicle's preferred lateral alignment
+     * @return The vehicle's preferred lateral alignment
+     */
+    LateralAlignment getPreferredLateralAlignment() const {
+        return myParameter.latAlignment;
+    }
     /// @}
 
 

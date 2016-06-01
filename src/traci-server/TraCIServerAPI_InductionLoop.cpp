@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_InductionLoop.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: TraCIServerAPI_InductionLoop.cpp 20818 2016-05-30 14:45:36Z namdre $
 ///
 // APIs for getting/setting induction loop values via TraCI
 /****************************************************************************/
@@ -112,7 +112,7 @@ TraCIServerAPI_InductionLoop::processGet(TraCIServer& server, tcpip::Storage& in
                 tempMsg.writeDouble(il->getTimestepsSinceLastDetection());
                 break;
             case LAST_STEP_VEHICLE_DATA: {
-                std::vector<MSInductLoop::VehicleData> vd = il->collectVehiclesOnDet(MSNet::getInstance()->getCurrentTimeStep() - DELTA_T);
+                std::vector<MSInductLoop::VehicleData> vd = il->collectVehiclesOnDet(MSNet::getInstance()->getCurrentTimeStep() - DELTA_T, true);
                 tempMsg.writeUnsignedByte(TYPE_COMPOUND);
                 tcpip::Storage tempContent;
                 unsigned int cnt = 0;

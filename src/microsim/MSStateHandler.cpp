@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Thu, 13 Dec 2012
-/// @version $Id: MSStateHandler.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSStateHandler.cpp 20634 2016-05-04 06:21:48Z namdre $
 ///
 // Parser and output filter for routes and vehicles state saving and loading
 /****************************************************************************/
@@ -93,6 +93,7 @@ MSStateHandler::saveState(const std::string& file, SUMOTime step) {
             }
         }
     }
+    out.close();
 }
 
 

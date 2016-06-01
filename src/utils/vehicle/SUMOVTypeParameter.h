@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    10.09.2009
-/// @version $Id: SUMOVTypeParameter.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: SUMOVTypeParameter.h 20687 2016-05-10 11:27:00Z behrisch $
 ///
 // Structure representing possible vehicle parameter
 /****************************************************************************/
@@ -70,6 +70,9 @@ const int VTYPEPARS_BOARDING_DURATION = 2 << 17;
 const int VTYPEPARS_CONTAINER_CAPACITY = 2 << 18;
 const int VTYPEPARS_LOADING_DURATION = 2 << 19;
 const int VTYPEPARS_CAR_FOLLOW_MODEL = 2 << 20;
+const int VTYPEPARS_MAXSPEED_LAT_SET = 2 << 21;
+const int VTYPEPARS_LATALIGNMENT_SET = 2 << 22;
+const int VTYPEPARS_MINGAP_LAT_SET = 2 << 23;
 
 
 // ===========================================================================
@@ -114,7 +117,14 @@ public:
      * @param[in] defaultValue The value to return if the given map does not contain the named variable
      * @return The named value from the map or the default if it does not exist there
      */
-    SUMOReal get(const SumoXMLAttr attr, const SUMOReal defaultValue) const;
+    SUMOReal getCFParam(const SumoXMLAttr attr, const SUMOReal defaultValue) const;
+
+    /** @brief Returns the named value from the map, or the default if it is not contained there
+     * @param[in] attr The corresponding xml attribute
+     * @param[in] defaultValue The value to return if the given map does not contain the named variable
+     * @return The named value from the map or the default if it does not exist there
+     */
+    SUMOReal getLCParam(const SumoXMLAttr attr, const SUMOReal defaultValue) const;
 
 
     /// @brief The vehicle type's id
@@ -149,8 +159,6 @@ public:
     /// @brief The time a container needs to get loaded on the vehicle
     SUMOTime loadingDuration;
 
-
-
     /// @name Values for drawing this class' vehicles
     /// @{
 
@@ -174,12 +182,22 @@ public:
     /// @brief The enum-representation of the car-following model to use
     SumoXMLTag cfModel;
 
+    /// @brief sub-model parameters
+    typedef std::map<SumoXMLAttr, SUMOReal> SubParams;
     /// @brief Car-following parameter
-    typedef std::map<SumoXMLAttr, SUMOReal> CFParams;
-    CFParams cfParameter;
+    SubParams cfParameter;
+    /// @brief Lane-changing parameter
+    SubParams lcParameter;
 
     /// @brief The lane-change model to use
     LaneChangeModel lcModel;
+
+    /// @brief The vehicle type's maximum lateral speed [m/s]
+    SUMOReal maxSpeedLat;
+    /// @brief The vehicles desired lateral alignment
+    LateralAlignment latAlignment;
+    /// @brief The vehicle type's minimum lateral gap [m]
+    SUMOReal minGapLat;
 
     /// @brief Information for the router which parameter were set
     int setParameter;

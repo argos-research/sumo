@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: RORouteHandler.cpp 20476 2016-04-18 08:36:33Z behrisch $
+/// @version $Id: RORouteHandler.cpp 20542 2016-04-25 11:40:14Z namdre $
 ///
 // Parser and container for routes during their loading
 /****************************************************************************/
@@ -111,6 +111,8 @@ RORouteHandler::parseFromViaTo(std::string element,
     }
     parseEdges(attrs.getOpt<std::string>(SUMO_ATTR_VIA, myVehicleParameter->id.c_str(), ok, "", true),
                myActiveRoute, "for " + element + " '" + myVehicleParameter->id + "'");
+    myVehicleParameter->via = StringTokenizer(attrs.getOpt<std::string>(SUMO_ATTR_VIA, myVehicleParameter->id.c_str(), ok, "", true)).getVector();
+
     if ((useTaz || !attrs.hasAttribute(SUMO_ATTR_TO)) && myVehicleParameter->wasSet(VEHPARS_TO_TAZ_SET)) {
         const ROEdge* toTaz = myNet.getEdge(myVehicleParameter->toTaz + "-sink");
         if (toTaz == 0) {

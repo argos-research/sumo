@@ -5,7 +5,7 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: ROMAFrame.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ROMAFrame.cpp 20811 2016-05-30 11:05:58Z behrisch $
 ///
 // Sets and checks options for ma-routing
 /****************************************************************************/
@@ -83,6 +83,9 @@ ROMAFrame::addImportOptions() {
     oc.addSynonyme("output-file", "output");
     oc.addDescription("output-file", "Output", "Write flow definitions with route distributions to FILE");
 
+    oc.doRegister("vtype-output", new Option_FileName());
+    oc.addDescription("vtype-output", "Output", "Write used vehicle types into separate FILE");
+
     oc.doRegister("ignore-vehicle-type", new Option_Bool(false));
     oc.addSynonyme("ignore-vehicle-type", "no-vtype", true);
     oc.addDescription("ignore-vehicle-type", "Output", "Does not save vtype information");
@@ -131,6 +134,9 @@ ROMAFrame::addImportOptions() {
 
     oc.doRegister("weight-adaption", new Option_Float(0.));
     oc.addDescription("weight-adaption", "Input", "The travel time influence of prior intervals");
+
+    oc.doRegister("taz-param", new Option_String());
+    oc.addDescription("taz-param", "Input", "Parameter key(s) defining source (and sink) taz");
 
     // register the time settings
     oc.doRegister("begin", 'b', new Option_String("0", "TIME"));

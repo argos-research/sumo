@@ -4,7 +4,7 @@
 @author  Marek Heinrich
 @author  Michael Behrisch
 @date    2013-10-22
-@version $Id: netmatch.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: netmatch.py 20687 2016-05-10 11:27:00Z behrisch $
 
 This script tries to match the edges of two sumo networks.
 
@@ -60,12 +60,12 @@ if not options.output or not options.net1 or not options.net2:
 
 # read networks
 if options.verbose:
-    print ("Reading net#1...")
+    print("Reading net#1...")
 net1 = sumolib.net.readNet(options.net1)
 net1.move(-net1.getLocationOffset()[0], -net1.getLocationOffset()[1])
 
 if options.verbose:
-    print ("Reading net#2...")
+    print("Reading net#2...")
 net2 = sumolib.net.readNet(options.net2)
 net2.move(-net2.getLocationOffset()[0], -net2.getLocationOffset()[1])
 

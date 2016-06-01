@@ -5,7 +5,7 @@
 /// @author  Christoph Sommer
 /// @author  Michael Behrisch
 /// @date    Thu, 02.11.2006
-/// @version $Id: PCLoaderDlrNavteq.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: PCLoaderDlrNavteq.cpp 20801 2016-05-28 05:31:30Z behrisch $
 ///
 // A reader of pois and polygons stored in DLR-Navteq (Elmar)-format
 /****************************************************************************/
@@ -155,7 +155,7 @@ PCLoaderDlrNavteq::loadPOIFile(const std::string& file,
 
         // patch the values
         bool discard = oc.getBool("discard");
-        int layer = oc.getInt("layer");
+        SUMOReal layer = oc.getFloat("layer");
         RGBColor color;
         if (tm.has(type)) {
             const PCTypeMap::TypeDef& def = tm.get(type);
@@ -170,12 +170,8 @@ PCLoaderDlrNavteq::loadPOIFile(const std::string& file,
             color = c;
         }
         if (!discard) {
-            bool ignorePrunning = false;
-            if (OptionsCont::getOptions().isInStringVector("prune.keep-list", name)) {
-                ignorePrunning = true;
-            }
-            PointOfInterest* poi = new PointOfInterest(name, type, color, pos, (SUMOReal)layer);
-            toFill.insert(name, poi, layer, ignorePrunning);
+            PointOfInterest* poi = new PointOfInterest(name, type, color, pos, layer);
+            toFill.add(poi, OptionsCont::getOptions().isInStringVector("prune.keep-list", name));
         }
     }
 }
@@ -228,7 +224,7 @@ PCLoaderDlrNavteq::loadPolyFile(const std::string& file,
         }
 
         name = StringUtils::convertUmlaute(name);
-        if (name == "noname" || toFill.containsPolygon(name)) {
+        if (name == "noname" || toFill.getPolygons().get(name) != 0) {
             name = name + "#" + toString(toFill.getEnumIDFor(name));
         }
 
@@ -245,7 +241,7 @@ PCLoaderDlrNavteq::loadPolyFile(const std::string& file,
         // patch the values
         bool fill = vec.front() == vec.back();
         bool discard = oc.getBool("discard");
-        int layer = oc.getInt("layer");
+        SUMOReal layer = oc.getFloat("layer");
         RGBColor color;
         if (tm.has(type)) {
             const PCTypeMap::TypeDef& def = tm.get(type);
@@ -261,8 +257,8 @@ PCLoaderDlrNavteq::loadPolyFile(const std::string& file,
             color = c;
         }
         if (!discard) {
-            Polygon* poly = new Polygon(name, type, color, vec, fill, (SUMOReal)layer);
-            toFill.insert(name, poly, layer);
+            SUMO::Polygon* poly = new SUMO::Polygon(name, type, color, vec, fill, layer);
+            toFill.add(poly);
         }
         vec.clear();
     }

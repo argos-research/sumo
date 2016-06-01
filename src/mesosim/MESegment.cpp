@@ -2,7 +2,7 @@
 /// @file    MESegment.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MESegment.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MESegment.cpp 20824 2016-05-31 11:03:54Z namdre $
 ///
 // A single mesoscopic segment (cell)
 /****************************************************************************/
@@ -54,6 +54,8 @@
 #include <foreign/nvwa/debug_new.h>
 #endif // CHECK_MEMORY_LEAKS
 
+#define DEFAULT_VEH_LENGHT_WITH_GAP 7.5f
+
 // ===========================================================================
 // static member defintion
 // ===========================================================================
@@ -78,7 +80,8 @@ MESegment::MESegment(const std::string& id,
     myTau_fj((SUMOTime)(taufj / parent.getLanes().size())), // Eissfeldt p. 90 and 151 ff.
     myTau_jf((SUMOTime)(taujf / parent.getLanes().size())),
     myTau_jj((SUMOTime)(taujj / parent.getLanes().size())),
-    myHeadwayCapacity(length / 7.5f * parent.getLanes().size())/* Eissfeldt p. 69 */,
+    myTau_length(speed * parent.getLanes().size() / TIME2STEPS(1) ),
+    myHeadwayCapacity(length / DEFAULT_VEH_LENGHT_WITH_GAP * parent.getLanes().size())/* Eissfeldt p. 69 */,
     myCapacity(length * parent.getLanes().size()),
     myOccupancy(0.f),
     myJunctionControl(junctionControl),
@@ -121,7 +124,7 @@ MESegment::MESegment(const std::string& id):
     Named(id),
     myEdge(myDummyParent), // arbitrary edge needed to supply the needed reference
     myNextSegment(0), myLength(0), myIndex(0),
-    myTau_ff(0), myTau_fj(0), myTau_jf(0), myTau_jj(0),
+    myTau_ff(0), myTau_fj(0), myTau_jf(0), myTau_jj(0), myTau_length(1),
     myHeadwayCapacity(0), myCapacity(0), myJunctionControl(false),
     myTLSPenalty(false),
     myLengthGeometryFactor(0) {
@@ -135,23 +138,45 @@ MESegment::recomputeJamThreshold(SUMOReal jamThresh) {
     }
     if (jamThresh < 0) {
         // compute based on speed
-        myJamThreshold = jamThresholdForSpeed(myEdge.getSpeedLimit());
+        myJamThreshold = jamThresholdForSpeed(myEdge.getSpeedLimit(), jamThresh);
     } else {
         // compute based on specified percentage
         myJamThreshold = jamThresh * myCapacity;
     }
+
+    // update coefficients for the jam-jam headway function
+    // this function models the effect that "empty space" needs to move
+    // backwards through the downstream segment before the upstream segment may
+    // send annother vehicle
+    // the headway function f(x) depends on the number of vehicles in the
+    // downstream segment x
+    // f is a linear function that passes through the following fixed points:
+    // f(n_jam_threshold) = myTau_jf (for continuity)
+    // f(myHeadwayCapacity) = myTau_jj & myHeadwayCapacity
+
+    const SUMOReal n_jam_threshold = myHeadwayCapacity * myJamThreshold / myCapacity; // number of vehicles above which the segment is jammed
+    // solving f(x) = a * x + b
+    myA = (STEPS2TIME(myTau_jj) * myHeadwayCapacity - STEPS2TIME(myTau_jf)) / (myHeadwayCapacity - n_jam_threshold);
+    myB = myHeadwayCapacity * (STEPS2TIME(myTau_jj) - myA);
+
+    // note that the original Eissfeldt model (p. 69) used different fixed points
+    // f(n_jam_threshold) = n_jam_threshold * myTau_jj
+    // f(myHeadwayCapacity) = myTau_jf * myHeadwayCapacity
+    //
+    // However, this systematically underestimates the backpropagation speed of the jam front (see #2244)
 }
 
 
 SUMOReal
-MESegment::jamThresholdForSpeed(SUMOReal speed) const {
+MESegment::jamThresholdForSpeed(SUMOReal speed, SUMOReal jamThresh) const {
     // vehicles driving freely at maximum speed should not jam
     // we compute how many vehicles could possible enter the segment until the first vehicle leaves
     // and multiply by the space these vehicles would occupy
+    // the jamThresh parameter is scale the resulting value
     if (speed == 0) {
         return std::numeric_limits<double>::max();    // FIXME: This line is just an adhoc-fix to avoid division by zero (Leo)
     }
-    return std::ceil((myLength / (speed * STEPS2TIME(myTau_ff)))) * (SUMOVTypeParameter::getDefault().length + SUMOVTypeParameter::getDefault().minGap);
+    return std::ceil((myLength / (-jamThresh * speed * STEPS2TIME(myTau_ff)))) * (SUMOVTypeParameter::getDefault().length + SUMOVTypeParameter::getDefault().minGap);
 }
 
 
@@ -227,7 +252,7 @@ MESegment::hasSpaceFor(const MEVehicle* veh, SUMOTime entryTime, bool init) cons
     // - initial insertions should not cause additional jamming
     if (init) {
         // inserted vehicle should be able to continue at the current speed
-        return newOccupancy <= jamThresholdForSpeed(getMeanSpeed(false));
+        return newOccupancy <= jamThresholdForSpeed(getMeanSpeed(false), -1);
     }
     // maintain propper spacing between inflow from different lanes
     return entryTime >= myEntryBlockTime;
@@ -318,17 +343,16 @@ MESegment::removeCar(MEVehicle* v, SUMOTime leaveTime, MESegment* next) {
 
 
 SUMOTime
-MESegment::getTimeHeadway(bool predecessorIsFree) {
+MESegment::getTimeHeadway(bool predecessorIsFree, SUMOReal leaderLength) {
     if (predecessorIsFree) {
-        return free() ? myTau_ff : myTau_fj;
+        return (free() ? myTau_ff : myTau_fj) + (SUMOTime)(leaderLength / myTau_length);
     } else {
         if (free() || myTLSPenalty) {
             return myTau_jf;
         } else {
             // the gap has to move from the start of the segment to its end
             // this allows jams to clear and move upstream
-            const SUMOTime b = (SUMOTime)(myHeadwayCapacity * (myTau_jf - myTau_jj)); // FIXME: unsigned integer overflow (in meso/tau/tau_jj)
-            return (SUMOTime)(myTau_jj * getCarNumber() + b);
+            return TIME2STEPS(myA * getCarNumber() + myB);
         }
     }
 }
@@ -419,7 +443,7 @@ MESegment::send(MEVehicle* veh, MESegment* next, SUMOTime time) {
     MEVehicle* lc = removeCar(veh, time, next); // new leaderCar
     myBlockTimes[veh->getQueIndex()] = time;
     if (!isInvalid(next)) {
-        myBlockTimes[veh->getQueIndex()] += next->getTimeHeadway(free());
+        myBlockTimes[veh->getQueIndex()] += next->getTimeHeadway(free(), veh->getVehicleType().getLengthWithGap());
     }
     if (lc != 0) {
         lc->setEventTime(MAX2(lc->getEventTime(), myBlockTimes[veh->getQueIndex()]));

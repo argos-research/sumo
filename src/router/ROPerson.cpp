@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: ROPerson.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: ROPerson.cpp 20698 2016-05-11 08:25:47Z behrisch $
 ///
 // A vehicle as used by router
 /****************************************************************************/
@@ -80,6 +80,7 @@ ROPerson::addTrip(const ROEdge* const from, const ROEdge* const to, const SVCPer
         pars.setParameter |= VEHPARS_VTYPE_SET;
         SUMOVTypeParameter* type = net->getVehicleTypeSecure(pars.vtypeid);
         if (type == 0) {
+            delete trip;
             throw InvalidArgument("The vehicle type '" + pars.vtypeid + "' in a trip for person '" + getID() + "' is not known.");
         }
         pars.id = getID() + "_" + toString(trip->getVehicles().size());

@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 05 Dec 2005
-/// @version $Id: PCTypeMap.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: PCTypeMap.h 20801 2016-05-28 05:31:30Z behrisch $
 ///
 // A storage for type mappings
 /****************************************************************************/
@@ -71,7 +71,7 @@ public:
         /// @brief The prefix to use
         std::string prefix;
         /// @brief The layer to use
-        int layer;
+        SUMOReal layer;
         /// @brief Information whether polygons of this type shall be discarded
         bool discard;
         /// @brief Information whether polygons of this type can be filled
@@ -92,7 +92,7 @@ public:
      * @return Whether the type could been added (was not known before)
      */
     bool add(const std::string& id, const std::string& newid, const std::string& color,
-             const std::string& prefix, int layer, bool discard, bool allowFill);
+             const std::string& prefix, SUMOReal layer, bool discard, bool allowFill);
 
 
     /** @brief Returns a type definition

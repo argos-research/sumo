@@ -2,7 +2,7 @@
 /// @file    METriggeredCalibrator.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: METriggeredCalibrator.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: METriggeredCalibrator.cpp 20775 2016-05-20 14:31:04Z namdre $
 ///
 // Calibrates the flow on a segment to a specified one
 /****************************************************************************/
@@ -205,7 +205,7 @@ METriggeredCalibrator::execute(SUMOTime currentTime) {
                 // insert vehicle into the net
                 if (atDest || !tryEmit(mySegment, vehicle)) {
                     //std::cout << "F ";
-                    delete vehicle;
+                    MSNet::getInstance()->getVehicleControl().deleteVehicle(vehicle, true);
                     break;
                 }
                 //std::cout << "I ";

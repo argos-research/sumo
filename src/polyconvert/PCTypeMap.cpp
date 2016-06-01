@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 05 Dec 2005
-/// @version $Id: PCTypeMap.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: PCTypeMap.cpp 20801 2016-05-28 05:31:30Z behrisch $
 ///
 // A storage for type mappings
 /****************************************************************************/
@@ -46,7 +46,7 @@
 PCTypeMap::PCTypeMap(const OptionsCont& oc) {
     myDefaultType.id = oc.getString("type");
     myDefaultType.color = RGBColor::parseColor(oc.getString("color"));
-    myDefaultType.layer = oc.getInt("layer");
+    myDefaultType.layer = oc.getFloat("layer");
     myDefaultType.discard = oc.getBool("discard");
     myDefaultType.allowFill = oc.getBool("fill");
     myDefaultType.prefix = oc.getString("prefix");
@@ -59,7 +59,7 @@ PCTypeMap::~PCTypeMap() {}
 bool
 PCTypeMap::add(const std::string& id, const std::string& newid,
                const std::string& color, const std::string& prefix,
-               int layer, bool discard, bool allowFill) {
+               SUMOReal layer, bool discard, bool allowFill) {
     if (has(id)) {
         return false;
     }

@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: ROVehicle.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: ROVehicle.cpp 20542 2016-04-25 11:40:14Z namdre $
 ///
 // A vehicle as used by router
 /****************************************************************************/
@@ -65,6 +65,15 @@ ROVehicle::ROVehicle(const SUMOVehicleParameter& pars,
     }
     for (std::vector<SUMOVehicleParameter::Stop>::const_iterator s = pars.stops.begin(); s != pars.stops.end(); ++s) {
         addStop(*s, net, errorHandler);
+    }
+    if (pars.via.size() != 0) {
+        // via takes precedence over stop edges
+        // XXX check for inconsistencies #2275
+        myStopEdges.clear();
+        for (std::vector<std::string>::const_iterator it = pars.via.begin(); it != pars.via.end(); ++it) {
+            assert(net->getEdge(*it) != 0);
+            myStopEdges.push_back(net->getEdge(*it));
+        }
     }
 }
 

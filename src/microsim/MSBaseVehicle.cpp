@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Mon, 8 Nov 2010
-/// @version $Id: MSBaseVehicle.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSBaseVehicle.cpp 20665 2016-05-09 12:00:43Z behrisch $
 ///
 // A base class for vehicle implementations
 /****************************************************************************/
@@ -120,8 +120,8 @@ MSBaseVehicle::getMaxSpeed() const {
 
 
 const MSEdge*
-MSBaseVehicle::succEdge(unsigned int nSuccs) const {
-    if (myCurrEdge + nSuccs < myRoute->end()) {
+MSBaseVehicle::succEdge(int nSuccs) const {
+    if (myCurrEdge + nSuccs < myRoute->end() && std::distance(myCurrEdge, myRoute->begin()) <= nSuccs) {
         return *(myCurrEdge + nSuccs);
     } else {
         return 0;
@@ -147,7 +147,22 @@ MSBaseVehicle::reroute(SUMOTime t, SUMOAbstractRouter<MSEdge, SUMOVehicle>& rout
         sink = myRoute->getLastEdge();
     }
     ConstMSEdgeVector edges;
-    const ConstMSEdgeVector stops = getStopEdges();
+    ConstMSEdgeVector stops;
+    if (myParameter->via.size() == 0) {
+        stops = getStopEdges();
+    } else {
+        // via takes precedence over stop edges
+        // XXX check for inconsistencies #2275
+        for (std::vector<std::string>::const_iterator it = myParameter->via.begin(); it != myParameter->via.end(); ++it) {
+            MSEdge* viaEdge = MSEdge::dictionary(*it);
+            assert(viaEdge != 0);
+            if (viaEdge->allowedLanes(getVClass()) == 0) {
+                throw ProcessError("Vehicle '" + getID() + "' is not allowed on any lane of via edge '" + viaEdge->getID() + "'.");
+            }
+            stops.push_back(viaEdge);
+        }
+    }
+
     for (MSRouteIterator s = stops.begin(); s != stops.end(); ++s) {
         if (*s != source) {
             // !!! need to adapt t here
@@ -168,7 +183,7 @@ MSBaseVehicle::reroute(SUMOTime t, SUMOAbstractRouter<MSEdge, SUMOVehicle>& rout
 
 
 bool
-MSBaseVehicle::replaceRouteEdges(ConstMSEdgeVector& edges, bool onInit) {
+MSBaseVehicle::replaceRouteEdges(ConstMSEdgeVector& edges, bool onInit, bool check) {
     if (edges.empty()) {
         WRITE_WARNING("No route for vehicle '" + getID() + "' found.");
         return false;
@@ -205,6 +220,17 @@ MSBaseVehicle::replaceRouteEdges(ConstMSEdgeVector& edges, bool onInit) {
         delete newRoute;
         return false;
     }
+
+    std::string msg;
+    if (check && !hasValidRoute(msg, newRoute)) {
+        WRITE_WARNING("Invalid route replacement for vehicle '" + getID() + "'. " + msg);
+        if (MSGlobals::gCheckRoutes) {
+            newRoute->addReference();
+            newRoute->release();
+            return false;
+        }
+    }
+
     if (!replaceRoute(newRoute, onInit, (int)edges.size() - oldSize)) {
         newRoute->addReference();
         newRoute->release();
@@ -255,18 +281,24 @@ MSBaseVehicle::addContainer(MSTransportable* /*container*/) {
 }
 
 bool
-MSBaseVehicle::hasValidRoute(std::string& msg) const {
-    MSRouteIterator last = myRoute->end() - 1;
+MSBaseVehicle::hasValidRoute(std::string& msg, const MSRoute* route) const {
+    MSRouteIterator start = myCurrEdge;
+    if (route == 0) {
+        route = myRoute;
+    } else {
+        start = route->begin();
+    }
+    MSRouteIterator last = route->end() - 1;
     // check connectivity, first
-    for (MSRouteIterator e = myCurrEdge; e != last; ++e) {
+    for (MSRouteIterator e = start; e != last; ++e) {
         if ((*e)->allowedLanes(**(e + 1), myType->getVehicleClass()) == 0) {
             msg = "No connection between edge '" + (*e)->getID() + "' and edge '" + (*(e + 1))->getID() + "'.";
             return false;
         }
     }
-    last = myRoute->end();
+    last = route->end();
     // check usable lanes, then
-    for (MSRouteIterator e = myCurrEdge; e != last; ++e) {
+    for (MSRouteIterator e = start; e != last; ++e) {
         if ((*e)->prohibits(this)) {
             msg = "Edge '" + (*e)->getID() + "' prohibits.";
             return false;

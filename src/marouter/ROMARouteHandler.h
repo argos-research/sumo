@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: ROMARouteHandler.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ROMARouteHandler.h 20653 2016-05-05 13:03:28Z behrisch $
 ///
 // Parser and container for routes during their loading
 /****************************************************************************/
@@ -71,12 +71,18 @@ protected:
      * @see GenericSAXHandler::myStartElement
      */
     void myStartElement(int element, const SUMOSAXAttributes& attrs);
+
+    void myEndElement(int element);
     //@}
 
 
-protected:
-    /// @brief The current route
+private:
+    /// @brief The matrix to fill
     ODMatrix& myMatrix;
+    /// @brief The keys for reading taz
+    std::vector<std::string> myTazParamKeys;
+    /// @brief The current vehicle parameters
+    SUMOVehicleParameter* myVehicleParameter;
 
 private:
     /// @brief Invalidated copy constructor

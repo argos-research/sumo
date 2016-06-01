@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBTrafficLightDefinition.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NBTrafficLightDefinition.cpp 20691 2016-05-10 13:38:51Z behrisch $
 ///
 // The base class for traffic light logic definitions
 /****************************************************************************/
@@ -470,7 +470,8 @@ NBTrafficLightDefinition::rightOnRedConflict(int index, int foeIndex) const {
     if (!myRightOnRedConflictsReady) {
         NBOwnTLDef dummy(DummyID, myControlledNodes, 0, TLTYPE_STATIC);
         dummy.setParticipantsInformation();
-        dummy.computeLogicAndConts(0, true);
+        NBTrafficLightLogic* tllDummy = dummy.computeLogicAndConts(0, true);
+        delete tllDummy;
         myRightOnRedConflicts = dummy.myRightOnRedConflicts;
         for (std::vector<NBNode*>::const_iterator i = myControlledNodes.begin(); i != myControlledNodes.end(); i++) {
             (*i)->removeTrafficLight(&dummy);

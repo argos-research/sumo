@@ -11,7 +11,7 @@
 /// @author  Michael Behrisch
 /// @author  Mario Krumnow
 /// @date    2007/10/24
-/// @version $Id: TraCIServer.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: TraCIServer.cpp 20727 2016-05-17 11:25:05Z behrisch $
 ///
 /// TraCI server used to control sumo by a remote TraCI client (e.g., ns2)
 /****************************************************************************/
@@ -49,6 +49,7 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include <algorithm>
 #include <foreign/tcpip/socket.h>
 #include <foreign/tcpip/storage.h>
 #include <utils/common/SUMOTime.h>
@@ -219,10 +220,10 @@ TraCIServer::wasClosed() {
 
 
 void
-TraCIServer::setVTDControlled(MSVehicle* v, MSLane* l, SUMOReal pos, SUMOReal angle, int edgeOffset, ConstMSEdgeVector route,
-                              SUMOTime t) {
+TraCIServer::setVTDControlled(MSVehicle* v, MSLane* l, SUMOReal pos, SUMOReal posLat, SUMOReal angle,
+                              int edgeOffset, ConstMSEdgeVector route, SUMOTime t) {
     myVTDControlledVehicles[v->getID()] = v;
-    v->getInfluencer().setVTDControlled(l, pos, angle, edgeOffset, route, t);
+    v->getInfluencer().setVTDControlled(l, pos, posLat, angle, edgeOffset, route, t);
 }
 
 
@@ -584,7 +585,26 @@ TraCIServer::initialiseSubscription(const TraCIServer::Subscription& s) {
         if (s.endTime < MSNet::getInstance()->getCurrentTimeStep()) {
             writeStatusCmd(s.commandId, RTYPE_ERR, "Subscription has ended.");
         } else {
-            mySubscriptions.push_back(s);
+            bool needNewSubscription = true;
+            for (std::vector<Subscription>::iterator i = mySubscriptions.begin(); i != mySubscriptions.end(); ++i) {
+                if (s.commandId == i->commandId && s.id == i->id && 
+                    s.beginTime == i->beginTime && s.endTime == i->endTime &&
+                    s.contextVars == i->contextVars && s.contextDomain == i->contextDomain && s.range == i->range) {
+                    std::vector<std::vector<unsigned char> >::const_iterator k = s.parameters.begin();
+                    for (std::vector<int>::const_iterator j = s.variables.begin(); j != s.variables.end(); ++j, ++k) {
+                        const int offset = std::find(i->variables.begin(), i->variables.end(), *j) - i->variables.begin();
+                        if (offset == i->variables.size() || i->parameters[offset] != *k) {
+                            i->variables.push_back(*j);
+                            i->parameters.push_back(*k);
+                        }
+                    }
+                    needNewSubscription = false;
+                    break;
+                }
+            }
+            if (needNewSubscription) {
+                mySubscriptions.push_back(s);
+            }
             writeStatusCmd(s.commandId, RTYPE_OK, "");
         }
     } else {

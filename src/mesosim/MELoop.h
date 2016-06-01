@@ -2,7 +2,7 @@
 /// @file    MELoop.h
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MELoop.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MELoop.h 20496 2016-04-19 12:08:29Z namdre $
 ///
 // The main mesocopic simulation loop
 /****************************************************************************/
@@ -80,6 +80,9 @@ public:
      * @param[in] v the car which was a leading one
      */
     void removeLeaderCar(MEVehicle* v);
+
+    /** @brief Compute number of segments per edge (best value stay close to the configured segment length) */
+    static int numSegmentsFor(const SUMOReal length, const SUMOReal slength);
 
     /** @brief Build the segments for a given edge
      *

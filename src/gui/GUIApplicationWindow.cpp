@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUIApplicationWindow.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIApplicationWindow.cpp 20768 2016-05-20 08:38:44Z behrisch $
 ///
 // The main window of the SUMO-gui.
 /****************************************************************************/
@@ -45,6 +45,9 @@
 #include <microsim/MSGlobals.h>
 #include <microsim/MSEdge.h>
 #include <microsim/MSVehicle.h>
+#include <microsim/MSEdgeControl.h>
+#include <microsim/MSInsertionControl.h>
+#include <microsim/MSTransportableControl.h>
 
 #include "GUISUMOViewParent.h"
 #include "GUILoadThread.h"
@@ -126,6 +129,10 @@ FXDEFMAP(GUIApplicationWindow) GUIApplicationWindowMap[] = {
     FXMAPFUNC(SEL_COMMAND,  MID_DELAY_TOOGLE,       GUIApplicationWindow::onCmdDelayToggle),
     FXMAPFUNC(SEL_COMMAND,  MID_CLEARMESSAGEWINDOW, GUIApplicationWindow::onCmdClearMsgWindow),
 
+    FXMAPFUNC(SEL_COMMAND,  MID_SHOWNETSTATS,       GUIApplicationWindow::onCmdShowStats),
+    FXMAPFUNC(SEL_COMMAND,  MID_SHOWVEHSTATS,       GUIApplicationWindow::onCmdShowStats),
+    FXMAPFUNC(SEL_COMMAND,  MID_SHOWPERSONSTATS,    GUIApplicationWindow::onCmdShowStats),
+
     FXMAPFUNC(SEL_UPDATE,   MID_OPEN_CONFIG,       GUIApplicationWindow::onUpdOpen),
     FXMAPFUNC(SEL_UPDATE,   MID_OPEN_NETWORK,      GUIApplicationWindow::onUpdOpen),
     FXMAPFUNC(SEL_UPDATE,   MID_OPEN_NETWORK,      GUIApplicationWindow::onUpdOpen),
@@ -196,6 +203,7 @@ GUIApplicationWindow::GUIApplicationWindow(FXApp* a,
       myHaveNotifiedAboutSimEnd(false),
       // game specific
       myJamSoundTime(60),
+      myPreviousCollisionNumber(0),
       myWaitingTime(0),
       myTimeLoss(0) {
     GUIIconSubSys::init(a);
@@ -237,6 +245,15 @@ GUIApplicationWindow::dependentBuild() {
             new FXHorizontalFrame(myStatusbar, LAYOUT_FIX_WIDTH | LAYOUT_FILL_Y | LAYOUT_RIGHT | FRAME_SUNKEN,
                                   0, 0, 20, 0, 0, 0, 0, 0, 0, 0);
         myCartesianCoordinate = new FXLabel(myCartesianFrame, "N/A\t\tNetwork coordinate", 0, LAYOUT_CENTER_Y);
+        myNetStatButton = new FXButton(myStatusbar, "Open network statistics.",
+            GUIIconSubSys::getIcon(ICON_GREENEDGE), this, MID_SHOWNETSTATS);
+        myNetStatButton->setText("-");
+        myVehStatButton = new FXButton(myStatusbar, "Open vehicle statistics.",
+            GUIIconSubSys::getIcon(ICON_GREENVEHICLE), this, MID_SHOWVEHSTATS);
+        myVehStatButton->setText("-");
+        myPedStatButton = new FXButton(myStatusbar, "Open personn statistics.",
+            GUIIconSubSys::getIcon(ICON_GREENPERSON), this, MID_SHOWPERSONSTATS);
+        myPedStatButton->setText("-");
     }
 
     // make the window a mdi-window
@@ -1019,6 +1036,17 @@ GUIApplicationWindow::onCmdLocate(FXObject*, FXSelector sel, void*) {
     return 1;
 }
 
+
+long
+GUIApplicationWindow::onCmdShowStats(FXObject*, FXSelector sel, void*) {
+    if (myMDIClient->numChildren() > 0) {
+        GUISUMOViewParent* w = dynamic_cast<GUISUMOViewParent*>(myMDIClient->getActiveChild());
+        GUINet::getGUIInstance()->getParameterWindow(*this, *w->getView());
+    }
+    return 1;
+}
+
+
 long
 GUIApplicationWindow::onCmdAppSettings(FXObject*, FXSelector, void*) {
     GUIDialog_AppSettings* d = new GUIDialog_AppSettings(this);
@@ -1260,6 +1288,7 @@ GUIApplicationWindow::handleEvent_SimulationLoaded(GUIEvent* e) {
                         myRunThread->getBreakpointLock().unlock();
                     }
                     myJamSounds = settings.getEventDistribution("jam");
+                    myCollisionSounds = settings.getEventDistribution("collision");
                     if (settings.getJamSoundTime() > 0) {
                         myJamSoundTime = settings.getJamSoundTime();
                     }
@@ -1276,6 +1305,9 @@ GUIApplicationWindow::handleEvent_SimulationLoaded(GUIEvent* e) {
             }
             // set simulation step begin information
             myLCDLabel->setText("-------------");
+            myNetStatButton->setText("-");
+            myVehStatButton->setText("-");
+            myPedStatButton->setText("-");
         }
     }
     getApp()->endWaitCursor();
@@ -1291,6 +1323,20 @@ void
 GUIApplicationWindow::handleEvent_SimulationStep(GUIEvent*) {
     updateChildren();
     updateTimeLCD(myRunThread->getNet().getCurrentTimeStep());
+    myNetStatButton->setText(toString(myRunThread->getNet().getEdgeControl().getNumActiveLanes()).c_str());
+    const unsigned int running = myRunThread->getNet().getVehicleControl().getRunningVehicleNo();
+    const unsigned int backlog = myRunThread->getNet().getInsertionControl().getWaitingVehicleNo();
+    if (backlog > running) {
+        if (myVehStatButton->getIcon() == GUIIconSubSys::getIcon(ICON_GREENVEHICLE)) {
+            myVehStatButton->setIcon(GUIIconSubSys::getIcon(ICON_YELLOWVEHICLE));
+        }
+    } else {
+        if (myVehStatButton->getIcon() == GUIIconSubSys::getIcon(ICON_YELLOWVEHICLE)) {
+            myVehStatButton->setIcon(GUIIconSubSys::getIcon(ICON_GREENVEHICLE));
+        }
+    }
+    myVehStatButton->setText(toString(running).c_str());
+    myPedStatButton->setText(toString(myRunThread->getNet().getPersonControl().getRunningNumber()).c_str());
     if (myAmGaming) {
         checkGamingEvents();
     }
@@ -1363,6 +1409,17 @@ GUIApplicationWindow::checkGamingEvents() {
             }
         }
     }
+    if (myCollisionSounds.getOverallProb() > 0) {
+        unsigned int collisions = MSNet::getInstance()->getVehicleControl().getCollisionCount();
+        if (myPreviousCollisionNumber != collisions) {
+            const std::string cmd = myCollisionSounds.get(&myGamingRNG);
+            if (cmd != "") {
+                // yay! fun with dangerous commands... Never use this over the internet
+                SysUtils::runHiddenCommand(cmd);
+            }
+            myPreviousCollisionNumber = collisions;
+        }
+    }
 #endif
 
     // update performance indicators
@@ -1431,6 +1488,9 @@ void
 GUIApplicationWindow::closeAllWindows() {
     myTrackerLock.lock();
     myLCDLabel->setText("-------------");
+    myNetStatButton->setText("-");
+    myVehStatButton->setText("-");
+    myPedStatButton->setText("-");
     // remove trackers and other external windows
     size_t i;
     for (i = 0; i < mySubWindows.size(); ++i) {

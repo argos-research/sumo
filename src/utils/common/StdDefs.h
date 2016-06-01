@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 29.04.2005
-/// @version $Id: StdDefs.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: StdDefs.h 20550 2016-04-26 10:57:45Z namdre $
 ///
 //
 /****************************************************************************/
@@ -115,6 +115,8 @@ ISNAN(T a) {
 /// @brief global utility flags for debugging
 extern bool gDebugFlag1;
 extern bool gDebugFlag2;
+extern bool gDebugFlag3;
+extern bool gDebugFlag4;
 
 extern std::string gDebugSelectedVehicle;
 

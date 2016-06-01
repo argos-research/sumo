@@ -7,7 +7,7 @@
 /// @author  Christian Roessel
 /// @author  Jakob Erdmann
 /// @date    Mon, 15 Apr 2002
-/// @version $Id: NLDetectorBuilder.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NLDetectorBuilder.cpp 20687 2016-05-10 11:27:00Z behrisch $
 ///
 // Builds detectors for microsim
 /****************************************************************************/
@@ -311,13 +311,19 @@ NLDetectorBuilder::endE3Detector() {
     if (myE3Definition == 0) {
         return;
     }
-    MSDetectorFileOutput* det = createE3Detector(myE3Definition->myID,
-                                myE3Definition->myEntries, myE3Definition->myExits,
-                                myE3Definition->myHaltingSpeedThreshold, myE3Definition->myHaltingTimeThreshold);
-    // add to net
-    myNet.getDetectorControl().add(SUMO_TAG_ENTRY_EXIT_DETECTOR, det, myE3Definition->myDevice, myE3Definition->mySampleInterval);
-    // clean up
-    delete myE3Definition;
+    // If E3 own entry or exit detectors
+    if (myE3Definition->myEntries.size() > 0 || myE3Definition->myExits.size() > 0) {
+        // create E3 detector
+        MSDetectorFileOutput* det = createE3Detector(myE3Definition->myID,
+                                    myE3Definition->myEntries, myE3Definition->myExits,
+                                    myE3Definition->myHaltingSpeedThreshold, myE3Definition->myHaltingTimeThreshold);
+        // add to net
+        myNet.getDetectorControl().add(SUMO_TAG_ENTRY_EXIT_DETECTOR, det, myE3Definition->myDevice, myE3Definition->mySampleInterval);
+    } else
+        WRITE_WARNING(toString(SUMO_TAG_E3DETECTOR) + " with id = '" + myE3Definition->myID + "' will not be created because is empty (no " + toString(SUMO_TAG_DET_ENTRY) + " or " + toString(SUMO_TAG_DET_EXIT) + " was defined)")
+
+        // clean up
+        delete myE3Definition;
     myE3Definition = 0;
 }
 

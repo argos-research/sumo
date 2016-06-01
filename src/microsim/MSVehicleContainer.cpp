@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSVehicleContainer.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSVehicleContainer.cpp 20687 2016-05-10 11:27:00Z behrisch $
 ///
 // vehicles sorted by their departures
 /****************************************************************************/
@@ -96,6 +96,19 @@ MSVehicleContainer::add(SUMOVehicle* veh) {
     } else {
         // add vehicle to an existing heap-item
         (*i).second.push_back(veh);
+    }
+}
+
+
+void
+MSVehicleContainer::remove(SUMOVehicle* veh) {
+    // check whether a new item shall be added or the vehicle may be
+    //  added to an existing list
+    VehicleHeap::iterator i =
+        find_if(array.begin() + 1, array.begin() + currentSize + 1, DepartFinder(veh->getParameter().depart));
+    if (!(currentSize == 0 || i == array.begin() + currentSize + 1)) {
+        // remove vehicle from an existing heap-item
+        (*i).second.erase(std::remove((*i).second.begin(), (*i).second.end(), veh), (*i).second.end());
     }
 }
 

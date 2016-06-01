@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, May 2005
-/// @version $Id: MSCalibrator.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSCalibrator.cpp 20550 2016-04-26 10:57:45Z namdre $
 ///
 // Calibrates the flow on an edge by removing an inserting vehicles
 /****************************************************************************/
@@ -440,7 +440,7 @@ MSCalibrator::remainingVehicleCapacity(int laneIndex) const {
     }
     assert(laneIndex < (int)myEdge->getLanes().size());
     MSLane* lane = myEdge->getLanes()[laneIndex];
-    MSVehicle* last = lane->getLastVehicle();
+    MSVehicle* last = lane->getLastFullVehicle();
     const SUMOVehicleParameter* pars = myCurrentStateInterval->vehicleParameter;
     const MSVehicleType* vtype = MSNet::getInstance()->getVehicleControl().getVType(pars->vtypeid);
     const SUMOReal spacePerVehicle = vtype->getLengthWithGap() + myEdge->getSpeedLimit() * vtype->getCarFollowModel().getHeadwayTime();

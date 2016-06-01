@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Fri, 29.04.2005
-/// @version $Id: GUIMainWindow.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIMainWindow.h 20749 2016-05-19 08:32:05Z behrisch $
 ///
 //
 /****************************************************************************/
@@ -128,7 +128,6 @@ protected:
     /// Labels for the current cartesian and geo-coordinate
     FXLabel* myCartesianCoordinate, *myGeoCoordinate;
     FXHorizontalFrame* myCartesianFrame, *myGeoFrame;
-
 
     /// The gl-visual used
     FXGLVisual* myGLVisual;

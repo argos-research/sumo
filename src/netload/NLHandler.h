@@ -5,7 +5,7 @@
 /// @author  Clemens Honomichl
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NLHandler.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NLHandler.h 20743 2016-05-18 15:14:24Z behrisch $
 ///
 // The XML-Handler for network loading
 /****************************************************************************/
@@ -107,6 +107,10 @@ public:
 
     bool haveSeenInternalEdge() const {
         return myHaveSeenInternalEdge;
+    }
+
+    bool haveSeenNeighs() const {
+        return myHaveSeenNeighs;
     }
 
     bool lefthand() const {
@@ -331,6 +335,9 @@ protected:
 
     /// @brief whether the loaded network contains internal lanes
     bool myHaveSeenInternalEdge;
+
+    /// @brief whether the loaded network contains explicit neighbor lanes
+    bool myHaveSeenNeighs;
 
     /// @brief whether the loaded network was built for left hand traffic
     bool myLefthand;

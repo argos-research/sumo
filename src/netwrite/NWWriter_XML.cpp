@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 11.05.2011
-/// @version $Id: NWWriter_XML.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NWWriter_XML.cpp 20550 2016-04-26 10:57:45Z namdre $
 ///
 // Exporter writing networks using XML (native input) format
 /****************************************************************************/
@@ -222,9 +222,7 @@ NWWriter_XML::writeEdgesAndConnections(const OptionsCont& oc, NBNodeCont& nc, NB
         if (!e->hasLaneSpecificPermissions()) {
             writePermissions(edevice, e->getPermissions(0));
         }
-        if (!e->needsLaneSpecificOutput()) {
-            edevice.closeTag();
-        } else {
+        if (e->needsLaneSpecificOutput()) {
             for (unsigned int i = 0; i < e->getLanes().size(); ++i) {
                 const NBEdge::Lane& lane = e->getLanes()[i];
                 edevice.openTag(SUMO_TAG_LANE);
@@ -244,10 +242,15 @@ NWWriter_XML::writeEdgesAndConnections(const OptionsCont& oc, NBNodeCont& nc, NB
                 if (e->hasLaneSpecificSpeed()) {
                     edevice.writeAttr(SUMO_ATTR_SPEED, lane.speed);
                 }
+                if (lane.oppositeID != "") {
+                    edevice.openTag(SUMO_TAG_NEIGH);
+                    edevice.writeAttr(SUMO_ATTR_LANE, lane.oppositeID);
+                    edevice.closeTag();
+                }
                 edevice.closeTag();
             }
-            edevice.closeTag();
         }
+        edevice.closeTag();
         // write this edge's connections to the connections-files
         e->sortOutgoingConnectionsByIndex();
         const std::vector<NBEdge::Connection> connections = e->getConnections();

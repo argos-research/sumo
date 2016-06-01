@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!-- generated on 05/18/16 15:21:31 by SUMO Version dev-SVN-r20731
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/sumoConfiguration.xsd">
+
+    <input>
+        <net-file value="net.net.xml"/>
+        <route-files value="input_routes.rou.xml"/>
+    </input>
+
+    <output>
+        <fcd-output value="fcd.xml"/>
+        <tripinfo-output value="tripinfos.xml"/>
+    </output>
+
+    <processing>
+        <pedestrian.model value="striping"/>
+    </processing>
+
+    <report>
+        <xml-validation value="never"/>
+        <no-step-log value="true"/>
+    </report>
+
+</configuration>
+-->
+
+<tripinfos xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/tripinfo_file.xsd">
+    <personinfo id="pEW" depart="20.00">
+        <walk arrival="27.00"/>
+    </personinfo>
+    <personinfo id="pEN" depart="25.00">
+        <walk arrival="31.00"/>
+    </personinfo>
+    <personinfo id="pWN" depart="0.00">
+        <walk arrival="101.00"/>
+    </personinfo>
+    <personinfo id="pNW" depart="10.00">
+        <walk arrival="114.00"/>
+    </personinfo>
+    <personinfo id="pWE" depart="5.00">
+        <walk arrival="205.00"/>
+    </personinfo>
+    <personinfo id="pNE" depart="15.00">
+        <walk arrival="218.00"/>
+    </personinfo>
+</tripinfos>

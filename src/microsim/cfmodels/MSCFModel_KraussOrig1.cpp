@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 04 Aug 2009
-/// @version $Id: MSCFModel_KraussOrig1.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSCFModel_KraussOrig1.cpp 20680 2016-05-10 07:53:01Z namdre $
 ///
 // The original Krauss (1998) car-following model and parameter
 /****************************************************************************/
@@ -104,6 +104,9 @@ MSCFModel_KraussOrig1::dawdle(SUMOReal speed) const {
 SUMOReal MSCFModel_KraussOrig1::vsafe(SUMOReal gap, SUMOReal predSpeed, SUMOReal /* predMaxDecel */) const {
     if (predSpeed == 0 && gap < 0.01) {
         return 0;
+    } else if (predSpeed == 0 &&  gap <= ACCEL2SPEED(myDecel)) {
+        // workaround for #2310
+        return MIN2(ACCEL2SPEED(myDecel), DIST2SPEED(gap));
     }
     SUMOReal vsafe = (SUMOReal)(-1. * myTauDecel
                                 + sqrt(

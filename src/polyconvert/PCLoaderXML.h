@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Thu, 02.11.2006
-/// @version $Id: PCLoaderXML.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: PCLoaderXML.h 20801 2016-05-28 05:31:30Z behrisch $
 ///
 // A reader for polygons and pois stored in XML-format
 /****************************************************************************/
@@ -35,7 +35,7 @@
 #include <string>
 #include "PCPolyContainer.h"
 #include "PCTypeMap.h"
-#include <utils/xml/SUMOSAXHandler.h>
+#include <utils/shapes/ShapeHandler.h>
 #include <utils/common/UtilExceptions.h>
 
 
@@ -55,7 +55,7 @@ class OptionsCont;
  * Reads pois stored as XML definition. The definitions must match
  *  the format POLYCONVERT generates.
  */
-class PCLoaderXML : public SUMOSAXHandler {
+class PCLoaderXML : public ShapeHandler {
 public:
     /** @brief Loads pois/polygons assumed to be stored as XML
      *
@@ -71,6 +71,8 @@ public:
     static void loadIfSet(OptionsCont& oc, PCPolyContainer& toFill,
                           PCTypeMap& tm);
 
+
+    Position getLanePos(const std::string& poiID, const std::string& laneID, SUMOReal lanePos);
 
 protected:
     /** @brief Constructor
@@ -102,9 +104,6 @@ protected:
 
 
 private:
-    /// @brief The container to store the converted polygons/pois into
-    PCPolyContainer& myCont;
-
     /// @brief The type map to use
     PCTypeMap& myTypeMap;
 

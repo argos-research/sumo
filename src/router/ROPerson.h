@@ -3,7 +3,7 @@
 /// @author  Robert Hilbrich
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: ROPerson.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: ROPerson.h 20698 2016-05-11 08:25:47Z behrisch $
 ///
 // A person as used by router
 /****************************************************************************/
@@ -37,6 +37,8 @@
 #include <utils/vehicle/SUMOVehicleParameter.h>
 #include <utils/vehicle/SUMOVTypeParameter.h>
 #include "RORoutable.h"
+#include "RORouteDef.h"
+#include "ROVehicle.h"
 
 
 // ===========================================================================
@@ -44,7 +46,6 @@
 // ===========================================================================
 class OutputDevice;
 class ROEdge;
-class ROVehicle;
 
 
 // ===========================================================================
@@ -187,7 +188,7 @@ public:
             : edges(_edges), dur(-1), v(-1), dep(std::numeric_limits<SUMOReal>::infinity()), arr(std::numeric_limits<SUMOReal>::infinity()), destStop(_destStop) {}
         Walk(const ConstROEdgeVector& edges, const SUMOReal duration, const SUMOReal speed,
              const SUMOReal departPos, const SUMOReal arrivalPos, const std::string& _destStop)
-             : edges(edges), dur(duration), v(speed), dep(departPos), arr(arrivalPos), destStop(_destStop) {}
+            : edges(edges), dur(duration), v(speed), dep(departPos), arr(arrivalPos), destStop(_destStop) {}
         const ROEdge* getOrigin() const {
             return edges.front();
         }
@@ -221,6 +222,10 @@ public:
         /// @brief Destructor
         virtual ~PersonTrip() {
             for (std::vector<TripItem*>::const_iterator it = myTripItems.begin(); it != myTripItems.end(); ++it) {
+                delete *it;
+            }
+            for (std::vector<ROVehicle*>::const_iterator it = myVehicles.begin(); it != myVehicles.end(); ++it) {
+                delete (*it)->getRouteDefinition();
                 delete *it;
             }
         }

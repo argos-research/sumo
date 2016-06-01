@@ -7,7 +7,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 09 Apr 2001
-/// @version $Id: MSEdgeControl.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSEdgeControl.h 20749 2016-05-19 08:32:05Z behrisch $
 ///
 // Stores edges and lanes, performs moving of vehicle
 /****************************************************************************/
@@ -95,6 +95,13 @@ public:
      *  and marked as being active.
      */
     void patchActiveLanes();
+
+
+    /** @brief Returns the number of active lanes as indicator for the GUI.
+     */
+    int getNumActiveLanes() {
+        return (int)myActiveLanes.size();
+    }
 
 
     /// @name Interfaces for longitudinal vehicle movement

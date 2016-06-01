@@ -6,7 +6,7 @@
 /// @author  Laura Bieker
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUISUMOViewParent.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUISUMOViewParent.cpp 20772 2016-05-20 10:07:31Z behrisch $
 ///
 // A single child window which contains a view of the simulation area
 /****************************************************************************/
@@ -56,7 +56,7 @@
 #include <guisim/GUILane.h>
 #include <guisim/GUINet.h>
 #include <guisim/GUIVehicleControl.h>
-#include <guisim/GUIPersonControl.h>
+#include <guisim/GUITransportableControl.h>
 #include <microsim/MSJunction.h>
 #include <microsim/MSGlobals.h>
 #include "GUIGlobals.h"
@@ -214,7 +214,7 @@ GUISUMOViewParent::onCmdLocate(FXObject*, FXSelector sel, void*) {
             title = "Vehicle Chooser";
             break;
         case MID_LOCATEPERSON:
-            static_cast<GUIPersonControl&>(MSNet::getInstance()->getPersonControl()).insertPersonIDs(ids);
+            static_cast<GUITransportableControl&>(MSNet::getInstance()->getPersonControl()).insertPersonIDs(ids);
             icon = ICON_LOCATEPERSON;
             title = "Person Chooser";
             break;

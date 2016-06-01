@@ -4,7 +4,7 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    Sept 2011
-/// @version $Id: NBHeightMapper.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NBHeightMapper.cpp 20801 2016-05-28 05:31:30Z behrisch $
 ///
 // Set z-values for all network positions based on data from a height map
 /****************************************************************************/
@@ -39,7 +39,6 @@
 #include "NBHeightMapper.h"
 #include <utils/geom/GeoConvHelper.h>
 #include <utils/common/RGBColor.h>
-#include <polyconvert/PCPolyContainer.h>
 
 #ifdef HAVE_GDAL
 #include <ogrsf_frmts.h>

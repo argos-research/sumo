@@ -2,7 +2,7 @@
 /// @file    MEVehicle.h
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MEVehicle.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MEVehicle.h 20687 2016-05-10 11:27:00Z behrisch $
 ///
 // A vehicle from the mesoscopic point of view
 /****************************************************************************/
@@ -66,6 +66,12 @@ public:
      * @return The position of the vehicle (in m from the lane's begin)
      */
     SUMOReal getPositionOnLane() const;
+
+
+    /** @brief Get the vehicle's position relative to the given lane
+     *  @return The back position of the vehicle (in m from the given lane's begin)
+     */
+    SUMOReal getBackPositionOnLane(const MSLane* lane) const;
 
 
     /** @brief Returns the vehicle's direction in degrees

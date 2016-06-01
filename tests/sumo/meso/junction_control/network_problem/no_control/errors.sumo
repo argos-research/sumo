@@ -1,0 +1,6 @@
+Warning: Teleporting vehicle 'cb.98'; waited too long, from edge 'c_in':0, time 1840.78.
+Warning: Vehicle 'cb.98' ends teleporting on edge 'b_out':0, time 1848.78.
+Warning: Teleporting vehicle 'cb.94'; waited too long, from edge 'ca':0, time 1851.46.
+Warning: Vehicle 'cb.94' ends teleporting on edge 'b_out':0, time 1856.05.
+Warning: Teleporting vehicle 'ac.97'; waited too long, from edge 'a_in':0, time 1860.61.
+Warning: Vehicle 'ac.97' teleports beyond arrival edge 'c_out', time 1875.58.

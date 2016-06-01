@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Wed, 10. Dec 2003
-/// @version $Id: MSVehicleControl.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSVehicleControl.cpp 20687 2016-05-10 11:27:00Z behrisch $
 ///
 // The class responsible for building and deletion of vehicles
 /****************************************************************************/
@@ -384,6 +384,11 @@ MSVehicleControl::getQuota(SUMOReal frac) const {
         return base + 1;
     }
     return base;
+}
+
+unsigned int
+MSVehicleControl::getTeleportCount() const {
+    return (MSLane::teleportOnCollision() ? myCollisions : 0) + myTeleportsJam + myTeleportsYield + myTeleportsWrongLane;
 }
 
 /****************************************************************************/

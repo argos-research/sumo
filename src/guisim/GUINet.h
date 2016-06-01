@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUINet.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUINet.h 20768 2016-05-20 08:38:44Z behrisch $
 ///
 // A MSNet extended by some values for usage within the gui
 /****************************************************************************/
@@ -231,7 +231,7 @@ public:
      * @see MSPersonControl
      * @see myPersonControl
      */
-    MSPersonControl& getPersonControl();
+    MSTransportableControl& getPersonControl();
 
 
     /** @brief Returns the container control
@@ -242,7 +242,7 @@ public:
      * @see MSContainerControl
      * @see myContainerControl
      */
-    MSContainerControl& getContainerControl();
+    MSTransportableControl& getContainerControl();
 
 
     /** Returns the gl-id of the traffic light that controls the given link

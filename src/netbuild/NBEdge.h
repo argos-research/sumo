@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdge.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NBEdge.h 20550 2016-04-26 10:57:45Z namdre $
 ///
 // The representation of a single edge during network building
 /****************************************************************************/
@@ -136,8 +136,10 @@ public:
         SUMOReal endOffset;
         /// @brief This lane's width
         SUMOReal width;
-        /// @brief An original ID, if given (@todo: is only seldom used, should be stored somewhere else, probably)
+        /// @brief An original ID, if given
         std::string origID;
+        /// @brief An opposite lane ID, if given
+        std::string oppositeID;
 
     };
 
@@ -920,11 +922,11 @@ public:
     /// @brief whether lanes differ in speed
     bool hasLaneSpecificSpeed() const;
 
-    /// @brief whether lanes differ in offset
-    bool hasLaneSpecificEndOffset() const;
-
     /// @brief whether lanes differ in width
     bool hasLaneSpecificWidth() const;
+
+    /// @brief whether lanes differ in offset
+    bool hasLaneSpecificEndOffset() const;
 
     /// computes the edge (step1: computation of approached edges)
     bool computeEdge2Edges(bool noLeftMovers);

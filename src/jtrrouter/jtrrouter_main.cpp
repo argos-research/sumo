@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Jan 2004
-/// @version $Id: jtrrouter_main.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: jtrrouter_main.cpp 20811 2016-05-30 11:05:58Z behrisch $
 ///
 // Main for JTRROUTER
 /****************************************************************************/
@@ -148,7 +148,7 @@ computeRoutes(RONet& net, ROLoader& loader, OptionsCont& oc) {
     // initialise the loader
     loader.openRoutes(net);
     // prepare the output
-    net.openOutput(oc.getString("output-file"), "", oc.getString("vtype-output"));
+    net.openOutput(oc);
     // build the router
     ROJTRRouter* router = new ROJTRRouter(oc.getBool("ignore-errors"), oc.getBool("accept-all-destinations"),
                                           (int)(((SUMOReal) net.getEdgeNo()) * OptionsCont::getOptions().getFloat("max-edges-factor")),

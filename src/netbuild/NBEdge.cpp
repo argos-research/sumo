@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdge.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NBEdge.cpp 20550 2016-04-26 10:57:45Z namdre $
 ///
 // Methods for the representation of a single edge
 /****************************************************************************/
@@ -1440,9 +1440,9 @@ NBEdge::hasLaneSpecificPermissions() const {
 
 
 bool
-NBEdge::hasLaneSpecificWidth() const {
+NBEdge::hasLaneSpecificSpeed() const {
     for (std::vector<Lane>::const_iterator i = myLanes.begin(); i != myLanes.end(); ++i) {
-        if (i->width != myLanes.begin()->width) {
+        if (i->speed != getSpeed()) {
             return true;
         }
     }
@@ -1451,9 +1451,9 @@ NBEdge::hasLaneSpecificWidth() const {
 
 
 bool
-NBEdge::hasLaneSpecificSpeed() const {
+NBEdge::hasLaneSpecificWidth() const {
     for (std::vector<Lane>::const_iterator i = myLanes.begin(); i != myLanes.end(); ++i) {
-        if (i->speed != getSpeed()) {
+        if (i->width != myLanes.begin()->width) {
             return true;
         }
     }
@@ -1474,7 +1474,7 @@ NBEdge::hasLaneSpecificEndOffset() const {
 
 bool
 NBEdge::needsLaneSpecificOutput() const {
-    return hasLaneSpecificPermissions() || hasLaneSpecificSpeed() || hasLaneSpecificWidth() || hasLaneSpecificEndOffset();
+    return hasLaneSpecificPermissions() || hasLaneSpecificSpeed() || hasLaneSpecificWidth() || hasLaneSpecificEndOffset() || (!myLanes.empty() && myLanes.back().oppositeID != "");
 }
 
 

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdgeCont.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NBEdgeCont.h 20640 2016-05-04 10:17:39Z namdre $
 ///
 // Storage for edges, including some functionality operating on multiple edges
 /****************************************************************************/
@@ -442,6 +442,11 @@ public:
                                      NBTrafficLightLogicCont& tlc, EdgeVector edges);
 
 
+    /** @brief Sets opposite lane information for geometrically close edges
+     */
+    void guessOpposites();
+
+
     /** @brief Rechecks whether the lane spread is proper
      *
      * @todo Recheck usage; check whether this is really needed and whether it works at all
@@ -465,6 +470,10 @@ public:
         return myIgnoredEdges.count(id) != 0;
     }
 
+    /// @brief mark the given edge id as ignored
+    void ignore(std::string id) {
+        myIgnoredEdges.insert(id);
+    }
 
     /** @brief Returns whether the edge with the id was deleted explicitly
      */
@@ -516,6 +525,12 @@ public:
     /// @brief mark edge priorities and prohibit turn-arounds for all roundabout edges
     void markRoundabouts();
 
+    /// @brief Returns true if this edge matches one of the removal criteria
+    bool ignoreFilterMatch(NBEdge* edge);
+
+    /// @brief ensure that all edge ids are integers
+    int mapToNumericalIDs();
+
 private:
     /** @brief Returns the edges which have been built by splitting the edge of the given id
      *
@@ -525,9 +540,6 @@ private:
      */
     EdgeVector getGeneratedFrom(const std::string& id) const;
 
-
-    /// @brief Returns true if this edge matches one of the removal criteria
-    bool ignoreFilterMatch(NBEdge* edge);
 
     /// @brief compute the form factor for a loop of edges
     static SUMOReal formFactor(const EdgeVector& loopEdges);

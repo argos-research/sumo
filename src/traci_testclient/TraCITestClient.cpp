@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2008/04/07
-/// @version $Id: TraCITestClient.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: TraCITestClient.cpp 20797 2016-05-27 10:41:39Z namdre $
 ///
 /// A test execution class
 /****************************************************************************/
@@ -674,27 +674,85 @@ TraCITestClient::readAndReportTypeDependent(tcpip::Storage& inMsg, int valueData
 void
 TraCITestClient::testAPI() {
     answerLog << "testAPI:\n";
+
     answerLog << "  edge:\n";
     answerLog << "    getIDList: " << joinToString(edge.getIDList(), " ") << "\n";
     answerLog << "    getIDCount: " << edge.getIDCount() << "\n";
+    answerLog << "  route:\n";
+    answerLog << "    add:\n";
+    std::vector<std::string> edges;
+    edges.push_back("e_u1");
+    route.add("e_u1", edges);
+    answerLog << "    getIDList: " << joinToString(route.getIDList(), " ") << "\n";
     answerLog << "  vehicle:\n";
+    answerLog << "    getRoadID: " << vehicle.getRoadID("0") << "\n";
+    answerLog << "    getLaneID: " << vehicle.getLaneID("0") << "\n";
+    answerLog << "    getNextTLS:\n";
+    std::vector<VehicleScope::NextTLSData> result = vehicle.getNextTLS("0");
+    for (int i = 0; i < (int)result.size(); ++i) {
+        const VehicleScope::NextTLSData& d = result[i];
+        answerLog << "      tls=" << d.id << " tlIndex=" << d.tlIndex << " dist=" << d.dist << " state=" << d.state << "\n";
+    }
+    answerLog << "    moveToVTD, simStep:\n";
+    vehicle.moveToXY("0", "dummy", 0, 2231.61, 498.29, 90, true);
+    simulationStep();
+    answerLog << "    getRoadID: " << vehicle.getRoadID("0") << "\n";
+    answerLog << "    getLaneID: " << vehicle.getLaneID("0") << "\n";
+    answerLog << "    add:\n";
+    vehicle.add("1", "e_u1");
+    simulationStep();
     answerLog << "    getIDList: " << joinToString(vehicle.getIDList(), " ") << "\n";
+    answerLog << "    getWaitingTime: " << vehicle.getWaitingTime("0") << "\n";
+    answerLog << "    remove:\n";
+    vehicle.remove("0");
     answerLog << "    getIDCount: " << vehicle.getIDCount() << "\n";
+
     answerLog << "  inductionloop:\n";
     answerLog << "    getIDList: " << joinToString(inductionloop.getIDList(), " ") << "\n";
     answerLog << "    getVehicleData:\n";
-    std::vector<InductionLoopScope::VehicleData> result = inductionloop.getVehicleData("det1");
-    for (int i = 0; i < (int)result.size(); ++i) {
-        const InductionLoopScope::VehicleData& vd = result[i];
+    std::vector<InductionLoopScope::VehicleData> result2 = inductionloop.getVehicleData("det1");
+    for (int i = 0; i < (int)result2.size(); ++i) {
+        const InductionLoopScope::VehicleData& vd = result2[i];
         answerLog << "      veh=" << vd.id << " length=" << vd.length << " entered=" << vd.entryTime << " left=" << vd.leaveTime << " type=" << vd.typeID << "\n";
     }
+
     answerLog << "  simulation:\n";
     answerLog << "    getCurrentTime: " << simulation.getCurrentTime() << "\n";
+    answerLog << "    subscribe to road and pos of vehicle '1':\n";
+    std::vector<int> vars;
+    vars.push_back(VAR_ROAD_ID);
+    vars.push_back(VAR_LANEPOSITION);
+    simulation.subscribe(CMD_SUBSCRIBE_VEHICLE_VARIABLE, "1", 0, TIME2STEPS(100), vars);
+    simulationStep();
+    answerLog << "    subscription results:\n";
+    TraCIValues result3 = simulation.getSubscriptionResults("1");
+    answerLog << "      roadID=" << result3[VAR_ROAD_ID].string << " pos=" << result3[VAR_LANEPOSITION].scalar << "\n";
+
+    answerLog << "    subscribe to vehicles around edge 'e_u1':\n";
+    std::vector<int> vars2;
+    vars2.push_back(VAR_LANEPOSITION);
+    simulation.subscribeContext(CMD_SUBSCRIBE_EDGE_CONTEXT, "e_u1", 0, TIME2STEPS(100), CMD_GET_VEHICLE_VARIABLE, 100, vars2);
+    simulationStep();
+    answerLog << "    context subscription results:\n";
+    SubscribedValues result4 = simulation.getContextSubscriptionResults("e_u1");
+    for (SubscribedValues::iterator it = result4.begin(); it != result4.end(); ++it) {
+        answerLog << "      vehicle=" << it->first << " pos=" << it->second[VAR_LANEPOSITION].scalar << "\n";
+    }
+
+    answerLog << "  person:\n";
+    answerLog << "    getIDList: " << joinToString(person.getIDList(), " ") << "\n";
+    answerLog << "    getRoadID: " << person.getRoadID("p0") << "\n";
+    answerLog << "    getTypeID: " << person.getTypeID("p0") << "\n";
+    answerLog << "    getWaitingTime: " << person.getWaitingTime("p0") << "\n";
+    answerLog << "    getNextEdge: " << person.getNextEdge("p0") << "\n";
+
     answerLog << "  gui:\n";
     try {
         answerLog << "    setScheme: \n";
         gui.setSchema("View #0", "real world");
         answerLog << "    getScheme: " << gui.getSchema("View #0") << "\n";
+        answerLog << "    take screenshot: \n";
+        gui.screenshot("View #0", "image.png");
     } catch (tcpip::SocketException&) {
         answerLog << "    no support for gui commands\n";
     }

@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBTypeCont.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBTypeCont.cpp 20575 2016-04-28 07:28:58Z namdre $
 ///
 // A storage for the available types of an edge
 /****************************************************************************/
@@ -49,9 +49,11 @@
 // ===========================================================================
 void
 NBTypeCont::setDefaults(int defaultNumLanes,
+                        SUMOReal defaultLaneWidth,
                         SUMOReal defaultSpeed,
                         int defaultPriority) {
     myDefaultType.numLanes = defaultNumLanes;
+    myDefaultType.width = defaultLaneWidth;
     myDefaultType.speed = defaultSpeed;
     myDefaultType.priority = defaultPriority;
 }

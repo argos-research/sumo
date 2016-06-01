@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Wed, 10. Dec 2003
-/// @version $Id: MSVehicleControl.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSVehicleControl.h 20593 2016-04-29 06:10:53Z namdre $
 ///
 // The class responsible for building and deletion of vehicles
 /****************************************************************************/
@@ -266,9 +266,7 @@ public:
     }
 
     /// @brief return the number of teleports (including collisions)
-    unsigned int getTeleportCount() const {
-        return myCollisions + myTeleportsJam + myTeleportsYield + myTeleportsWrongLane;
-    }
+    unsigned int getTeleportCount() const;
 
     /// @brief return the number of emergency stops
     unsigned int getEmergencyStops() const {
