@@ -591,6 +591,8 @@ public:
         SubscribedContextValues getContextSubscriptionResults();
         SubscribedValues getContextSubscriptionResults(const std::string& objID);
 
+	TraCIPosition convert2D(const std::string& edgeID, SUMOReal lanePos, int laneIndex) const;
+
     private:
         /// @brief invalidated copy constructor
         SimulationScope(const SimulationScope& src);

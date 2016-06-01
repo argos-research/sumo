@@ -1417,6 +1417,19 @@ TraCIAPI::SimulationScope::getContextSubscriptionResults(const std::string& objI
     }
 }
 
+TraCIAPI::TraCIPosition
+TraCIAPI::SimulationScope::convert2D(const std::string& edgeID, SUMOReal lanePos, int laneIndex) const {
+  tcpip::Storage content;
+  content.writeUnsignedByte(TYPE_COMPOUND);
+  content.writeInt(2);
+  content.writeUnsignedByte(POSITION_ROADMAP);
+  content.writeString(edgeID);
+  content.writeDouble(lanePos);
+  content.writeUnsignedByte(laneIndex);
+  content.writeUnsignedByte(TYPE_UBYTE); // come on...
+  content.writeUnsignedByte(POSITION_2D);
+  return myParent.getPosition(CMD_GET_SIM_VARIABLE, POSITION_CONVERSION, "", &content);
+}
 
 // ---------------------------------------------------------------------------
 // TraCIAPI::TrafficLightScope-methods
