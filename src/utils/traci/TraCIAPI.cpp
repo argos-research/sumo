@@ -897,8 +897,8 @@ TraCIAPI::LaneScope::getLinks(const std::string& laneID) const {
     int linkCount = inMsg.readInt(); // value
     /* iterate over the links */
     for (int i = 0; i < linkCount; ++i) {
-      inMsg.readUnsignedByte(); // type
-      ret.push_back(inMsg.readString()); // value
+        inMsg.readUnsignedByte(); // type
+        ret.push_back(inMsg.readString()); // value
     }
     return ret;
 }
