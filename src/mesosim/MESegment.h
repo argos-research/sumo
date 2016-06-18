@@ -2,7 +2,7 @@
 /// @file    MESegment.h
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MESegment.h 20824 2016-05-31 11:03:54Z namdre $
+/// @version $Id: MESegment.h 20900 2016-06-07 11:45:43Z namdre $
 ///
 // A single mesoscopic segment (cell)
 /****************************************************************************/
@@ -345,7 +345,7 @@ public:
     /** @brief return whether this segment is considered free as opposed to jammed
      */
     inline bool free() const {
-        return myOccupancy <= myJamThreshold;
+        return (myOccupancy <= myJamThreshold) || myTLSPenalty;
     }
 
     /// @brief return the remaining physical space on this segment
@@ -382,6 +382,12 @@ public:
         return myLengthGeometryFactor;
     }
 
+    /** @brief Returns the penalty time for passing a tls-controlled link (if using gMesoTLSPenalty > 0)
+     * @param[in] veh The vehicle in question
+     * @return The time penalty
+     */
+    SUMOTime getTLSPenalty(const MEVehicle* veh) const;
+
 private:
     /** @brief Updates data of all detectors for a leaving vehicle
      *
@@ -414,13 +420,6 @@ private:
 
     /// @brief whether the given link may be passed because the option meso-junction-control.limited is set
     bool limitedControlOverride(const MSLink* link) const;
-
-protected:
-    /** @brief Returns the penalty time for passing a tls-controlled link (if using gMesoTLSPenalty > 0)
-     * @param[in] veh The vehicle in question
-     * @return The time penalty
-     */
-    SUMOTime getTLSPenalty(const MEVehicle* veh) const;
 
 private:
     /// @brief The microsim edge this segment belongs to

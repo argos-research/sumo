@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2008/04/07
-/// @version $Id: TraCITestClient.cpp 20797 2016-05-27 10:41:39Z namdre $
+/// @version $Id: TraCITestClient.cpp 20908 2016-06-08 06:16:43Z namdre $
 ///
 /// A test execution class
 /****************************************************************************/
@@ -693,8 +693,8 @@ TraCITestClient::testAPI() {
         const VehicleScope::NextTLSData& d = result[i];
         answerLog << "      tls=" << d.id << " tlIndex=" << d.tlIndex << " dist=" << d.dist << " state=" << d.state << "\n";
     }
-    answerLog << "    moveToVTD, simStep:\n";
-    vehicle.moveToXY("0", "dummy", 0, 2231.61, 498.29, 90, true);
+    answerLog << "    moveToXY, simStep:\n";
+    vehicle.moveToXY("0", "dummy", 0, 2231.61, 498.29, 90, 1);
     simulationStep();
     answerLog << "    getRoadID: " << vehicle.getRoadID("0") << "\n";
     answerLog << "    getLaneID: " << vehicle.getLaneID("0") << "\n";

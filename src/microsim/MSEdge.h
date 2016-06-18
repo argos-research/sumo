@@ -6,7 +6,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSEdge.h 20822 2016-05-31 07:02:29Z namdre $
+/// @version $Id: MSEdge.h 20901 2016-06-07 11:50:11Z namdre $
 ///
 // A road/street connecting two junctions
 /****************************************************************************/
@@ -461,6 +461,10 @@ public:
         return MSNet::getInstance()->getTravelTime(edge, veh, time);
     }
 
+    /** @brief Returns the averaged speed used by the routing device
+     */
+    SUMOReal getRoutingSpeed() const;
+
 
     /// @name Methods releated to vehicle insertion
     /// @{
@@ -643,9 +647,6 @@ public:
 
     /// @brief whether this edge allows changing to the opposite direction edge
     bool canChangeToOpposite();
-
-    /// @brief get the mean speed for mesoscopic simulation
-    SUMOReal getMesoMeanSpeed() const;
 
     /// @brief get the mean speed 
     SUMOReal getMeanSpeed() const;

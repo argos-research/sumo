@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLBuilder.cpp 20743 2016-05-18 15:14:24Z behrisch $
+/// @version $Id: NLBuilder.cpp 20858 2016-06-03 07:29:14Z luecken $
 ///
 // The main interface for loading a microsim
 /****************************************************************************/
@@ -144,11 +144,11 @@ NLBuilder::build() {
         if (myOptions.isDefault("begin")) {
             myOptions.set("begin", time2string(h.getTime()));
         }
-        if (h.getTime() != string2time(myOptions.getString("begin"))) {
-            WRITE_WARNING("State was written at a different time " + time2string(h.getTime()) + " than the begin time " + myOptions.getString("begin") + "!");
-        }
         if (MsgHandler::getErrorInstance()->wasInformed()) {
             return false;
+        }
+        if (h.getTime() != string2time(myOptions.getString("begin"))) {
+            WRITE_WARNING("State was written at a different time " + time2string(h.getTime()) + " than the begin time " + myOptions.getString("begin") + "!");
         }
         PROGRESS_TIME_MESSAGE(before);
     }

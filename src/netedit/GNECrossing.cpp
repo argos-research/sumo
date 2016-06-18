@@ -2,7 +2,7 @@
 /// @file    GNECrossing.cpp
 /// @author  Jakob Erdmann
 /// @date    June 2011
-/// @version $Id: GNECrossing.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNECrossing.cpp 20975 2016-06-15 13:02:40Z palcraft $
 ///
 // A class for visualizing Inner Lanes (used when editing traffic lights)
 /****************************************************************************/
@@ -53,22 +53,24 @@
 #include <foreign/nvwa/debug_new.h>
 #endif // CHECK_MEMORY_LEAKS
 
-
-
-// ===========================================================================
-// static member definitions
-// ===========================================================================
-
-
 // ===========================================================================
 // method definitions
 // ===========================================================================
 GNECrossing::GNECrossing(GNEJunction& parentJunction, const std::string& id) :
-    GUIGlObject(GLO_CROSSING, id),
-    GNEAttributeCarrier(SUMO_TAG_CROSSING),
+    GNENetElement(parentJunction.getNet(), id, GLO_CROSSING, SUMO_TAG_CROSSING),
     myParentJunction(parentJunction),
     myCrossing(parentJunction.getNBNode()->getCrossing(id)),
     myShape(myCrossing.shape) {
+    // Update geometry
+    updateGeometry();
+}
+
+
+GNECrossing::~GNECrossing() {}
+
+
+void 
+GNECrossing::updateGeometry() {
     int segments = (int) myShape.size() - 1;
     if (segments >= 0) {
         myShapeRotations.reserve(segments);
@@ -81,9 +83,6 @@ GNECrossing::GNECrossing(GNEJunction& parentJunction, const std::string& id) :
         }
     }
 }
-
-
-GNECrossing::~GNECrossing() {}
 
 
 void
@@ -126,7 +125,6 @@ GNECrossing::drawGL(const GUIVisualizationSettings& s) const {
         }
         glPopMatrix();
     }
-
 
     glTranslated(0, 0, -.2);
     glPopName();

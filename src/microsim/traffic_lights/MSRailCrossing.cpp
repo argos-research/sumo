@@ -2,7 +2,7 @@
 /// @file    MSRailCrossing.cpp
 /// @author  Jakob Erdmann
 /// @date    Dez 2015
-/// @version $Id: MSRailCrossing.cpp 20550 2016-04-26 10:57:45Z namdre $
+/// @version $Id: MSRailCrossing.cpp 20925 2016-06-08 13:02:47Z namdre $
 ///
 // A rail signal logic
 /****************************************************************************/
@@ -59,7 +59,7 @@ MSRailCrossing::MSRailCrossing(MSTLLogicControl& tlcontrol,
     /// XXX compute reasonable time depending on link length
     myYellowTime(TIME2STEPS(5)) {
     // dummy phase, used to avoid crashing in MSTrafficLightLogic::setTrafficLightSignals()
-    myPhases.push_back(new MSPhaseDefinition(1, 1, 1, std::string(myLinks.size(), 'X')));
+    myPhases.push_back(new MSPhaseDefinition(1, 1, 1, std::string(SUMO_MAX_CONNECTIONS, 'X')));
 }
 
 void

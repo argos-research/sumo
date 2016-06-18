@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVisualizationSettings.h 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: GUIVisualizationSettings.h 20975 2016-06-15 13:02:40Z palcraft $
 ///
 // Stores the information about how to visualize structures
 /****************************************************************************/
@@ -277,6 +277,9 @@ public:
 
     /// @brief the current NETEDIT mode (temporary)
     int editMode;
+
+    /// @brief the current NETEDIT additional mode (temporary)
+    int editAdditionalMode;
 
     /// @brief the current selection scaling in NETEDIT (temporary)
     SUMOReal selectionScale;

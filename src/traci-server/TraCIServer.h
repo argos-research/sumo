@@ -9,7 +9,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    2007/10/24
-/// @version $Id: TraCIServer.h 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: TraCIServer.h 20969 2016-06-15 08:02:52Z namdre $
 ///
 /// TraCI server used to control sumo by a remote TraCI client
 /****************************************************************************/
@@ -108,7 +108,7 @@ public:
     /// @brief process all commands until a simulation step is wanted
     static void processCommandsUntilSimStep(SUMOTime step);
 
-    void setVTDControlled(MSVehicle* v, MSLane* l, SUMOReal pos, SUMOReal posLat, SUMOReal angle,
+    void setVTDControlled(MSVehicle* v, Position xyPos, MSLane* l, SUMOReal pos, SUMOReal posLat, SUMOReal angle,
                           int edgeOffset, ConstMSEdgeVector route, SUMOTime t);
 
     void postProcessVTD();

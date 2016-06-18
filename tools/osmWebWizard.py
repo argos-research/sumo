@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2014-14-10
-@version $Id: osmWebWizard.py 20733 2016-05-18 06:38:43Z namdre $
+@version $Id: osmWebWizard.py 20891 2016-06-06 12:30:03Z namdre $
 
 Browser GUI for OSMget, OSMbuild, optionally randomTrips and SUMO GUI
 
@@ -247,6 +247,7 @@ class Builder(object):
         self.filename("config", ".sumocfg")
         opts = [sumo, "-n", self.files["net"], "--gui-settings-file", self.files["guisettings"],
                 "--duration-log.statistics",
+                "--device.rerouting.adaptation-steps", "180",
                 "-v", "--no-step-log", "--save-configuration", self.files["config"], "--ignore-route-errors"]
 
         if self.data["vehicles"]:

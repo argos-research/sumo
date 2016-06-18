@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILane.h 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: GUILane.h 20863 2016-06-03 09:27:22Z behrisch $
 ///
 // Representation of a lane in the micro simulation (gui-version)
 /****************************************************************************/
@@ -151,6 +151,20 @@ public:
         first; the access will be granted at the end of this method */
     MSVehicle* removeVehicle(MSVehicle* remVehicle, MSMoveReminder::Notification notification, bool notify);
 
+
+    /** @brief Sets the information about a vehicle lapping into this lane
+     *
+     * This vehicle is added to myVehicles and may be distinguished from regular
+     * vehicles by the disparity between this lane and v->getLane()
+     * @param[in] v The vehicle which laps into this lane
+     * @return This lane's length
+     */
+    SUMOReal setPartialOccupation(MSVehicle* v);
+
+    /** @brief Removes the information about a vehicle lapping into this lane
+     * @param[in] v The vehicle which laps into this lane
+     */
+    void resetPartialOccupation(MSVehicle* v);
 
 
     /// @name inherited from GUIGlObject

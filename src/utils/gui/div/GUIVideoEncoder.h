@@ -2,7 +2,7 @@
 /// @file    GUIVideoEncoder.h
 /// @author  Michael Behrisch
 /// @date    Dec 2015
-/// @version $Id: GUIVideoEncoder.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GUIVideoEncoder.h 20851 2016-06-02 11:13:12Z rhilbrich $
 ///
 // A simple video encoder from RGBA pics to anything ffmpeg can handle.
 // Tested with h264 only.
@@ -111,7 +111,7 @@ public:
             //av_dict_set(&param, "profile", "main", 0);
         }
         //H.265
-        if (pCodecCtx->codec_id == AV_CODEC_ID_H265) {
+        if (pCodecCtx->codec_id == AV_CODEC_ID_HEVC) {
             av_dict_set(&param, "preset", "ultrafast", 0);
             av_dict_set(&param, "tune", "zero-latency", 0);
         }

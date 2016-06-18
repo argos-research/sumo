@@ -2,7 +2,7 @@
 /// @file    GUIEvent_Message.h
 /// @author  Daniel Krajzewicz
 /// @date    Wed 18 Jun 2003
-/// @version $Id: GUIEvent_Message.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIEvent_Message.h 20995 2016-06-17 14:06:28Z behrisch $
 ///
 // Event send when a message (message, warning, error) has to besubmitted
 /****************************************************************************/
@@ -45,6 +45,11 @@
  */
 class GUIEvent_Message : public GUIEvent {
 public:
+    /// constructor
+    GUIEvent_Message(const std::string& msg)
+        : GUIEvent(EVENT_STATUS_OCCURED), myMsg(msg) {
+    }
+
     /// constructor
     GUIEvent_Message(MsgHandler::MsgType type, const std::string& msg)
         : GUIEvent(EVENT_MESSAGE_OCCURED), myMsg(msg) {

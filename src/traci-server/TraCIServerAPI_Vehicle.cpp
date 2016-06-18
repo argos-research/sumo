@@ -8,7 +8,7 @@
 /// @author  Mario Krumnow
 /// @author  Jakob Erdmann
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_Vehicle.cpp 20740 2016-05-18 15:10:11Z behrisch $
+/// @version $Id: TraCIServerAPI_Vehicle.cpp 20969 2016-06-15 08:02:52Z namdre $
 ///
 // APIs for getting/setting vehicle values via TraCI
 /****************************************************************************/
@@ -1325,12 +1325,14 @@ TraCIServerAPI_Vehicle::processSet(TraCIServer& server, tcpip::Storage& inputSto
                 return server.writeErrorStatusCmd(CMD_SET_VEHICLE_VARIABLE, "The fifth parameter for setting a VTD vehicle must be the angle given as a double.", outputStorage);
             }
             bool keepRoute = v->getID() != "VTD_EGO";
+            bool mayLeaveNetwork = false;
             if (numArgs == 6) {
                 int keepRouteFlag;
                 if (!server.readTypeCheckingByte(inputStorage, keepRouteFlag)) {
                     return server.writeErrorStatusCmd(CMD_SET_VEHICLE_VARIABLE, "The sixth parameter for setting a VTD vehicle must be the keepRouteFlag given as a byte.", outputStorage);
                 }
-                keepRoute = (keepRouteFlag > 0);
+                keepRoute = (keepRouteFlag == 1);
+                mayLeaveNetwork = (keepRouteFlag == 2);
             }
             // process
             std::string origID = edgeID + " " + toString(laneNum);
@@ -1368,34 +1370,39 @@ TraCIServerAPI_Vehicle::processSet(TraCIServer& server, tcpip::Storage& inputSto
                 found = vtdMap_matchingRoutePosition(pos, origID, *v, bestDistance, &lane, lanePos, routeOffset, edges);
                 // @note silenty ignoring mapping failure
             } else {
-                found = vtdMap(pos, origID, angle, *v, server, bestDistance, &lane, lanePos, routeOffset, edges);
+                found = vtdMap(pos, maxRouteDistance, origID, angle, *v, server, bestDistance, &lane, lanePos, routeOffset, edges);
             }
-            if (found && maxRouteDistance > bestDistance) {
+            if ((found && bestDistance <= maxRouteDistance) || mayLeaveNetwork) {
                 // optionally compute lateral offset
-                if (MSGlobals::gLateralResolution > 0) {
-                    const SUMOReal perpDist = lane->getShape().distance(pos, true);
+                if (found && (MSGlobals::gLateralResolution > 0 || mayLeaveNetwork)) {
+                    const SUMOReal perpDist = lane->getShape().distance2D(pos, true);
                     if (perpDist != GeomHelper::INVALID_OFFSET) {
-                        // XXX ensure it stays on the road?
                         lanePosLat = perpDist;
+                        if (!mayLeaveNetwork) {
+                            lanePosLat = MIN2(lanePosLat, (SUMOReal)0.5 * (lane->getWidth() + v->getVehicleType().getWidth() - MSGlobals::gLateralResolution));
+                        }
                         // figure out whether the offset is to the left or to the right
                         PositionVector tmp = lane->getShape();
                         tmp.move2side(-lanePosLat); // moved to left
-                        //std::cout << " lane=" << lane->getID() << " posLat=" << lanePosLat << " shape=" << lane->getShape() << " tmp=" << tmp << " tmpDist=" << tmp.distance(pos) << "\n";
-                        if (tmp.distance(pos) > perpDist) {
-                            lanePosLat = -perpDist;
+                        //std::cout << " lane=" << lane->getID() << " posLat=" << lanePosLat << " shape=" << lane->getShape() << " tmp=" << tmp << " tmpDist=" << tmp.distance2D(pos) << "\n";
+                        if (tmp.distance2D(pos) > perpDist) {
+                            lanePosLat = -lanePosLat;
                         }
                     }
                 }
+                assert((found && lane !=0) || (!found && lane == 0));
                 // use the best we have
-                server.setVTDControlled(v, lane, lanePos, lanePosLat, angle, routeOffset, edges, MSNet::getInstance()->getCurrentTimeStep());
+                server.setVTDControlled(v, pos, lane, lanePos, lanePosLat, angle, routeOffset, edges, MSNet::getInstance()->getCurrentTimeStep());
                 if (!v->isOnRoad()) {
                     MSNet::getInstance()->getInsertionControl().alreadyDeparted(v);
 
                 }
             } else {
-                if (!keepRoute) {
-                    return server.writeErrorStatusCmd(CMD_SET_VEHICLE_VARIABLE, "Could not map vehicle '" + id + "'.", outputStorage);
-                } // @note else, silently ignore failure to map
+                if (lane == 0) {
+                    return server.writeErrorStatusCmd(CMD_SET_VEHICLE_VARIABLE, "Could not map vehicle '" + id + "' no road found within " + toString(maxRouteDistance) + "m.", outputStorage);
+                } else {
+                    return server.writeErrorStatusCmd(CMD_SET_VEHICLE_VARIABLE, "Could not map vehicle '" + id + "' distance to road is " + toString(bestDistance) + ".", outputStorage);
+                }
             }
         }
         break;
@@ -1440,14 +1447,14 @@ TraCIServerAPI_Vehicle::processSet(TraCIServer& server, tcpip::Storage& inputSto
 
 
 bool
-TraCIServerAPI_Vehicle::vtdMap(const Position& pos, const std::string& origID, const SUMOReal angle,  MSVehicle& v, TraCIServer& server,
+TraCIServerAPI_Vehicle::vtdMap(const Position& pos, SUMOReal maxRouteDistance, const std::string& origID, const SUMOReal angle,  MSVehicle& v, TraCIServer& server,
                                SUMOReal& bestDistance, MSLane** lane, SUMOReal& lanePos, int& routeOffset, ConstMSEdgeVector& edges) {
     // collect edges around the vehicle
     SUMOReal speed = pos.distanceTo2D(v.getPosition()); // !!!v.getSpeed();
     std::set<std::string> into;
     PositionVector shape;
     shape.push_back(pos);
-    server.collectObjectsInRange(CMD_GET_EDGE_VARIABLE, shape, speed * 2, into);
+    server.collectObjectsInRange(CMD_GET_EDGE_VARIABLE, shape, maxRouteDistance, into);
     SUMOReal maxDist = 0;
     std::map<MSLane*, LaneUtility> lane2utility;
     // compute utility for all candidate edges
@@ -1524,7 +1531,7 @@ TraCIServerAPI_Vehicle::vtdMap(const Position& pos, const std::string& origID, c
             SUMOReal langle = 180.;
             SUMOReal dist = 1000.;
             if (off >= 0) {
-                dist = lane->getShape().distance(pos);
+                dist = lane->getShape().distance2D(pos);
                 if (dist > lane->getLength()) { // this is a workaround
                     // a SmartDB, running at :49_2 delivers off=~9.24 while dist>24.?
                     dist = 1000.;
@@ -1630,7 +1637,7 @@ TraCIServerAPI_Vehicle::findCloserLane(const MSEdge* edge, const Position& pos, 
     bool newBest = false;
     for (std::vector<MSLane*>::const_iterator k = lanes.begin(); k != lanes.end() && bestDistance > POSITION_EPS; ++k) {
         MSLane* candidateLane = *k;
-        const SUMOReal dist = candidateLane->getShape().distance(pos); // get distance
+        const SUMOReal dist = candidateLane->getShape().distance2D(pos); // get distance
 #ifdef DEBUG_VTD
         std::cout << "   b at lane " << candidateLane->getID() << " dist:" << dist << " best:" << bestDistance << std::endl;
 #endif

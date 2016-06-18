@@ -6,7 +6,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Fri, 08.10.2013
-/// @version $Id: MSLCM_LC2013.cpp 20765 2016-05-20 07:49:28Z luecken $
+/// @version $Id: MSLCM_LC2013.cpp 20923 2016-06-08 11:27:30Z namdre $
 ///
 // A lane change model developed by D. Krajzewicz, J. Erdmann et al. between 2004 and 2013
 /****************************************************************************/
@@ -65,24 +65,19 @@
 #define HELP_DECEL_FACTOR (SUMOReal)1.0
 
 #define HELP_OVERTAKE  (SUMOReal)(10.0 / 3.6)
-#define MIN_FALLBEHIND  (SUMOReal)(14.0 / 3.6)
+#define MIN_FALLBEHIND  (SUMOReal)(7.0 / 3.6)
 
+#define RELGAIN_NORMALIZATION_MIN_SPEED (SUMOReal)10.0
 #define URGENCY (SUMOReal)2.0
-
-#define ROUNDABOUT_DIST_BONUS (SUMOReal)80.0
 
 #define KEEP_RIGHT_TIME (SUMOReal)5.0 // the number of seconds after which a vehicle should move to the right lane
 #define KEEP_RIGHT_ACCEPTANCE (SUMOReal)2.0 // calibration factor for determining the desire to keep right
-
-#define RELGAIN_NORMALIZATION_MIN_SPEED (SUMOReal)10.0
-
+#define ROUNDABOUT_DIST_BONUS (SUMOReal)80.0
 
 
 // ===========================================================================
 // debug defines
 // ===========================================================================
-//#define DEBUG_VEHICLE_GUI_SELECTION 1
-
 //#define DEBUG_PATCH_SPEED
 //#define DEBUG_INFORMED
 //#define DEBUG_INFORMER
@@ -90,11 +85,8 @@
 //#define DEBUG_WANTS_CHANGE
 //#define DEBUG_SLOW_DOWN
 //#define DEBUG_SAVE_BLOCKER_LENGTH
-//#define DEBUG_COND (myVehicle.getID() == "emitter_SST92-150 FG 1 DE 2_28658400") // get's stuck in scenario VMM_muc at time t=28760
-//#define DEBUG_COND (myVehicle.getID() == "emitter_SST92-150 FG 1 DE 3_20381538") // get's stuck in scenario VMM_muc around time t=20470
-//#define DEBUG_COND (myVehicle.getID() == "type1.32" || myVehicle.getID() == "type1.26") // ticket676 t=90
-//#define DEBUG_COND (myVehicle.getID() == "emitter_SST92-150 FG 1 DE 3_20381538") // VMM_muc t=20490 (with conservative slowDownForBlocked)
-#define DEBUG_COND false
+
+#define DEBUG_COND (myVehicle.getID() == "disabled")
 
 // ===========================================================================
 // member method definitions
@@ -192,6 +184,21 @@ MSLCM_LC2013::wantsChange(
 SUMOReal
 MSLCM_LC2013::patchSpeed(const SUMOReal min, const SUMOReal wanted, const SUMOReal max, const MSCFModel& cfModel) {
     const SUMOReal newSpeed = _patchSpeed(min, wanted, max, cfModel);
+
+#ifdef DEBUG_PATCH_SPEED
+    if (DEBUG_COND) {
+        const std::string patched = (wanted != newSpeed ? " patched=" + toString(newSpeed) : "");
+        std::cout << STEPS2TIME(MSNet::getInstance()->getCurrentTimeStep())
+                  << " veh=" << myVehicle.getID()
+                  << " lane=" << myVehicle.getLane()->getID()
+                  << " pos=" << myVehicle.getPositionOnLane()
+                  << " v=" << myVehicle.getSpeed()
+                  << " wanted=" << wanted
+                  << patched
+                  << "\n\n";
+    }
+#endif
+
     return newSpeed;
 }
 
@@ -211,7 +218,7 @@ MSLCM_LC2013::_patchSpeed(const SUMOReal min, const SUMOReal wanted, const SUMOR
         SUMOReal space = myLeftSpace - myLeadingBlockerLength - MAGIC_offset - myVehicle.getVehicleType().getMinGap();
 #ifdef DEBUG_PATCH_SPEED
         if (DEBUG_COND) {
-            std::cout << time << " veh=" << myVehicle.getID() << " myLeadingBlockerLength=" << myLeadingBlockerLength << " space=" << space << "\n";
+            std::cout << SIMTIME << " veh=" << myVehicle.getID() << " myLeadingBlockerLength=" << myLeadingBlockerLength << " space=" << space << "\n";
         }
 #endif
         if (space > 0) {
@@ -315,7 +322,8 @@ MSLCM_LC2013::_patchSpeed(const SUMOReal min, const SUMOReal wanted, const SUMOR
 
 void*
 MSLCM_LC2013::inform(void* info, MSVehicle* sender) {
-    Info* pinfo = (Info*) info;
+    UNUSED_PARAMETER(sender);
+    Info* pinfo = (Info*)info;
     myVSafes.push_back(pinfo->first);
     myOwnState |= pinfo->second;
 #ifdef DEBUG_INFORMED
@@ -373,7 +381,7 @@ MSLCM_LC2013::informLeader(MSAbstractLaneChangeModel::MSLCMessager& msgPass,
                 // overtaking on the right on an uncongested highway is forbidden (noOvertakeLCLeft)
                 || (dir == LCA_MLEFT && !myVehicle.congested() && !myAllowOvertakingRight)
                 // not enough space to overtake?
-                || myLeftSpace < overtakeDist
+                || myLeftSpace - myLeadingBlockerLength < overtakeDist
                 // not enough time to overtake?
                 || dv * remainingSeconds < overtakeDist) {
             // cannot overtake
@@ -528,7 +536,8 @@ MSLCM_LC2013::informFollower(MSAbstractLaneChangeModel::MSLCMessager& msgPass,
                                              nv, nv->getSpeed(), neighFollow.second + SPEED2DIST(plannedSpeed), plannedSpeed, myVehicle.getCarFollowModel().getMaxDecel()));
             const SUMOReal vsafe = MAX2(neighNewSpeed, nv->getCarFollowModel().followSpeed(
                                             nv, nv->getSpeed(), neighFollow.second + SPEED2DIST(plannedSpeed - vsafe1), plannedSpeed, myVehicle.getCarFollowModel().getMaxDecel()));
-            assert(vsafe <= vsafe1);
+            // the following assertion cannot be guaranteed because the CFModel handles small gaps differently, see MSCFModel::maximumSafeStopSpeed
+            // assert(vsafe <= vsafe1);
             msgPass.informNeighFollower(new Info(vsafe, dir | LCA_AMBLOCKINGFOLLOWER), &myVehicle);
 #ifdef DEBUG_INFORMER
             if(DEBUG_COND){
@@ -690,6 +699,7 @@ MSLCM_LC2013::_wantsChange(
     if (isOpposite() && right) {
         neigh = preb[preb.size() - 1];
         curr = neigh;
+        best = neigh;
         bestLaneOffset = -1;
         curr.bestLaneOffset = -1;
         neighDist = neigh.length;
@@ -808,6 +818,7 @@ MSLCM_LC2013::_wantsChange(
                 		  << " currentDist=" << currentDist
                 		  << " usableDist=" << usableDist
                 		  << " bestLaneOffset=" << bestLaneOffset
+                		  << " best.occupation=" << best.occupation
                 		  << " best.length=" << best.length
                 		  << " maxJam=" << maxJam
                 		  << " neighLeftPlace=" << neighLeftPlace
@@ -977,7 +988,7 @@ MSLCM_LC2013::_wantsChange(
                                         : -mySpeedGainProbability / myChangeProbThresholdLeft));
     if (amBlockingFollowerPlusNB()
             && (inconvenience <= myCooperativeParam)
-            //&& ((myOwnState & myLcaCounter) == 0) // VARIANT_6 : counterNoHelp
+            //&& ((myOwnState & lcaCounter) == 0) // VARIANT_6 : counterNoHelp
             && (changeToBest || currentDistAllows(neighDist, abs(bestLaneOffset) + 1, laDist))) {
 #ifdef DEBUG_WANTS_CHANGE
     	if(DEBUG_COND){
@@ -985,7 +996,7 @@ MSLCM_LC2013::_wantsChange(
                       << " veh=" << myVehicle.getID()
                       << " wantsChangeToHelp=" << (right ? "right" : "left")
                       << " state=" << myOwnState
-                      // << (((myOwnState & myLcaCounter) != 0) ? " (counter)" : "")
+                      // << (((myOwnState & lcaCounter) != 0) ? " (counter)" : "")
                       << "\n";
         }
 #endif

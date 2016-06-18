@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVisualizationSettings.cpp 20679 2016-05-10 07:33:10Z namdre $
+/// @version $Id: GUIVisualizationSettings.cpp 20865 2016-06-03 10:22:53Z namdre $
 ///
 // Stores the information about how to visualize structures
 /****************************************************************************/
@@ -513,7 +513,7 @@ GUIVisualizationSettings::GUIVisualizationSettings()
     scheme.addColor(RGBColor::BLUE, (SUMOReal)(120 / 3.6));
     scheme.addColor(RGBColor::MAGENTA, (SUMOReal)(150 / 3.6));
     edgeColorer.addScheme(scheme);
-    scheme = GUIColorScheme("by current occupancy (streetwise)", RGBColor::BLUE);
+    scheme = GUIColorScheme("by current occupancy (streetwise, brutto)", RGBColor::BLUE);
     scheme.addColor(RGBColor::RED, (SUMOReal)0.95);
     edgeColorer.addScheme(scheme);
     scheme = GUIColorScheme("by current speed (streetwise)", RGBColor::RED);
@@ -533,6 +533,13 @@ GUIVisualizationSettings::GUIVisualizationSettings()
     scheme.addColor(RGBColor::BLUE, (SUMOReal)(1));
     scheme.addColor(RGBColor::MAGENTA, (SUMOReal)(1.25));
     edgeColorer.addScheme(scheme);
+    scheme = GUIColorScheme("by routing device assumed speed", RGBColor::RED);
+    scheme.addColor(RGBColor::YELLOW, (SUMOReal)(30 / 3.6));
+    scheme.addColor(RGBColor::GREEN, (SUMOReal)(55 / 3.6));
+    scheme.addColor(RGBColor::CYAN, (SUMOReal)(80 / 3.6));
+    scheme.addColor(RGBColor::BLUE, (SUMOReal)(120 / 3.6));
+    scheme.addColor(RGBColor::MAGENTA, (SUMOReal)(150 / 3.6));
+    edgeColorer.addScheme(scheme);
     edgeColorer.addScheme(GUIColorScheme("by angle", RGBColor::YELLOW, "", true));
     scheme = GUIColorScheme("by segments (alternating)", RGBColor::BLUE, "odd", true);
     scheme.addColor(RGBColor::RED, 1, "even");
@@ -540,7 +547,7 @@ GUIVisualizationSettings::GUIVisualizationSettings()
     scheme = GUIColorScheme("by jammed state (segmentwise)", RGBColor::GREEN, "free", true);
     scheme.addColor(RGBColor::RED, 1, "jammed");
     edgeColorer.addScheme(scheme);
-    scheme = GUIColorScheme("by current occupancy (segmentwise)", RGBColor::BLUE);
+    scheme = GUIColorScheme("by current occupancy (segmentwise, brutto)", RGBColor::BLUE);
     scheme.addColor(RGBColor::RED, (SUMOReal)0.95);
     edgeColorer.addScheme(scheme);
     scheme = GUIColorScheme("by current speed (segmentwise)", RGBColor::RED);
@@ -571,7 +578,7 @@ GUIVisualizationSettings::GUIVisualizationSettings()
         scheme = GUIScaleScheme("by allowed speed (streetwise)", 0);
         scheme.addColor(10, (SUMOReal)(150.0 / 3.6));
         edgeScaler.addScheme(scheme);
-        scheme = GUIScaleScheme("by current occupancy (streetwise)", 0);
+        scheme = GUIScaleScheme("by current occupancy (streetwise, brutto)", 0);
         scheme.addColor(10, (SUMOReal)0.95);
         edgeScaler.addScheme(scheme);
         scheme = GUIScaleScheme("by current speed (streetwise)", 0);

@@ -2,7 +2,7 @@
 /// @file    GNEChange.cpp
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEChange.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEChange.cpp 20975 2016-06-15 13:02:40Z palcraft $
 ///
 // The reification of a NETEDIT editing operation (see command pattern)
 // inherits from FXCommand and is used to for undo/redo
@@ -48,5 +48,34 @@ FXIMPLEMENT_ABSTRACT(GNEChange, FXCommand, NULL, 0)
 GNEChange::GNEChange(GNENet* net, bool forward) :
     myNet(net),
     myForward(forward) {}
+
+
+GNEChange::~GNEChange() {};
+
+
+FXuint
+GNEChange::size() const {
+    return 1;
+}
+
+
+FXString
+GNEChange::undoName() const {
+    return "Undo";
+}
+
+
+FXString
+GNEChange::redoName() const {
+    return "Redo";
+}
+
+
+void
+GNEChange::undo() {};
+
+
+void
+GNEChange::redo() {};
 
 /****************************************************************************/

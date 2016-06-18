@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Tue, 17 Feb 2009
-/// @version $Id: SUMOVehicle.h 20813 2016-05-30 11:52:09Z namdre $
+/// @version $Id: SUMOVehicle.h 20910 2016-06-08 06:33:11Z namdre $
 ///
 // Abstract base class for vehicle representations
 /****************************************************************************/
@@ -225,6 +225,12 @@ public:
      * @return Whether the vehicle is parked
      */
     virtual bool isParking() const = 0;
+
+    /** @brief Returns the information whether the vehicle is fully controlled
+     * via TraCI
+     * @return Whether the vehicle is remote-controlled
+     */
+    virtual bool isRemoteControlled() const = 0;
 
     /** @brief Returns this vehicle's real departure time
      * @return This vehicle's real departure time

@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVehicle.h 20689 2016-05-10 13:20:11Z behrisch $
+/// @version $Id: GUIVehicle.h 20907 2016-06-07 14:06:01Z namdre $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -135,6 +135,10 @@ public:
      * @return The built parameter window
      */
     GUIParameterTableWindow* getTypeParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent);
+
+protected:
+    /// @brief register vehicle for drawing while outside the network
+    void drawOutsideNetwork(bool /*add*/) const;
 
 private:
 

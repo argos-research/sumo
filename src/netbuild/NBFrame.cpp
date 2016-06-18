@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    09.05.2011
-/// @version $Id: NBFrame.cpp 20830 2016-05-31 14:48:55Z behrisch $
+/// @version $Id: NBFrame.cpp 20975 2016-06-15 13:02:40Z palcraft $
 ///
 // Sets and checks options for netbuild
 /****************************************************************************/
@@ -382,7 +382,6 @@ NBFrame::fillOptions(bool forNetgen) {
     oc.doRegister("keep-nodes-unregulated.district-nodes", new Option_Bool(false));
     oc.addSynonyme("keep-nodes-unregulated.district-nodes", "keep-unregulated.district-nodes");
     oc.addDescription("keep-nodes-unregulated.district-nodes", "Unregulated Nodes", "Do not regulate district nodes");
-
 
     // ramp guessing options
     if (!forNetgen) {

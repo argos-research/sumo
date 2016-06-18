@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIDanielPerspectiveChanger.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GUIDanielPerspectiveChanger.cpp 20975 2016-06-15 13:02:40Z palcraft $
 ///
 // A class that allows to steer the visual output in dependence to
 /****************************************************************************/
@@ -247,10 +247,10 @@ GUIDanielPerspectiveChanger::setViewport(SUMOReal zoom,
 void
 GUIDanielPerspectiveChanger::changeCanvassLeft(int change) {
     myViewPort = Boundary(
-                     myViewPort.xmin() - myCallback.p2m(change),
-                     myViewPort.ymin(),
-                     myViewPort.xmax(),
-                     myViewPort.ymax());
+        myViewPort.xmin() - myCallback.p2m(change),
+        myViewPort.ymin(),
+        myViewPort.xmax(),
+        myViewPort.ymax());
 }
 
 

@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    20 Nov 2001
-/// @version $Id: NBNetBuilder.cpp 20830 2016-05-31 14:48:55Z behrisch $
+/// @version $Id: NBNetBuilder.cpp 20896 2016-06-07 10:40:32Z behrisch $
 ///
 // Instance responsible for building networks
 /****************************************************************************/
@@ -168,7 +168,7 @@ NBNetBuilder::compute(OptionsCont& oc,
         PROGRESS_BEGIN_MESSAGE("Removing empty nodes" + std::string(removeGeometryNodes ? " and geometry nodes" : ""));
         // removeUnwishedNodes needs turnDirections. @todo: try to call this less often
         NBTurningDirectionsComputer::computeTurnDirections(myNodeCont, false);
-        no = myNodeCont.removeUnwishedNodes(myDistrictCont, myEdgeCont, myJoinedEdges, myTLLCont, removeGeometryNodes);
+        no = myNodeCont.removeUnwishedNodes(myDistrictCont, myEdgeCont, myTLLCont, removeGeometryNodes);
         PROGRESS_TIME_MESSAGE(before);
         WRITE_MESSAGE("   " + toString(no) + " nodes removed.");
     }
@@ -200,7 +200,6 @@ NBNetBuilder::compute(OptionsCont& oc,
     if (removeElements && oc.getBool("edges.join")) {
         before = SysUtils::getCurrentMillis();
         PROGRESS_BEGIN_MESSAGE("Joining similar edges");
-        myJoinedEdges.init(myEdgeCont);
         myNodeCont.joinSimilarEdges(myDistrictCont, myEdgeCont, myTLLCont);
         PROGRESS_TIME_MESSAGE(before);
     }

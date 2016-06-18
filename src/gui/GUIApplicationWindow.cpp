@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUIApplicationWindow.cpp 20768 2016-05-20 08:38:44Z behrisch $
+/// @version $Id: GUIApplicationWindow.cpp 20995 2016-06-17 14:06:28Z behrisch $
 ///
 // The main window of the SUMO-gui.
 /****************************************************************************/
@@ -498,7 +498,7 @@ GUIApplicationWindow::fillMenuBar() {
                       GUIIconSubSys::getIcon(ICON_LOCATEPOLY), this, MID_LOCATEPOLY);
     new FXMenuSeparator(myLocatorMenu);
     new FXMenuCheck(myLocatorMenu,
-                    "Show Internal Structures\t\tShow internal junctions and streets in locator Dialog.",
+                    "Show Internal Structures\t\tShow internal junctions and streets in locator dialog.",
                     this, MID_LISTINTERNAL);
     // build control menu
     myControlMenu = new FXMenuPane(this);
@@ -846,7 +846,6 @@ GUIApplicationWindow::onCmdOpenShapes(FXObject*, FXSelector, void*) {
     return 1;
 }
 
-
 long
 GUIApplicationWindow::onCmdReload(FXObject*, FXSelector, void*) {
     getApp()->beginWaitCursor();
@@ -1038,7 +1037,7 @@ GUIApplicationWindow::onCmdLocate(FXObject*, FXSelector sel, void*) {
 
 
 long
-GUIApplicationWindow::onCmdShowStats(FXObject*, FXSelector sel, void*) {
+GUIApplicationWindow::onCmdShowStats(FXObject*, FXSelector, void*) {
     if (myMDIClient->numChildren() > 0) {
         GUISUMOViewParent* w = dynamic_cast<GUISUMOViewParent*>(myMDIClient->getActiveChild());
         GUINet::getGUIInstance()->getParameterWindow(*this, *w->getView());
@@ -1215,6 +1214,7 @@ GUIApplicationWindow::eventOccured() {
             case EVENT_MESSAGE_OCCURED:
             case EVENT_WARNING_OCCURED:
             case EVENT_ERROR_OCCURED:
+            case EVENT_STATUS_OCCURED:
                 handleEvent_Message(e);
                 break;
             case EVENT_SIMULATION_ENDED:
@@ -1350,7 +1350,11 @@ GUIApplicationWindow::handleEvent_SimulationStep(GUIEvent*) {
 void
 GUIApplicationWindow::handleEvent_Message(GUIEvent* e) {
     GUIEvent_Message* ec = static_cast<GUIEvent_Message*>(e);
-    myMessageWindow->appendMsg(ec->getOwnType(), ec->getMsg());
+    if (ec->getOwnType() == EVENT_STATUS_OCCURED) {
+        setStatusBarText(ec->getMsg());
+    } else {
+        myMessageWindow->appendMsg(ec->getOwnType(), ec->getMsg());
+    }
 }
 
 
@@ -1361,11 +1365,13 @@ GUIApplicationWindow::handleEvent_SimulationEnded(GUIEvent* e) {
     if (GUIGlobals::gQuitOnEnd) {
         closeAllWindows();
         getApp()->exit(ec->getReason() == MSNet::SIMSTATE_ERROR_IN_SIM);
+    } else if (GUIGlobals::gDemoAutoReload) {
+        onCmdReload(0, 0, 0);
     } else if (!myHaveNotifiedAboutSimEnd) {
         // build the text
         const std::string text = "Simulation ended at time: " + time2string(ec->getTimeStep()) +
-                                 ".\nReason: " + MSNet::getStateMessage(ec->getReason()) +
-                                 "\nDo you want to close all open files and views?";
+            ".\nReason: " + MSNet::getStateMessage(ec->getReason()) +
+            "\nDo you want to close all open files and views?";
         FXuint answer = FXMessageBox::question(this, MBOX_YES_NO, "Simulation ended", "%s", text.c_str());
         if (answer == 1) { //1:yes, 2:no, 4:esc
             closeAllWindows();
@@ -1547,6 +1553,16 @@ void
 GUIApplicationWindow::setStatusBarText(const std::string& text) {
     myStatusbar->getStatusLine()->setText(text.c_str());
     myStatusbar->getStatusLine()->setNormalText(text.c_str());
+}
+
+
+void
+GUIApplicationWindow::addRecentFile(const FX::FXString& f, const bool isNet) {
+    if (isNet) {
+        myRecentNets.appendFile(f);
+    } else {
+        myRecentConfigs.appendFile(f);
+    }
 }
 
 

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_DlrNavteq.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NIImporter_DlrNavteq.cpp 20921 2016-06-08 10:18:15Z behrisch $
 ///
 // Importer for networks stored in Elmar's format
 /****************************************************************************/
@@ -332,7 +332,7 @@ NIImporter_DlrNavteq::EdgesHandler::report(const std::string& result) {
         geoms.insert(geoms.begin(), from->getPosition());
         geoms.push_back(to->getPosition());
         e = new NBEdge(id, from, to, "", speed, numLanes, priority,
-                       NBEdge::UNSPECIFIED_WIDTH, NBEdge::UNSPECIFIED_OFFSET, geoms, streetName, "", LANESPREAD_CENTER);
+                       NBEdge::UNSPECIFIED_WIDTH, NBEdge::UNSPECIFIED_OFFSET, geoms, streetName, id, LANESPREAD_CENTER);
     }
     // add vehicle type information to the edge
     if (myVersion < 6.0) {

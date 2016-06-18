@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Sept 2002
-/// @version $Id: SUMOXMLDefinitions.h 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: SUMOXMLDefinitions.h 20975 2016-06-15 13:02:40Z palcraft $
 ///
 // Definitions of elements and attributes known by SUMO
 /****************************************************************************/
@@ -94,8 +94,6 @@ enum SumoXMLTag {
     SUMO_TAG_CALIBRATOR,
     /// @brief A rerouter
     SUMO_TAG_REROUTER,
-    /// @brief A rerouteredge
-    SUMO_TAG_REROUTEREDGE,
     /// @brief A bus stop
     SUMO_TAG_BUS_STOP,
     /// @brief A train stop (alias for bus stop)

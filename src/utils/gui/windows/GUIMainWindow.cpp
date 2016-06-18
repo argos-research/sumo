@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 29.05.2005
-/// @version $Id: GUIMainWindow.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIMainWindow.cpp 20958 2016-06-14 06:52:20Z namdre $
 ///
 //
 /****************************************************************************/
@@ -40,6 +40,7 @@
 #include <utils/common/MsgHandler.h>
 #include "GUIAppEnum.h"
 #include "GUIMainWindow.h"
+#include "GUIGlChildWindow.h"
 
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
@@ -184,6 +185,15 @@ GUIMainWindow::getInstance() {
     throw ProcessError("A GUIMainWindow instance was not yet constructed.");
 }
 
+
+GUISUMOAbstractView* 
+GUIMainWindow::getActiveView() const {
+    GUIGlChildWindow* w = dynamic_cast<GUIGlChildWindow*>(myMDIClient->getActiveChild());
+    if (w != 0) {
+        return w->getView();
+    }
+    return 0;
+}
 
 /****************************************************************************/
 

@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    14.08.2013
-/// @version $Id: MSDevice.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSDevice.cpp 20890 2016-06-06 12:29:01Z namdre $
 ///
 // Abstract in-vehicle device
 /****************************************************************************/
@@ -66,6 +66,14 @@ MSDevice::insertOptions(OptionsCont& oc) {
     MSDevice_BTsender::insertOptions(oc);
     MSDevice_Example::insertOptions(oc);
     MSDevice_Battery::insertOptions(oc);
+}
+
+
+bool
+MSDevice::checkOptions(OptionsCont& oc) {
+    bool ok = true;
+    ok &= MSDevice_Routing::checkOptions(oc);
+    return ok;
 }
 
 

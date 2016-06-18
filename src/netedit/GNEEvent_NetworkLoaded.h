@@ -2,7 +2,7 @@
 /// @file    GNEEvent_NetworkLoaded.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEEvent_NetworkLoaded.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEEvent_NetworkLoaded.h 20975 2016-06-15 13:02:40Z palcraft $
 ///
 // Event to send when the network has been loaded by GNELoadThread
 /****************************************************************************/
@@ -53,7 +53,7 @@ class GNENet;
  */
 class GNEEvent_NetworkLoaded : public GUIEvent {
 public:
-    /// constructor
+    /// @brief constructor
     GNEEvent_NetworkLoaded(GNENet* net,
                            const std::string& file,
                            const std::string& settingsFile,
@@ -61,20 +61,20 @@ public:
         : GUIEvent(EVENT_SIMULATION_LOADED),
           myNet(net), myFile(file), mySettingsFile(settingsFile), myViewportFromRegistry(viewportFromRegistry) { }
 
-    /// destructor
+    /// @brief destructor
     ~GNEEvent_NetworkLoaded() { }
 
 public:
-    /// the loaded net
-    GNENet*          myNet;
+    /// @brief the loaded net
+    GNENet* myNet;
 
-    /// the name of the loaded file
-    std::string     myFile;
+    /// @brief the name of the loaded file
+    std::string myFile;
 
-    /// the name of the settings file to load
-    std::string     mySettingsFile;
+    /// @brief the name of the settings file to load
+    std::string mySettingsFile;
 
-    /// whether loading viewport from registry
+    /// @brief whether loading viewport from registry
     bool myViewportFromRegistry;
 };
 

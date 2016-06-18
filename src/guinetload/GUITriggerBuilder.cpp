@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 26.04.2004
-/// @version $Id: GUITriggerBuilder.cpp 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: GUITriggerBuilder.cpp 20975 2016-06-15 13:02:40Z palcraft $
 ///
 // Builds trigger objects for guisim
 /****************************************************************************/
@@ -103,14 +103,14 @@ GUITriggerBuilder::buildStoppingPlace(MSNet& net, const std::string& id, const s
 void
 GUITriggerBuilder::buildChargingStation(MSNet& net, const std::string& id, MSLane* lane, SUMOReal frompos, SUMOReal topos,
                                         SUMOReal chargingPower, SUMOReal efficiency, bool chargeInTransit, int chargeDelay) {
-    GUIChargingStation* chrg = new GUIChargingStation(id, *lane, frompos, topos, chargingPower, efficiency, chargeInTransit, chargeDelay);
+    GUIChargingStation* chargingStation = new GUIChargingStation(id, *lane, frompos, topos, chargingPower, efficiency, chargeInTransit, chargeDelay);
 
-    if (!net.addChargingStation(chrg)) {
-        delete chrg;
+    if (!net.addChargingStation(chargingStation)) {
+        delete chargingStation;
         throw InvalidArgument("Could not build charging station '" + id + "'; probably declared twice.");
     }
 
-    static_cast<GUINet&>(net).getVisualisationSpeedUp().addAdditionalGLObject(chrg);
+    static_cast<GUINet&>(net).getVisualisationSpeedUp().addAdditionalGLObject(chargingStation);
 }
 
 MSCalibrator*

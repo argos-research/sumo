@@ -11,7 +11,7 @@
 /// @author  Michael Behrisch
 /// @author  Mario Krumnow
 /// @date    2007/10/24
-/// @version $Id: TraCIServer.cpp 20727 2016-05-17 11:25:05Z behrisch $
+/// @version $Id: TraCIServer.cpp 20969 2016-06-15 08:02:52Z namdre $
 ///
 /// TraCI server used to control sumo by a remote TraCI client (e.g., ns2)
 /****************************************************************************/
@@ -220,10 +220,10 @@ TraCIServer::wasClosed() {
 
 
 void
-TraCIServer::setVTDControlled(MSVehicle* v, MSLane* l, SUMOReal pos, SUMOReal posLat, SUMOReal angle,
+TraCIServer::setVTDControlled(MSVehicle* v, Position xyPos, MSLane* l, SUMOReal pos, SUMOReal posLat, SUMOReal angle,
                               int edgeOffset, ConstMSEdgeVector route, SUMOTime t) {
     myVTDControlledVehicles[v->getID()] = v;
-    v->getInfluencer().setVTDControlled(l, pos, posLat, angle, edgeOffset, route, t);
+    v->getInfluencer().setVTDControlled(xyPos, l, pos, posLat, angle, edgeOffset, route, t);
 }
 
 

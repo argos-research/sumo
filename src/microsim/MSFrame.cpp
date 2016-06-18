@@ -8,7 +8,7 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSFrame.cpp 20824 2016-05-31 11:03:54Z namdre $
+/// @version $Id: MSFrame.cpp 20988 2016-06-16 13:32:24Z behrisch $
 ///
 // Sets and checks options for microsim; inits global outputs and settings
 /****************************************************************************/
@@ -390,6 +390,9 @@ MSFrame::fillOptions() {
     oc.doRegister("start", 'S', new Option_Bool(false));
     oc.addDescription("start", "GUI Only", "Start the simulation after loading");
 
+    oc.doRegister("demo", 'D', new Option_Bool(false));
+    oc.addDescription("demo", "GUI Only", "Restart the simulation after ending (demo mode)");
+
     oc.doRegister("disable-textures", 'T', new Option_Bool(false));
     oc.addDescription("disable-textures", "GUI Only", "Do not load background pictures");
 
@@ -491,6 +494,7 @@ MSFrame::checkOptions() {
     if (oc.getBool("duration-log.statistics") && oc.isDefault("verbose")) {
         oc.set("verbose", "true");
     }
+    ok &= MSDevice::checkOptions(oc);
     return ok;
 }
 

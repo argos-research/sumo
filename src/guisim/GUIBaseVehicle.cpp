@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIBaseVehicle.cpp 20689 2016-05-10 13:20:11Z behrisch $
+/// @version $Id: GUIBaseVehicle.cpp 20907 2016-06-07 14:06:01Z namdre $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -987,6 +987,9 @@ GUIBaseVehicle::drawGL(const GUIVisualizationSettings& s) const {
 
 void
 GUIBaseVehicle::drawGLAdditional(GUISUMOAbstractView* const parent, const GUIVisualizationSettings& s) const {
+    if (!myVehicle.isOnRoad()) {
+        drawGL(s);
+    }
     glPushName(getGlID());
     glPushMatrix();
     glTranslated(0, 0, getType() - .1); // don't draw on top of other cars

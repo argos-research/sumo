@@ -2,7 +2,7 @@
 /// @file    GNEDialog_About.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEDialog_About.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEDialog_About.h 20975 2016-06-15 13:02:40Z palcraft $
 ///
 // The "About" - dialog for NETEDIT, (adapted from GUIDialog_AboutSUMO)
 /****************************************************************************/
@@ -42,18 +42,15 @@
  */
 class GNEDialog_About : public FXDialogBox {
 public:
-    /** @brief Constructor
+    /**@brief Constructor
      * @param[in] parent The parent window
      */
     GNEDialog_About(FXWindow* parent);
 
-
     /// @brief Destructor
-    ~GNEDialog_About() ;
+    ~GNEDialog_About();
 
-
-    /** @brief Creates the widget (and the icons)
-     */
+    /// @brief Creates the widget (and the icons)
     void create();
 
 
@@ -63,7 +60,6 @@ private:
 
     /// @brief Font for the widget
     FXFont* myHeadlineFont;
-
 };
 
 

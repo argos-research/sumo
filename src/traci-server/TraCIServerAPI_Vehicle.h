@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_Vehicle.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: TraCIServerAPI_Vehicle.h 20969 2016-06-15 08:02:52Z namdre $
 ///
 // APIs for getting/setting vehicle values via TraCI
 /****************************************************************************/
@@ -84,7 +84,7 @@ private:
 
 
     static const std::map<std::string, std::vector<MSLane*> >& getOrBuildVTDMap();
-    static bool vtdMap(const Position& pos, const std::string& origID, const SUMOReal angle, MSVehicle& v, TraCIServer& server,
+    static bool vtdMap(const Position& pos, SUMOReal maxRouteDistance, const std::string& origID, const SUMOReal angle, MSVehicle& v, TraCIServer& server,
                        SUMOReal& bestDistance, MSLane** lane, SUMOReal& lanePos, int& routeOffset, ConstMSEdgeVector& edges);
 
     static bool vtdMap_matchingRoutePosition(const Position& pos, const std::string& origID, MSVehicle& v,

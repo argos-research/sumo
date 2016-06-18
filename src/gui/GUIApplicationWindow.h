@@ -5,7 +5,7 @@
 /// @author  Christian Roessel
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIApplicationWindow.h 20749 2016-05-19 08:32:05Z behrisch $
+/// @version $Id: GUIApplicationWindow.h 20995 2016-06-17 14:06:28Z behrisch $
 ///
 // The main window of the SUMO-gui.
 /****************************************************************************/
@@ -103,7 +103,9 @@ public:
 
     void dependentBuild();
 
-    void setStatusBarText(const std::string&);
+    void setStatusBarText(const std::string& text);
+
+    void addRecentFile(const FX::FXString& f, const bool isNet);
 
     FXGLCanvas* getBuildGLCanvas() const;
     SUMOTime getCurrentSimTime() const;

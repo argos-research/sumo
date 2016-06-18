@@ -2,7 +2,7 @@
 /// @file    GUIEvent.h
 /// @author  Daniel Krajzewicz
 /// @date    Sept 2002
-/// @version $Id: GUIEvent.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIEvent.h 20995 2016-06-17 14:06:28Z behrisch $
 ///
 // Definition of an own event class
 /****************************************************************************/
@@ -54,6 +54,9 @@ enum GUIEventType {
 
     /// send when a error occured
     EVENT_ERROR_OCCURED,
+
+    /// send when a status change occured
+    EVENT_STATUS_OCCURED,
 
     /** @brief Send when the simulation is over;
         The reason and the time step are stored within the event */

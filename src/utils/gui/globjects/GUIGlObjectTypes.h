@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIGlObjectTypes.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIGlObjectTypes.h 20975 2016-06-15 13:02:40Z palcraft $
 ///
 // A list of object types which may be displayed within the gui
 // each type has an associated string which will be prefefixed to an object id
@@ -55,6 +55,10 @@ enum GUIGlObjectType {
     GLO_JUNCTION = 4,
     /// @brief a tl-logic
     GLO_CROSSING = 5,
+    /// @brief a connection
+    GLO_CONNECTION = 6,
+    /// @brief a prohibition
+    GLO_PROHIBITION = 7,
     /// @brief a tl-logic
     GLO_TLLOGIC = 8,
     /// @brief a detector

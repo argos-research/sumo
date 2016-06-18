@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVehicle.cpp 20689 2016-05-10 13:20:11Z behrisch $
+/// @version $Id: GUIVehicle.cpp 20907 2016-06-07 14:06:01Z namdre $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -688,6 +688,21 @@ GUIVehicle::selectBlockingFoes() const {
         }
 #endif
         dist += dpi.myLink->getViaLaneOrLane()->getLength();
+    }
+}
+
+
+void 
+GUIVehicle::drawOutsideNetwork(bool add) const {
+    GUIMainWindow* mw = GUIMainWindow::getInstance();
+    GUISUMOAbstractView* view = mw->getActiveView();
+    if (view != 0) {
+        std::cout << SIMTIME << " drawOutsideNetwork veh=" << getID() << " add=" << add << "\n";
+        if (add) {
+            view->addAdditionalGLVisualisation(this);
+        } else {
+            view->removeAdditionalGLVisualisation(this);
+        }
     }
 }
 

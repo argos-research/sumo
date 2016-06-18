@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Tue, 04 Dec 2007
-/// @version $Id: MSDevice_Routing.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSDevice_Routing.h 20890 2016-06-06 12:29:01Z namdre $
 ///
 // A device that performs vehicle rerouting based on current edge speeds
 /****************************************************************************/
@@ -62,7 +62,7 @@ class MSLane;
  * The routing-device system consists of in-vehicle devices that perform a routing
  *  and a simulation-wide (static) methods for colecting edge weights.
  *
- * The edge weights container "myEdgeEfforts" is pre-initialised as soon as one
+ * The edge weights container "myEdgeSpeeds" is pre-initialised as soon as one
  *  device is built and is kept updated via an event that adapts it to the current
  *  mean speed on the simulated network's edges.
  *
@@ -79,6 +79,11 @@ public:
      * @param[filled] oc The options container to add the options to
      */
     static void insertOptions(OptionsCont& oc);
+
+    /** @brief checks MSDevice_Routing-options
+     * @param[filled] oc The options container with the user-defined options
+     */
+    static bool checkOptions(OptionsCont& oc);
 
 
     /** @brief Build devices for the given vehicle, if needed
@@ -106,7 +111,7 @@ public:
 
     /// @brief returns whether any routing actions take place
     static bool isEnabled() {
-        return !myWithTaz && !myEdgeEfforts.empty();
+        return !myWithTaz && !myEdgeSpeeds.empty();
     }
 
     /// @brief return the router instance
@@ -315,8 +320,8 @@ private:
     /// @brief The weights adaptation/overwriting command
     static Command* myEdgeWeightSettingCommand;
 
-    /// @brief The container of edge efforts
-    static std::vector<SUMOReal> myEdgeEfforts;
+    /// @brief The container of edge speeds
+    static std::vector<SUMOReal> myEdgeSpeeds;
 
     /// @brief Information which weight prior edge efforts have
     static SUMOReal myAdaptationWeight;
@@ -326,6 +331,15 @@ private:
 
     /// @brief Information when the last edge weight adaptation occured
     static SUMOTime myLastAdaptation;
+
+    /// @brief The number of steps for averaging edge speeds (ring-buffer)
+    static int myAdaptationSteps;
+
+    /// @brief The current index in the pastEdgeSpeed ring-buffer
+    static int myAdaptationStepsIndex;
+
+    /// @brief The container of edge speeds
+    static std::vector<std::vector<SUMOReal> > myPastEdgeSpeeds;
 
     /// @brief whether taz shall be used at initial rerouting
     static bool myWithTaz;

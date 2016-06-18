@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2009-10-24
-/// @version $Id: PositionVectorTest.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: PositionVectorTest.cpp 20859 2016-06-03 08:45:01Z namdre $
 ///
 // Tests the class PositionVector
 /****************************************************************************/
@@ -439,18 +439,18 @@ TEST_F(PositionVectorTest, test_method_distance) {
         Position before(-3,-3);
         Position beyond(24,8);
 
-        EXPECT_EQ(0,  vec1.distance(on));
-        EXPECT_EQ(1,  vec1.distance(left));
-        EXPECT_EQ(1,  vec1.distance(right));
-        EXPECT_EQ(2,  vec1.distance(left2));
-        EXPECT_EQ(2,  vec1.distance(right2));
-        EXPECT_EQ(5,  vec1.distance(cornerRight));
-        EXPECT_EQ(5,  vec1.distance(cornerLeft));
+        EXPECT_EQ(0,  vec1.distance2D(on));
+        EXPECT_EQ(1,  vec1.distance2D(left));
+        EXPECT_EQ(1,  vec1.distance2D(right));
+        EXPECT_EQ(2,  vec1.distance2D(left2));
+        EXPECT_EQ(2,  vec1.distance2D(right2));
+        EXPECT_EQ(5,  vec1.distance2D(cornerRight));
+        EXPECT_EQ(5,  vec1.distance2D(cornerLeft));
 
-        EXPECT_EQ(GeomHelper::INVALID_OFFSET,  vec1.distance(before, true));
-        EXPECT_EQ(GeomHelper::INVALID_OFFSET,  vec1.distance(beyond, true));
-        EXPECT_EQ(5,  vec1.distance(before));
-        EXPECT_EQ(5,  vec1.distance(beyond));
+        EXPECT_EQ(GeomHelper::INVALID_OFFSET,  vec1.distance2D(before, true));
+        EXPECT_EQ(GeomHelper::INVALID_OFFSET,  vec1.distance2D(beyond, true));
+        EXPECT_EQ(5,  vec1.distance2D(before));
+        EXPECT_EQ(5,  vec1.distance2D(beyond));
     }
 
     { 
@@ -469,18 +469,18 @@ TEST_F(PositionVectorTest, test_method_distance) {
         Position before(-3,3);
         Position beyond(24,-8);
 
-        EXPECT_EQ(0,  vec1.distance(on));
-        EXPECT_EQ(1,  vec1.distance(left));
-        EXPECT_EQ(1,  vec1.distance(right));
-        EXPECT_EQ(2,  vec1.distance(left2));
-        EXPECT_EQ(2,  vec1.distance(right2));
-        EXPECT_EQ(5,  vec1.distance(cornerRight));
-        EXPECT_EQ(5,  vec1.distance(cornerLeft));
+        EXPECT_EQ(0,  vec1.distance2D(on));
+        EXPECT_EQ(1,  vec1.distance2D(left));
+        EXPECT_EQ(1,  vec1.distance2D(right));
+        EXPECT_EQ(2,  vec1.distance2D(left2));
+        EXPECT_EQ(2,  vec1.distance2D(right2));
+        EXPECT_EQ(5,  vec1.distance2D(cornerRight));
+        EXPECT_EQ(5,  vec1.distance2D(cornerLeft));
 
-        EXPECT_EQ(GeomHelper::INVALID_OFFSET,  vec1.distance(before, true));
-        EXPECT_EQ(GeomHelper::INVALID_OFFSET,  vec1.distance(beyond, true));
-        EXPECT_EQ(5,  vec1.distance(before));
-        EXPECT_EQ(5,  vec1.distance(beyond));
+        EXPECT_EQ(GeomHelper::INVALID_OFFSET,  vec1.distance2D(before, true));
+        EXPECT_EQ(GeomHelper::INVALID_OFFSET,  vec1.distance2D(beyond, true));
+        EXPECT_EQ(5,  vec1.distance2D(before));
+        EXPECT_EQ(5,  vec1.distance2D(beyond));
     }
 }
 

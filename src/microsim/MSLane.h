@@ -8,7 +8,7 @@
 /// @author  Michael Behrisch
 /// @author  Mario Krumnow
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSLane.h 20813 2016-05-30 11:52:09Z namdre $
+/// @version $Id: MSLane.h 20863 2016-06-03 09:27:22Z behrisch $
 ///
 // Representation of a lane in the micro simulation
 /****************************************************************************/
@@ -312,12 +312,12 @@ public:
      * @param[in] v The vehicle which laps into this lane
      * @return This lane's length
      */
-    SUMOReal setPartialOccupation(MSVehicle* v);
+    virtual SUMOReal setPartialOccupation(MSVehicle* v);
 
     /** @brief Removes the information about a vehicle lapping into this lane
      * @param[in] v The vehicle which laps into this lane
      */
-    void resetPartialOccupation(MSVehicle* v);
+    virtual void resetPartialOccupation(MSVehicle* v);
 
     /** @brief Returns the last vehicles on the lane
      *

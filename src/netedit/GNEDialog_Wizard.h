@@ -2,7 +2,7 @@
 /// @file    GNEDialog_Wizard.h
 /// @author  Jakob Erdmann
 /// @date    July 2011
-/// @version $Id: GNEDialog_Wizard.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEDialog_Wizard.h 20975 2016-06-15 13:02:40Z palcraft $
 ///
 // A Dialog for setting options (see OptionsCont)
 /****************************************************************************/
@@ -42,86 +42,112 @@
  */
 class GNEDialog_Wizard : public FXDialogBox {
 public:
-    /** @brief Constructor
+    /**@brief Constructor
      *
      * @param[in] parent The parent window
      * @param[in] name The title to show
      * @param[in] width The initial width of the dialog
      * @param[in] height The initial height of the dialog
      */
-    GNEDialog_Wizard(FXWindow* parent,  const char* name, int width, int height) ;
-
+    GNEDialog_Wizard(FXWindow* parent,  const char* name, int width, int height);
 
     /// @brief Destructor
-    ~GNEDialog_Wizard() ;
-
+    ~GNEDialog_Wizard();
 
     // ===========================================================================
     // Option input classes
     // ===========================================================================
     class InputString : public FXHorizontalFrame {
-        // FOX-declarations
+        /// @brief FOX-declaration
         FXDECLARE(GNEDialog_Wizard::InputString)
+
     public:
+        /// @brief constructor
         InputString(FXComposite* parent, const std::string& name);
+
         /// @brief try to set new attribute value
         long onCmdSetOption(FXObject*, FXSelector, void*);
+
     protected:
         /// @brief FOX needs this
         InputString() {}
+
     private:
+        /// @brief name
         std::string myName;
+
+        /// @brief text field
         FXTextField* myTextField;
     };
 
     class InputBool : public FXHorizontalFrame {
-        // FOX-declarations
+        /// @brief FOX-declaration
         FXDECLARE(GNEDialog_Wizard::InputBool)
+
     public:
+        /// @brief constructor
         InputBool(FXComposite* parent, const std::string& name);
+
         /// @brief try to set new attribute value
         long onCmdSetOption(FXObject*, FXSelector, void*);
+
     protected:
         /// @brief FOX needs this
         InputBool() {}
+
     private:
+        /// @brief name
         std::string myName;
+        /// @brief menu check
         FXMenuCheck* myCheck;
     };
 
 
     class InputInt : public FXHorizontalFrame {
-        // FOX-declarations
+        /// @brief FOX-declaration
         FXDECLARE(GNEDialog_Wizard::InputInt)
+
     public:
+        /// @brief
         InputInt(FXComposite* parent, const std::string& name);
+
         /// @brief try to set new attribute value
         long onCmdSetOption(FXObject*, FXSelector, void*);
+
     protected:
         /// @brief FOX needs this
         InputInt() {}
+
     private:
+        /// @brief name
         std::string myName;
+
+        /// @brief text field
         FXTextField* myTextField;
     };
 
-
     class InputFloat : public FXHorizontalFrame {
-        // FOX-declarations
+        /// @brief FOX-declaration
         FXDECLARE(GNEDialog_Wizard::InputFloat)
+
     public:
+        /// @brief constructor
         InputFloat(FXComposite* parent, const std::string& name);
+
         /// @brief try to set new attribute value
         long onCmdSetOption(FXObject*, FXSelector, void*);
+
     protected:
         /// @brief FOX needs this
         InputFloat() {}
+
     private:
+        /// @brief name
         std::string myName;
+
+        /// @brief text field
         FXTextField* myTextField;
     };
-
-
 };
 
 

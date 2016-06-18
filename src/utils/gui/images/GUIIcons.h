@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Andreas Gaubatz
 /// @date    2004
-/// @version $Id: GUIIcons.h 20749 2016-05-19 08:32:05Z behrisch $
+/// @version $Id: GUIIcons.h 20975 2016-06-15 13:02:40Z palcraft $
 ///
 // An enumeration of icons used by the gui applications
 /****************************************************************************/
@@ -46,6 +46,7 @@ enum GUIIcon {
     ICON_OPEN_CONFIG,
     ICON_OPEN_NET,
     ICON_OPEN_SHAPES,
+	ICON_OPEN_ADDITIONALS,	
     ICON_RELOAD,
     ICON_SAVE,
     ICON_CLOSE,
@@ -136,9 +137,11 @@ enum GUIIcon {
     ICON_UNDO,
     ICON_REDO,
     ICON_NETEDIT,
+    ICON_LOCK,
+    ICON_ADD,
+    ICON_REMOVE,
 
     ICON_MAX
-
 };
 
 

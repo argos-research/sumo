@@ -2,7 +2,7 @@
 /// @file    MEVehicle.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MEVehicle.cpp 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: MEVehicle.cpp 20899 2016-06-07 11:29:08Z namdre $
 ///
 // A vehicle from the mesoscopic point of view
 /****************************************************************************/
@@ -260,6 +260,16 @@ MEVehicle::getStopEdges() const {
 bool
 MEVehicle::mayProceed() const {
     return mySegment == 0 || mySegment->isOpen(this);
+}
+
+
+SUMOReal 
+MEVehicle::getCurrentTLSPenaltySeconds() const {
+    if (mySegment == 0) {
+        return 0;
+    } else {
+        return STEPS2TIME(mySegment->getTLSPenalty(this));
+    }
 }
 
 

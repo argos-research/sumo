@@ -6,7 +6,7 @@
 /// @author  Christoph Sommer
 /// @author  Jakob Erdmann
 /// @date    Tue, 04 Dec 2007
-/// @version $Id: MSDevice_Routing.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSDevice_Routing.cpp 20890 2016-06-06 12:29:01Z namdre $
 ///
 // A device that performs vehicle rerouting based on current edge speeds
 /****************************************************************************/
@@ -53,9 +53,12 @@
 // ===========================================================================
 // static member variables
 // ===========================================================================
-std::vector<SUMOReal> MSDevice_Routing::myEdgeEfforts;
+std::vector<SUMOReal> MSDevice_Routing::myEdgeSpeeds;
+std::vector<std::vector<SUMOReal> > MSDevice_Routing::myPastEdgeSpeeds;
 Command* MSDevice_Routing::myEdgeWeightSettingCommand = 0;
 SUMOReal MSDevice_Routing::myAdaptationWeight;
+int MSDevice_Routing::myAdaptationSteps;
+int MSDevice_Routing::myAdaptationStepsIndex = 0;
 SUMOTime MSDevice_Routing::myAdaptationInterval = -1;
 SUMOTime MSDevice_Routing::myLastAdaptation = -1;
 bool MSDevice_Routing::myWithTaz;
@@ -88,7 +91,11 @@ MSDevice_Routing::insertOptions(OptionsCont& oc) {
 
     oc.doRegister("device.rerouting.adaptation-weight", new Option_Float(.5));
     oc.addSynonyme("device.rerouting.adaptation-weight", "device.routing.adaptation-weight", true);
-    oc.addDescription("device.rerouting.adaptation-weight", "Routing", "The weight of prior edge weights");
+    oc.addDescription("device.rerouting.adaptation-weight", "Routing", "The weight of prior edge weights for exponential moving average");
+
+    oc.doRegister("device.rerouting.adaptation-steps", new Option_Integer(0));
+    oc.addSynonyme("device.rerouting.adaptation-steps", "device.routing.adaptation-steps", true);
+    oc.addDescription("device.rerouting.adaptation-steps", "Routing", "The number of steps for moving average weight of prior edge weights");
 
     oc.doRegister("device.rerouting.adaptation-interval", new Option_String("1", "TIME"));
     oc.addSynonyme("device.rerouting.adaptation-interval", "device.routing.adaptation-interval", true);
@@ -112,9 +119,20 @@ MSDevice_Routing::insertOptions(OptionsCont& oc) {
     oc.addDescription("device.rerouting.output", "Routing", "Save adapting weights to FILE");
 
     myEdgeWeightSettingCommand = 0;
-    myEdgeEfforts.clear();
+    myEdgeSpeeds.clear();
     myAdaptationInterval = -1;
+    myAdaptationSteps = -1;
     myLastAdaptation = -1;
+}
+
+
+bool
+MSDevice_Routing::checkOptions(OptionsCont& oc) {
+    if (oc.getInt("device.rerouting.adaptation-steps") > 0 && !oc.isDefault("device.rerouting.adaptation-weight")) {
+        WRITE_ERROR("Only one of the options 'device.rerouting.adaptation-steps' or 'device.rerouting.adaptation-weight' may be given.");
+        return false;
+    }
+    return true;
 }
 
 
@@ -133,18 +151,25 @@ MSDevice_Routing::buildVehicleDevices(SUMOVehicle& v, std::vector<MSDevice*>& in
         const SUMOTime period = string2time(oc.getString("device.rerouting.period"));
         const SUMOTime prePeriod = string2time(oc.getString("device.rerouting.pre-period"));
         // initialise edge efforts if not done before
-        if (myEdgeEfforts.size() == 0) {
+        if (myEdgeSpeeds.size() == 0) {
+            myAdaptationSteps = oc.getInt("device.rerouting.adaptation-steps");
             const MSEdgeVector& edges = MSNet::getInstance()->getEdgeControl().getEdges();
             const bool useLoaded = oc.getBool("device.rerouting.init-with-loaded-weights");
             const SUMOReal currentSecond = SIMTIME;
             for (MSEdgeVector::const_iterator i = edges.begin(); i != edges.end(); ++i) {
-                while ((*i)->getNumericalID() >= (int)myEdgeEfforts.size()) {
-                    myEdgeEfforts.push_back(0);
+                while ((*i)->getNumericalID() >= (int)myEdgeSpeeds.size()) {
+                    myEdgeSpeeds.push_back(0);
+                    if (myAdaptationSteps > 0) {
+                        myPastEdgeSpeeds.push_back(std::vector<SUMOReal>());
+                    }
                 }
                 if (useLoaded) {
-                    myEdgeEfforts[(*i)->getNumericalID()] = MSNet::getTravelTime(*i, 0, currentSecond);
+                    myEdgeSpeeds[(*i)->getNumericalID()] = (*i)->getLength() / MSNet::getTravelTime(*i, 0, currentSecond);
                 } else {
-                    myEdgeEfforts[(*i)->getNumericalID()] = (*i)->getCurrentTravelTime();
+                    myEdgeSpeeds[(*i)->getNumericalID()] = (*i)->getMeanSpeed();
+                }
+                if (myAdaptationSteps > 0) {
+                    myPastEdgeSpeeds[(*i)->getNumericalID()] = std::vector<SUMOReal>(myAdaptationSteps, myEdgeSpeeds[(*i)->getNumericalID()]);
                 }
             }
             myLastAdaptation = MSNet::getInstance()->getCurrentTimeStep();
@@ -189,13 +214,15 @@ MSDevice_Routing::buildVehicleDevices(SUMOVehicle& v, std::vector<MSDevice*>& in
 MSDevice_Routing::MSDevice_Routing(SUMOVehicle& holder, const std::string& id,
                                    SUMOTime period, SUMOTime preInsertionPeriod)
     : MSDevice(holder, id), myPeriod(period), myPreInsertionPeriod(preInsertionPeriod), myLastRouting(-1), mySkipRouting(-1), myRerouteCommand(0) {
-    // we do always a pre insertion reroute to fill the best lanes of the vehicle with somehow meaningful values (especially for deaprtLane="best")
-    myRerouteCommand = new WrappingCommand<MSDevice_Routing>(this, &MSDevice_Routing::preInsertionReroute);
-    // if we don't update the edge weights, we might as well reroute now and hopefully use our threads better
-    const SUMOTime execTime = myEdgeWeightSettingCommand == 0 ? 0 : holder.getParameter().depart;
-    MSNet::getInstance()->getInsertionEvents()->addEvent(
-        myRerouteCommand, execTime,
-        MSEventControl::ADAPT_AFTER_EXECUTION);
+    if (myPreInsertionPeriod > 0 || holder.getParameter().wasSet(VEHPARS_FORCE_REROUTE)) {
+        // we do always a pre insertion reroute for trips to fill the best lanes of the vehicle with somehow meaningful values (especially for deaprtLane="best")
+        myRerouteCommand = new WrappingCommand<MSDevice_Routing>(this, &MSDevice_Routing::preInsertionReroute);
+        // if we don't update the edge weights, we might as well reroute now and hopefully use our threads better
+        const SUMOTime execTime = myEdgeWeightSettingCommand == 0 ? 0 : holder.getParameter().depart;
+        MSNet::getInstance()->getInsertionEvents()->addEvent(
+                myRerouteCommand, execTime,
+                MSEventControl::ADAPT_AFTER_EXECUTION);
+    }
 }
 
 
@@ -261,8 +288,8 @@ MSDevice_Routing::wrappedRerouteCommandExecute(SUMOTime currentTime) {
 SUMOReal
 MSDevice_Routing::getEffort(const MSEdge* const e, const SUMOVehicle* const v, SUMOReal) {
     const int id = e->getNumericalID();
-    if (id < (int)myEdgeEfforts.size()) {
-        SUMOReal effort = MAX2(myEdgeEfforts[id], e->getMinimumTravelTime(v));
+    if (id < (int)myEdgeSpeeds.size()) {
+        SUMOReal effort = MAX2(e->getLength() / myEdgeSpeeds[id], e->getMinimumTravelTime(v));
         if (myRandomizeWeightsFactor != 1) {
             effort *= RandHelper::rand((SUMOReal)1, myRandomizeWeightsFactor);
         }
@@ -288,13 +315,25 @@ MSDevice_Routing::adaptEdgeEfforts(SUMOTime currentTime) {
         it->second->release();
     }
     myCachedRoutes.clear();
-    const SUMOReal newWeightFactor = (SUMOReal)(1. - myAdaptationWeight);
     const MSEdgeVector& edges = MSNet::getInstance()->getEdgeControl().getEdges();
-    for (MSEdgeVector::const_iterator i = edges.begin(); i != edges.end(); ++i) {
-        const int id = (*i)->getNumericalID();
-        const SUMOReal currTT = (*i)->getCurrentTravelTime();
-        if (currTT != myEdgeEfforts[id]) {
-            myEdgeEfforts[id] = myEdgeEfforts[id] * myAdaptationWeight + currTT * newWeightFactor;
+    if (myAdaptationSteps > 0) {
+        // moving average
+        for (MSEdgeVector::const_iterator i = edges.begin(); i != edges.end(); ++i) {
+            const int id = (*i)->getNumericalID();
+            const SUMOReal currSpeed = (*i)->getMeanSpeed();
+            myEdgeSpeeds[id] += (currSpeed - myPastEdgeSpeeds[id][myAdaptationStepsIndex]) / myAdaptationSteps;
+            myPastEdgeSpeeds[id][myAdaptationStepsIndex] = currSpeed;
+        }
+        myAdaptationStepsIndex = (myAdaptationStepsIndex + 1) % myAdaptationSteps;
+    } else {
+        // exponential moving average
+        const SUMOReal newWeightFactor = (SUMOReal)(1. - myAdaptationWeight);
+        for (MSEdgeVector::const_iterator i = edges.begin(); i != edges.end(); ++i) {
+            const int id = (*i)->getNumericalID();
+            const SUMOReal currSpeed = (*i)->getMeanSpeed();
+            if (currSpeed != myEdgeSpeeds[id]) {
+                myEdgeSpeeds[id] = myEdgeSpeeds[id] * myAdaptationWeight + currSpeed * newWeightFactor;
+            }
         }
     }
     myLastAdaptation = currentTime + DELTA_T; // because we run at the end of the time step
@@ -308,7 +347,7 @@ MSDevice_Routing::adaptEdgeEfforts(SUMOTime currentTime) {
             const int id = (*i)->getNumericalID();
             dev.openTag(SUMO_TAG_EDGE);
             dev.writeAttr(SUMO_ATTR_ID, (*i)->getID());
-            dev.writeAttr("traveltime", myEdgeEfforts[id]);
+            dev.writeAttr("traveltime", (*i)->getLength() / myEdgeSpeeds[id]);
             dev.closeTag();
         }
         dev.closeTag();

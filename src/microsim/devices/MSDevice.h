@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Tue, 04 Dec 2007
-/// @version $Id: MSDevice.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSDevice.h 20890 2016-06-06 12:29:01Z namdre $
 ///
 // Abstract in-vehicle device
 /****************************************************************************/
@@ -72,6 +72,11 @@ public:
      * @param[filled] oc The options container to add the options to
      */
     static void insertOptions(OptionsCont& oc);
+
+    /** @brief check device-specific options 
+     * @param[filled] oc The options container with the user-defined options
+     */
+    static bool checkOptions(OptionsCont& oc);
 
 
     /** @brief Build devices for the given vehicle, if needed

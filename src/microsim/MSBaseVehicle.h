@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 8 Nov 2010
-/// @version $Id: MSBaseVehicle.h 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: MSBaseVehicle.h 20910 2016-06-08 06:33:11Z namdre $
 ///
 // A base class for vehicle implementations
 /****************************************************************************/
@@ -133,6 +133,14 @@ public:
      */
     virtual bool isOnRoad() const {
         return true;
+    }
+
+    /** @brief Returns the information whether the vehicle is fully controlled
+     * via TraCI
+     * @return Whether the vehicle is remote-controlled
+     */
+    virtual bool isRemoteControlled() const {
+        return false;
     }
 
     /** @brief Returns the information whether the front of the vehhicle is on the given lane

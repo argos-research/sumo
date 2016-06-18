@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Wed, 21. Dec 2005
-/// @version $Id: GUIDialog_ViewSettings.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIDialog_ViewSettings.cpp 20964 2016-06-14 12:19:54Z namdre $
 ///
 // The dialog to change the view (gui) settings.
 /****************************************************************************/
@@ -1250,7 +1250,8 @@ void
 GUIDialog_ViewSettings::rebuildList() {
     myDecalsTable->clearItems();
     // set table attributes
-    myDecalsTable->setTableSize(10, 7);
+    const int numRows = MAX2((int)10, (int)myDecals->size() + 1);
+    myDecalsTable->setTableSize(numRows, 7);
     myDecalsTable->setColumnText(0, "picture file");
     myDecalsTable->setColumnText(1, "center x");
     myDecalsTable->setColumnText(2, "center y");

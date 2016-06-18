@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Thu, 17 Oct 2002
-/// @version $Id: NLTriggerBuilder.h 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: NLTriggerBuilder.h 20975 2016-06-15 13:02:40Z palcraft $
 ///
 // Builds trigger objects for microsim
 /****************************************************************************/
@@ -221,6 +221,10 @@ protected:
      * @param[in] lane The lane the charging Station is placed on
      * @param[in] frompos Begin position of the charging Station on the lane
      * @param[in] topos End position of the charging Station on the lane
+	 * @param[in] chargingPower
+	 * @param[in] efficiency
+	 * @param[in] chargeInTransit
+	 * @param[in] ChargeDelay
      * @exception InvalidArgument If the charging Station can not be added to the net (is duplicate)
      */
     virtual void buildChargingStation(MSNet& net, const std::string& id, MSLane* lane, SUMOReal frompos, SUMOReal topos,

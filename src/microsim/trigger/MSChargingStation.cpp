@@ -4,7 +4,7 @@
 /// @author  Tamas Kurczveil
 /// @author  Pablo Alvarez Lopez
 /// @date    20-12-13
-/// @version $Id: MSChargingStation.cpp 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: MSChargingStation.cpp 18762 2015-09-01 16:27:09Z behrisch $
 ///
 // Chargin Station for Electric vehicles
 /****************************************************************************/

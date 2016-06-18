@@ -6,7 +6,7 @@
 /// @author  Laura Bieker
 /// @author  Mario Krumnow
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_Lane.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: TraCIServerAPI_Lane.cpp 20857 2016-06-03 06:26:52Z namdre $
 ///
 // APIs for getting/setting lane values via TraCI
 /****************************************************************************/
@@ -394,7 +394,7 @@ TraCIServerAPI_Lane::StoringVisitor::add(const MSLane* const l) const {
         case CMD_GET_VEHICLE_VARIABLE: {
             const MSLane::VehCont& vehs = l->getVehiclesSecure();
             for (MSLane::VehCont::const_iterator j = vehs.begin(); j != vehs.end(); ++j) {
-                if (myShape.distance((*j)->getPosition()) <= myRange) {
+                if (myShape.distance2D((*j)->getPosition()) <= myRange) {
                     myIDs.insert((*j)->getID());
                 }
             }
@@ -402,13 +402,13 @@ TraCIServerAPI_Lane::StoringVisitor::add(const MSLane* const l) const {
         }
         break;
         case CMD_GET_EDGE_VARIABLE: {
-            if (myShape.size() != 1 || l->getShape().distance(myShape[0]) <= myRange) {
+            if (myShape.size() != 1 || l->getShape().distance2D(myShape[0]) <= myRange) {
                 myIDs.insert(l->getEdge().getID());
             }
         }
         break;
         case CMD_GET_LANE_VARIABLE: {
-            if (myShape.size() != 1 || l->getShape().distance(myShape[0]) <= myRange) {
+            if (myShape.size() != 1 || l->getShape().distance2D(myShape[0]) <= myRange) {
                 myIDs.insert(l->getID());
             }
         }

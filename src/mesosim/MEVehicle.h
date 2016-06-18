@@ -2,7 +2,7 @@
 /// @file    MEVehicle.h
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MEVehicle.h 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: MEVehicle.h 20899 2016-06-07 11:29:08Z namdre $
 ///
 // A vehicle from the mesoscopic point of view
 /****************************************************************************/
@@ -287,6 +287,9 @@ public:
     SUMOReal getBlockTimeSeconds() const {
         return STEPS2TIME(getBlockTime());
     }
+
+    /// @brief Returns the delay that is accrued due to option --meso-tls-penalty
+    SUMOReal getCurrentTLSPenaltySeconds() const; 
 
 
     /// Replaces the current route by the given one

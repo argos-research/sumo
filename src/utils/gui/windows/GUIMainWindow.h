@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Fri, 29.04.2005
-/// @version $Id: GUIMainWindow.h 20749 2016-05-19 08:32:05Z behrisch $
+/// @version $Id: GUIMainWindow.h 20907 2016-06-07 14:06:01Z namdre $
 ///
 //
 /****************************************************************************/
@@ -45,6 +45,7 @@
 // class declarations
 // ===========================================================================
 class GUIEvent;
+class GUISUMOAbstractView;
 
 
 // ===========================================================================
@@ -109,6 +110,9 @@ public:
     virtual void sendBlockingEvent(GUIEvent* event) {
         UNUSED_PARAMETER(event);
     }
+
+    /** @brief get the active view or 0 */
+    GUISUMOAbstractView* getActiveView() const;
 
 protected:
     std::vector<FXMDIChild*> mySubWindows;

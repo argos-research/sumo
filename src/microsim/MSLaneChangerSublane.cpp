@@ -2,7 +2,7 @@
 /// @file    MSLaneChangerSublane.cpp
 /// @author  Jakob Erdmann
 /// @date    Oct 2015
-/// @version $Id: MSLaneChangerSublane.cpp 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: MSLaneChangerSublane.cpp 20910 2016-06-08 06:33:11Z namdre $
 ///
 // Performs sub-lane changing of vehicles
 /****************************************************************************/
@@ -90,7 +90,7 @@ MSLaneChangerSublane::change() {
     assert(vehicle->getLane() == (*myCandi).lane);
     assert(!vehicle->getLaneChangeModel().isChangingLanes());
 #ifndef NO_TRACI
-    if (vehicle->hasInfluencer() && vehicle->getInfluencer().isVTDControlled()) {
+    if (vehicle->isRemoteControlled()) {
         return false; // !!! temporary; just because it broke, here
     }
 #endif

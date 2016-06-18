@@ -2,7 +2,7 @@
 /// @file    GNEJunction.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEJunction.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GNEJunction.cpp 20994 2016-06-17 12:34:46Z palcraft $
 ///
 // A class for visualizing and editing junctions in netedit (adapted from
 // GUIJunctionWrapper)
@@ -48,7 +48,7 @@
 #include <netbuild/NBOwnTLDef.h>
 #include <netbuild/NBLoadedSUMOTLDef.h>
 #include <netbuild/NBAlgorithms.h>
-#include "tlslogo.cpp"
+#include "GNELogo_TLS.cpp"
 #include "GNENet.h"
 #include "GNEEdge.h"
 #include "GNECrossing.h"
@@ -74,17 +74,15 @@ bool GNEJunction::TLSDecalInitialized = false;
 // method definitions
 // ===========================================================================
 GNEJunction::GNEJunction(NBNode& nbn, GNENet* net, bool loaded) :
-    GUIGlObject(GLO_JUNCTION, nbn.getID()),
-    GNEAttributeCarrier(SUMO_TAG_JUNCTION),
+    GNENetElement(net, nbn.getID(), GLO_JUNCTION, SUMO_TAG_JUNCTION),
     myNBNode(nbn),
     myOrigPos(nbn.getPosition()),
     myAmCreateEdgeSource(false),
-    myNet(net),
     myLogicStatus(loaded ? LOADED : GUESSED),
     myAmResponsible(false),
     myHasValidLogic(loaded),
     myAmTLSSelected(false) {
-    updateBoundary();
+    updateGeometry();
     rebuildCrossings(false);
 }
 
@@ -98,7 +96,7 @@ GNEJunction::~GNEJunction() {
 
 
 void
-GNEJunction::updateBoundary() {
+GNEJunction::updateGeometry() {
     const double EXTENT = 2;
     myBoundary = Boundary(
                      myOrigPos.x() - EXTENT, myOrigPos.y() - EXTENT,
@@ -217,7 +215,7 @@ GNEJunction::drawGL(const GUIVisualizationSettings& s) const {
         if (s.editMode == GNE_MODE_TLS && myNBNode.isTLControlled() && !myAmTLSSelected) {
             // decorate in tls mode
             if (!TLSDecalInitialized) {
-                FXImage* i = new FXGIFImage(myNet->getApp(), tlslogo, IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP);
+                FXImage* i = new FXGIFImage(myNet->getApp(), GNELogo_TLS, IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP);
                 TLSDecalGlID = GUITexturesHelper::add(i);
                 TLSDecalInitialized = true;
                 delete i;
@@ -241,6 +239,34 @@ GNEJunction::drawGL(const GUIVisualizationSettings& s) const {
         drawName(myNBNode.getPosition(), s.scale, s.junctionName);
     }
     glPopName();
+}
+
+Boundary
+GNEJunction::getBoundary() const {
+    return myBoundary;
+}
+
+
+NBNode* 
+GNEJunction::getNBNode() const {
+    return &myNBNode;
+}
+
+void
+GNEJunction::markAsCreateEdgeSource() {
+    myAmCreateEdgeSource = true;
+}
+
+
+void
+GNEJunction::unMarkAsCreateEdgeSource() {
+    myAmCreateEdgeSource = false;
+}
+
+
+void
+GNEJunction::selectTLS(bool selected) {
+    myAmTLSSelected = selected;
 }
 
 
@@ -282,18 +308,24 @@ GNEJunction::invalidateShape() {
 void
 GNEJunction::setLogicValid(bool valid, GNEUndoList* undoList, const std::string& status) {
     myHasValidLogic = valid;
+    // If new logic isn't valid
     if (!valid) {
+        // Check preconditions
         assert(undoList != 0);
         assert(undoList->hasCommandGroup());
+        // Registre a modification of status
         undoList->add(new GNEChange_Attribute(this, GNE_ATTR_MODIFICATION_STATUS, status));
         // allow edges to recompute their connections
         NBTurningDirectionsComputer::computeTurnDirectionsForNode(&myNBNode, false);
-        EdgeVector incoming = EdgeVector(myNBNode.getIncomingEdges());
+        // Obtain a copy of incoming edges
+        EdgeVector incoming = myNBNode.getIncomingEdges();
+        // Iterate over incoming edges
         for (EdgeVector::iterator it = incoming.begin(); it != incoming.end(); it++) {
             NBEdge* srcNBE = *it;
             NBEdge* turnEdge = srcNBE->getTurnDestination();
             GNEEdge* srcEdge = myNet->retrieveEdge(srcNBE->getID());
-            std::vector<NBEdge::Connection> connections = srcNBE->getConnections(); // make a copy!
+            // Make a copy of connections
+            std::vector<NBEdge::Connection> connections = srcNBE->getConnections();
             // delete in reverse so that undoing will add connections in the original order
             for (std::vector<NBEdge::Connection>::reverse_iterator con_it = connections.rbegin(); con_it != connections.rend(); con_it++) {
                 bool hasTurn = con_it->toEdge == turnEdge;
@@ -308,10 +340,10 @@ GNEJunction::setLogicValid(bool valid, GNEUndoList* undoList, const std::string&
             }
             undoList->add(new GNEChange_Attribute(srcEdge, GNE_ATTR_MODIFICATION_STATUS, status), true);
         }
+        // Invalidate traffic light
         invalidateTLS(undoList);
-    } else {
+    } else
         rebuildCrossings(false);
-    }
 }
 
 
@@ -358,6 +390,18 @@ GNEJunction::removeFromCrossings(GNEEdge* edge, GNEUndoList* undoList) {
             myNBNode.removeCrossing((*it).edges);
         }
     }
+}
+
+
+bool
+GNEJunction::isLogicValid() {
+    return myHasValidLogic;
+}
+
+
+void
+GNEJunction::resetDecal() {
+    TLSDecalInitialized = false;
 }
 
 
@@ -457,6 +501,12 @@ GNEJunction::isValid(SumoXMLAttr key, const std::string& value) {
         default:
             throw InvalidArgument("junction attribute '" + toString(key) + "' not allowed");
     }
+}
+
+
+void
+GNEJunction::setResponsible(bool newVal) {
+    myAmResponsible = newVal;
 }
 
 // ===========================================================================

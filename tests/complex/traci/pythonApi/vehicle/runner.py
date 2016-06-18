@@ -6,7 +6,7 @@
 @author  Jakob Erdmann
 @author  Daniel Krajzewicz
 @date    2011-03-04
-@version $Id: runner.py 20721 2016-05-13 11:07:19Z namdre $
+@version $Id: runner.py 20908 2016-06-08 06:16:43Z namdre $
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -292,7 +292,7 @@ for i in range(3):
 moved = "movedVeh"
 traci.vehicle.add(moved, "vertical")
 print("step", step())
-traci.vehicle.moveToXY(moved, "dummy", 0, 448.99, 491.19, 90, False)
+traci.vehicle.moveToXY(moved, "dummy", 0, 448.99, 491.19, 90, 0)
 print("step", step())
 check(moved)
 

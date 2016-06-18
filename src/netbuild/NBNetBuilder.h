@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Fri, 29.04.2005
-/// @version $Id: NBNetBuilder.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBNetBuilder.h 20896 2016-06-07 10:40:32Z behrisch $
 ///
 // Instance responsible for building networks
 /****************************************************************************/
@@ -43,7 +43,6 @@
 #include "NBNode.h"
 #include "NBTrafficLightLogicCont.h"
 #include "NBDistrictCont.h"
-#include "NBJoinedEdgesMap.h"
 #include <utils/common/UtilExceptions.h>
 
 
@@ -186,13 +185,6 @@ public:
     NBDistrictCont& getDistrictCont() {
         return myDistrictCont;
     }
-
-    /** @brief Returns the joined edges map
-     * @return The map of joined edges
-     */
-    const NBJoinedEdgesMap& getJoinedEdgesMap() const {
-        return myJoinedEdges;
-    }
     /// @}
 
 
@@ -244,9 +236,6 @@ protected:
 
     /// @brief The used container for districts
     NBDistrictCont myDistrictCont;
-
-    /// @brief Map of joined edges
-    NBJoinedEdgesMap myJoinedEdges;
 
     /// @brief whether a .net.xml without internal edges was loaded
     bool myHaveLoadedNetworkWithoutInternalEdges;

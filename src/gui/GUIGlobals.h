@@ -4,7 +4,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    2004
-/// @version $Id: GUIGlobals.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIGlobals.h 20988 2016-06-16 13:32:24Z behrisch $
 ///
 // Some global variables (yep)
 /****************************************************************************/
@@ -53,6 +53,9 @@ public:
 
     /// the window shall be closed when the simulation has ended
     static bool gQuitOnEnd;
+
+    /// the simulation shall reload when it has ended (demo)
+    static bool gDemoAutoReload;
 
 };
 

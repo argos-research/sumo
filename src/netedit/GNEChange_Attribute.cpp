@@ -2,7 +2,7 @@
 /// @file    GNEChange_Attribute.cpp
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEChange_Attribute.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEChange_Attribute.cpp 20975 2016-06-15 13:02:40Z palcraft $
 ///
 // A network change in which something is moved (for undo/redo)
 /****************************************************************************/
@@ -68,21 +68,31 @@ GNEChange_Attribute::~GNEChange_Attribute() {
 }
 
 
-void GNEChange_Attribute::undo() {
+void
+GNEChange_Attribute::undo() {
     myAC->setAttribute(myKey, myOrigValue);
 }
 
 
-void GNEChange_Attribute::redo() {
+void
+GNEChange_Attribute::redo() {
     myAC->setAttribute(myKey, myNewValue);
 }
 
 
-FXString GNEChange_Attribute::undoName() const {
+bool
+GNEChange_Attribute::trueChange() {
+    return myOrigValue != myNewValue;
+}
+
+
+FXString
+GNEChange_Attribute::undoName() const {
     return ("Undo change " + myAC->getDescription() + " attribute").c_str();
 }
 
 
-FXString GNEChange_Attribute::redoName() const {
+FXString
+GNEChange_Attribute::redoName() const {
     return ("Redo change " + myAC->getDescription() + " attribute").c_str();
 }

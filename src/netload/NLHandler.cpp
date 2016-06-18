@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Felix Brack
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLHandler.cpp 20743 2016-05-18 15:14:24Z behrisch $
+/// @version $Id: NLHandler.cpp 20928 2016-06-08 19:37:36Z behrisch $
 ///
 // The XML-Handler for network loading
 /****************************************************************************/
@@ -1081,8 +1081,9 @@ NLHandler::addConnection(const SUMOSAXAttributes& attrs) {
 
         // if a traffic light is responsible for it, inform the traffic light
         // check whether this link is controlled by a traffic light
-        if (logic != 0) {
-            logic->addLink(link, fromLane, tlLinkIdx);
+        // we can not reuse logic here because it might be an inactive one
+        if (tlID != "") {
+            myJunctionControlBuilder.getTLLogic(tlID).addLink(link, fromLane, tlLinkIdx);
         }
         // add the link
         fromLane->addLink(link);

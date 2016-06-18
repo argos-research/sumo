@@ -10,7 +10,7 @@
 /// @author  Michael Behrisch
 /// @author  Axel Wegener
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSVehicle.h 20813 2016-05-30 11:52:09Z namdre $
+/// @version $Id: MSVehicle.h 20969 2016-06-15 08:02:52Z namdre $
 ///
 // Representation of a vehicle in the micro simulation
 /****************************************************************************/
@@ -782,6 +782,11 @@ public:
      */
     bool isParking() const;
 
+    /** @brief Returns the information whether the vehicle is fully controlled via TraCI
+     * @return Whether the vehicle is remote-controlled
+     */
+    bool isRemoteControlled() const; 
+
     /// @brief return the distance to the next stop or SUMORealMax if there is none.
     SUMOReal nextStopDist() const {
         return myStopDist;
@@ -1208,7 +1213,7 @@ public:
             return myOriginalSpeed;
         }
 
-        void setVTDControlled(MSLane* l, SUMOReal pos, SUMOReal posLat, SUMOReal angle, int edgeOffset, const ConstMSEdgeVector& route, SUMOTime t);
+        void setVTDControlled(Position xyPos, MSLane* l, SUMOReal pos, SUMOReal posLat, SUMOReal angle, int edgeOffset, const ConstMSEdgeVector& route, SUMOTime t);
 
         SUMOTime getLastAccessTimeStep() const {
             return myLastVTDAccess;
@@ -1254,6 +1259,7 @@ public:
         /// @brief Whether red lights are a reason to brake
         bool myEmergencyBrakeRedLight;
 
+        Position myVTDXYPos;
         MSLane* myVTDLane;
         SUMOReal myVTDPos;
         SUMOReal myVTDPosLat;
@@ -1296,6 +1302,9 @@ public:
 
     /// @brief allow TraCI to influence a lane change decision
     int influenceChangeDecision(int state);
+
+    /// @brief sets position outside the road network
+    void setVTDState(Position xyPos);
 
     /// @brief compute safe speed for following the given leader
     SUMOReal getSafeFollowSpeed(const std::pair<const MSVehicle*, SUMOReal> leaderInfo,
@@ -1356,6 +1365,9 @@ protected:
     /** @brief Returns the list of still pending stop edges
      */
     const ConstMSEdgeVector getStopEdges() const;
+
+    /// @brief register vehicle for drawing while outside the network
+    virtual void drawOutsideNetwork(bool /*add*/) const {};
 
     /// @brief The time the vehicle waits (is not faster than 0.1m/s) in seconds
     SUMOTime myWaitingTime;

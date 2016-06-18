@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUIViewTraffic.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GUIViewTraffic.cpp 20907 2016-06-07 14:06:01Z namdre $
 ///
 // A view on the simulation; this view is a microscopic one
 /****************************************************************************/
@@ -221,7 +221,7 @@ GUIViewTraffic::doPaintGL(int mode, const Boundary& bound) {
     if (myAdditionallyDrawn.size() > 0) {
         glTranslated(0, 0, -.01);
         GUINet::getGUIInstance()->lock();
-        for (std::map<GUIGlObject*, int>::iterator i = myAdditionallyDrawn.begin(); i != myAdditionallyDrawn.end(); ++i) {
+        for (std::map<const GUIGlObject*, int>::iterator i = myAdditionallyDrawn.begin(); i != myAdditionallyDrawn.end(); ++i) {
             (i->first)->drawGLAdditional(this, *myVisualizationSettings);
         }
         GUINet::getGUIInstance()->unlock();

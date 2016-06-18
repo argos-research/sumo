@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Jun 2004
-/// @version $Id: GUISelectedStorage.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUISelectedStorage.cpp 20975 2016-06-15 13:02:40Z palcraft $
 ///
 // Storage for "selected" objects
 /****************************************************************************/
@@ -107,7 +107,7 @@ GUISelectedStorage::isSelected(GUIGlObjectType type, GUIGlID id) {
         case GLO_NETWORK:
             return false;
         case GLO_ADDITIONAL:
-            return isSelected(GLO_TRIGGER, id) || isSelected(GLO_DETECTOR, id);
+            return isSelected(GLO_TRIGGER, id) || isSelected(GLO_DETECTOR, id) || mySelections[GLO_ADDITIONAL].isSelected(id);
         default:
             return mySelections[type].isSelected(id);
     }

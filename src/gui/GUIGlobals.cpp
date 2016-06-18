@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    2004
-/// @version $Id: GUIGlobals.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIGlobals.cpp 20988 2016-06-16 13:32:24Z behrisch $
 ///
 // }
 /****************************************************************************/
@@ -39,11 +39,13 @@
 // ===========================================================================
 // static member variables definitions
 // ===========================================================================
-bool GUIGlobals::gQuitOnEnd;
+bool GUIGlobals::gRunAfterLoad = false;
 
 
-bool GUIGlobals::gRunAfterLoad;
+bool GUIGlobals::gQuitOnEnd = false;
 
+
+bool GUIGlobals::gDemoAutoReload = false;
 
 
 /****************************************************************************/

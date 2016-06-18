@@ -13,6 +13,9 @@ force_collision
 # vehicle skips forward to another edge on its route
 subsequent_edge
 
+# could not find a suitable edge in range
+failed
+
 # vehicle jumps to an edge not on its route
 offroute_edge
 
@@ -21,6 +24,12 @@ offroute_edge2
 
 # old school behavior, vehicle id = VTD_EGO
 offroute_edge_by_id
+
+# vehicle jumps to an edge not on its route
+offroute_failed
+
+# vehicle is mapped to a position outside the network
+leave_net
 
 # set position while on an intersection (within the current internal edge)
 junction
@@ -46,5 +55,8 @@ sublane_junction
 # place vehicle onto an internal lane that is not on the current route (with sublane precision)
 sublane_offroute_junction
 
-# vehicle jumps outside the road network
+# vehicle gets position outside the road network but is mapped onto the edge of the road
 sublane_offroad
+
+# vehicle jumps outside the road network
+sublane_offroad_mode2

@@ -5,7 +5,7 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    2012-04-26
-/// @version $Id: MSFCDExport.cpp 20768 2016-05-20 08:38:44Z behrisch $
+/// @version $Id: MSFCDExport.cpp 20911 2016-06-08 06:59:31Z namdre $
 ///
 // Realises dumping Floating Car Data (FCD) Data
 /****************************************************************************/
@@ -62,7 +62,7 @@ MSFCDExport::write(OutputDevice& of, SUMOTime timestep, bool elevation) {
     for (MSVehicleControl::constVehIt it = vc.loadedVehBegin(); it != vc.loadedVehEnd(); ++it) {
         const SUMOVehicle* veh = it->second;
         const MSVehicle* microVeh = dynamic_cast<const MSVehicle*>(veh);
-        if (veh->isOnRoad() || veh->isParking()) {
+        if (veh->isOnRoad() || veh->isParking() || veh->isRemoteControlled()) {
             Position pos = veh->getPosition();
             if (useGeo) {
                 of.setPrecision(GEO_OUTPUT_ACCURACY);

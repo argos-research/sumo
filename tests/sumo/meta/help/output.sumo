@@ -1,4 +1,4 @@
-SUMO Version dev-SVN-r20823
+SUMO Version dev-SVN-r20990
  Copyright (C) 2001-2016 DLR and contributors; http://sumo.dlr.de
 A microscopic road traffic simulation.
 
@@ -74,6 +74,10 @@ Output Options:
   --bt-output FILE                     Save bluetooth visibilities into FILE
                                          (in conjunction with device.btreceiver
                                          and device.btsender)
+  --movereminder-output FILE           Save movereminder states of selected
+                                         vehicles into FILE
+  --movereminder-output.vehicles STR   List of vehicle ids which shall save
+                                         their movereminder states
   --save-state.times INT[]             Use INT[] as times at which a network
                                          state written
   --save-state.prefix FILE             Prefix for network states
@@ -163,6 +167,9 @@ Routing Options:
                                          be rerouted
   --device.rerouting.pre-period TIME   The rerouting period before depart
   --device.rerouting.adaptation-weight FLOAT  The weight of prior edge weights
+                                         for exponential moving average
+  --device.rerouting.adaptation-steps INT  The number of steps for moving
+                                         average weight of prior edge weights
   --device.rerouting.adaptation-interval TIME  The interval for updating the
                                          edge weights
   --device.rerouting.with-taz          Use zones (districts) as routing start-
@@ -291,6 +298,8 @@ GUI Only Options:
   -Q, --quit-on-end                    Quits the GUI when the simulation stops
   -G, --game                           Start the GUI in gaming mode
   -S, --start                          Start the simulation after loading
+  -D, --demo                           Restart the simulation after ending
+                                         (demo mode)
   -T, --disable-textures               Do not load background pictures
 
 

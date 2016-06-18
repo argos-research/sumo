@@ -3,7 +3,7 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Jan 2015
-/// @version $Id: MSRailSignal.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSRailSignal.cpp 20924 2016-06-08 12:02:32Z namdre $
 ///
 // A rail signal logic
 /****************************************************************************/
@@ -55,7 +55,8 @@ MSRailSignal::MSRailSignal(MSTLLogicControl& tlcontrol,
                            const std::string& id, const std::string& subid,
                            const std::map<std::string, std::string>& parameters) :
     MSTrafficLightLogic(tlcontrol, id, subid, DELTA_T, parameters),
-    myCurrentPhase(DELTA_T, "") {
+    myCurrentPhase(DELTA_T, std::string(SUMO_MAX_CONNECTIONS, 'X')) // dummy phase
+{
     myDefaultCycleTime = DELTA_T;
 }
 

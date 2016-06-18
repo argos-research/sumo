@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: TraCIServerAPI_Simulation.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: TraCIServerAPI_Simulation.cpp 20857 2016-06-03 06:26:52Z namdre $
 ///
 // APIs for getting/setting edge values via TraCI
 /****************************************************************************/
@@ -274,7 +274,7 @@ TraCIServerAPI_Simulation::convertCartesianToRoadMap(Position pos) {
     for (std::vector<std::string>::iterator itId = allEdgeIds.begin(); itId != allEdgeIds.end(); itId++) {
         const std::vector<MSLane*>& allLanes = MSEdge::dictionary((*itId))->getLanes();
         for (std::vector<MSLane*>::const_iterator itLane = allLanes.begin(); itLane != allLanes.end(); itLane++) {
-            const SUMOReal newDistance = (*itLane)->getShape().distance(pos);
+            const SUMOReal newDistance = (*itLane)->getShape().distance2D(pos);
             if (newDistance < minDistance) {
                 minDistance = newDistance;
                 result.first = (*itLane);

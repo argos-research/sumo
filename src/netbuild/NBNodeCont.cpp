@@ -8,7 +8,7 @@
 /// @author  Michael Behrisch
 /// @author  Sascha Krieg
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBNodeCont.cpp 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: NBNodeCont.cpp 20896 2016-06-07 10:40:32Z behrisch $
 ///
 // Container for nodes during the netbuilding process
 /****************************************************************************/
@@ -55,7 +55,6 @@
 #include "NBDistrict.h"
 #include "NBEdgeCont.h"
 #include "NBTrafficLightLogicCont.h"
-#include "NBJoinedEdgesMap.h"
 #include "NBOwnTLDef.h"
 #include "NBNodeCont.h"
 
@@ -319,7 +318,7 @@ NBNodeCont::removeIsolatedRoads(NBDistrictCont& dc, NBEdgeCont& ec, NBTrafficLig
 
 unsigned int
 NBNodeCont::removeUnwishedNodes(NBDistrictCont& dc, NBEdgeCont& ec,
-                                NBJoinedEdgesMap& je, NBTrafficLightLogicCont& tlc,
+                                NBTrafficLightLogicCont& tlc,
                                 bool removeGeometryNodes) {
     // load edges that shall not be modified
     std::set<std::string> edges2keep;
@@ -374,7 +373,6 @@ NBNodeCont::removeUnwishedNodes(NBDistrictCont& dc, NBEdgeCont& ec,
             begin->append(continuation);
             continuation->getToNode()->replaceIncoming(continuation, begin, 0);
             tlc.replaceRemoved(continuation, -1, begin, -1);
-            je.appended(begin->getID(), continuation->getID());
             ec.extract(dc, continuation, true);
         }
         toRemove.push_back(current);

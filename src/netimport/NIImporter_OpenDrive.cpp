@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_OpenDrive.cpp 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: NIImporter_OpenDrive.cpp 20955 2016-06-13 10:04:39Z namdre $
 ///
 // Importer for networks stored in openDrive format
 /****************************************************************************/
@@ -540,7 +540,7 @@ NIImporter_OpenDrive::loadNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
     for (std::map<std::string, OpenDriveEdge*>::iterator i = edges.begin(); i != edges.end(); ++i) {
         OpenDriveEdge* e = (*i).second;
         for (std::vector<OpenDriveSignal>::const_iterator j = e->signals.begin(); j != e->signals.end(); ++j) {
-            if ((*j).type != "1000001") {
+            if ((*j).type != "1000001") { // traffic_light (Section 6.11)
                 continue;
             }
             std::vector<OpenDriveLaneSection>::iterator k = e->laneSections.begin();

@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 08.03.2004
-/// @version $Id: GUIDialog_AppSettings.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIDialog_AppSettings.h 20988 2016-06-16 13:32:24Z behrisch $
 ///
 // The application-settings dialog
 /****************************************************************************/
@@ -66,20 +66,20 @@ public:
     /// @brief Called on Cancel-button pressure
     long onCmdCancel(FXObject*, FXSelector, void*);
 
-    /// @brief Called on "Quit on end"-button change
-    long onCmdQuitOnEnd(FXObject*, FXSelector, void*);
-
-    /// @brief Called on "Allow textures"-button change
-    long onCmdAllowTextures(FXObject*, FXSelector, void*);
-
-    /// @brief Called on "Locate links in messages"-button change
-    long onCmdLocateLinks(FXObject*, FXSelector, void*);
+    /// @brief Called on button change
+    long onCmdSelect(FXObject*, FXSelector sel, void*);
     /// @}
 
 
 private:
     /// @brief Information whether the application shall be quit
     bool myAppQuitOnEnd;
+
+    /// @brief Information whether the simulation shall start directly after loading
+    bool myAppAutoStart;
+
+    /// @brief Information whether the simulation restarts after ending (demo mode)
+    bool myAppDemo;
 
     /// @brief Information whether textures may be used
     bool myAllowTextures;

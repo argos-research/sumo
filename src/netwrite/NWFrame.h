@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NWFrame.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NWFrame.h 20975 2016-06-15 13:02:40Z palcraft $
 ///
 // Sets and checks options for netwrite
 /****************************************************************************/
@@ -51,31 +51,22 @@ class OutputDevice;
  */
 class NWFrame {
 public:
-    /** @brief Inserts options used by the network writer
-     */
+    /// @brief Inserts options used by the network writer
     static void fillOptions(bool forNetgen);
-
 
     /** @brief Checks set options from the OptionsCont-singleton for being valid
      * @return Whether needed options are set and have proper values
      */
     static bool checkOptions();
 
-
-    /** @brief Writes the network stored in the given net builder
-     */
+    /// @brief Writes the network stored in the given net builder
     static void writeNetwork(const OptionsCont& oc, NBNetBuilder& nb);
 
-    /** @brief Writes the given position to device in long format (one attribute
-     * per dimension)
-     */
+    /// @brief Writes the given position to device in long format (one attribute per dimension)
     static void writePositionLong(const Position& pos, OutputDevice& dev);
 
-
-
-    /** @brief The version number for written files */
+    /// @brief The version number for written files
     static const std::string MAJOR_VERSION;
-
 };
 
 

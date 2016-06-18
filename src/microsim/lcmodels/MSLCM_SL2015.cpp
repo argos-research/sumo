@@ -2,7 +2,7 @@
 /// @file    MSLCM_SL2015.h
 /// @author  Jakob Erdmann
 /// @date    Tue, 06.10.2015
-/// @version $Id: MSLCM_SL2015.cpp 20716 2016-05-12 12:32:19Z behrisch $
+/// @version $Id: MSLCM_SL2015.cpp 20957 2016-06-13 12:07:26Z namdre $
 ///
 // A lane change model for heterogeneous traffic (based on sub-lanes)
 /****************************************************************************/
@@ -69,7 +69,7 @@
 #define HELP_DECEL_FACTOR (SUMOReal)1.0
 
 #define HELP_OVERTAKE  (SUMOReal)(10.0 / 3.6)
-#define MIN_FALLBEHIND  (SUMOReal)(14.0 / 3.6)
+#define MIN_FALLBEHIND  (SUMOReal)(7.0 / 3.6)
 
 #define KEEP_RIGHT_HEADWAY (SUMOReal)2.0
 
@@ -437,7 +437,7 @@ MSLCM_SL2015::informLeader(int blocked,
                 // overtaking on the right on an uncongested highway is forbidden (noOvertakeLCLeft)
                 || (dir == LCA_MLEFT && !myVehicle.congested() && !myAllowOvertakingRight)
                 // not enough space to overtake? (we will start to brake when approaching a dead end)
-                || myLeftSpace - myVehicle.getCarFollowModel().brakeGap(myVehicle.getSpeed()) < overtakeDist
+                || myLeftSpace - myLeadingBlockerLength - myVehicle.getCarFollowModel().brakeGap(myVehicle.getSpeed()) < overtakeDist
                 // not enough time to overtake?
                 || dv * remainingSeconds < overtakeDist) {
             // cannot overtake
@@ -576,7 +576,8 @@ MSLCM_SL2015::informFollower(int blocked,
                                              nv, nv->getSpeed(), neighFollow.second + SPEED2DIST(plannedSpeed), plannedSpeed, myVehicle.getCarFollowModel().getMaxDecel()));
             const SUMOReal vsafe = MAX2(neighNewSpeed, nv->getCarFollowModel().followSpeed(
                                             nv, nv->getSpeed(), neighFollow.second + SPEED2DIST(plannedSpeed - vsafe1), plannedSpeed, myVehicle.getCarFollowModel().getMaxDecel()));
-            assert(vsafe <= vsafe1);
+            // the following assertion cannot be guaranteed because the CFModel handles small gaps differently, see MSCFModel::maximumSafeStopSpeed
+            // assert(vsafe <= vsafe1);
             msg(neighFollow, vsafe, dir | LCA_AMBLOCKINGFOLLOWER);
             if (gDebugFlag2) {
                 std::cout << " wants to cut in before nv=" << nv->getID()
@@ -1647,6 +1648,21 @@ MSLCM_SL2015::checkBlocking(const MSLane& neighLane, SUMOReal& latDist, int lane
                                              (laneOffset == -1 ? LCA_BLOCKED_BY_RIGHT_LEADER : LCA_BLOCKED_BY_LEFT_LEADER), collectLeadBlockers);
             blocked |= checkBlockingVehicles(&myVehicle, neighFollowers, myOrigLatDist, neighLane.getRightSideOnEdge(), false,
                                              (laneOffset == -1 ? LCA_BLOCKED_BY_RIGHT_FOLLOWER : LCA_BLOCKED_BY_LEFT_FOLLOWER), collectFollowBlockers);
+        }
+    }
+    if (collectFollowBlockers != 0 && collectLeadBlockers != 0) {
+        // prevent vehicles from being classified as leader and follower simultaneously
+        for (std::vector<CLeaderDist>::const_iterator it2 = collectLeadBlockers->begin(); it2 != collectLeadBlockers->end(); ++it2) {
+            for (std::vector<CLeaderDist>::iterator it = collectFollowBlockers->begin(); it != collectFollowBlockers->end();) {
+                if ((*it2).first == (*it).first) {
+                    if (gDebugFlag2) {
+                        std::cout << "    removed follower " << (*it).first->getID() << " because it is already a leader\n";
+                    }
+                    it = collectFollowBlockers->erase(it);
+                } else {
+                    ++it;
+                }
+            }
         }
     }
     return blocked;
