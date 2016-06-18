@@ -1,3 +1,9 @@
+# svn stuff
+.svn
+
+# python stuff
+__pycache__
+
 # make -f Makefile.cvs
 
 INSTALL
