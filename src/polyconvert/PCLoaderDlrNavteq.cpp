@@ -5,7 +5,7 @@
 /// @author  Christoph Sommer
 /// @author  Michael Behrisch
 /// @date    Thu, 02.11.2006
-/// @version $Id: PCLoaderDlrNavteq.cpp 20801 2016-05-28 05:31:30Z behrisch $
+/// @version $Id: PCLoaderDlrNavteq.cpp 21217 2016-07-22 10:57:44Z behrisch $
 ///
 // A reader of pois and polygons stored in DLR-Navteq (Elmar)-format
 /****************************************************************************/
@@ -208,9 +208,9 @@ PCLoaderDlrNavteq::loadPolyFile(const std::string& file,
         std::string type = values[2];
         std::string name = values[3];
         PositionVector vec;
-        size_t index = 4;
+        int index = 4;
         // now collect the positions
-        while (values.size() > index) {
+        while ((int)values.size() > index) {
             std::string xpos = values[index];
             std::string ypos = values[index + 1];
             index += 2;

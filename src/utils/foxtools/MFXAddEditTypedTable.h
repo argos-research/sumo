@@ -2,7 +2,7 @@
 /// @file    MFXAddEditTypedTable.h
 /// @author  Daniel Krajzewicz
 /// @date    2004-07-02
-/// @version $Id: MFXAddEditTypedTable.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MFXAddEditTypedTable.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // missing_desc
 /****************************************************************************/
@@ -71,15 +71,15 @@ public:
     };
 
 
-    CellType getCellType(size_t pos) const;
-    void setCellType(size_t pos, CellType t);
-    void setNumberCellParams(size_t pos, double min, double max,
+    CellType getCellType(int pos) const;
+    void setCellType(int pos, CellType t);
+    void setNumberCellParams(int pos, double min, double max,
                              double steps1, double steps2, double steps3,
                              const std::string& format);
-    NumberCellParams getNumberCellParams(size_t pos) const;
-    void setEnums(size_t pos, const std::vector<std::string>& params);
-    void addEnum(size_t pos, const std::string& e);
-    const std::vector<std::string>& getEnums(size_t pos) const;
+    NumberCellParams getNumberCellParams(int pos) const;
+    void setEnums(int pos, const std::vector<std::string>& params);
+    void addEnum(int pos, const std::string& e);
+    const std::vector<std::string>& getEnums(int pos) const;
     /*
         class FXTableItem_Int : public FXTableItem {
         public:

@@ -1,8 +1,8 @@
 /****************************************************************************/
 /// @file    GNERouteProbe.cpp
 /// @author  Pablo Alvarez Lopez
-/// @date    Nov 2015
-/// @version $Id: GNERouteProbe.cpp 19861 2016-02-01 09:08:47Z palcraft $
+/// @date    May 2016
+/// @version $Id: GNERouteProbe.cpp 21229 2016-07-25 11:07:26Z palcraft $
 ///
 ///
 /****************************************************************************/
@@ -39,7 +39,7 @@
 #include <utils/geom/GeomHelper.h>
 #include <utils/gui/windows/GUISUMOAbstractView.h>
 #include <utils/gui/windows/GUIAppEnum.h>
-#include <utils/gui/images/GUIIconSubSys.h>
+#include <utils/gui/images/GUITextureSubSys.h>
 #include <utils/gui/div/GUIParameterTableWindow.h>
 #include <utils/gui/globjects/GUIGLObjectPopupMenu.h>
 #include <utils/gui/div/GUIGlobalSelection.h>
@@ -56,58 +56,36 @@
 #include "GNEUndoList.h"
 #include "GNENet.h"
 #include "GNEChange_Attribute.h"
-#include "GNELogo_RouteProbe.cpp"
-#include "GNELogo_RouteProbeSelected.cpp"
 
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
 #endif
 
 // ===========================================================================
-// static member definitions
-// ===========================================================================
-GUIGlID GNERouteProbe::myRouteProbeGlID = 0;
-GUIGlID GNERouteProbe::myRouteProbeSelectedGlID = 0;
-bool GNERouteProbe::myRouteProbeInitialized = false;
-bool GNERouteProbe::myRouteProbeSelectedInitialized = false;
-
-// ===========================================================================
 // member method definitions
 // ===========================================================================
 
-
-GNERouteProbe::GNERouteProbe(const std::string& id, GNEViewNet* viewNet, GNEEdge *edge, int frequency, const std::string& filename, int begin, bool blocked) :
+GNERouteProbe::GNERouteProbe(const std::string& id, GNEViewNet* viewNet, GNEEdge* edge, int frequency, const std::string& filename, int begin, bool blocked) :
     GNEAdditional(id, viewNet, Position(), SUMO_TAG_ROUTEPROBE, NULL, blocked),
     myEdge(edge),
     myFrequency(frequency),
     myFilename(filename),
     myBegin(begin) {
+    // this additional ISN'T movable
+    myMovable = false;
     // Add additional to edge parent
     myEdge->addAdditional(this);
     // Update geometry;
     updateGeometry();
-    // Set colors
-    // load RouteProbe logo, if wasn't inicializated
-    if (!myRouteProbeInitialized) {
-        FXImage* i = new FXGIFImage(getViewNet()->getNet()->getApp(), GNELogo_RouteProbe, IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP);
-        myRouteProbeGlID = GUITexturesHelper::add(i);
-        myRouteProbeInitialized = true;
-        delete i;
-    }
-
-    // load RouteProbe selected logo, if wasn't inicializated
-    if (!myRouteProbeSelectedInitialized) {
-        FXImage* i = new FXGIFImage(getViewNet()->getNet()->getApp(), GNELogo_RouteProbeSelected, IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP);
-        myRouteProbeSelectedGlID = GUITexturesHelper::add(i);
-        myRouteProbeSelectedInitialized = true;
-        delete i;
-    }
+    // Center view in the position of routeProbe
+    myViewNet->centerTo(getGlID(), false);
 }
 
 
 GNERouteProbe::~GNERouteProbe() {
-    if(myEdge)
+    if (myEdge) {
         myEdge->removeAdditional(this);
+    }
 }
 
 
@@ -124,7 +102,7 @@ GNERouteProbe::updateGeometry() {
     GNELane* firstLane = myEdge->getLanes().at(0);
 
     // Save number of lanes
-    numberOfLanes = myEdge->getLanes().size();
+    numberOfLanes = int(myEdge->getLanes().size());
 
     // Get shape of lane parent
     myShape.push_back(firstLane->getShape().positionAtOffset(5));
@@ -138,11 +116,24 @@ GNERouteProbe::updateGeometry() {
     // Save rotation (angle) of the vector constructed by points f and s
     myShapeRotations.push_back(firstLane->getShape().rotationDegreeAtOffset(5) * -1);
 
+    // Set block icon position
+    myBlockIconPosition = myShape.getLineCenter();
+
     // Set offset of the block icon
     myBlockIconOffset = Position(1.1, -3.06);
 
     // Set block icon rotation, and using their rotation for logo
     setBlockIconRotation(firstLane);
+}
+
+
+Position
+GNERouteProbe::getPositionInView() const {
+    Position A = myEdge->getLanes().front()->getShape().positionAtOffset(myPosition.x());
+    Position B = myEdge->getLanes().back()->getShape().positionAtOffset(myPosition.x());
+
+    // return Middle point
+    return Position((A.x() + B.x()) / 2, (A.y() + B.y()) / 2);
 }
 
 
@@ -153,78 +144,71 @@ GNERouteProbe::moveAdditional(SUMOReal, SUMOReal, GNEUndoList*) {
 
 
 void
-GNERouteProbe::writeAdditional(OutputDevice& device) {
+GNERouteProbe::writeAdditional(OutputDevice& device, const std::string&) {
     // Write parameters
     device.openTag(getTag());
     device.writeAttr(SUMO_ATTR_ID, getID());
+    device.writeAttr(SUMO_ATTR_EDGE, myEdge->getID());
     device.writeAttr(SUMO_ATTR_FREQUENCY, myFrequency);
-    if(!myFilename.empty())
+    if (!myFilename.empty()) {
         device.writeAttr(SUMO_ATTR_FILE, myFilename);
+    }
     device.writeAttr(SUMO_ATTR_BEGIN, myBegin);
     // Close tag
     device.closeTag();
 }
 
 
-GNEEdge* 
+GNEEdge*
 GNERouteProbe::getEdge() const {
     return myEdge;
 }
 
-void 
+void
 GNERouteProbe::removeEdgeReference() {
     myEdge = NULL;
 }
 
 
-std::string 
+std::string
 GNERouteProbe::getFilename() const {
     return myFilename;
 }
 
 
-int 
+int
 GNERouteProbe::getFrequency() const {
     return myFrequency;
 }
 
 
-int 
+int
 GNERouteProbe::getBegin() const {
     return myBegin;
 }
 
 
-void 
+void
 GNERouteProbe::setFilename(std::string filename) {
     myFilename = filename;
 }
 
 
-void 
+void
 GNERouteProbe::setFrequency(int frequency) {
     myFrequency = frequency;
 }
 
 
-void 
+void
 GNERouteProbe::setBegin(int begin) {
     myBegin = begin;
 }
 
 
-GUIParameterTableWindow*
-GNERouteProbe::getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent) {
-    /** NOT YET SUPPORTED **/
-    // Ignore Warning
-    UNUSED_PARAMETER(parent);
-    GUIParameterTableWindow* ret = new GUIParameterTableWindow(app, *this, 2);
-    // add items
-    ret->mkItem("id", false, getID());
-    /** @TODO complet with the rest of parameters **/
-    // close building
-    ret->closeBuilding();
-    return ret;
+const std::string&
+GNERouteProbe::getParentName() const {
+    return myEdge->getMicrosimID();
 }
 
 
@@ -278,19 +262,19 @@ GNERouteProbe::drawGL(const GUIVisualizationSettings& s) const {
     glRotated(-90, 0, 0, 1);
 
     // Draw icon depending of detector is or isn't selected
-    if(isAdditionalSelected()) 
-        GUITexturesHelper::drawTexturedBox(myRouteProbeSelectedGlID, 1);
-    else
-        GUITexturesHelper::drawTexturedBox(myRouteProbeGlID, 1);
+    if (isAdditionalSelected()) {
+        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_ROUTEPROBESELECTED), 1);
+    } else {
+        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_ROUTEPROBE), 1);
+    }
 
     // Pop logo matrix
     glPopMatrix();
 
     // Check if the distance is enought to draw details
-    if (s.scale * exaggeration >= 10) {        
+    if (s.scale * exaggeration >= 10) {
         // Show Lock icon depending of the Edit mode
-        //if(dynamic_cast<GNEViewNet*>(parent)->showLockIcon())
-            drawLockIcon(0.4);
+        drawLockIcon(0.4);
     }
 
     // Finish draw
@@ -303,7 +287,7 @@ std::string
 GNERouteProbe::getAttribute(SumoXMLAttr key) const {
     switch (key) {
         case SUMO_ATTR_ID:
-            return getMicrosimID();
+            return getAdditionalID();
         case SUMO_ATTR_EDGE:
             return myEdge->getID();
         case SUMO_ATTR_FILE:
@@ -326,7 +310,6 @@ GNERouteProbe::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoLi
     switch (key) {
         case SUMO_ATTR_ID:
         case SUMO_ATTR_EDGE:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
         case SUMO_ATTR_FILE:
         case SUMO_ATTR_FREQUENCY:
         case SUMO_ATTR_BEGIN:
@@ -343,8 +326,17 @@ bool
 GNERouteProbe::isValid(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
+            if (myViewNet->getNet()->getAdditional(getTag(), value) == NULL) {
+                return true;
+            } else {
+                return false;
+            }
         case SUMO_ATTR_EDGE:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            if (myViewNet->getNet()->retrieveEdge(value, false) != NULL) {
+                return true;
+            } else {
+                return false;
+            }
         case SUMO_ATTR_FILE:
             return isValidFileValue(value);
         case SUMO_ATTR_FREQUENCY:
@@ -361,8 +353,15 @@ void
 GNERouteProbe::setAttribute(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
+            setAdditionalID(value);
+            break;
         case SUMO_ATTR_EDGE:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            myEdge->removeAdditional(this);
+            myEdge = myViewNet->getNet()->retrieveEdge(value);
+            myEdge->addAdditional(this);
+            updateGeometry();
+            getViewNet()->update();
+            break;
         case SUMO_ATTR_FILE:
             myFilename = value;
             break;

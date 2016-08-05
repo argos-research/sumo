@@ -8,7 +8,7 @@
 /// @author  Clemens Honomichl
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSNet.h 20768 2016-05-20 08:38:44Z behrisch $
+/// @version $Id: MSNet.h 21198 2016-07-19 11:34:56Z namdre $
 ///
 // The simulated network and simulation perfomer
 /****************************************************************************/
@@ -149,6 +149,7 @@ public:
     /** @brief Closes the network's building process
      *
      * Assigns the structures built while loading to this network.
+     * @param[in] oc The options to use
      * @param[in] edges The control of edges which belong to this network
      * @param[in] junctions The control of junctions which belong to this network
      * @param[in] routeLoaders The route loaders used
@@ -160,7 +161,7 @@ public:
      * @param[in] version The network version
      * @todo Try to move all this to the constructor?
      */
-    void closeBuilding(MSEdgeControl* edges, MSJunctionControl* junctions,
+    void closeBuilding(const OptionsCont& oc, MSEdgeControl* edges, MSJunctionControl* junctions,
                        SUMORouteLoaderControl* routeLoaders, MSTLLogicControl* tlc,
                        std::vector<SUMOTime> stateDumpTimes, std::vector<std::string> stateDumpFiles,
                        bool hasInternalLinks, bool hasNeighs, bool lefthand,
@@ -318,6 +319,12 @@ public:
      */
     virtual MSTransportableControl& getPersonControl();
 
+    /** @brief Returns whether persons are simulated
+     */
+    bool hasPersons() const {
+        return myPersonControl != 0;
+    }
+
     /** @brief Returns the container control
      *
      * If the container control does not exist, yet, it is created.
@@ -327,6 +334,12 @@ public:
      * @see myContainerControl
      */
     virtual MSTransportableControl& getContainerControl();
+
+    /** @brief Returns whether containers are simulated
+    */
+    bool hasContainers() const {
+        return myContainerControl != 0;
+    }
 
 
     /** @brief Returns the edge control
@@ -724,6 +737,11 @@ protected:
     std::vector<SUMOTime> myStateDumpTimes;
     /// @brief The names for the state files
     std::vector<std::string> myStateDumpFiles;
+    /// @brief The period for writing state
+    SUMOTime myStateDumpPeriod;
+    /// @brief name components for periodic state
+    std::string myStateDumpPrefix;
+    std::string myStateDumpSuffix;
     /// @}
 
 

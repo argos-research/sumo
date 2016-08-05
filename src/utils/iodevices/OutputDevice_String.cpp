@@ -2,7 +2,7 @@
 /// @file    OutputDevice_String.cpp
 /// @author  Michael Behrisch
 /// @date    2009
-/// @version $Id: OutputDevice_String.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: OutputDevice_String.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // An output device that encapsulates a stringstream
 /****************************************************************************/
@@ -40,7 +40,7 @@
 // ===========================================================================
 // method definitions
 // ===========================================================================
-OutputDevice_String::OutputDevice_String(const bool binary, const unsigned int defaultIndentation)
+OutputDevice_String::OutputDevice_String(const bool binary, const int defaultIndentation)
     : OutputDevice(binary, defaultIndentation) {
     setPrecision();
     myStream << std::setiosflags(std::ios::fixed);
@@ -52,7 +52,7 @@ OutputDevice_String::~OutputDevice_String() {
 
 
 std::string
-OutputDevice_String::getString() {
+OutputDevice_String::getString() const {
     return myStream.str();
 }
 

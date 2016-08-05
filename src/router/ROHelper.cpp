@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: ROHelper.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ROHelper.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // Some helping methods for router
 /****************************************************************************/
@@ -45,9 +45,9 @@ recheckForLoops(ConstROEdgeVector& edges) {
     // XXX check for stops, departLane, departPos, departSpeed, ....
 
     // removal of edge loops within the route (edge occurs twice)
-    std::map<const ROEdge*, size_t> lastOccurence; // index of the last occurence of this edge
-    for (size_t ii = 0; ii < edges.size(); ++ii) {
-        std::map<const ROEdge*, size_t>::iterator it_pre = lastOccurence.find(edges[ii]);
+    std::map<const ROEdge*, int> lastOccurence; // index of the last occurence of this edge
+    for (int ii = 0; ii < (int)edges.size(); ++ii) {
+        std::map<const ROEdge*, int>::iterator it_pre = lastOccurence.find(edges[ii]);
         if (it_pre != lastOccurence.end()) {
             edges.erase(edges.begin() + it_pre->second, edges.begin() + ii);
             ii = it_pre->second;
@@ -59,8 +59,8 @@ recheckForLoops(ConstROEdgeVector& edges) {
     // remove loops at the route's begin
     //  (vehicle makes a turnaround to get into the right direction at an already passed node)
     const RONode* start = edges[0]->getFromJunction();
-    unsigned lastStart = 0;
-    for (unsigned i = 1; i < edges.size(); i++) {
+    int lastStart = 0;
+    for (int i = 1; i < (int)edges.size(); i++) {
         if (edges[i]->getFromJunction() == start) {
             lastStart = i;
         }
@@ -71,13 +71,13 @@ recheckForLoops(ConstROEdgeVector& edges) {
     // remove loops at the route's end
     //  (vehicle makes a turnaround to get into the right direction at an already passed node)
     const RONode* end = edges.back()->getToJunction();
-    size_t firstEnd = edges.size() - 1;
-    for (unsigned i = 0; i < firstEnd; i++) {
+    int firstEnd = (int)edges.size() - 1;
+    for (int i = 0; i < firstEnd; i++) {
         if (edges[i]->getToJunction() == end) {
             firstEnd = i;
         }
     }
-    if (firstEnd < edges.size() - 1) {
+    if (firstEnd < (int)edges.size() - 1) {
         edges.erase(edges.begin() + firstEnd + 2, edges.end());
     }
 
@@ -91,9 +91,9 @@ recheckForLoops(ConstROEdgeVector& edges) {
     bool changed = false;
     do {
         changed = false;
-        for (unsigned int b = 0; b < nodes.size() && !changed; ++b) {
+        for (int b = 0; b < nodes.size() && !changed; ++b) {
             RONode* bn = nodes[b];
-            for (unsigned int e = b + 1; e < nodes.size() && !changed; ++e) {
+            for (int e = b + 1; e < nodes.size() && !changed; ++e) {
                 if (bn == nodes[e]) {
                     changed = true;
                     nodes.erase(nodes.begin() + b, nodes.begin() + e);

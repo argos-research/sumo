@@ -2,7 +2,7 @@
 /// @file    TrajectoriesHandler.h
 /// @author  Michael Behrisch
 /// @date    14.03.2014
-/// @version $Id: TrajectoriesHandler.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: TrajectoriesHandler.h 21118 2016-07-05 13:46:32Z behrisch $
 ///
 // An XML-Handler for amitran and netstate trajectories
 /****************************************************************************/
@@ -53,7 +53,8 @@ public:
      *
      * @param[in] file The file that will be processed
      */
-    TrajectoriesHandler(const bool computeA, const bool computeAForward, const SUMOEmissionClass defaultClass,
+    TrajectoriesHandler(const bool computeA, const bool computeAForward, const bool accelZeroCorrection,
+                        const SUMOEmissionClass defaultClass,
                         const SUMOReal defaultSlope, std::ostream* stdOut, OutputDevice* xmlOut);
 
 
@@ -100,6 +101,7 @@ protected:
 private:
     const bool myComputeA;
     const bool myComputeAForward;
+    const bool myAccelZeroCorrection;
     const SUMOEmissionClass myDefaultClass;
     const SUMOReal myDefaultSlope;
     std::ostream* myStdOut;

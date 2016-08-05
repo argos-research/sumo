@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Sascha Krieg
 /// @date    Tue, 29.05.2005
-/// @version $Id: NBOwnTLDef.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBOwnTLDef.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A traffic light logics which must be computed (only nodes/edges are given)
 /****************************************************************************/
@@ -120,7 +120,7 @@ public:
     }
 
     /// @brief add an additional pedestrian phase if there are crossings that did not get green yet
-    static void addPedestrianScramble(NBTrafficLightLogic* logic, unsigned int noLinksAll,
+    static void addPedestrianScramble(NBTrafficLightLogic* logic, int noLinksAll,
                                       SUMOTime greenTime, SUMOTime yellowTime,
                                       const std::vector<NBNode::Crossing>& crossings, const EdgeVector& fromEdges, const EdgeVector& toEdges);
 
@@ -137,7 +137,7 @@ public:
      * @param[in] onlyConts whether the method is only called to compute myNeedsContRelation
      * @return The computed logic
      */
-    NBTrafficLightLogic* computeLogicAndConts(unsigned int brakingTimeSeconds, bool onlyConts = false);
+    NBTrafficLightLogic* computeLogicAndConts(int brakingTimeSeconds, bool onlyConts = false);
 
     /* initialize myNeedsContRelation and set myNeedsContRelationReady to true */
     void initNeedsContRelation() const;
@@ -151,7 +151,7 @@ protected:
      * @return The computed logic
      * @see NBTrafficLightDefinition::myCompute
      */
-    NBTrafficLightLogic* myCompute(unsigned int brakingTimeSeconds);
+    NBTrafficLightLogic* myCompute(int brakingTimeSeconds);
 
 
     /** @brief Collects the nodes participating in this traffic light

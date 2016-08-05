@@ -6,7 +6,7 @@
 /// @author  Bjoern Hendriks
 /// @author  Michael Behrisch
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSXMLRawOut.cpp 20550 2016-04-26 10:57:45Z namdre $
+/// @version $Id: MSXMLRawOut.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Realises dumping the complete network state
 /****************************************************************************/
@@ -156,11 +156,11 @@ MSXMLRawOut::writeVehicle(OutputDevice& of, const MSBaseVehicle& veh) {
                 const SUMOReal posLat = microVeh.getLateralPositionOnLane();
                 of.writeAttr(SUMO_ATTR_POSITION_LAT, posLat);
             }
-            const unsigned int personNumber = microVeh.getPersonNumber();
+            const int personNumber = microVeh.getPersonNumber();
             if (personNumber > 0) {
                 of.writeAttr(SUMO_ATTR_PERSON_NUMBER, personNumber);
             }
-            const unsigned int containerNumber = microVeh.getContainerNumber();
+            const int containerNumber = microVeh.getContainerNumber();
             if (containerNumber > 0) {
                 of.writeAttr(SUMO_ATTR_CONTAINER_NUMBER, containerNumber);
             }

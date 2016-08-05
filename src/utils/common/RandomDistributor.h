@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2005-09-15
-/// @version $Id: RandomDistributor.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: RandomDistributor.h 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // Represents a generic random distribution
 /****************************************************************************/
@@ -81,7 +81,7 @@ public:
         assert(prob >= 0);
         myProb += prob;
         if (checkDuplicates) {
-            for (size_t i = 0; i < myVals.size(); i++) {
+            for (int i = 0; i < (int)myVals.size(); i++) {
                 if (val == myVals[i]) {
                     myProbs[i] += prob;
                     return false;
@@ -105,7 +105,7 @@ public:
             throw OutOfBoundsException();
         }
         SUMOReal prob = which == 0 ? RandHelper::rand(myProb) : which->rand(myProb);
-        for (size_t i = 0; i < myVals.size(); i++) {
+        for (int i = 0; i < (int)myVals.size(); i++) {
             if (prob < myProbs[i]) {
                 return myVals[i];
             }

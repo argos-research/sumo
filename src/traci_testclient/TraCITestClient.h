@@ -5,7 +5,7 @@
 /// @author  Axel Wegener
 /// @author  Michael Behrisch
 /// @date    2008/04/07
-/// @version $Id: TraCITestClient.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: TraCITestClient.h 21204 2016-07-20 07:42:26Z behrisch $
 ///
 /// A test execution class
 /****************************************************************************/
@@ -26,6 +26,12 @@
 // ===========================================================================
 // included modules
 // ===========================================================================
+#ifdef _MSC_VER
+#include <windows_config.h>
+#else
+#include <config.h>
+#endif
+
 #include <string>
 #include <sstream>
 #include <vector>

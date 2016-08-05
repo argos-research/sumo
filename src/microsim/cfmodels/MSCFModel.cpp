@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 27 Jul 2009
-/// @version $Id: MSCFModel.cpp 20680 2016-05-10 07:53:01Z namdre $
+/// @version $Id: MSCFModel.cpp 21058 2016-06-29 09:25:01Z behrisch $
 ///
 // The car-following model abstraction
 /****************************************************************************/
@@ -63,9 +63,9 @@ MSCFModel::moveHelper(MSVehicle* const veh, SUMOReal vPos) const {
     //  in this case, we neglect dawdling, nonetheless, using
     //  vSafe does not incorporate speed reduction due to interaction
     //  on lane changing
-    const SUMOReal vMin = getSpeedAfterMaxDecel(oldV);
     const SUMOReal vMax = MIN3(veh->getLane()->getVehicleMaxSpeed(veh), maxNextSpeed(oldV, veh), vSafe);
-    assert(vMin <= vMax);
+    // we cannot rely on never braking harder than maxDecel because TraCI or strange cf models may decide to do so
+    const SUMOReal vMin = MIN2(getSpeedAfterMaxDecel(oldV), vMax);
     return veh->getLaneChangeModel().patchSpeed(vMin, vMax, vMax, *this);
 }
 

@@ -4,7 +4,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Fri, 29.04.2005
-/// @version $Id: FuncBinding_IntParam.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: FuncBinding_IntParam.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // �Function type template
 /****************************************************************************/
@@ -49,7 +49,7 @@ public:
     typedef R(T::* Operation)(int) const;
 
     FuncBinding_IntParam(T* source, Operation operation,
-                         size_t param)
+                         int param)
         :
         mySource(source),
         myOperation(operation),

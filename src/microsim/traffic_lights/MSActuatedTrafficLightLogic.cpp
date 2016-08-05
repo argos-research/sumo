@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: MSActuatedTrafficLightLogic.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSActuatedTrafficLightLogic.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // An actuated (adaptive) traffic light logic
 /****************************************************************************/
@@ -66,7 +66,7 @@
 MSActuatedTrafficLightLogic::MSActuatedTrafficLightLogic(MSTLLogicControl& tlcontrol,
         const std::string& id, const std::string& programID,
         const Phases& phases,
-        unsigned int step, SUMOTime delay,
+        int step, SUMOTime delay,
         const std::map<std::string, std::string>& parameter,
         const std::string& basePath) :
     MSSimpleTrafficLightLogic(tlcontrol, id, programID, phases, step, delay, parameter) {
@@ -129,8 +129,8 @@ MSActuatedTrafficLightLogic::trySwitch() {
     }
     // increment the index to the current phase
     myStep++;
-    assert(myStep <= myPhases.size());
-    if (myStep == myPhases.size()) {
+    assert(myStep <= (int)myPhases.size());
+    if (myStep == (int)myPhases.size()) {
         myStep = 0;
     }
     //stores the time the phase started
@@ -144,7 +144,7 @@ MSActuatedTrafficLightLogic::trySwitch() {
 SUMOTime
 MSActuatedTrafficLightLogic::duration(const SUMOReal detectionGap) const {
     assert(getCurrentPhaseDef().isGreenPhase());
-    assert(myPhases.size() > myStep);
+    assert((int)myPhases.size() > myStep);
     const SUMOTime actDuration = MSNet::getInstance()->getCurrentTimeStep() - myPhases[myStep]->myLastSwitch;
     // ensure that minimum duration is kept
     SUMOTime newDuration = getCurrentPhaseDef().minDuration - actDuration;
@@ -164,7 +164,7 @@ MSActuatedTrafficLightLogic::duration(const SUMOReal detectionGap) const {
 SUMOReal
 MSActuatedTrafficLightLogic::gapControl() {
     //intergreen times should not be lenghtend
-    assert(myPhases.size() > myStep);
+    assert((int)myPhases.size() > myStep);
     SUMOReal result = std::numeric_limits<SUMOReal>::max();
     if (!getCurrentPhaseDef().isGreenPhase()) {
         return result; // end current phase
@@ -178,7 +178,7 @@ MSActuatedTrafficLightLogic::gapControl() {
 
     // now the gapcontrol starts
     const std::string& state = getCurrentPhaseDef().getState();
-    for (unsigned int i = 0; i < (unsigned int) state.size(); i++)  {
+    for (int i = 0; i < (int) state.size(); i++)  {
         if (state[i] == LINKSTATE_TL_GREEN_MAJOR || state[i] == LINKSTATE_TL_GREEN_MINOR) {
             const std::vector<MSLane*>& lanes = getLanesAt(i);
             for (LaneVector::const_iterator j = lanes.begin(); j != lanes.end(); j++) {

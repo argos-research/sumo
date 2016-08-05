@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Wed, 07.12.2005
-/// @version $Id: GUIBusStop.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIBusStop.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // A lane area vehicles can halt at (gui-version)
 /****************************************************************************/
@@ -123,7 +123,7 @@ GUIBusStop::getParameterWindow(GUIMainWindow& app,
     // add items
     ret->mkItem("begin position [m]", false, myBegPos);
     ret->mkItem("end position [m]", false, myEndPos);
-    ret->mkItem("person number [#]", true, new FunctionBinding<GUIBusStop, unsigned int>(this, &MSStoppingPlace::getTransportableNumber));
+    ret->mkItem("person number [#]", true, new FunctionBinding<GUIBusStop, int>(this, &MSStoppingPlace::getTransportableNumber));
     // close building
     ret->closeBuilding();
     return ret;
@@ -137,7 +137,6 @@ GUIBusStop::drawGL(const GUIVisualizationSettings& s) const {
     RGBColor green(76, 170, 50, 255);
     RGBColor yellow(255, 235, 0, 255);
     // draw the area
-    size_t i;
     glTranslated(0, 0, getType());
     GLHelper::setColor(green);
     const SUMOReal exaggeration = s.addSize.getExaggeration(s);
@@ -146,7 +145,7 @@ GUIBusStop::drawGL(const GUIVisualizationSettings& s) const {
     if (s.scale * exaggeration >= 10) {
         // draw the lines
         const SUMOReal rotSign = MSNet::getInstance()->lefthand() ? -1 : 1;
-        for (i = 0; i != myLines.size(); ++i) {
+        for (int i = 0; i != (int)myLines.size(); ++i) {
             glPushMatrix();
             glTranslated(myFGSignPos.x(), myFGSignPos.y(), 0);
             glRotated(180, 1, 0, 0);

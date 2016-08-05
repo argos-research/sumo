@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Tue Dec 02 2003 22:17 CET
-/// @version $Id: MSE3Collector.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSE3Collector.cpp 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // A detector of vehicles passing an area between entry/exit points
 /****************************************************************************/
@@ -206,7 +206,7 @@ MSE3Collector::writeXMLOutput(OutputDevice& dev,
                               SUMOTime startTime, SUMOTime stopTime) {
     dev << "   <interval begin=\"" << time2string(startTime) << "\" end=\"" << time2string(stopTime) << "\" " << "id=\"" << myID << "\" ";
     // collect values about vehicles that have left the area
-    unsigned vehicleSum = (unsigned) myLeftContainer.size();
+    int vehicleSum = (int) myLeftContainer.size();
     SUMOReal meanTravelTime = 0.;
     SUMOReal meanSpeed = 0.;
     SUMOReal meanHaltsPerVehicle = 0.;
@@ -223,7 +223,7 @@ MSE3Collector::writeXMLOutput(OutputDevice& dev,
     myLeftContainer.clear();
 
     // collect values about vehicles within the container
-    unsigned vehicleSumWithin = (unsigned) myEnteredContainer.size();
+    int vehicleSumWithin = (int) myEnteredContainer.size();
     SUMOReal meanSpeedWithin = 0.;
     SUMOReal meanDurationWithin = 0.;
     SUMOReal meanHaltsPerVehicleWithin = 0.;

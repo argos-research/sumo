@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Sept 2002
-/// @version $Id: PositionVector.cpp 20857 2016-06-03 06:26:52Z namdre $
+/// @version $Id: PositionVector.cpp 21160 2016-07-14 08:03:04Z behrisch $
 ///
 // A list of positions
 /****************************************************************************/
@@ -55,6 +55,7 @@
 // ===========================================================================
 // method definitions
 // ===========================================================================
+
 PositionVector::PositionVector() {}
 
 
@@ -145,9 +146,7 @@ PositionVector::intersects(const PositionVector& v1) const {
 
 
 Position
-PositionVector::intersectionPosition2D(const Position& p1,
-                                       const Position& p2,
-                                       const SUMOReal withinDist) const {
+PositionVector::intersectionPosition2D(const Position& p1, const Position& p2, const SUMOReal withinDist) const {
     for (const_iterator i = begin(); i != end() - 1; i++) {
         SUMOReal x, y, m;
         if (intersects(*i, *(i + 1), p1, p2, withinDist, &x, &y, &m)) {
@@ -265,10 +264,9 @@ PositionVector::slopeDegreeAtOffset(SUMOReal pos) const {
     return RAD2DEG(atan2(p2.z() - p1.z(), p1.distanceTo2D(p2)));
 }
 
+
 Position
-PositionVector::positionAtOffset(const Position& p1,
-                                 const Position& p2,
-                                 SUMOReal pos, SUMOReal lateralOffset) {
+PositionVector::positionAtOffset(const Position& p1, const Position& p2, SUMOReal pos, SUMOReal lateralOffset) {
     const SUMOReal dist = p1.distanceTo(p2);
     if (pos < 0 || dist < pos) {
         return Position::INVALID;
@@ -288,9 +286,7 @@ PositionVector::positionAtOffset(const Position& p1,
 
 
 Position
-PositionVector::positionAtOffset2D(const Position& p1,
-                                   const Position& p2,
-                                   SUMOReal pos, SUMOReal lateralOffset) {
+PositionVector::positionAtOffset2D(const Position& p1, const Position& p2, SUMOReal pos, SUMOReal lateralOffset) {
     const SUMOReal dist = p1.distanceTo2D(p2);
     if (pos < 0 || dist < pos) {
         return Position::INVALID;
@@ -407,6 +403,7 @@ PositionVector::length() const {
     }
     return len;
 }
+
 
 SUMOReal
 PositionVector::length2D() const {
@@ -525,6 +522,12 @@ PositionVector::add(SUMOReal xoff, SUMOReal yoff, SUMOReal zoff) {
 
 
 void
+PositionVector::add(const Position& offset) {
+    add(offset.x(), offset.y(), offset.z());
+}
+
+
+void
 PositionVector::mirrorX() {
     for (int i = 0; i < static_cast<int>(size()); i++) {
         (*this)[i].mul(1, -1);
@@ -532,12 +535,13 @@ PositionVector::mirrorX() {
 }
 
 
+PositionVector::as_poly_cw_sorter::as_poly_cw_sorter() {}
+
+
 int
-PositionVector::as_poly_cw_sorter::operator()(const Position& p1,
-        const Position& p2) const {
+PositionVector::as_poly_cw_sorter::operator()(const Position& p1, const Position& p2) const {
     return atan2(p1.x(), p1.y()) < atan2(p2.x(), p2.y());
 }
-
 
 
 void
@@ -546,9 +550,7 @@ PositionVector::sortByIncreasingXY() {
 }
 
 
-
 PositionVector::increasing_x_y_sorter::increasing_x_y_sorter() {}
-
 
 
 int
@@ -561,10 +563,8 @@ PositionVector::increasing_x_y_sorter::operator()(const Position& p1,
 }
 
 
-
 SUMOReal
-PositionVector::isLeft(const Position& P0, const Position& P1,
-                       const Position& P2) const {
+PositionVector::isLeft(const Position& P0, const Position& P1,  const Position& P2) const {
     return (P1.x() - P0.x()) * (P2.y() - P0.y()) - (P2.x() - P0.x()) * (P1.y() - P0.y());
 }
 
@@ -718,7 +718,7 @@ PositionVector::nearest_offset_to_point2D(const Position& p, bool perpendicular)
 
 Position
 PositionVector::transformToVectorCoordinates(const Position& p, bool extend) const {
-    // XXX this duplicates most of the code in nearest_offset_to_point2D. It should be refactored
+    // @toDo this duplicates most of the code in nearest_offset_to_point2D. It should be refactored
     if (extend) {
         PositionVector extended = *this;
         const SUMOReal dist = 2 * distance2D(p);
@@ -795,6 +795,25 @@ PositionVector::insertAtClosest(const Position& p) {
     }
     insert(begin() + insertionIndex, p);
     return insertionIndex;
+}
+
+
+int
+PositionVector::removeClosest(const Position& p) {
+    if (size() == 0) {
+        return -1;
+    }
+    SUMOReal minDist = std::numeric_limits<SUMOReal>::max();
+    int removalIndex = 0;
+    for (int i = 0; i < (int)size(); i++) {
+        const SUMOReal dist = p.distanceTo2D((*this)[i]);
+        if (dist < minDist) {
+            removalIndex = i;
+            minDist = dist;
+        }
+    }
+    erase(begin() + removalIndex);
+    return removalIndex;
 }
 
 
@@ -980,6 +999,7 @@ PositionVector::distance2D(const Position& p, bool perpendicular) const {
     }
 }
 
+
 void
 PositionVector::push_back_noDoublePos(const Position& p) {
     if (size() == 0 || !p.almostSame(back())) {
@@ -1048,10 +1068,7 @@ PositionVector::hasElevation() const {
 
 
 bool
-PositionVector::intersects(const Position& p11, const Position& p12,
-                           const Position& p21, const Position& p22,
-                           const SUMOReal withinDist,
-                           SUMOReal* x, SUMOReal* y, SUMOReal* mu) {
+PositionVector::intersects(const Position& p11, const Position& p12, const Position& p21, const Position& p22, const SUMOReal withinDist, SUMOReal* x, SUMOReal* y, SUMOReal* mu) {
     const SUMOReal eps = std::numeric_limits<SUMOReal>::epsilon();
     const double denominator = (p22.y() - p21.y()) * (p12.x() - p11.x()) - (p22.x() - p21.x()) * (p12.y() - p11.y());
     const double numera = (p22.x() - p21.x()) * (p11.y() - p21.y()) - (p22.y() - p21.y()) * (p11.x() - p21.x());
@@ -1133,6 +1150,20 @@ PositionVector::intersects(const Position& p11, const Position& p12,
     return true;
 }
 
+
+void
+PositionVector::rotate2D(SUMOReal angle) {
+    const SUMOReal s = sin(angle);
+    const SUMOReal c = cos(angle);
+    for (int i = 0; i < (int)size(); i++) {
+        const SUMOReal x = (*this)[i].x();
+        const SUMOReal y = (*this)[i].y();
+        const SUMOReal z = (*this)[i].z();
+        const SUMOReal xnew = x * c - y * s;
+        const SUMOReal ynew = x * s + y * c;
+        (*this)[i].set(xnew, ynew, z);
+    }
+}
 
 /****************************************************************************/
 

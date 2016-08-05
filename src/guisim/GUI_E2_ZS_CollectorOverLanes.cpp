@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Okt 2003
-/// @version $Id: GUI_E2_ZS_CollectorOverLanes.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUI_E2_ZS_CollectorOverLanes.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The gui-version of a MS_E2_ZS_CollectorOverLanes.
 /****************************************************************************/
@@ -72,7 +72,7 @@ GUI_E2_ZS_CollectorOverLanes::buildDetectorGUIRepresentation() {
 
 
 MSE2Collector*
-GUI_E2_ZS_CollectorOverLanes::buildCollector(size_t c, size_t r, MSLane* l,
+GUI_E2_ZS_CollectorOverLanes::buildCollector(int c, int r, MSLane* l,
         SUMOReal start, SUMOReal end) {
     std::string id = makeID(myID, c, r);
     if (start + end < l->getLength()) {

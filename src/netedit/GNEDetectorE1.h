@@ -2,7 +2,7 @@
 /// @file    GNEDetectorE1.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetectorE1.h 19790 2016-01-25 11:59:12Z palcraft $
+/// @version $Id: GNEDetectorE1.h 21150 2016-07-12 12:28:35Z behrisch $
 ///
 ///
 /****************************************************************************/
@@ -65,22 +65,16 @@ public:
     /// @note: must be called when geometry changes (i.e. lane moved)
     void updateGeometry();
 
+    /// @brief Returns position of detector E1 in view
+    Position getPositionInView() const;
+
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element
      */
-    void writeAdditional(OutputDevice& device);
+    void writeAdditional(OutputDevice& device, const std::string&);
 
     /// @name inherited from GUIGlObject
     /// @{
-    /**@brief Returns an own parameter window
-     *
-     * @param[in] app The application needed to build the parameter window
-     * @param[in] parent The parent window needed to build the parameter window
-     * @return The built parameter window
-     * @see GUIGlObject::getParameterWindow
-     */
-    GUIParameterTableWindow* getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent);
-
     /**@brief Draws the object
      * @param[in] s The settings for the current view (may influence drawing)
      * @see GUIGlObject::drawGL
@@ -116,12 +110,6 @@ protected:
     bool mySplitByType;
 
 private:
-    /// @brief variable to save detectorE1 icon
-    static GUIGlID myDetectorE1GlID;
-
-    /// @brief check if detectorE1 icon was inicilalizated
-    static bool myDetectorE1Initialized;
-
     /// @brief set attribute after validation
     void setAttribute(SumoXMLAttr key, const std::string& value);
 

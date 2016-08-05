@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Fri, 24. Apr 2009
-/// @version $Id: GUISettingsHandler.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUISettingsHandler.h 21186 2016-07-18 12:04:16Z namdre $
 ///
 // The handler for parsing gui settings from xml.
 /****************************************************************************/
@@ -85,15 +85,7 @@ public:
     /** @brief Sets the viewport which has been parsed
      * @param[in] parent the view for which the viewport has to be set
      */
-    void setViewport(GUISUMOAbstractView* view) const;
-
-
-    /** @brief Sets the viewport which has been parsed
-     * @param[out] zoom Variable to store the loaded zoom into
-     * @param[out] xoff Variable to store the loaded x-offset into
-     * @param[out] yoff Variable to store the loaded y-offset into
-     */
-    void setViewport(Position& lookFrom, Position& lookAt) const;
+    void applyViewport(GUISUMOAbstractView* view) const;
 
 
     /** @brief Makes a snapshot if it has been parsed

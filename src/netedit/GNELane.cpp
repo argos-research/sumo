@@ -2,7 +2,7 @@
 /// @file    GNELane.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNELane.cpp 20993 2016-06-17 11:50:24Z palcraft $
+/// @version $Id: GNELane.cpp 21237 2016-07-26 06:56:34Z namdre $
 ///
 // A class for visualizing Lane geometry (adapted from GNELaneWrapper)
 /****************************************************************************/
@@ -66,13 +66,14 @@
 // ===========================================================================
 // FOX callback mapping
 // ===========================================================================
+
 // Object implementation
 FXIMPLEMENT(GNELane, FXDelegator, 0, 0)
-
 
 // ===========================================================================
 // method definitions
 // ===========================================================================
+
 GNELane::GNELane(GNEEdge& edge, const int index) :
     GNENetElement(edge.getNet(), edge.getNBEdge()->getLaneID(index), GLO_LANE, SUMO_TAG_LANE),
     myParentEdge(edge),
@@ -93,8 +94,9 @@ GNELane::GNELane() :
 
 GNELane::~GNELane() {
     // Remove all references to this lane in their additionals
-    for(AdditionalList::iterator i = myAdditionals.begin(); i != myAdditionals.end(); i++)
-        (*i)->removeLaneReference();                                                                                       
+    for (AdditionalVector::iterator i = myAdditionals.begin(); i != myAdditionals.end(); i++) {
+        (*i)->removeLaneReference();
+    }
 }
 
 
@@ -232,6 +234,7 @@ GNELane::drawLane2LaneConnections() const {
     glPopMatrix();
 }
 
+
 void
 GNELane::drawGL(const GUIVisualizationSettings& s) const {
     glPushMatrix();
@@ -241,9 +244,11 @@ GNELane::drawGL(const GUIVisualizationSettings& s) const {
     const bool selected = gSelected.isSelected(getType(), getGlID());
     if (mySpecialColor != 0) {
         GLHelper::setColor(*mySpecialColor);
-    } else if (selected) {
+    } else if (selected && s.laneColorer.getActive() != 1) {
+        // override with special colors (unless the color scheme is based on selection)
         GLHelper::setColor(GNENet::selectedLaneColor);
-    } else if (selectedEdge) {
+    } else if (selectedEdge && s.laneColorer.getActive() != 1) {
+        // override with special colors (unless the color scheme is based on selection)
         GLHelper::setColor(GNENet::selectionColor);
     } else {
         const GUIColorer& c = s.laneColorer;
@@ -254,9 +259,20 @@ GNELane::drawGL(const GUIVisualizationSettings& s) const {
 
     // draw lane
     // check whether it is not too small
+
+
     const SUMOReal selectionScale = selected || selectedEdge ? s.selectionScale : 1;
-    const SUMOReal exaggeration = selectionScale * s.laneWidthExaggeration; // * s.laneScaler.getScheme().getColor(getScaleValue(s.laneScaler.getActive()));
-    if (s.scale * exaggeration < 1.) {
+    SUMOReal exaggeration = selectionScale * s.laneWidthExaggeration; // * s.laneScaler.getScheme().getColor(getScaleValue(s.laneScaler.getActive()));
+    // XXX apply usefull scale values
+    //exaggeration *= s.laneScaler.getScheme().getColor(getScaleValue(s.laneScaler.getActive()));
+
+    // recognize full transparency and simply don't draw
+    GLfloat color[4];
+    glGetFloatv(GL_CURRENT_COLOR, color);
+    if (color[3] == 0 || s.scale * exaggeration < s.laneMinSize) {
+        glPopMatrix();
+    } else if (s.scale * exaggeration < 1.) {
+        // draw as lines
         if (myShapeColors.size() > 0) {
             GLHelper::drawLine(getShape(), myShapeColors);
         } else {
@@ -296,6 +312,9 @@ GNELane::drawGL(const GUIVisualizationSettings& s) const {
         // draw ROWs only if target junction has a valid logic)
         if (myParentEdge.getDest()->isLogicValid() && s.scale > 3) {
             drawArrows();
+        }
+        if (s.showLaneDirection) {
+            drawDirectionIndicators();
         }
     }
 
@@ -409,8 +428,7 @@ GNELane::getPopUpMenu(GUIMainWindow& app, GUISUMOAbstractView& parent) {
 
 
 GUIParameterTableWindow*
-GNELane::getParameterWindow(GUIMainWindow& app,
-                            GUISUMOAbstractView&) {
+GNELane::getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView&) {
     GUIParameterTableWindow* ret =
         new GUIParameterTableWindow(app, *this, 2);
     // add items
@@ -418,6 +436,11 @@ GNELane::getParameterWindow(GUIMainWindow& app,
     // close building
     ret->closeBuilding();
     return ret;
+}
+
+Boundary
+GNELane::getBoundary() const {
+    return myParentEdge.getNBEdge()->getLaneStruct(myIndex).shape.getBoxBoundary();
 }
 
 
@@ -446,13 +469,6 @@ GNELane::getShapeLengths() const {
     return myShapeLengths;
 }
 
-
-Boundary
-GNELane::getBoundary() const {
-    return myParentEdge.getNBEdge()->getLaneStruct(myIndex).shape.getBoxBoundary();
-}
-
-
 void
 GNELane::updateGeometry() {
     myShapeRotations.clear();
@@ -471,20 +487,22 @@ GNELane::updateGeometry() {
         }
     }
     // Update geometry of additionals vinculated with this lane
-    for(AdditionalList::iterator i = myAdditionals.begin(); i != myAdditionals.end(); i++)
+    for (AdditionalVector::iterator i = myAdditionals.begin(); i != myAdditionals.end(); i++) {
         (*i)->updateGeometry();
+    }
     // Update geometry of additionalSets vinculated to this lane
-    for (AdditionalSetList::iterator i = myAdditionalSets.begin(); i != myAdditionalSets.end(); ++i)
+    for (AdditionalSetVector::iterator i = myAdditionalSets.begin(); i != myAdditionalSets.end(); ++i) {
         (*i)->updateGeometry();
+    }
 }
 
-unsigned int
+int
 GNELane::getIndex() const {
     return myIndex;
 }
 
 void
-GNELane::setIndex(unsigned int index) {
+GNELane::setIndex(int index) {
     myIndex = index;
     setMicrosimID(myParentEdge.getNBEdge()->getLaneID(index));
 }
@@ -521,16 +539,16 @@ GNELane::getPositionRelativeToShapeLenght(SUMOReal position) const {
 
 
 void
-GNELane::addAdditional(GNEAdditional *additional) {
+GNELane::addAdditional(GNEAdditional* additional) {
     myAdditionals.push_back(additional);
 }
 
 
 bool
-GNELane::removeAdditional(GNEAdditional *additional) {
+GNELane::removeAdditional(GNEAdditional* additional) {
     // Find and remove stoppingPlace
-    for(AdditionalList::iterator i = myAdditionals.begin(); i != myAdditionals.end(); i++) {
-        if(*i == additional) {
+    for (AdditionalVector::iterator i = myAdditionals.begin(); i != myAdditionals.end(); i++) {
+        if (*i == additional) {
             myAdditionals.erase(i);
             return true;
         }
@@ -539,38 +557,41 @@ GNELane::removeAdditional(GNEAdditional *additional) {
 }
 
 
-const std::list<GNEAdditional*> &
-GNELane::getAdditionals() const{
+const std::vector<GNEAdditional*>&
+GNELane::getAdditionals() const {
     return myAdditionals;
 }
 
 
 bool
-GNELane::addAdditionalSet(GNEAdditionalSet *additionalSet) {
+GNELane::addAdditionalSet(GNEAdditionalSet* additionalSet) {
     // Check if additionalSet already exists before insertion
-    for(AdditionalSetList::iterator i = myAdditionalSets.begin(); i != myAdditionalSets.end(); i++)
-        if((*i) == additionalSet)
+    for (AdditionalSetVector::iterator i = myAdditionalSets.begin(); i != myAdditionalSets.end(); i++) {
+        if ((*i) == additionalSet) {
             return false;
+        }
+    }
     // Insert it and retur true
     myAdditionalSets.push_back(additionalSet);
     return true;
 }
-    
+
 
 bool
-GNELane::removeAdditionalSet(GNEAdditionalSet *additionalSet) {
+GNELane::removeAdditionalSet(GNEAdditionalSet* additionalSet) {
     // search additionalSet and remove it
-    for(AdditionalSetList::iterator i = myAdditionalSets.begin(); i != myAdditionalSets.end(); i++)
-        if((*i) == additionalSet) {
+    for (AdditionalSetVector::iterator i = myAdditionalSets.begin(); i != myAdditionalSets.end(); i++) {
+        if ((*i) == additionalSet) {
             myAdditionalSets.erase(i);
             return true;
         }
+    }
     // If additionalSet wasn't found, return false
     return false;
 }
 
 
-const std::list<GNEAdditionalSet*> &
+const std::vector<GNEAdditionalSet*>&
 GNELane::getAdditionalSets() {
     return myAdditionalSets;
 }
@@ -681,7 +702,7 @@ GNELane::setAttribute(SumoXMLAttr key, const std::string& value) {
 
 
 bool
-GNELane::setFunctionalColor(size_t activeScheme) const {
+GNELane::setFunctionalColor(int activeScheme) const {
     switch (activeScheme) {
         case 6: {
             SUMOReal hue = GeomHelper::naviDegree(getShape().beginEndAngle()); // [0-360]
@@ -696,7 +717,7 @@ GNELane::setFunctionalColor(size_t activeScheme) const {
 
 bool
 GNELane::setMultiColor(const GUIColorer& c) const {
-    const size_t activeScheme = c.getActive();
+    const int activeScheme = c.getActive();
     myShapeColors.clear();
     switch (activeScheme) {
         case 9: // color by height at segment start
@@ -717,7 +738,7 @@ GNELane::setMultiColor(const GUIColorer& c) const {
 
 
 SUMOReal
-GNELane::getColorValue(size_t activeScheme) const {
+GNELane::getColorValue(int activeScheme) const {
     const SVCPermissions myPermissions = myParentEdge.getNBEdge()->getPermissions(myIndex);
     switch (activeScheme) {
         case 0:
@@ -804,6 +825,32 @@ GNELane::drawCrossties(SUMOReal length, SUMOReal spacing, SUMOReal halfWidth) co
 }
 
 
+void
+GNELane::drawDirectionIndicators() const {
+    const SUMOReal width = myParentEdge.getNBEdge()->getLaneWidth(myIndex);
+    glColor3d(0.3, 0.3, 0.3);
+    glPushMatrix();
+    glTranslated(0, 0, GLO_JUNCTION + 0.1);
+    int e = (int) getShape().size() - 1;
+    for (int i = 0; i < e; ++i) {
+        glPushMatrix();
+        glTranslated(getShape()[i].x(), getShape()[i].y(), 0.1);
+        glRotated(myShapeRotations[i], 0, 0, 1);
+        for (SUMOReal t = 0; t < myShapeLengths[i]; t += width) {
+            const SUMOReal length = MIN2(width * (SUMOReal)0.5, myShapeLengths[i] - t);
+            glBegin(GL_TRIANGLES);
+            glVertex2d(0, -t - length);
+            glVertex2d(-width * 0.25, -t);
+            glVertex2d(+width * 0.25, -t);
+            glEnd();
+        }
+        glPopMatrix();
+    }
+    glPopMatrix();
+}
+
+
+
 const std::string&
 GNELane::getParentName() const {
     return myParentEdge.getMicrosimID();
@@ -818,9 +865,11 @@ GNELane::onDefault(FXObject* obj, FXSelector sel, void* data) {
     return 1;
 }
 
+
 GNEEdge&
 GNELane::getParentEdge() {
     return myParentEdge;
-};
+}
+
 
 /****************************************************************************/

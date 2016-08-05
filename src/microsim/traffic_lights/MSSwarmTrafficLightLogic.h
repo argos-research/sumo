@@ -3,7 +3,7 @@
 /// @author  Gianfilippo Slager
 /// @author  Federico Caselli
 /// @date    Mar 2010
-/// @version $Id: MSSwarmTrafficLightLogic.h 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSSwarmTrafficLightLogic.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The class for Swarm-based logics
 /****************************************************************************/
@@ -119,7 +119,7 @@ public:
      * @param[in] parameters Parameters defined for the tll
      */
     MSSwarmTrafficLightLogic(MSTLLogicControl& tlcontrol, const std::string& id,
-                             const std::string& subid, const Phases& phases, unsigned int step,
+                             const std::string& subid, const Phases& phases, int step,
                              SUMOTime delay,
                              const std::map<std::string, std::string>& parameters);
 
@@ -333,7 +333,7 @@ protected:
      * 1-> diff
      * 2-> ratio
      */
-    unsigned int getReinforcementMode() {
+    int getReinforcementMode() {
         return TplConvert::_2int(getParameter("REIMODE", "0").c_str());
     }
 

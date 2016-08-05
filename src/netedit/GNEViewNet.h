@@ -2,7 +2,7 @@
 /// @file    GNEViewNet.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEViewNet.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEViewNet.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 // A view on the network being edited (adapted from GUIViewTraffic)
 /****************************************************************************/
@@ -99,8 +99,8 @@ public:
      * @param[in] share a reference to FXCanvas
      * @param[in] toolbar A reference to the parents toolbar
      */
-    GNEViewNet(FXComposite* tmpParent, FXComposite* actualParent, GUIMainWindow& app, 
-               GNEViewParent* viewParent, GNENet* net, GNEUndoList* undoList, 
+    GNEViewNet(FXComposite* tmpParent, FXComposite* actualParent, GUIMainWindow& app,
+               GNEViewParent* viewParent, GNENet* net, GNEUndoList* undoList,
                FXGLVisual* glVis, FXGLCanvas* share, FXToolBar* toolBar);
 
     /// @brief destructor
@@ -109,7 +109,7 @@ public:
     /// @brief builds the view toolbars
     virtual void buildViewToolBars(GUIGlChildWindow&);
 
-    /// @brief set color schieme 
+    /// @brief set color schieme
     bool setColorScheme(const std::string& name);
 
     /// @brief overloaded handlers
@@ -121,7 +121,7 @@ public:
     long onLeftBtnRelease(FXObject*, FXSelector, void*);
 
     /// @brief called when user press mouse's left button two times
-    long onDoubleClicked(FXObject*, FXSelector, void* ptr);
+    long onDoubleClicked(FXObject*, FXSelector, void*);
 
     /// @brief called when user moves mouse
     long onMouseMove(FXObject*, FXSelector, void*);

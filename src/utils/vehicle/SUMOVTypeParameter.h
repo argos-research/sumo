@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    10.09.2009
-/// @version $Id: SUMOVTypeParameter.h 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: SUMOVTypeParameter.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Structure representing possible vehicle parameter
 /****************************************************************************/
@@ -151,9 +151,9 @@ public:
     /// @brief The vehicle's impatience (willingness to obstruct others)
     SUMOReal impatience;
     /// @brief The person capacity of the vehicle
-    unsigned int personCapacity;
+    int personCapacity;
     /// @brief The container capacity of the vehicle
-    unsigned int containerCapacity;
+    int containerCapacity;
     /// @brief The time a person needs to board the vehicle
     SUMOTime boardingDuration;
     /// @brief The time a container needs to get loaded on the vehicle

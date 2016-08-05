@@ -2,7 +2,7 @@
 /// @file    GNEDetectorE2.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetectorE2.h 19790 201-601-25 11:59:12Z palcraft $
+/// @version $Id: GNEDetectorE2.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 ///
 /****************************************************************************/
@@ -61,7 +61,7 @@ public:
      * @param[in] blocked set initial blocking state of item
      */
     GNEDetectorE2(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal pos, SUMOReal length, SUMOReal freq, const std::string& filename,
-                  bool cont, int timeThreshold, SUMOReal speedThreshold, SUMOReal jamThreshold, bool blocked);
+                  bool cont, SUMOTime timeThreshold, SUMOReal speedThreshold, SUMOReal jamThreshold, bool blocked);
 
     /// @brief Destructor
     ~GNEDetectorE2();
@@ -70,22 +70,16 @@ public:
     /// @note: must be called when geometry changes (i.e. lane moved)
     void updateGeometry();
 
+    /// @brief Returns position of detector E2 in view
+    Position getPositionInView() const;
+
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element
      */
-    void writeAdditional(OutputDevice& device);
+    void writeAdditional(OutputDevice& device, const std::string&);
 
     /// @name inherited from GUIGlObject
     /// @{
-    /**@brief Returns an own parameter window
-     *
-     * @param[in] app The application needed to build the parameter window
-     * @param[in] parent The parent window needed to build the parameter window
-     * @return The built parameter window
-     * @see GUIGlObject::getParameterWindow
-     */
-    GUIParameterTableWindow* getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent);
-
     /**@brief Draws the object
      * @param[in] s The settings for the current view (may influence drawing)
      * @see GUIGlObject::drawGL
@@ -124,7 +118,7 @@ protected:
     bool myCont;
 
     /// @brief The time-based threshold that describes how much time has to pass until a vehicle is recognized as halting
-    int myTimeThreshold;
+    SUMOTime myTimeThreshold;
 
     /// @brief     The speed-based threshold that describes how slow a vehicle has to be to be recognized as halting
     SUMOReal mySpeedThreshold;
@@ -133,12 +127,6 @@ protected:
     SUMOReal myJamThreshold;
 
 private:
-    /// @brief variable to save detectorE2 icon
-    static GUIGlID myDetectorE2GlID;
-
-    /// @brief check if detectorE2 icon was inicilalizated
-    static bool myDetectorE2Initialized;
-
     /// @brief set attribute after validation
     void setAttribute(SumoXMLAttr key, const std::string& value);
 

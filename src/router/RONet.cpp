@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: RONet.cpp 20811 2016-05-30 11:05:58Z behrisch $
+/// @version $Id: RONet.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The router's network representation
 /****************************************************************************/
@@ -475,7 +475,7 @@ RONet::checkFlows(SUMOTime time, MsgHandler* errorHandler) {
 
 void
 RONet::createBulkRouteRequests(const RORouterProvider& provider, const SUMOTime time, const bool removeLoops) {
-    std::map<const unsigned int, std::vector<RORoutable*> > bulkVehs;
+    std::map<const int, std::vector<RORoutable*> > bulkVehs;
     for (RoutablesMap::const_iterator i = myRoutables.begin(); i != myRoutables.end(); ++i) {
         if (i->first >= time) {
             break;
@@ -494,7 +494,7 @@ RONet::createBulkRouteRequests(const RORouterProvider& provider, const SUMOTime 
         }
     }
     int workerIndex = 0;
-    for (std::map<const unsigned int, std::vector<RORoutable*> >::const_iterator i = bulkVehs.begin(); i != bulkVehs.end(); ++i) {
+    for (std::map<const int, std::vector<RORoutable*> >::const_iterator i = bulkVehs.begin(); i != bulkVehs.end(); ++i) {
 #ifdef HAVE_FOX
         if (myThreadPool.size() > 0) {
             RORoutable* const first = i->second.front();
@@ -627,7 +627,7 @@ RONet::furtherStored() {
 }
 
 
-size_t
+int
 RONet::getEdgeNo() const {
     return myEdges.size();
 }

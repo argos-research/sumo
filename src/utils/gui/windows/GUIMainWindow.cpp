@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 29.05.2005
-/// @version $Id: GUIMainWindow.cpp 20958 2016-06-14 06:52:20Z namdre $
+/// @version $Id: GUIMainWindow.cpp 21217 2016-07-22 10:57:44Z behrisch $
 ///
 //
 /****************************************************************************/
@@ -152,7 +152,7 @@ GUIMainWindow::updateChildren() {
     myMDIClient->forallWindows(this, FXSEL(SEL_COMMAND, MID_SIMSTEP), 0);
     // inform other windows
     myTrackerLock.lock();
-    for (size_t i = 0; i < myTrackerWindows.size(); i++) {
+    for (int i = 0; i < (int)myTrackerWindows.size(); i++) {
         myTrackerWindows[i]->handle(this, FXSEL(SEL_COMMAND, MID_SIMSTEP), 0);
     }
     myTrackerLock.unlock();
@@ -186,7 +186,7 @@ GUIMainWindow::getInstance() {
 }
 
 
-GUISUMOAbstractView* 
+GUISUMOAbstractView*
 GUIMainWindow::getActiveView() const {
     GUIGlChildWindow* w = dynamic_cast<GUIGlChildWindow*>(myMDIClient->getActiveChild());
     if (w != 0) {

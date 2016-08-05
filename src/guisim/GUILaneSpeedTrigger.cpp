@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 26.04.2004
-/// @version $Id: GUILaneSpeedTrigger.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUILaneSpeedTrigger.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // Changes the speed allowed on a set of lanes (gui version)
 /****************************************************************************/
@@ -330,7 +330,7 @@ GUILaneSpeedTrigger::drawGL(const GUIVisualizationSettings& s) const {
     glPushMatrix();
     glTranslated(0, 0, getType());
     const SUMOReal exaggeration = s.addSize.getExaggeration(s);
-    for (size_t i = 0; i < myFGPositions.size(); ++i) {
+    for (int i = 0; i < (int)myFGPositions.size(); ++i) {
         const Position& pos = myFGPositions[i];
         SUMOReal rot = myFGRotations[i];
         glPushMatrix();
@@ -365,7 +365,7 @@ GUILaneSpeedTrigger::drawGL(const GUIVisualizationSettings& s) const {
             if (value != myLastValue) {
                 myLastValue = value;
                 myLastValueString = toString<SUMOReal>(myLastValue);
-                size_t idx = myLastValueString.find('.');
+                std::string::size_type idx = myLastValueString.find('.');
                 if (idx != std::string::npos) {
                     if (idx > myLastValueString.length()) {
                         idx = myLastValueString.length();

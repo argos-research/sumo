@@ -2,7 +2,7 @@
 /// @file    MSSOTLHiLevelTrafficLightLogic.cpp
 /// @author  Alessio Bonfietti
 /// @date    Jun 2013
-/// @version $Id: MSSOTLHiLevelTrafficLightLogic.cpp 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSSOTLHiLevelTrafficLightLogic.cpp 21217 2016-07-22 10:57:44Z behrisch $
 ///
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
@@ -20,7 +20,7 @@
 
 MSSOTLHiLevelTrafficLightLogic::MSSOTLHiLevelTrafficLightLogic(MSTLLogicControl& tlcontrol,
         const std::string& id, const std::string& subid, const Phases& phases,
-        unsigned int step, SUMOTime delay,
+        int step, SUMOTime delay,
         const std::map<std::string, std::string>& parameters) :
     MSSOTLTrafficLightLogic(tlcontrol, id, subid, phases, step, delay,
                             parameters) {
@@ -30,7 +30,7 @@ MSSOTLHiLevelTrafficLightLogic::MSSOTLHiLevelTrafficLightLogic(MSTLLogicControl&
 
 MSSOTLHiLevelTrafficLightLogic::MSSOTLHiLevelTrafficLightLogic(MSTLLogicControl& tlcontrol,
         const std::string& id, const std::string& subid, const Phases& phases,
-        unsigned int step, SUMOTime delay,
+        int step, SUMOTime delay,
         const std::map<std::string, std::string>& parameters,
         MSSOTLSensors* sensors) :
     MSSOTLTrafficLightLogic(tlcontrol, id, subid, phases, step, delay,
@@ -40,7 +40,7 @@ MSSOTLHiLevelTrafficLightLogic::MSSOTLHiLevelTrafficLightLogic(MSTLLogicControl&
 }
 
 MSSOTLHiLevelTrafficLightLogic::~MSSOTLHiLevelTrafficLightLogic() {
-    for (unsigned int i = 0; i < policies.size(); i++) {
+    for (int i = 0; i < (int)policies.size(); i++) {
         delete(policies[i]);
     }
 }

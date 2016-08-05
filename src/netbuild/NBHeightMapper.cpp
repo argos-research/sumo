@@ -4,7 +4,7 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    Sept 2011
-/// @version $Id: NBHeightMapper.cpp 20801 2016-05-28 05:31:30Z behrisch $
+/// @version $Id: NBHeightMapper.cpp 21215 2016-07-22 10:56:13Z behrisch $
 ///
 // Set z-values for all network positions based on data from a height map
 /****************************************************************************/
@@ -92,9 +92,21 @@ NBHeightMapper::getZ(const Position& geo) const {
         SUMOReal result = -1e6;
         if (myBoundary.around(geo)) {
             const int xSize = int((myBoundary.xmax() - myBoundary.xmin()) / mySizeOfPixel.x() + .5);
-            const int iX = int((geo.x() - myBoundary.xmin()) / mySizeOfPixel.x() + .5);
-            const int iY = int((geo.y() - myBoundary.ymax()) / mySizeOfPixel.y() + .5);
-            result = myRaster[iY * xSize + iX];
+            const SUMOReal normX = (geo.x() - myBoundary.xmin()) / mySizeOfPixel.x();
+            const SUMOReal normY = (geo.y() - myBoundary.ymax()) / mySizeOfPixel.y();
+            PositionVector corners;
+            corners.push_back(Position(floor(normX) + 0.5, floor(normY) + 0.5, myRaster[(int)normY * xSize + (int)normX]));
+            if (normX - floor(normX) > 0.5) {
+                corners.push_back(Position(floor(normX) + 1.5, floor(normY) + 0.5, myRaster[(int)normY * xSize + (int)normX + 1]));
+            } else {
+                corners.push_back(Position(floor(normX) - 0.5, floor(normY) + 0.5, myRaster[(int)normY * xSize + (int)normX - 1]));
+            }
+            if (normY - floor(normY) > 0.5) {
+                corners.push_back(Position(floor(normX) + 0.5, floor(normY) + 1.5, myRaster[((int)normY + 1) * xSize + (int)normX]));
+            } else {
+                corners.push_back(Position(floor(normX) + 0.5, floor(normY) - 0.5, myRaster[((int)normY - 1) * xSize + (int)normX]));
+            }
+            result = Triangle(corners).getZ(Position(normX, normY));
         }
         if (result > -1e5 && result < 1e5) {
             return result;

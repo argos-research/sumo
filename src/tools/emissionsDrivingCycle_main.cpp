@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Wed, 21.08.2013
-/// @version $Id: emissionsDrivingCycle_main.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: emissionsDrivingCycle_main.cpp 21118 2016-07-05 13:46:32Z behrisch $
 ///
 // Main for an emissions calculator
 /****************************************************************************/
@@ -106,6 +106,9 @@ main(int argc, char** argv) {
     oc.doRegister("compute-a.forward", new Option_Bool(false));
     oc.addDescription("compute-a.forward", "Processing", "If set, the acceleration for time t is computed from v(t+1) - v(t) instead of v(t) - v(t-1). ");
 
+    oc.doRegister("compute-a.zero-correction", new Option_Bool(false));
+    oc.addDescription("compute-a.zero-correction", "Processing", "If set, the acceleration for time t is set to 0 if the speed is 0. ");
+
     oc.doRegister("skip-first", 's', new Option_Bool(false));
     oc.addDescription("skip-first", "Processing", "If set, the first line of the read file is skipped.");
 
@@ -178,7 +181,7 @@ main(int argc, char** argv) {
 
         const SUMOEmissionClass defaultClass = PollutantsInterface::getClassByName(oc.getString("emission-class"));
         const bool computeA = oc.getBool("compute-a") || oc.getBool("compute-a.forward");
-        TrajectoriesHandler handler(computeA, oc.getBool("compute-a.forward"), defaultClass, oc.getFloat("slope"), out, xmlOut);
+        TrajectoriesHandler handler(computeA, oc.getBool("compute-a.forward"), oc.getBool("compute-a.zero-correction"), defaultClass, oc.getFloat("slope"), out, xmlOut);
 
         if (oc.isSet("timeline-file")) {
             int skip = oc.getBool("skip-first") ? 1 : oc.getInt("timeline-file.skip");
@@ -197,27 +200,32 @@ main(int argc, char** argv) {
                     continue;
                 }
                 StringTokenizer st(StringUtils::prune(line), oc.getString("timeline-file.separator"));
-                if (st.size() < 2) {
-                    throw ProcessError("Each line must at least include the time and the speed.");
-                }
-                try {
-                    const SUMOReal t = TplConvert::_2SUMOReal<char>(st.next().c_str());
-                    SUMOReal v = TplConvert::_2SUMOReal<char>(st.next().c_str());
-                    if (inKMH) {
-                        v /= 3.6;
+                if (st.hasNext()) {
+                    try {
+                        SUMOReal t = TplConvert::_2SUMOReal<char>(st.next().c_str());
+                        SUMOReal v = 0;
+                        if (st.hasNext()) {
+                            v = TplConvert::_2SUMOReal<char>(st.next().c_str());
+                        } else {
+                            v = t;
+                            t = time;
+                        }
+                        if (inKMH) {
+                            v /= 3.6;
+                        }
+                        SUMOReal a = !computeA && st.hasNext() ? TplConvert::_2SUMOReal<char>(st.next().c_str()) : TrajectoriesHandler::INVALID_VALUE;
+                        SUMOReal s = haveSlope && st.hasNext() ? TplConvert::_2SUMOReal<char>(st.next().c_str()) : TrajectoriesHandler::INVALID_VALUE;
+                        if (handler.writeEmissions(*out, "", defaultClass, t, v, a, s)) {
+                            l += v;
+                            totalA += a;
+                            totalS += s;
+                            time++;
+                        }
+                    } catch (EmptyData&) {
+                        throw ProcessError("Missing an entry in line '" + line + "'.");
+                    } catch (NumberFormatException&) {
+                        throw ProcessError("Not numeric entry in line '" + line + "'.");
                     }
-                    SUMOReal a = !computeA && st.hasNext() ? TplConvert::_2SUMOReal<char>(st.next().c_str()) : TrajectoriesHandler::INVALID_VALUE;
-                    SUMOReal s = haveSlope ? TplConvert::_2SUMOReal<char>(st.next().c_str()) : TrajectoriesHandler::INVALID_VALUE;
-                    if (handler.writeEmissions(*out, "", defaultClass, t, v, a, s)) {
-                        l += v;
-                        totalA += a;
-                        totalS += s;
-                        time++;
-                    }
-                } catch (EmptyData&) {
-                    throw ProcessError("Missing an entry in line '" + line + "'.");
-                } catch (NumberFormatException&) {
-                    throw ProcessError("Not numeric entry in line '" + line + "'.");
                 }
             }
             if (!quiet) {

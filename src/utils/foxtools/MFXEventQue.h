@@ -2,7 +2,7 @@
 /// @file    MFXEventQue.h
 /// @author  Daniel Krajzewicz
 /// @date    2004-03-19
-/// @version $Id: MFXEventQue.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MFXEventQue.h 21202 2016-07-19 13:40:35Z behrisch $
 ///
 // missing_desc
 /****************************************************************************/
@@ -62,9 +62,9 @@ public:
         myMutex.unlock();
     }
 
-    size_t size() {
+    int size() {
         myMutex.lock();
-        const size_t ret = myItems.size();
+        const int ret = (int)myItems.size();
         myMutex.unlock();
         return ret;
     }

@@ -1,53 +1,13 @@
-# svn stuff
-.svn
-
-# python stuff
-__pycache__
-
-# make -f Makefile.cvs
-
-INSTALL
-aclocal.m4
-autom4te.cache/
-compile
-config.guess
-config.sub
-configure
-depcomp
-install-sh
-ltmain.sh
-missing
-
-*.in
-
-# ./configure
+*.o
+*.a
+bin/*
+.deps/
+Makefile
 
 config.log
 config.status
 libtool
-src/config.h
-src/stamp-h1
 
-.deps/
-Makefile
-
-# make
-
-bin/TraCITestClient
-bin/activitygen
-bin/dfrouter
-bin/duarouter
-bin/emissionsDrivingCycle
-bin/emissionsMap
-bin/jtrrouter
-bin/marouter
-bin/netconvert
-bin/netedit
-bin/netgenerate
-bin/od2trips
-bin/polyconvert
-bin/sumo
-bin/sumo-gui
 src/activitygen/activitygen
 src/dfrouter/dfrouter
 src/duarouter/duarouter
@@ -56,15 +16,11 @@ src/marouter/marouter
 src/netconvert
 src/netedit/netedit
 src/netgen/netgenerate
-src/netimport/typemap.h
 src/od2trips
-src/polyconvert/pc_typemap.h
 src/polyconvert/polyconvert
+src/stamp-h1
 src/sumo
 src/sumo-gui
 src/tools/emissionsDrivingCycle
 src/tools/emissionsMap
 src/traci_testclient/TraCITestClient
-
-*.a
-*.o

@@ -1,4 +1,4 @@
-EXTRA_DIST = netedit64.ico GNELogo_TLS.cpp
+EXTRA_DIST = netedit64.ico netedit.rc
 
 XERCES_LIBS = -l$(LIB_XERCES)
 
@@ -25,10 +25,12 @@ GNENetElement.h GNENetElement.cpp \
 GNEEdge.h GNEEdge.cpp \
 GNELane.h GNELane.cpp \
 GNEInternalLane.h GNEInternalLane.cpp \
+GNEConnection.h GNEConnection.cpp \
 GNECrossing.h GNECrossing.cpp \
 GNEJunction.h GNEJunction.cpp \
 GNEPOI.h GNEPOI.cpp \
 GNEPoly.h GNEPoly.cpp \
+GNEProhibition.h GNEProhibition.cpp \
 GNEViewNet.h GNEViewNet.cpp \
 GNEViewParent.h GNEViewParent.cpp \
 GNEDialog_About.h GNEDialog_About.cpp \
@@ -57,6 +59,7 @@ GNEAdditionalSet.h GNEAdditionalSet.cpp \
 GNEChargingStation.h GNEChargingStation.cpp \
 GNEStoppingPlace.h GNEStoppingPlace.cpp \
 GNEBusStop.h GNEBusStop.cpp \
+GNEContainerStop.h GNEContainerStop.cpp \
 GNEDetector.h GNEDetector.cpp \
 GNEDetectorE1.h GNEDetectorE1.cpp \
 GNEDetectorE2.h GNEDetectorE2.cpp \
@@ -66,7 +69,9 @@ GNEDetectorExit.h GNEDetectorExit.cpp \
 GNERerouter.h GNERerouter.cpp \
 GNERerouterDialog.h GNERerouterDialog.cpp \
 GNERouteProbe.h GNERouteProbe.cpp \
+GNEVaporizer.h GNEVaporizer.cpp \
 GNECalibrator.h GNECalibrator.cpp \
+GNECalibratorDialog.h GNECalibratorDialog.cpp \
 GNEVariableSpeedSignal.h GNEVariableSpeedSignal.cpp \
 GNEVariableSpeedSignalDialog.h GNEVariableSpeedSignalDialog.cpp \
 GNEReferenceCounter.h \

@@ -9,7 +9,7 @@
 @author  Laura Bieker
 @author  Daniel Krajzewicz
 @date    2011-03-09
-@version $Id: _vehicle.py 20908 2016-06-08 06:16:43Z namdre $
+@version $Id: _vehicle.py 21131 2016-07-08 07:59:22Z behrisch $
 
 Python implementation of the TraCI interface.
 
@@ -88,6 +88,7 @@ _RETURN_VALUE_FUNC = {tc.VAR_SPEED:           Storage.readDouble,
                       tc.VAR_NOXEMISSION:     Storage.readDouble,
                       tc.VAR_FUELCONSUMPTION: Storage.readDouble,
                       tc.VAR_NOISEEMISSION:   Storage.readDouble,
+                      tc.VAR_ELECTRICITYCONSUMPTION: Storage.readDouble,
                       tc.VAR_PERSON_NUMBER:   Storage.readInt,
                       tc.VAR_EDGE_TRAVELTIME: Storage.readDouble,
                       tc.VAR_EDGE_EFFORT:     Storage.readDouble,
@@ -102,6 +103,8 @@ _RETURN_VALUE_FUNC = {tc.VAR_SPEED:           Storage.readDouble,
                       tc.VAR_SPEED_DEVIATION: Storage.readDouble,
                       tc.VAR_EMISSIONCLASS:   Storage.readString,
                       tc.VAR_WAITING_TIME:    Storage.readDouble,
+                      tc.VAR_SPEEDSETMODE:    Storage.readInt,
+                      tc.VAR_SLOPE:           Storage.readDouble,
                       tc.VAR_WIDTH:           Storage.readDouble,
                       tc.VAR_MINGAP:          Storage.readDouble,
                       tc.VAR_SHAPECLASS:      Storage.readString,
@@ -132,7 +135,7 @@ class VehicleDomain(Domain):
     STOP_CONTAINER_TRIGGERED = 4
     STOP_BUS_STOP = 8
     STOP_CONTAINER_STOP = 16
-    
+
     DEPART_LANE_RANDOM = -2
     DEPART_LANE_FREE = -3
     DEPART_LANE_ALLOWED_FREE = -4
@@ -286,6 +289,13 @@ class VehicleDomain(Domain):
         """
         return self._getUniversal(tc.VAR_NOISEEMISSION, vehID)
 
+    def getElectricityConsumption(self, vehID):
+        """getElectricityConsumption(string) -> double
+
+        Returns the electricity consumption in ml for the last time step.
+        """
+        return self._getUniversal(tc.VAR_ELECTRICITYCONSUMPTION, vehID)
+
     def getPersonNumber(self, vehID):
         """getPersonNumber(string) -> integer
 
@@ -383,6 +393,18 @@ class VehicleDomain(Domain):
         (basically, the waiting time of a vehicle is reset to 0 every time it moves). 
         """
         return self._getUniversal(tc.VAR_WAITING_TIME, vehID)
+
+    def getSpeedMode(self, vehID):
+        """getSpeedMode -> int
+        The speed mode of a vehicle 
+        """
+        return self._getUniversal(tc.VAR_SPEEDSETMODE, vehID)
+
+    def getSlope(self, vehID):
+        """getSlope -> double
+        The slope at the current position of the vehicle in degrees
+        """
+        return self._getUniversal(tc.VAR_SLOPE, vehID)
 
     def getWidth(self, vehID):
         """getWidth(string) -> double

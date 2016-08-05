@@ -2,7 +2,7 @@
 /// @file    GNEViewParent.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEViewParent.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEViewParent.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 // A single child window which contains a view of the edited network (adapted
 // from GUISUMOViewParent)
@@ -89,7 +89,7 @@ public:
      */
     GNEViewParent(FXMDIClient* p, FXMDIMenu* mdimenu,
                   const FXString& name, GNEApplicationWindow* parentWindow,
-                  FXGLCanvas* share, GNENet* net, GNEUndoList *undoList,
+                  FXGLCanvas* share, GNENet* net, GNEUndoList* undoList,
                   FXIcon* ic = NULL, FXuint opts = 0, FXint x = 0, FXint y = 0, FXint w = 0, FXint h = 0);
 
     /// @brief Destructor
@@ -154,7 +154,7 @@ private:
     FXHorizontalFrame* myFramesArea;
 
     /// @brief Splitter to divide ViewNet und GNEFrames
-    FXSplitter *myFramesSplitter;
+    FXSplitter* myFramesSplitter;
 
     /// @brief the panel for GNE_MODE_INSPECT
     GNEInspectorFrame* myInspectorFrame;

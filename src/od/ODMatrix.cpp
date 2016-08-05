@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Yun-Pang Floetteroed
 /// @date    05 Apr. 2006
-/// @version $Id: ODMatrix.cpp 20842 2016-06-02 07:53:40Z behrisch $
+/// @version $Id: ODMatrix.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // An O/D (origin/destination) matrix
 /****************************************************************************/
@@ -151,7 +151,7 @@ ODMatrix::add(const std::string& id, const SUMOTime depart,
 
 SUMOReal
 ODMatrix::computeDeparts(ODCell* cell,
-                         size_t& vehName, std::vector<ODVehicle>& into,
+                         int& vehName, std::vector<ODVehicle>& into,
                          const bool uniform, const bool differSourceSink,
                          const std::string& prefix) {
     int vehicles2insert = (int) cell->vehicleNumber;
@@ -226,7 +226,7 @@ ODMatrix::write(SUMOTime begin, const SUMOTime end,
         return;
     }
     std::map<std::pair<std::string, std::string>, SUMOReal> fractionLeft;
-    size_t vehName = 0;
+    int vehName = 0;
     sortByBeginTime();
     // recheck begin time
     begin = MAX2(begin, myContainer.front()->begin);
@@ -249,9 +249,9 @@ ODMatrix::write(SUMOTime begin, const SUMOTime end,
                 fractionLeft[odID] = 0;
             }
             // get the new departures (into tmp)
-            const size_t oldSize = vehicles.size();
+            const int oldSize = (int)vehicles.size();
             const SUMOReal fraction = computeDeparts(*next, vehName, vehicles, uniform, differSourceSink, prefix);
-            if (oldSize != vehicles.size()) {
+            if (oldSize != (int)vehicles.size()) {
                 changed = true;
             }
             if (fraction != 0) {
@@ -294,7 +294,7 @@ ODMatrix::writeFlows(const SUMOTime begin, const SUMOTime end,
     if (myContainer.size() == 0) {
         return;
     }
-    size_t flowName = 0;
+    int flowName = 0;
     sortByBeginTime();
     // recheck begin time
     for (std::vector<ODCell*>::const_iterator i = myContainer.begin(); i != myContainer.end(); ++i) {
@@ -502,7 +502,7 @@ ODMatrix::getNumDiscarded() const {
 
 void
 ODMatrix::applyCurve(const Distribution_Points& ps, ODCell* cell, std::vector<ODCell*>& newCells) {
-    for (size_t i = 0; i < ps.getAreaNo(); ++i) {
+    for (int i = 0; i < ps.getAreaNo(); ++i) {
         ODCell* ncell = new ODCell();
         ncell->begin = TIME2STEPS(ps.getAreaBegin(i));
         ncell->end = TIME2STEPS(ps.getAreaEnd(i));
@@ -606,15 +606,15 @@ ODMatrix::parseTimeLine(const std::vector<std::string>& def, bool timelineDayInH
         }
         points.push_back(Position((SUMOReal)(24 * 3600), prob));
     } else {
-        size_t i = 0;
-        while (i < def.size()) {
+        int i = 0;
+        while (i < (int)def.size()) {
             StringTokenizer st2(def[i++], ":");
             if (st2.size() != 2) {
                 throw ProcessError("Broken time line definition: missing a value in '" + def[i - 1] + "'.");
             }
-            int time = TplConvert::_2int(st2.next().c_str());
+            const SUMOReal time = TplConvert::_2SUMOReal(st2.next().c_str());
             prob = TplConvert::_2SUMOReal(st2.next().c_str());
-            points.push_back(Position((SUMOReal) time, prob));
+            points.push_back(Position(time, prob));
         }
     }
     return Distribution_Points("N/A", points, interpolating);

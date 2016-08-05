@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    2003-11-19
-/// @version $Id: bezier.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: bezier.h 21154 2016-07-12 14:23:01Z namdre $
 ///
 // missing_desc
 /****************************************************************************/
@@ -31,10 +31,15 @@
 #include <config.h>
 #endif
 
+#include "PositionVector.h"
 
 /* Bezier curve subroutine */
 void
 bezier(int npts, SUMOReal b[], int cpts, SUMOReal p[]);
+
+
+PositionVector
+bezier(const PositionVector& init, int numPoints);
 
 
 #endif

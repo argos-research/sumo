@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLBuilder.cpp 20858 2016-06-03 07:29:14Z luecken $
+/// @version $Id: NLBuilder.cpp 21198 2016-07-19 11:34:56Z namdre $
 ///
 // The main interface for loading a microsim
 /****************************************************************************/
@@ -201,6 +201,10 @@ NLBuilder::build() {
             return false;
         }
     }
+    // optionally switch off traffic lights
+    if (myOptions.getBool("tls.all-off")) {
+        myNet.getTLSControl().switchOffAll();
+    }
     WRITE_MESSAGE("Loading done.");
     return true;
 }
@@ -231,11 +235,12 @@ NLBuilder::buildNet() {
             }
         } else {
             const std::string prefix = myOptions.getString("save-state.prefix");
+            const std::string suffix = myOptions.getString("save-state.suffix");
             for (std::vector<SUMOTime>::iterator i = stateDumpTimes.begin(); i != stateDumpTimes.end(); ++i) {
-                stateDumpFiles.push_back(prefix + "_" + time2string(*i) + ".sbx");
+                stateDumpFiles.push_back(prefix + "_" + time2string(*i) + suffix);
             }
         }
-        myNet.closeBuilding(edges, junctions, routeLoaders, tlc, stateDumpTimes, stateDumpFiles,
+        myNet.closeBuilding(myOptions, edges, junctions, routeLoaders, tlc, stateDumpTimes, stateDumpFiles,
                             myXMLHandler.haveSeenInternalEdge(),
                             myXMLHandler.haveSeenNeighs(),
                             myXMLHandler.lefthand(),

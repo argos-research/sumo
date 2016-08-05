@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdgeCont.cpp 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: NBEdgeCont.cpp 21210 2016-07-21 10:02:38Z behrisch $
 ///
 // Storage for edges, including some functionality operating on multiple edges
 /****************************************************************************/
@@ -339,11 +339,11 @@ NBEdgeCont::retrievePossiblySplit(const std::string& id, SUMOReal pos) const {
     if (edge != 0) {
         return edge;
     }
-    size_t maxLength = 0;
+    int maxLength = 0;
     std::string tid = id + "[";
     for (EdgeCont::const_iterator i = myEdges.begin(); i != myEdges.end(); ++i) {
         if ((*i).first.find(tid) == 0) {
-            maxLength = MAX2(maxLength, (*i).first.length());
+            maxLength = MAX2(maxLength, (int)(*i).first.length());
         }
     }
     // find the part of the edge which matches the position
@@ -359,7 +359,7 @@ NBEdgeCont::retrievePossiblySplit(const std::string& id, SUMOReal pos) const {
         // The edge was splitted; check its subparts within the
         //  next step
         if (edge == 0) {
-            if (cid.length() + 3 < maxLength) {
+            if ((int)cid.length() + 3 < maxLength) {
                 names.push_back(cid + "[1]");
                 names.push_back(cid + "[0]");
             }
@@ -411,7 +411,7 @@ NBEdgeCont::rename(NBEdge* edge, const std::string& newID) {
 bool
 NBEdgeCont::splitAt(NBDistrictCont& dc, NBEdge* edge, NBNode* node) {
     return splitAt(dc, edge, node, edge->getID() + "[0]", edge->getID() + "[1]",
-                   (unsigned int) edge->myLanes.size(), (unsigned int) edge->myLanes.size());
+                   (int) edge->myLanes.size(), (int) edge->myLanes.size());
 }
 
 
@@ -419,7 +419,7 @@ bool
 NBEdgeCont::splitAt(NBDistrictCont& dc, NBEdge* edge, NBNode* node,
                     const std::string& firstEdgeName,
                     const std::string& secondEdgeName,
-                    unsigned int noLanesFirstEdge, unsigned int noLanesSecondEdge,
+                    int noLanesFirstEdge, int noLanesSecondEdge,
                     const SUMOReal speed,
                     const int changedLeft) {
     SUMOReal pos;
@@ -442,7 +442,7 @@ NBEdgeCont::splitAt(NBDistrictCont& dc,
                     NBEdge* edge, SUMOReal pos, NBNode* node,
                     const std::string& firstEdgeName,
                     const std::string& secondEdgeName,
-                    unsigned int noLanesFirstEdge, unsigned int noLanesSecondEdge,
+                    int noLanesFirstEdge, int noLanesSecondEdge,
                     const SUMOReal speed,
                     const int changedLeft
                    ) {
@@ -672,7 +672,7 @@ NBEdgeCont::joinSameNodeConnectingEdges(NBDistrictCont& dc,
     //   the replacement where the edge is a node's incoming edge.
 
     // count the number of lanes, the speed and the id
-    unsigned int nolanes = 0;
+    int nolanes = 0;
     SUMOReal speed = 0;
     int priority = 0;
     std::string id;
@@ -728,7 +728,7 @@ NBEdgeCont::joinSameNodeConnectingEdges(NBDistrictCont& dc,
         }
     }
     //  copy outgoing connections to the new edge
-    unsigned int currLane = 0;
+    int currLane = 0;
     for (i = edges.begin(); i != edges.end(); i++) {
         newEdge->moveOutgoingConnectionsFrom(*i, currLane);
         currLane += (*i)->getNumLanes();
@@ -736,8 +736,8 @@ NBEdgeCont::joinSameNodeConnectingEdges(NBDistrictCont& dc,
     // patch tl-information
     currLane = 0;
     for (i = edges.begin(); i != edges.end(); i++) {
-        unsigned int noLanes = (*i)->getNumLanes();
-        for (unsigned int j = 0; j < noLanes; j++, currLane++) {
+        int noLanes = (*i)->getNumLanes();
+        for (int j = 0; j < noLanes; j++, currLane++) {
             // replace in traffic lights
             tlc.replaceRemoved(*i, j, newEdge, currLane);
         }
@@ -837,13 +837,13 @@ NBEdgeCont::recheckPostProcessConnections() {
 
 EdgeVector
 NBEdgeCont::getGeneratedFrom(const std::string& id) const {
-    size_t len = id.length();
+    int len = (int)id.length();
     EdgeVector ret;
     for (EdgeCont::const_iterator i = myEdges.begin(); i != myEdges.end(); ++i) {
         std::string curr = (*i).first;
         // the next check makes it possibly faster - we don not have
         //  to compare the names
-        if (curr.length() <= len) {
+        if ((int)curr.length() <= len) {
             continue;
         }
         // the name must be the same as the given id but something
@@ -853,7 +853,7 @@ NBEdgeCont::getGeneratedFrom(const std::string& id) const {
             continue;
         }
         // ok, maybe the edge is a compound made during joining of edges
-        size_t pos = curr.find(id);
+        std::string::size_type pos = curr.find(id);
         // surely not
         if (pos == std::string::npos) {
             continue;
@@ -932,12 +932,12 @@ NBEdgeCont::guessRoundabouts() {
                 break;
             }
             EdgeVector::const_iterator loopClosed = find(loopEdges.begin(), loopEdges.end(), left);
-            const size_t loopSize = loopEdges.end() - loopClosed;
+            const int loopSize = (int)(loopEdges.end() - loopClosed);
             if (loopSize > 0) {
                 // loop found
                 if (loopSize < 3) {
                     doLoop = false; // need at least 3 edges for a roundabout
-                } else if (loopSize < loopEdges.size()) {
+                } else if (loopSize < (int)loopEdges.size()) {
                     // remove initial edges not belonging to the loop
                     EdgeVector(loopEdges.begin() + (loopEdges.size() - loopSize), loopEdges.end()).swap(loopEdges);
                 }
@@ -994,10 +994,12 @@ NBEdgeCont::getRoundabouts() const {
 
 void
 NBEdgeCont::addRoundabout(const EdgeSet& roundabout) {
-    if (find(myRoundabouts.begin(), myRoundabouts.end(), roundabout) != myRoundabouts.end()) {
-        WRITE_WARNING("Ignoring duplicate roundabout: " + toString(roundabout));
-    } else {
-        myRoundabouts.insert(roundabout);
+    if (roundabout.size() > 0) {
+        if (find(myRoundabouts.begin(), myRoundabouts.end(), roundabout) != myRoundabouts.end()) {
+            WRITE_WARNING("Ignoring duplicate roundabout: " + toString(roundabout));
+        } else {
+            myRoundabouts.insert(roundabout);
+        }
     }
 }
 

@@ -6,7 +6,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2008-03-27
-@version $Id: __init__.py 20687 2016-05-10 11:27:00Z behrisch $
+@version $Id: __init__.py 21064 2016-06-29 12:10:35Z namdre $
 
 This file contains a content handler for parsing sumo network xml files.
 It uses other classes from this module to represent the road network.
@@ -201,16 +201,8 @@ class Net:
         return self._id2edge[id]
 
     def getLane(self, laneID):
-        p = re.compile("^(:)?(-)?([^\W_]+)((#\d+)?(_\d+)?)(_\d+)?$")
-        g = p.match(laneID).groups("")
-        edge_id = g[0] + g[1] + g[2] + g[3]
-        lane_index = g[6][1:]
-
-        for e in self._edges:
-            if e.getID() == edge_id:
-                return e.getLane(int(lane_index))
-
-        return None
+        edge_id, lane_index = laneID.rsplit("_", 1)
+        return self.getEdge(edge_id).getLane(int(lane_index))
 
     def _initRTree(self, shapeList, includeJunctions=True):
         import rtree

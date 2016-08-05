@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSVehicleContainer.h 20626 2016-05-03 12:49:04Z namdre $
+/// @version $Id: MSVehicleContainer.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // vehicles sorted by their departures
 /****************************************************************************/
@@ -62,7 +62,7 @@ public:
 
 public:
     /// Constructor
-    MSVehicleContainer(size_t capacity = 10);
+    MSVehicleContainer(int capacity = 10);
 
     /// Destructor
     ~MSVehicleContainer();
@@ -92,7 +92,7 @@ public:
     bool isEmpty() const;
 
     /// Returns the size of the container
-    size_t size() const;
+    int size() const;
 
     /// Prints the container (the departure times)
     void showArray() const;

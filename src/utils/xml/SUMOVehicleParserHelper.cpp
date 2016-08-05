@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 07.04.2008
-/// @version $Id: SUMOVehicleParserHelper.cpp 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: SUMOVehicleParserHelper.cpp 21078 2016-07-01 09:23:25Z behrisch $
 ///
 // Helper methods for parsing vehicle attributes
 /****************************************************************************/
@@ -141,9 +141,9 @@ SUMOVehicleParserHelper::parseFlowAttributes(const SUMOSAXAttributes& attrs, con
     if (attrs.hasAttribute(SUMO_ATTR_END)) {
         ret->repetitionEnd = attrs.getSUMOTimeReporting(SUMO_ATTR_END, id.c_str(), ok);
     }
-    if (ok && ret->repetitionEnd <= ret->depart) {
+    if (ok && ret->repetitionEnd < ret->depart) {
         delete ret;
-        throw ProcessError("Flow '" + id + "' ends before or at its begin time.");
+        throw ProcessError("Flow '" + id + "' ends before its begin time.");
     }
     if (attrs.hasAttribute(SUMO_ATTR_NUMBER)) {
         ret->repetitionNumber = attrs.get<int>(SUMO_ATTR_NUMBER, id.c_str(), ok);

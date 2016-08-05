@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 25.07.2005
-/// @version $Id: GUITriggeredRerouter.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUITriggeredRerouter.cpp 21217 2016-07-22 10:57:44Z behrisch $
 ///
 // Reroutes vehicles passing an edge (gui version)
 /****************************************************************************/
@@ -362,8 +362,8 @@ GUITriggeredRerouter::GUITriggeredRerouterEdge::drawGL(const GUIVisualizationSet
             if (ri != 0 && prob > 0) {
                 // draw only if the edge is closed at this time
                 if (std::find(ri->closed.begin(), ri->closed.end(), myEdge) != ri->closed.end()) {
-                    const size_t noLanes = myFGPositions.size();
-                    for (size_t j = 0; j < noLanes; ++j) {
+                    const int noLanes = (int)myFGPositions.size();
+                    for (int j = 0; j < noLanes; ++j) {
                         Position pos = myFGPositions[j];
                         SUMOReal rot = myFGRotations[j];
                         glPushMatrix();
@@ -402,7 +402,7 @@ GUITriggeredRerouter::GUITriggeredRerouterEdge::drawGL(const GUIVisualizationSet
 
         } else {
             // draw rerouter symbol onto all lanes
-            for (size_t i = 0; i < myFGPositions.size(); ++i) {
+            for (int i = 0; i < (int)myFGPositions.size(); ++i) {
                 const Position& pos = myFGPositions[i];
                 SUMOReal rot = myFGRotations[i];
                 glPushMatrix();

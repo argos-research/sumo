@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    2006-01-24
-/// @version $Id: SUMOVehicleClass.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: SUMOVehicleClass.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Definitions of SUMO vehicle classes and helper functions
 /****************************************************************************/
@@ -267,7 +267,7 @@ writePermissions(OutputDevice& into, SVCPermissions permissions) {
         into.writeAttr(SUMO_ATTR_DISALLOW, "all");
         return;
     } else {
-        size_t num_allowed = 0;
+        int num_allowed = 0;
         for (int mask = 1; mask <= SUMOVehicleClass_MAX; mask = mask << 1) {
             if ((mask & permissions) == mask) {
                 ++num_allowed;

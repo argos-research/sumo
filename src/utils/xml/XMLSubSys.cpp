@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 1 Jul 2002
-/// @version $Id: XMLSubSys.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: XMLSubSys.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Utility methods for initialising, closing and using the XML-subsystem
 /****************************************************************************/
@@ -46,7 +46,7 @@
 // static member variables
 // ===========================================================================
 std::vector<SUMOSAXReader*> XMLSubSys::myReaders;
-unsigned int XMLSubSys::myNextFreeReader;
+int XMLSubSys::myNextFreeReader;
 XERCES_CPP_NAMESPACE::SAX2XMLReader::ValSchemes XMLSubSys::myValidationScheme = XERCES_CPP_NAMESPACE::SAX2XMLReader::Val_Auto;
 XERCES_CPP_NAMESPACE::SAX2XMLReader::ValSchemes XMLSubSys::myNetValidationScheme = XERCES_CPP_NAMESPACE::SAX2XMLReader::Val_Auto;
 

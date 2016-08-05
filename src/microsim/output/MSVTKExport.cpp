@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    2012-04-26
-/// @version $Id: MSVTKExport.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSVTKExport.cpp 21217 2016-07-22 10:57:44Z behrisch $
 ///
 // Realises VTK Export
 /****************************************************************************/
@@ -149,7 +149,7 @@ std::string
 MSVTKExport::List2String(std::vector<double> input) {
 
     std::string output = "";
-    for (unsigned i = 0; i < input.size(); i++) {
+    for (int i = 0; i < (int)input.size(); i++) {
 
         std::stringstream ss;
 

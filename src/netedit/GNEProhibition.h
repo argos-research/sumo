@@ -1,8 +1,8 @@
 /****************************************************************************/
 /// @file    GNEProhibition.h
-/// @author  Pablo Álvarez López
+/// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNEProhibition.h 20785 2016-05-24 10:51:45Z palcraft $
+/// @version $Id: GNEProhibition.h 21117 2016-07-05 12:57:12Z palcraft $
 ///
 // A class for represent prohibitions between edges
 /****************************************************************************/

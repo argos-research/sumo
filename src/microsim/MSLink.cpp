@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: MSLink.cpp 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: MSLink.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // A connnection between lanes
 /****************************************************************************/
@@ -608,7 +608,7 @@ MSLink::getLeaderInfo(SUMOReal dist, SUMOReal minGap, std::vector<const MSPerson
     if (fromInternalLane()) {
         //if (gDebugFlag1) std::cout << SIMTIME << " getLeaderInfo link=" << getViaLaneOrLane()->getID() << "\n";
         // this is an exit link
-        for (size_t i = 0; i < myFoeLanes.size(); ++i) {
+        for (int i = 0; i < (int)myFoeLanes.size(); ++i) {
             const MSLane* foeLane = myFoeLanes[i];
             // distance from the querying vehicle to the crossing point with foeLane
             const SUMOReal distToCrossing = dist - myLengthsBehindCrossing[i].first;

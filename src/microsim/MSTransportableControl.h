@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: MSTransportableControl.h 20773 2016-05-20 13:43:03Z behrisch $
+/// @version $Id: MSTransportableControl.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Stores all persons or containers in the net and handles their waiting for cars.
 /****************************************************************************/
@@ -160,8 +160,8 @@ public:
     /** @brief Returns the number of known transportables
      * @return The number of stored transportables
      */
-    unsigned int size() const {
-        return (unsigned int)myTransportables.size();
+    int size() const {
+        return (int)myTransportables.size();
     }
 
     /// @brief register a jammed transportable
@@ -175,7 +175,7 @@ public:
     /** @brief Returns the number of build transportables
      * @return The number of loaded (build) transportables
      */
-    unsigned int getLoadedNumber() const {
+    int getLoadedNumber() const {
         return myLoadedNumber;
     }
 
@@ -183,14 +183,14 @@ public:
     /** @brief Returns the number of build and inserted, but not yet deleted transportables
      * @return The number of simulated transportables
      */
-    unsigned int getRunningNumber() const {
+    int getRunningNumber() const {
         return myRunningNumber;
     }
 
     /** @brief Returns the number of times a transportables was jammed
      * @return The number of times transportables were jammed
      */
-    unsigned int getJammedNumber() const {
+    int getJammedNumber() const {
         return myJammedNumber;
     }
 
@@ -210,16 +210,16 @@ protected:
     std::map<const MSEdge*, TransportableVector> myWaiting4Vehicle;
 
     /// @brief The number of build transportables
-    unsigned int myLoadedNumber;
+    int myLoadedNumber;
 
     /// @brief The number of transportables within the network (build and inserted but not removed)
-    unsigned int myRunningNumber;
+    int myRunningNumber;
 
     /// @brief The number of jammed transportables
-    unsigned int myJammedNumber;
+    int myJammedNumber;
 
     /// @brief The number of transportables waiting for vehicles
-    unsigned int myWaitingForVehicleNumber;
+    int myWaitingForVehicleNumber;
 
     /// @brief whether a new transportable waiting for a vehicle has been added in the last step
     bool myHaveNewWaiting;

@@ -2,7 +2,7 @@
 /// @file    GNEInspectorFrame.h
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEInspectorFrame.h 20785 2016-05-24 10:51:45Z palcraft $
+/// @version $Id: GNEInspectorFrame.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 // The Widget for modifying network-element attributes (i.e. lane speed)
 /****************************************************************************/
@@ -63,18 +63,18 @@ public:
 
     public:
         /// @brief constructor
-        AttrInput(FXComposite* parent, GNEInspectorFrame *inspectorFrameParent);
+        AttrInput(FXComposite* parent, GNEInspectorFrame* inspectorFrameParent);
 
         /// @brief show attribute
-        void showAttribute(SumoXMLTag tag, SumoXMLAttr attr, const std::string &value);
+        void showAttribute(SumoXMLTag tag, SumoXMLAttr attr, const std::string& value);
 
         /// @brief show attribute
         void hiddeAttribute();
 
         /// @brief get current tag
-        SumoXMLTag getTag() const; 
+        SumoXMLTag getTag() const;
 
-        /// @brief get current Attr    
+        /// @brief get current Attr
         SumoXMLAttr getAttr() const;
 
         /// @brief try to set new attribute value
@@ -89,34 +89,34 @@ public:
 
     private:
         /// @brief pointer to GNEInspectorFrame parent
-        GNEInspectorFrame *myInspectorFrameParent;
+        GNEInspectorFrame* myInspectorFrameParent;
 
         /// @brief current tag
-        SumoXMLTag myTag; 
+        SumoXMLTag myTag;
 
-        /// @brief current Attr    
+        /// @brief current Attr
         SumoXMLAttr myAttr;
 
         /// @brief pointer to label
         FXLabel* myLabel;
 
         /// @brief textField to modify the value of int values
-        FXTextField *myTextFieldInt;
+        FXTextField* myTextFieldInt;
 
         /// @brief textField to modify the value of real values
-        FXTextField *myTextFieldReal;
+        FXTextField* myTextFieldReal;
 
         /// @brief textField to modify the value of strings values
-        FXTextField *myTextFieldStrings;
+        FXTextField* myTextFieldStrings;
 
         /// @brief pointer to combo box choices
         FXComboBox* myChoicesCombo;
 
         /// @brief pointer to checkBox
-        FXCheckButton *myCheckBox;
+        FXCheckButton* myCheckBox;
 
         /// @brief pointer to buttonCombinableChoices
-        FXButton *myButtonCombinableChoices;
+        FXButton* myButtonCombinableChoices;
 
         /// @brief set show as private function
         void show();
@@ -135,7 +135,7 @@ public:
 
     public:
         /// @brief constructor
-        AttrEditor(AttrInput *attrInputParent, FXTextField *textFieldAttr);
+        AttrEditor(AttrInput* attrInputParent, FXTextField* textFieldAttr);
 
         /// @brief destructor
         ~AttrEditor();
@@ -149,10 +149,10 @@ public:
 
     private:
         /// @brief Pointer to AttrInput parent
-        AttrInput *myAttrInputParent;
+        AttrInput* myAttrInputParent;
 
         // @brief Pointer to TexField in which write attribute
-        FXTextField *myTextFieldAttr;
+        FXTextField* myTextFieldAttr;
 
         // @brief Matrix in that CheckBoxs will be inserted
         FXMatrix* myCheckBoxMatrix;
@@ -161,16 +161,16 @@ public:
         std::vector<FXCheckButton*> myVectorOfCheckBox;
 
         /// @brief frame for the buttons
-        FXHorizontalFrame *frameButtons;
+        FXHorizontalFrame* frameButtons;
 
         /// @brief Button Accept
-        FXButton *myAcceptButton;
+        FXButton* myAcceptButton;
 
         /// @brief Button Cancel
-        FXButton *myCancelButton;
+        FXButton* myCancelButton;
 
         /// @brief Button Reset
-        FXButton *myResetButton;
+        FXButton* myResetButton;
     };
 
 public:
@@ -190,10 +190,10 @@ public:
     void hide();
 
     /// @brief Inspect the given multi-selection
-    void inspect(const std::list<GNEAttributeCarrier*>& ACs);
+    void inspect(const std::vector<GNEAttributeCarrier*>& ACs);
 
     /// @brief get current list of ACs
-    const std::list<GNEAttributeCarrier*> &getACs() const;
+    const std::vector<GNEAttributeCarrier*>& getACs() const;
 
     /// @brief get the template edge (to copy attributes from)
     GNEEdge* getEdgeTemplate() const;
@@ -222,16 +222,16 @@ private:
     FXGroupBox* myGroupBoxForAttributes;
 
     /// @brief list of Attribute inputs
-    std::list<GNEInspectorFrame::AttrInput*> listOfAttrInput;
+    std::vector<GNEInspectorFrame::AttrInput*> vectorOfAttrInput;
 
     /// @brief groupBox for templates
     FXGroupBox* myGroupBoxForTemplates;
 
     /// @brief copy template button
-    FXButton *myCopyTemplateButton;
+    FXButton* myCopyTemplateButton;
 
     /// @brief set template button
-    FXButton *mySetTemplateButton;
+    FXButton* mySetTemplateButton;
 
     /// @brief the edge template
     GNEEdge* myEdgeTemplate;
@@ -240,13 +240,13 @@ private:
     FXGroupBox* myGroupBoxForEditor;
 
     /// @brief pointer to check button block
-    FXCheckButton *myCheckBlocked;
+    FXCheckButton* myCheckBlocked;
 
     /// @brief pointer to additional element
-    GNEAdditional *myAdditional;
+    GNEAdditional* myAdditional;
 
     /// @brief the multi-selection currently being inspected
-    std::list<GNEAttributeCarrier*> myACs;
+    std::vector<GNEAttributeCarrier*> myACs;
 };
 
 

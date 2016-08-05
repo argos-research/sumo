@@ -6,7 +6,7 @@
 /// @author  Jakob Erdmann
 /// @author  Christoph Sommer
 /// @date    Sept 2002
-/// @version $Id: TraCIServerAPI_Polygon.cpp 20801 2016-05-28 05:31:30Z behrisch $
+/// @version $Id: TraCIServerAPI_Polygon.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // APIs for getting/setting polygon values via TraCI
 /****************************************************************************/
@@ -97,8 +97,8 @@ TraCIServerAPI_Polygon::processGet(TraCIServer& server, tcpip::Storage& inputSto
                 break;
             case VAR_SHAPE:
                 tempMsg.writeUnsignedByte(TYPE_POLYGON);
-                tempMsg.writeUnsignedByte(MIN2(static_cast<int>(255), static_cast<int>(p->getShape().size())));
-                for (unsigned int iPoint = 0; iPoint < MIN2(static_cast<size_t>(255), p->getShape().size()); ++iPoint) {
+                tempMsg.writeUnsignedByte(MIN2(255, (int)p->getShape().size()));
+                for (int iPoint = 0; iPoint < MIN2(255, (int)p->getShape().size()); ++iPoint) {
                     tempMsg.writeDouble(p->getShape()[iPoint].x());
                     tempMsg.writeDouble(p->getShape()[iPoint].y());
                 }

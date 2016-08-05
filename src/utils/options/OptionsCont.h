@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: OptionsCont.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: OptionsCont.h 21204 2016-07-20 07:42:26Z behrisch $
 ///
 // A storage for options (typed value containers)
 /****************************************************************************/
@@ -22,15 +22,6 @@
 /****************************************************************************/
 #ifndef OptionsCont_h
 #define OptionsCont_h
-// ===========================================================================
-// compiler pragmas
-// ===========================================================================
-#ifdef _MSC_VER
-#pragma warning(disable: 4786)
-#pragma warning(disable: 4503)
-#endif
-
-
 // ===========================================================================
 // included modules
 // ===========================================================================
@@ -709,7 +700,7 @@ private:
      * @todo Describe parameter
      */
     void splitLines(std::ostream& os, std::string what,
-                    size_t offset, size_t nextOffset);
+                    int offset, int nextOffset);
 
 
 private:

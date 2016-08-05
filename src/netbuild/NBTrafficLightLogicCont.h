@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBTrafficLightLogicCont.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBTrafficLightLogicCont.h 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // A container for traffic light definitions and built programs
 /****************************************************************************/
@@ -124,8 +124,8 @@ public:
 
 
     /// @brief return the number of extracted traffic light definitions
-    size_t getNumExtracted() const {
-        return myExtracted.size();
+    int getNumExtracted() const {
+        return (int)myExtracted.size();
     }
 
 
@@ -142,7 +142,7 @@ public:
      * @return The number of computed tls and programs
      * @see NBTrafficLightDefinition::compute
      */
-    std::pair<unsigned int, unsigned int> computeLogics(OptionsCont& oc);
+    std::pair<int, int> computeLogics(OptionsCont& oc);
 
 
     /** @brief Computes a specific traffic light logic (using by NETEDIT)

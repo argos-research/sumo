@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2011-03-17
-@version $Id: _edge.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: _edge.py 21105 2016-07-04 12:48:27Z behrisch $
 
 Python implementation of the TraCI interface.
 
@@ -39,6 +39,7 @@ _RETURN_VALUE_FUNC = {tc.VAR_EDGE_TRAVELTIME:       Storage.readDouble,
                       tc.VAR_NOXEMISSION:           Storage.readDouble,
                       tc.VAR_FUELCONSUMPTION:       Storage.readDouble,
                       tc.VAR_NOISEEMISSION:         Storage.readDouble,
+                      tc.VAR_ELECTRICITYCONSUMPTION: Storage.readDouble,
                       tc.LAST_STEP_MEAN_SPEED:      Storage.readDouble,
                       tc.LAST_STEP_OCCUPANCY:       Storage.readDouble,
                       tc.LAST_STEP_LENGTH:          Storage.readDouble,
@@ -139,6 +140,13 @@ class EdgeDomain(Domain):
         Returns the noise emission in db for the last time step on the given edge.
         """
         return self._getUniversal(tc.VAR_NOISEEMISSION, edgeID)
+
+    def getElectricityConsumption(self, edgeID):
+        """getElectricityConsumption(string) -> double
+
+        Returns the electricity consumption in ml for the last time step.
+        """
+        return self._getUniversal(tc.VAR_ELECTRICITYCONSUMPTION, edgeID)
 
     def getLastStepMeanSpeed(self, edgeID):
         """getLastStepMeanSpeed(string) -> double

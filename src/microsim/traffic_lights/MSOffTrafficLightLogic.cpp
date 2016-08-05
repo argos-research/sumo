@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    08.05.2007
-/// @version $Id: MSOffTrafficLightLogic.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSOffTrafficLightLogic.cpp 21202 2016-07-19 13:40:35Z behrisch $
 ///
 // A traffic lights logic which represents a tls in an off-mode
 /****************************************************************************/
@@ -74,9 +74,9 @@ MSOffTrafficLightLogic::adaptLinkInformationFrom(const MSTrafficLightLogic& logi
 
 void
 MSOffTrafficLightLogic::rebuildPhase() {
-    size_t no = getLinks().size();
+    int no = (int)getLinks().size();
     std::string state;
-    for (unsigned int i = 0; i < no; ++i) {
+    for (int i = 0; i < no; ++i) {
         // !!! no brake mask!
         state += 'o';
     }
@@ -128,12 +128,12 @@ MSOffTrafficLightLogic::getPhaseIndexAtTime(SUMOTime) const {
 
 
 SUMOTime
-MSOffTrafficLightLogic::getOffsetFromIndex(unsigned int) const {
+MSOffTrafficLightLogic::getOffsetFromIndex(int) const {
     return 0;
 }
 
 
-unsigned int
+int
 MSOffTrafficLightLogic::getIndexFromOffset(SUMOTime) const {
     return 0;
 }

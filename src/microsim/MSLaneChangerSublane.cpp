@@ -2,7 +2,7 @@
 /// @file    MSLaneChangerSublane.cpp
 /// @author  Jakob Erdmann
 /// @date    Oct 2015
-/// @version $Id: MSLaneChangerSublane.cpp 20910 2016-06-08 06:33:11Z namdre $
+/// @version $Id: MSLaneChangerSublane.cpp 21076 2016-07-01 09:22:07Z namdre $
 ///
 // Performs sub-lane changing of vehicles
 /****************************************************************************/
@@ -117,6 +117,7 @@ MSLaneChangerSublane::change() {
         if (vehicle->getLaneChangeModel().debugVehicle()) {
             std::cout << SIMTIME << " decision=" << toString((LaneChangeAction)decision.state) << " latDist=" << decision.latDist << "\n";
         }
+        vehicle->getLaneChangeModel().setOwnState(decision.state);
         return startChangeSublane(vehicle, myCandi, decision.latDist);
     }
 

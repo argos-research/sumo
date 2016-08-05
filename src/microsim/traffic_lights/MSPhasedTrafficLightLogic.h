@@ -2,7 +2,7 @@
 /// @file    MSPhasedTrafficLightLogic.h
 /// @author  Daniel Krajzewicz
 /// @date    Sept 2002
-/// @version $Id: MSPhasedTrafficLightLogic.h 20120 2016-03-02 12:18:16Z martintaraz $
+/// @version $Id: MSPhasedTrafficLightLogic.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The base class for traffic light logic with phases
 /****************************************************************************/
@@ -64,7 +64,7 @@ public:
      */
     MSPhasedTrafficLightLogic(MSTLLogicControl& tlcontrol,
                               const std::string& id, const std::string& subid,
-                              const Phases& phases, unsigned int step, SUMOTime delay,
+                              const Phases& phases, int step, SUMOTime delay,
                               const std::map<std::string, std::string>& parameters);
 
 
@@ -145,7 +145,7 @@ public:
      * @return The begin time of the phase
      * @see MSTrafficLightLogic::getOffsetFromIndex
      */
-    SUMOTime getOffsetFromIndex(unsigned int index) const;
+    SUMOTime getOffsetFromIndex(int index) const;
 
 
     /** @brief Returns the step (the phasenumber) of a given position of the cycle
@@ -153,7 +153,7 @@ public:
      * @return The according phase
      * @see MSTrafficLightLogic::getIndexFromOffset
      */
-    unsigned int getIndexFromOffset(SUMOTime offset) const;
+    int getIndexFromOffset(SUMOTime offset) const;
     /// @}
 
 
@@ -169,7 +169,7 @@ public:
      * @see MSTrafficLightLogic::changeStepAndDuration
      */
     void changeStepAndDuration(MSTLLogicControl& tlcontrol, SUMOTime simStep,
-                               unsigned int step, SUMOTime stepDuration);
+                               int step, SUMOTime stepDuration);
     /// @}
 
     /** @brief Replaces the phases and set the phase index

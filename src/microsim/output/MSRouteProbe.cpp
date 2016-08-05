@@ -5,7 +5,7 @@
 /// @author  Tino Morenz
 /// @author  Jakob Erdmann
 /// @date    Thu, 04.12.2008
-/// @version $Id: MSRouteProbe.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSRouteProbe.cpp 21217 2016-07-22 10:57:44Z behrisch $
 ///
 // Writes route distributions at a certain edge
 /****************************************************************************/
@@ -95,7 +95,7 @@ MSRouteProbe::writeXMLOutput(OutputDevice& dev,
         dev.openTag("routeDistribution") << " id=\"" << getID() + "_" + time2string(startTime) << "\"";
         const std::vector<const MSRoute*>& routes = myCurrentRouteDistribution.second->getVals();
         const std::vector<SUMOReal>& probs = myCurrentRouteDistribution.second->getProbs();
-        for (unsigned int j = 0; j < routes.size(); ++j) {
+        for (int j = 0; j < (int)routes.size(); ++j) {
             const MSRoute* r = routes[j];
             dev.openTag("route") << " id=\"" << r->getID() + "_" + time2string(startTime) << "\" edges=\"";
             for (MSRouteIterator i = r->begin(); i != r->end(); ++i) {

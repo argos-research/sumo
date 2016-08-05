@@ -2,7 +2,7 @@
 /// @file    GNEInternalLane.h
 /// @author  Jakob Erdmann
 /// @date    June 2011
-/// @version $Id: GNEInternalLane.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEInternalLane.h 21166 2016-07-14 12:59:19Z palcraft $
 ///
 // A class for visualizing Inner Lanes (used when editing traffic lights)
 /****************************************************************************/
@@ -122,7 +122,7 @@ protected:
     GNEInternalLane();
 
 private:
-    /// @brief the shape of the edge
+    /// @brief the shape of the internal lane
     const PositionVector myShape;
 
     /// @name computed only once (for performance) in updateGeometry()

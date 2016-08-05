@@ -5,7 +5,7 @@
 /// @author  Walter Bamberger
 /// @author  Michael Behrisch
 /// @date    July 2010
-/// @version $Id: AGHousehold.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: AGHousehold.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A household contains the people and cars of the city: roughly represents
 // families with their address, cars, adults and possibly children
@@ -70,8 +70,8 @@ public:
      * function generating the given number of adults (1 or 2) and possibly children
      */
     void generatePeople(int numAdults, int numChilds, bool firstRetired);
-    unsigned int getPeopleNbr();
-    unsigned int getAdultNbr();
+    int getPeopleNbr();
+    int getAdultNbr();
     const std::list<AGAdult>& getAdults() const;
     const std::list<AGChild>& getChildren() const;
     const std::list<AGCar>& getCars() const;

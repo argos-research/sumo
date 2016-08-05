@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NIVissimNodeCluster.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIVissimNodeCluster.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // -------------------
 /****************************************************************************/
@@ -72,7 +72,7 @@ public:
     static int dictionary(int nodeid, int tlid, const std::vector<int>& connectors,
                           const std::vector<int>& disturbances, bool amEdgeSplitOnly);
     static NIVissimNodeCluster* dictionary(int id);
-    static size_t contSize();
+    static int contSize();
     static void assignToEdges();
     static void buildNBNodes(NBNodeCont& nc);
     static void dict_recheckEdgeChanges();

@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Yun-Pang Floetteroed
 /// @date    Sept 2002
-/// @version $Id: RONet.h 20811 2016-05-30 11:05:58Z behrisch $
+/// @version $Id: RONet.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The router's network representation
 /****************************************************************************/
@@ -407,7 +407,7 @@ public:
      * @param[in] options The options to be asked for "output-file" and "vtype-output"
      * @param[in] altFilename The name of the file for writing alternatives, "" means no alternatives
      */
-    void openOutput(const OptionsCont& options, const std::string altFilename="");
+    void openOutput(const OptionsCont& options, const std::string altFilename = "");
 
 
     /** @brief closes the file output for computed routes and deletes associated threads if necessary */
@@ -415,7 +415,7 @@ public:
 
 
     /// Returns the total number of edges the network contains including internal edges
-    size_t getEdgeNo() const;
+    int getEdgeNo() const;
 
     /// Returns the number of internal edges the network contains
     int getInternalEdgeNumber() const;
@@ -535,13 +535,13 @@ private:
     OutputDevice* myTypesOutput;
 
     /// @brief The number of read routes
-    unsigned int myReadRouteNo;
+    int myReadRouteNo;
 
     /// @brief The number of discarded routes
-    unsigned int myDiscardedRouteNo;
+    int myDiscardedRouteNo;
 
     /// @brief The number of written routes
-    unsigned int myWrittenRouteNo;
+    int myWrittenRouteNo;
 
     /// @brief Whether the network contains edges which not all vehicles may pass
     bool myHavePermissions;

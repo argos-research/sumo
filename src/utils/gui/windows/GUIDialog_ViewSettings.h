@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Wed, 21. Dec 2005
-/// @version $Id: GUIDialog_ViewSettings.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIDialog_ViewSettings.h 21228 2016-07-25 09:21:08Z namdre $
 ///
 // The dialog to change the view (gui) settings.
 /****************************************************************************/
@@ -275,8 +275,9 @@ private:
     FXCheckButton* myLaneScaleInterpolation;
 
     FXCheckButton* myShowLaneBorders, *myShowLaneDecals, *myShowRails,
-                   *myHideMacroConnectors;
+                   *myHideMacroConnectors, *myShowLaneDirection, *myShowSublanes;
     FXRealSpinDial* myLaneWidthUpscaleDialer;
+    FXRealSpinDial* myLaneMinWidthDialer;
 
     FXComboBox* myVehicleColorMode, *myVehicleShapeDetail;
     FXVerticalFrame* myVehicleColorSettingFrame;
@@ -321,7 +322,7 @@ private:
                *myVehicleNamePanel, *myPersonNamePanel, *myContainerNamePanel,
                *myAddNamePanel, *myPOINamePanel, *myPolyNamePanel, *myPOITypePanel, *myPolyTypePanel;
 
-    SizePanel* myVehicleSizePanel, *myPersonSizePanel, *myContainerSizePanel, *myPOISizePanel, *myPolySizePanel, *myAddSizePanel;
+    SizePanel* myVehicleSizePanel, *myPersonSizePanel, *myContainerSizePanel, *myPOISizePanel, *myPolySizePanel, *myAddSizePanel, *myJunctionSizePanel;
 
 
     // load/save-menu

@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    :find(mySortedSchemeNames.begin(), mySortedSchemeNames.end(), name)==mySortedSchemeNames.end()) {
-/// @version $Id: GUICompleteSchemeStorage.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUICompleteSchemeStorage.h 21186 2016-07-18 12:04:16Z namdre $
 ///
 // Storage for available visualization settings
 /****************************************************************************/
@@ -102,7 +102,7 @@ public:
     /** @brief Returns the number of initial settings
      * @return The number of default schemes
      */
-    unsigned int getNumInitialSettings() const;
+    int getNumInitialSettings() const;
 
 
     /** @brief Initialises the storage with some default settings
@@ -120,9 +120,9 @@ public:
     /** @brief Makes the given viewport the default
      * @param[in] x The x-offset
      * @param[in] y The y-offset
-     * @param[in] zoom The zoom
+     * @param[in] z The camera height
      */
-    void saveViewport(const SUMOReal x, const SUMOReal y, const SUMOReal zoom);
+    void saveViewport(const SUMOReal x, const SUMOReal y, const SUMOReal z);
 
 
     /** @brief Sets the default viewport
@@ -142,7 +142,7 @@ protected:
     std::string myDefaultSettingName;
 
     /// @brief The number of settings which were present at startup
-    unsigned int myNumInitialSettings;
+    int myNumInitialSettings;
 
     /// @brief The default viewport
     Position myLookFrom, myLookAt;

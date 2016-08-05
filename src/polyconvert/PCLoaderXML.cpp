@@ -5,7 +5,7 @@
 /// @author  Christoph Sommer
 /// @author  Michael Behrisch
 /// @date    Thu, 02.11.2006
-/// @version $Id: PCLoaderXML.cpp 20801 2016-05-28 05:31:30Z behrisch $
+/// @version $Id: PCLoaderXML.cpp 21131 2016-07-08 07:59:22Z behrisch $
 ///
 // A reader for polygons and pois stored in XML-format
 /****************************************************************************/
@@ -117,7 +117,7 @@ PCLoaderXML::myStartElement(int element,
         setDefaults(def.prefix, def.color, def.layer, def.allowFill);
     } else {
         setDefaults(myOptions.getString("prefix"), RGBColor::parseColor(myOptions.getString("color")),
-            myOptions.getFloat("layer"), myOptions.getBool("fill"));
+                    myOptions.getFloat("layer"), myOptions.getBool("fill"));
     }
     if (!discard) {
         if (element == SUMO_TAG_POI) {

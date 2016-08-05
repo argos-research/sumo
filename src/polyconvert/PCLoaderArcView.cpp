@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: PCLoaderArcView.cpp 20801 2016-05-28 05:31:30Z behrisch $
+/// @version $Id: PCLoaderArcView.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A reader of pois and polygons from shape files
 /****************************************************************************/
@@ -124,7 +124,7 @@ PCLoaderArcView::load(const std::string& file, OptionsCont& oc, PCPolyContainer&
 
     OGRFeature* poFeature;
     poLayer->ResetReading();
-    unsigned int runningID = 0;
+    int runningID = 0;
     while ((poFeature = poLayer->GetNextFeature()) != NULL) {
         std::vector<Parameterised*> parCont;
         // read in edge attributes

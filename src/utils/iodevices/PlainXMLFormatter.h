@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    2012
-/// @version $Id: PlainXMLFormatter.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: PlainXMLFormatter.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Output formatter for plain XML output
 /****************************************************************************/
@@ -46,7 +46,7 @@
 class PlainXMLFormatter : public OutputFormatter {
 public:
     /// @brief Constructor
-    PlainXMLFormatter(const unsigned int defaultIndentation = 0);
+    PlainXMLFormatter(const int defaultIndentation = 0);
 
 
     /// @brief Destructor
@@ -150,7 +150,7 @@ private:
     std::vector<std::string> myXMLStack;
 
     /// @brief The initial indentation level
-    unsigned int myDefaultIndentation;
+    int myDefaultIndentation;
 
     /// @brief whether a closing ">" might be missing
     bool myHavePendingOpener;

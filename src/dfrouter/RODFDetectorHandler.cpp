@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Thu, 16.03.2006
-/// @version $Id: RODFDetectorHandler.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: RODFDetectorHandler.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A handler for loading detector descriptions
 /****************************************************************************/
@@ -76,7 +76,7 @@ RODFDetectorHandler::myStartElement(int element,
                 throw ProcessError();
             }
             ROEdge* edge = myNet->getEdge(lane.substr(0, lane.rfind('_')));
-            unsigned int laneIndex = TplConvert::_2intSec(lane.substr(lane.rfind('_') + 1).c_str(), INT_MAX);
+            int laneIndex = TplConvert::_2intSec(lane.substr(lane.rfind('_') + 1).c_str(), INT_MAX);
             if (edge == 0 || laneIndex >= edge->getLaneNo()) {
                 throw ProcessError("Unknown lane '" + lane + "' for detector '" + id + "' in '" + getFileName() + "'.");
             }

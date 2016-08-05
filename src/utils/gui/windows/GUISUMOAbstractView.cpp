@@ -6,7 +6,7 @@
 /// @author  Laura Bieker
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUISUMOAbstractView.cpp 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GUISUMOAbstractView.cpp 21217 2016-07-22 10:57:44Z behrisch $
 ///
 // The base class for a view
 /****************************************************************************/
@@ -108,9 +108,9 @@ FXIMPLEMENT_ABSTRACT(GUISUMOAbstractView, FXGLCanvas, GUISUMOAbstractViewMap, AR
 /* -------------------------------------------------------------------------
  * GUISUMOAbstractView - methods
  * ----------------------------------------------------------------------- */
-GUISUMOAbstractView::GUISUMOAbstractView(FXComposite* p, GUIMainWindow& app, GUIGlChildWindow* parent, const SUMORTree& grid, FXGLVisual* glVis, FXGLCanvas* share) : 
+GUISUMOAbstractView::GUISUMOAbstractView(FXComposite* p, GUIMainWindow& app, GUIGlChildWindow* parent, const SUMORTree& grid, FXGLVisual* glVis, FXGLCanvas* share) :
     FXGLCanvas(p, glVis, share, p, MID_GLCANVAS,
-    LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0),
+               LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0),
     myApp(&app),
     myParent(parent),
     myGrid(&((SUMORTree&)grid)),
@@ -138,7 +138,7 @@ GUISUMOAbstractView::GUISUMOAbstractView(FXComposite* p, GUIMainWindow& app, GUI
 
 GUISUMOAbstractView::~GUISUMOAbstractView() {
     gSchemeStorage.setDefault(myVisualizationSettings->name);
-    gSchemeStorage.saveViewport(myChanger->getXPos(), myChanger->getYPos(), myChanger->getZoom());
+    gSchemeStorage.saveViewport(myChanger->getXPos(), myChanger->getYPos(), myChanger->getZPos());
     delete myPopup;
     delete myChanger;
     delete myViewportChooser;
@@ -199,10 +199,11 @@ GUISUMOAbstractView::updatePositionInformation() const {
     std::string text = "x:" + toString(pos.x()) + ", y:" + toString(pos.y());
     myApp->getCartesianLabel().setText(text.c_str());
     GeoConvHelper::getFinal().cartesian2geo(pos);
-    if (GeoConvHelper::getFinal().usingGeoProjection())
+    if (GeoConvHelper::getFinal().usingGeoProjection()) {
         text = "lat:" + toString(pos.y(), GEO_OUTPUT_ACCURACY) + ", lon:" + toString(pos.x(), GEO_OUTPUT_ACCURACY);
-    else
+    } else {
         text = "x:" + toString(pos.x()) + ", y:" + toString(pos.y());
+    }
     myApp->getGeoLabel().setText(text.c_str());
 }
 
@@ -230,11 +231,11 @@ GUISUMOAbstractView::paintGL() {
         return;
     }
 
-    if (getTrackedID() > 0) {
+    if (getTrackedID() != GUIGlObject::INVALID_ID) {
         centerTo(getTrackedID(), false);
     }
 
-    unsigned int id = 0;
+    GUIGlID id = GUIGlObject::INVALID_ID;
     if (myUseToolTips) {
         id = getObjectUnderCursor();
     }
@@ -270,7 +271,7 @@ GUISUMOAbstractView::paintGL() {
     }
     // check whether the select mode /tooltips)
     //  shall be computed, too
-    if (myUseToolTips && id != 0) {
+    if (myUseToolTips && id != GUIGlObject::INVALID_ID) {
         showToolTipFor(id);
     }
     swapBuffers();
@@ -291,7 +292,7 @@ GUISUMOAbstractView::getObjectAtPosition(Position pos) {
     selection.grow(SENSITIVITY);
     const std::vector<GUIGlID> ids = getObjectsInBoundary(selection);
     // Interpret results
-    unsigned int idMax = 0;
+    int idMax = 0;
     SUMOReal maxLayer = -std::numeric_limits<SUMOReal>::max();
     for (std::vector<GUIGlID>::const_iterator it = ids.begin(); it != ids.end(); it++) {
         GUIGlID id = *it;
@@ -396,7 +397,7 @@ GUISUMOAbstractView::getObjectsInBoundary(const Boundary& bound) {
 
 
 void
-GUISUMOAbstractView::showToolTipFor(unsigned int id) {
+GUISUMOAbstractView::showToolTipFor(const GUIGlID id) {
     if (id != 0) {
         GUIGlObject* object = GUIGlObjectStorage::gIDStorage.getObjectBlocking(id);
         if (object != 0) {
@@ -444,17 +445,17 @@ GUISUMOAbstractView::paintGLGrid() {
 void
 GUISUMOAbstractView::displayLegend() {
     // compute the scale bar length
-    size_t length = 1;
+    int length = 1;
     const std::string text("10000000000");
-    size_t noDigits = 1;
-    size_t pixelSize = (size_t) m2p((SUMOReal) length);
+    int noDigits = 1;
+    int pixelSize = (int) m2p((SUMOReal) length);
     while (pixelSize <= 20) {
         length *= 10;
         noDigits++;
-        if (noDigits > text.length()) {
+        if (noDigits > (int)text.length()) {
             return;
         }
-        pixelSize = (size_t) m2p((SUMOReal) length);
+        pixelSize = (int) m2p((SUMOReal) length);
     }
     SUMOReal lineWidth = 1.0;
     glLineWidth((SUMOReal) lineWidth);
@@ -620,7 +621,7 @@ GUISUMOAbstractView::onLeftBtnPress(FXObject*, FXSelector , void* data) {
     if ((e->state & CONTROLMASK) != 0) {
         // try to get the object-id if so
         if (makeCurrent()) {
-            unsigned int id = getObjectUnderCursor();
+            int id = getObjectUnderCursor();
             if (id != 0) {
                 gSelected.toggleSelection(id);
             }
@@ -635,8 +636,9 @@ GUISUMOAbstractView::onLeftBtnPress(FXObject*, FXSelector , void* data) {
     myChanger->onLeftBtnPress(data);
     grab();
     // Check there are double click
-    if (e->click_count == 2)
+    if (e->click_count == 2) {
         handle(this, FXSEL(SEL_DOUBLECLICKED, 0), data);
+    }
     return 1;
 }
 
@@ -729,7 +731,7 @@ GUISUMOAbstractView::openObjectDialog() {
     }
     if (makeCurrent()) {
         // initialise the select mode
-        unsigned int id = getObjectUnderCursor();
+        int id = getObjectUnderCursor();
         GUIGlObject* o = 0;
         if (id != 0) {
             o = GUIGlObjectStorage::gIDStorage.getObjectBlocking(id);
@@ -891,8 +893,8 @@ GUISUMOAbstractView::makeSnapshot(const std::string& destFile) {
         makeNonCurrent();
         update();
         // mirror
-        size_t mwidth = getWidth();
-        size_t mheight = getHeight();
+        int mwidth = getWidth();
+        int mheight = getHeight();
         FXColor* paa = buf;
         FXColor* pbb = buf + mwidth * (mheight - 1);
         do {
@@ -950,7 +952,7 @@ GUISUMOAbstractView::checkSnapshots() {
 
 SUMOTime
 GUISUMOAbstractView::getCurrentTimeStep() const {
-        return 0;
+    return 0;
 }
 
 
@@ -984,16 +986,24 @@ GUISUMOAbstractView::getViewportEditor() {
 void
 GUISUMOAbstractView::showViewportEditor() {
     getViewportEditor(); // make sure it exists;
-    Position p(myChanger->getXPos(), myChanger->getYPos(), myChanger->getZoom());
+    Position p(myChanger->getXPos(), myChanger->getYPos(), myChanger->getZPos());
     myViewportChooser->setOldValues(p, Position::INVALID);
     myViewportChooser->show();
 }
 
 
 void
-GUISUMOAbstractView::setViewport(const Position& lookFrom, const Position& /* lookAt */) {
-    myChanger->setViewport(lookFrom.z(), lookFrom.x(), lookFrom.y());
+GUISUMOAbstractView::setViewportFromTo(const Position& lookFrom, const Position& /* lookAt */) {
+    myChanger->setViewportFrom(lookFrom.x(), lookFrom.y(), lookFrom.z());
     update();
+}
+
+
+void 
+GUISUMOAbstractView::copyViewportTo(GUISUMOAbstractView* view) {
+    // look straight down
+    view->setViewportFromTo(Position(myChanger->getXPos(), myChanger->getYPos(), myChanger->getZPos()), 
+            Position(myChanger->getXPos(), myChanger->getYPos(), 0));
 }
 
 
@@ -1015,7 +1025,7 @@ GUISUMOAbstractView::getVisualisationSettings() const {
 }
 
 
-void 
+void
 GUISUMOAbstractView::remove(GUIDialog_EditViewport*) {
     myViewportChooser = 0;
 }
@@ -1046,12 +1056,12 @@ GUISUMOAbstractView::startTrack(int /*id*/) {
 
 void
 GUISUMOAbstractView::stopTrack() {
-}                
+}
 
 
-int
+GUIGlID
 GUISUMOAbstractView::getTrackedID() const {
-    return -1;
+    return GUIGlObject::INVALID_ID;
 }
 
 
@@ -1160,9 +1170,7 @@ GUISUMOAbstractView::drawDecals() {
                 if (img == 0) {
                     img = MFXImageHelper::loadImage(getApp(), d.filename);
                 }
-                if (MFXImageHelper::scalePower2(img, GUITexturesHelper::getMaxTextureSize())) {
-                    WRITE_WARNING("Scaling '" + d.filename + "'.");
-                }
+                MFXImageHelper::scalePower2(img, GUITexturesHelper::getMaxTextureSize());
                 d.glID = GUITexturesHelper::add(img);
                 d.initialised = true;
                 d.image = img;
@@ -1200,7 +1208,7 @@ GUISUMOAbstractView::addAdditionalGLVisualisation(const GUIGlObject* const which
 
 bool
 GUISUMOAbstractView::removeAdditionalGLVisualisation(const GUIGlObject* const which) {
-    if (getTrackedID() == static_cast<int>(which->getGlID())) {
+    if (getTrackedID() == which->getGlID()) {
         stopTrack();
     }
     if (myAdditionallyDrawn.find(which) == myAdditionallyDrawn.end()) {
@@ -1219,10 +1227,11 @@ GUISUMOAbstractView::removeAdditionalGLVisualisation(const GUIGlObject* const wh
 
 bool
 GUISUMOAbstractView::isAdditionalGLVisualisationEnabled(GUIGlObject* const which) const {
-    if (myAdditionallyDrawn.find(which) == myAdditionallyDrawn.end())
+    if (myAdditionallyDrawn.find(which) == myAdditionallyDrawn.end()) {
         return false;
-    else
+    } else {
         return true;
+    }
 }
 
 

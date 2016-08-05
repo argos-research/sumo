@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIPerson.cpp 20679 2016-05-10 07:33:10Z namdre $
+/// @version $Id: GUIPerson.cpp 21202 2016-07-19 13:40:35Z behrisch $
 ///
 // A MSPerson extended by some values for usage within the gui
 /****************************************************************************/
@@ -187,8 +187,8 @@ GUIPerson::getPopUpMenu(GUIMainWindow& app,
         new FXMenuCommand(ret, "Show Walkingarea Path", 0, ret, MID_SHOW_WALKINGAREA_PATH);
     }
     new FXMenuSeparator(ret);
-    int trackedID = parent.getTrackedID();
-    if (trackedID < 0 || (size_t)trackedID != getGlID()) {
+    GUIGlID trackedID = parent.getTrackedID();
+    if (trackedID != getGlID()) {
         new FXMenuCommand(ret, "Start Tracking", 0, ret, MID_START_TRACK);
     } else {
         new FXMenuCommand(ret, "Stop Tracking", 0, ret, MID_STOP_TRACK);
@@ -337,7 +337,7 @@ GUIPerson::setColor(const GUIVisualizationSettings& s) const {
 
 
 bool
-GUIPerson::setFunctionalColor(size_t activeScheme) const {
+GUIPerson::setFunctionalColor(int activeScheme) const {
     switch (activeScheme) {
         case 0: {
             if (getParameter().wasSet(VEHPARS_COLOR_SET)) {
@@ -382,7 +382,7 @@ GUIPerson::setFunctionalColor(size_t activeScheme) const {
 
 
 SUMOReal
-GUIPerson::getColorValue(size_t activeScheme) const {
+GUIPerson::getColorValue(int activeScheme) const {
     switch (activeScheme) {
         case 4:
             return getSpeed();

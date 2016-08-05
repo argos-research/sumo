@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBTrafficLightLogicCont.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBTrafficLightLogicCont.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A container for traffic light definitions and built programs
 /****************************************************************************/
@@ -148,7 +148,7 @@ NBTrafficLightLogicCont::extract(NBTrafficLightDefinition* definition) {
 }
 
 
-std::pair<unsigned int, unsigned int>
+std::pair<int, int>
 NBTrafficLightLogicCont::computeLogics(OptionsCont& oc) {
     // clean previous logics
     Logics logics = getComputed();
@@ -157,14 +157,14 @@ NBTrafficLightLogicCont::computeLogics(OptionsCont& oc) {
     }
     myComputed.clear();
 
-    unsigned int numPrograms = 0;
+    int numPrograms = 0;
     Definitions definitions = getDefinitions();
     for (Definitions::iterator it = definitions.begin(); it != definitions.end(); it++) {
         if (computeSingleLogic(oc, *it)) {
             numPrograms++;
         }
     }
-    return std::pair<unsigned int, unsigned int>((unsigned int)myComputed.size(), numPrograms);
+    return std::pair<int, int>((int)myComputed.size(), numPrograms);
 }
 
 

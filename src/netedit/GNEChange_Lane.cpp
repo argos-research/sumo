@@ -2,7 +2,7 @@
 /// @file    GNEChange_Lane.cpp
 /// @author  Jakob Erdmann
 /// @date    April 2011
-/// @version $Id: GNEChange_Lane.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEChange_Lane.cpp 21224 2016-07-25 07:53:33Z namdre $
 ///
 // A network change in which a single lane is created or deleted
 /****************************************************************************/
@@ -31,6 +31,8 @@
 #include "GNEChange_Lane.h"
 #include "GNEEdge.h"
 #include "GNELane.h"
+#include "GNENet.h"
+#include "GNEAdditionalSet.h"
 
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
@@ -54,9 +56,10 @@ GNEChange_Lane::GNEChange_Lane(GNEEdge* edge, GNELane* lane, const NBEdge::Lane&
     myLane(lane),
     myLaneAttrs(laneAttrs) {
     myEdge->incRef("GNEChange_Lane");
-    if (myLane) { // non-zero pointer is only passsed in case of removal
-        assert(!forward);
+    if (myLane) {
+        // non-zero pointer is passsed in case of removal or duplication
         myLane->incRef("GNEChange_Lane");
+        myAdditionalSets = myLane->getAdditionalSets();
     } else {
         assert(forward);
     }
@@ -81,8 +84,21 @@ GNEChange_Lane::~GNEChange_Lane() {
 void GNEChange_Lane::undo() {
     if (myForward) {
         myEdge->removeLane(myLane);
+        // Remove references to this edge in their AdditionalSets
+        for (std::vector<GNEAdditionalSet*>::iterator i = myAdditionalSets.begin(); i != myAdditionalSets.end(); i++) {
+            (*i)->removeLaneChild(myLane);
+            // Remove additional from net if the number of childs is >= 0
+            if ((*i)->getNumberOfEdgeChilds() == 0) {
+                myNet->deleteAdditional(*i);
+            }
+        }
     } else {
         myEdge->addLane(myLane, myLaneAttrs);
+        // Add references to this edge in their AdditionalSets
+        for (std::vector<GNEAdditionalSet*>::iterator i = myAdditionalSets.begin(); i != myAdditionalSets.end(); i++) {
+            myNet->insertAdditional(*i, false);
+            (*i)->addLaneChild(myLane);
+        }
     }
 }
 
@@ -90,8 +106,21 @@ void GNEChange_Lane::undo() {
 void GNEChange_Lane::redo() {
     if (myForward) {
         myEdge->addLane(myLane, myLaneAttrs);
+        // Add references to this edge in their AdditionalSets
+        for (std::vector<GNEAdditionalSet*>::iterator i = myAdditionalSets.begin(); i != myAdditionalSets.end(); i++) {
+            myNet->insertAdditional(*i, false);
+            (*i)->addLaneChild(myLane);
+        }
     } else {
         myEdge->removeLane(myLane);
+        // Remove references to this edge in their AdditionalSets
+        for (std::vector<GNEAdditionalSet*>::iterator i = myAdditionalSets.begin(); i != myAdditionalSets.end(); i++) {
+            (*i)->removeLaneChild(myLane);
+            // Remove additional from net if the number of childs is >= 0
+            if ((*i)->getNumberOfEdgeChilds() == 0) {
+                myNet->deleteAdditional(*i);
+            }
+        }
     }
 }
 

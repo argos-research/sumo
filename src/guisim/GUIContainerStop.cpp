@@ -3,7 +3,7 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Wed, 01.08.2014
-/// @version $Id: GUIContainerStop.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIContainerStop.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // A lane area vehicles can halt at (gui-version)
 /****************************************************************************/
@@ -114,7 +114,7 @@ GUIContainerStop::getParameterWindow(GUIMainWindow& app,
     // add items
     ret->mkItem("begin position [m]", false, myBegPos);
     ret->mkItem("end position [m]", false, myEndPos);
-    ret->mkItem("container number [#]", true, new FunctionBinding<GUIContainerStop, unsigned int>(this, &MSStoppingPlace::getTransportableNumber));
+    ret->mkItem("container number [#]", true, new FunctionBinding<GUIContainerStop, int>(this, &MSStoppingPlace::getTransportableNumber));
     // close building
     ret->closeBuilding();
     return ret;
@@ -128,7 +128,7 @@ GUIContainerStop::drawGL(const GUIVisualizationSettings& s) const {
     RGBColor grey(177, 184, 186, 171);
     RGBColor blue(83, 89, 172, 255);
     // draw the area
-    size_t i;
+    int i;
     glTranslated(0, 0, getType());
     GLHelper::setColor(blue);
     GLHelper::drawBoxLines(myFGShape, myFGShapeRotations, myFGShapeLengths, 1.0);
@@ -136,7 +136,7 @@ GUIContainerStop::drawGL(const GUIVisualizationSettings& s) const {
     const SUMOReal exaggeration = s.addSize.getExaggeration(s);
     if (s.scale * exaggeration >= 10) {
         // draw the lines
-        for (i = 0; i != myLines.size(); ++i) {
+        for (i = 0; i != (int)myLines.size(); ++i) {
             glPushMatrix();
             glTranslated(myFGSignPos.x(), myFGSignPos.y(), 0);
             glRotated(180, 1, 0, 0);

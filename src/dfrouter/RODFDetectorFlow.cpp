@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Melanie Knocke
 /// @date    Thu, 16.03.2006
-/// @version $Id: RODFDetectorFlow.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: RODFDetectorFlow.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Storage for flows within the DFROUTER
 /****************************************************************************/
@@ -55,7 +55,7 @@ RODFDetectorFlows::~RODFDetectorFlows() {}
 void
 RODFDetectorFlows::addFlow(const std::string& id, SUMOTime t, const FlowDef& fd) {
     if (myFastAccessFlows.find(id) == myFastAccessFlows.end()) {
-        size_t noItems = (size_t)((myEndTime - myBeginTime) / myStepOffset);
+        int noItems = (int)((myEndTime - myBeginTime) / myStepOffset);
         myFastAccessFlows[id] = std::vector<FlowDef>(noItems);
         std::vector<FlowDef>& cflows = myFastAccessFlows[id];
         // initialise
@@ -171,7 +171,7 @@ RODFDetectorFlows::mesoJoin(const std::string& nid,
             continue;
         }
         std::vector<FlowDef>& flows = myFastAccessFlows[*i];
-        size_t index = 0;
+        int index = 0;
         for (SUMOTime t = myBeginTime; t != myEndTime; t += myStepOffset) {
             addFlow(nid, t, flows[index++]); // !!!
         }

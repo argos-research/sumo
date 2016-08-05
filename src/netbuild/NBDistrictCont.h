@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBDistrictCont.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBDistrictCont.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A container for districts
 /****************************************************************************/
@@ -100,7 +100,7 @@ public:
 
 
     /** @brief Returns the number of districts inside the container */
-    size_t size() const;
+    int size() const;
 
 
     /** @brief Adds a source to the named district

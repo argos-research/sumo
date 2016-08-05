@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Felix Brack
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: guisim_main.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: guisim_main.cpp 21172 2016-07-15 08:34:36Z behrisch $
 ///
 // Main for GUISIM
 /****************************************************************************/
@@ -58,11 +58,8 @@
 
 
 // ===========================================================================
-// methods
+// main function
 // ===========================================================================
-/* -------------------------------------------------------------------------
- * main
- * ----------------------------------------------------------------------- */
 int
 main(int argc, char** argv) {
     // make the output aware of threading
@@ -77,6 +74,13 @@ main(int argc, char** argv) {
     try {
         // initialise subsystems
         XMLSubSys::init();
+        MSFrame::fillOptions();
+        OptionsIO::setArgs(argc, argv);
+        OptionsIO::getOptions(true);
+        if (oc.processMetaOptions(false)) {
+            SystemFrame::close();
+            return 0;
+        }
         // Make application
         FXApp application("SUMO GUISimulation", "DLR");
         // Open display
@@ -96,7 +100,6 @@ main(int argc, char** argv) {
         application.create();
         // Load configuration given on command line
         if (argc > 1) {
-            OptionsIO::setArgs(argc, argv);
             window->loadOnStartup();
         }
         // Run

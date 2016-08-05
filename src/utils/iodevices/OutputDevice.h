@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Mario Krumnow
 /// @date    2004
-/// @version $Id: OutputDevice.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: OutputDevice.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Static storage of an output device and its base (abstract) implementation
 /****************************************************************************/
@@ -144,7 +144,7 @@ public:
     /// @{
 
     /// @brief Constructor
-    OutputDevice(const bool binary = false, const unsigned int defaultIndentation = 0);
+    OutputDevice(const bool binary = false, const int defaultIndentation = 0);
 
 
     /// @brief Destructor
@@ -165,7 +165,7 @@ public:
     /** @brief Sets the precison or resets it to default
      * @param[in] precision The accuracy (number of digits behind '.') to set
      */
-    void setPrecision(unsigned int precision = OUTPUT_ACCURACY);
+    void setPrecision(int precision = OUTPUT_ACCURACY);
 
 
     /** @brief Writes an XML header with optional configuration

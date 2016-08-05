@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBTrafficLightLogic.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBTrafficLightLogic.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A SUMO-compliant built logic for a traffic light
 /****************************************************************************/
@@ -98,7 +98,7 @@ public:
      * @param[in] offset The offset of the program (delay)
      * @param[in] type The algorithm type for the computed traffic light
      */
-    NBTrafficLightLogic(const std::string& id, const std::string& subid, unsigned int noLinks,
+    NBTrafficLightLogic(const std::string& id, const std::string& subid, int noLinks,
                         SUMOTime offset = 0, TrafficLightType type = TLTYPE_STATIC);
 
 
@@ -128,18 +128,18 @@ public:
      * @param[in] tlIndex The index at which to modify the state
      * @param[in] linkState The new link state for the given index
      */
-    void setPhaseState(unsigned int phaseIndex, unsigned int tlIndex, LinkState linkState);
+    void setPhaseState(int phaseIndex, int tlIndex, LinkState linkState);
 
     /** @brief Modifies the duration for an existing phase (used by NETEDIT)
      * @param[in] phaseIndex The index of the phase to modify
      * @param[in] duration The new duration for this phase
      */
-    void setPhaseDuration(unsigned int phaseIndex, SUMOTime duration);
+    void setPhaseDuration(int phaseIndex, SUMOTime duration);
 
     /* @brief deletes the phase at the given index
      * @note thhrows InvalidArgument on out-of range index
     */
-    void deletePhase(unsigned int index);
+    void deletePhase(int index);
 
     /* @brief deletes all phases and reset the expect number of links
     */
@@ -192,7 +192,7 @@ public:
 
     /** @brief Returns the number of participating links
      */
-    unsigned int getNumLinks() {
+    int getNumLinks() {
         return myNumLinks;
     }
 
@@ -208,7 +208,7 @@ public:
 
 private:
     /// @brief The number of participating links
-    unsigned int myNumLinks;
+    int myNumLinks;
 
     /// @brief The tls program's subid
     const std::string mySubID;

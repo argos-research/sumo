@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Robert Hilbrich
 /// @date    Mon, 03 March 2014
-/// @version $Id: IntermodalNetwork.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: IntermodalNetwork.h 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // The Edge definition for the Intermodal Router
 /****************************************************************************/
@@ -59,7 +59,7 @@ public:
     /* brief build the pedestrian network (once)
      * @param noE The number of edges in the dictionary of E
      */
-    IntermodalNetwork(const std::vector<E*>& edges, unsigned int numericalID = 0) {
+    IntermodalNetwork(const std::vector<E*>& edges, int numericalID = 0) {
 #ifdef IntermodalRouter_DEBUG_NETWORK
         std::cout << "initIntermodalNetwork\n";
 #endif
@@ -217,7 +217,7 @@ public:
     }
 
     void addEdge(_IntermodalEdge* edge) {
-        while (myEdges.size() <= edge->getNumericalID()) {
+        while ((int)myEdges.size() <= edge->getNumericalID()) {
             myEdges.push_back(0);
         }
         myEdges[edge->getNumericalID()] = edge;

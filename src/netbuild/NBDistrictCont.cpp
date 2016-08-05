@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBDistrictCont.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBDistrictCont.cpp 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // A container for districts
 /****************************************************************************/
@@ -77,9 +77,9 @@ NBDistrictCont::retrieve(const std::string& id) const {
 }
 
 
-size_t
+int
 NBDistrictCont::size() const {
-    return myDistricts.size();
+    return (int)myDistricts.size();
 }
 
 

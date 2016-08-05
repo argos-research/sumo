@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: GUIParameterTableWindow.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GUIParameterTableWindow.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The window that holds the table of an object's parameter
 /****************************************************************************/
@@ -70,7 +70,7 @@ std::vector<GUIParameterTableWindow*> GUIParameterTableWindow::myContainer;
 // method definitions
 // ===========================================================================
 GUIParameterTableWindow::GUIParameterTableWindow(GUIMainWindow& app,
-        GUIGlObject& o, size_t noRows)
+        GUIGlObject& o, int noRows)
     : FXMainWindow(app.getApp(), (o.getFullName() + " Parameter").c_str(),
                    NULL, NULL, DECOR_ALL, 20, 20, 500, (FXint)(noRows * 20 + 60)),
       myObject(&o),

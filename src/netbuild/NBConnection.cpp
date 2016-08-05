@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBConnection.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NBConnection.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The class holds a description of a connection between two edges
 /****************************************************************************/
@@ -74,8 +74,8 @@ NBConnection::NBConnection(NBEdge* from, int fromLane,
     myFromLane(fromLane), myToLane(toLane),
     myTlIndex(tlIndex) {
     /* @todo what should we assert here?
-    assert(myFromLane<0||from->getNumLanes()>(size_t) myFromLane);
-    assert(myToLane<0||to->getNumLanes()>(size_t) myToLane);
+    assert(myFromLane<0||from->getNumLanes()>(int) myFromLane);
+    assert(myToLane<0||to->getNumLanes()>(int) myToLane);
     */
     myFromID = from->getID();
     myToID = to != 0 ? to->getID() : "";

@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 29.04.2005
-/// @version $Id: MSAbstractLaneChangeModel.h 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: MSAbstractLaneChangeModel.h 21076 2016-07-01 09:22:07Z namdre $
 ///
 // Interface for lane-change models
 /****************************************************************************/
@@ -428,6 +428,9 @@ protected:
 
     /// @brief whether overtaking on the right is permitted
     static bool myAllowOvertakingRight;
+
+    /// @brief whether to record lane-changing
+    static bool myLCOutput;
 
 private:
     /* @brief information how long ago the vehicle has performed a lane-change,

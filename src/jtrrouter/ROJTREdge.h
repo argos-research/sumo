@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Yun-Pang Floetteroed
 /// @date    Tue, 20 Jan 2004
-/// @version $Id: ROJTREdge.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ROJTREdge.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // An edge the jtr-router may route through
 /****************************************************************************/
@@ -64,7 +64,7 @@ public:
      * @param[in] to The node the edge ends at
      * @param[in] index The numeric id of the edge
      */
-    ROJTREdge(const std::string& id, RONode* from, RONode* to, unsigned int index, const int priority);
+    ROJTREdge(const std::string& id, RONode* from, RONode* to, int index, const int priority);
 
 
     /// @brief Destructor

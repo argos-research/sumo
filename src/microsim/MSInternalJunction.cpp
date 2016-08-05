@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Wed, 12 Dez 2001
-/// @version $Id: MSInternalJunction.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSInternalJunction.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // junction.
 /****************************************************************************/
@@ -80,7 +80,7 @@ MSInternalJunction::postloadInit() {
     const int ownLinkIndex = specialLane->getIncomingLanes()[0].viaLink->getIndex();
     const MSLogicJunction::LinkBits& response = parent->getLogic()->getResponseFor(ownLinkIndex);
     // inform links where they have to report approaching vehicles to
-    unsigned int requestPos = 0;
+    int requestPos = 0;
     for (std::vector<MSLane*>::iterator i = myInternalLanes.begin(); i != myInternalLanes.end(); ++i) {
         const MSLinkCont& lc = (*i)->getLinkCont();
         for (MSLinkCont::const_iterator q = lc.begin(); q != lc.end(); ++q) {

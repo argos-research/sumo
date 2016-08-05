@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: Distribution_Points.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: Distribution_Points.cpp 21210 2016-07-21 10:02:38Z behrisch $
 ///
 // The description of a distribution by a curve
 /****************************************************************************/
@@ -61,51 +61,50 @@ Distribution_Points::getMax() const {
 }
 
 
-size_t
+int
 Distribution_Points::getAreaNo() const {
-    return myPoints.size() - 1;
+    return (int)myPoints.size() - 1;
 }
 
 
 SUMOReal
-Distribution_Points::getAreaBegin(size_t index) const {
-    return myPoints[(int) index].x();
+Distribution_Points::getAreaBegin(int index) const {
+    return myPoints[index].x();
 }
 
 
 SUMOReal
-Distribution_Points::getAreaEnd(size_t index) const {
-    return myPoints[(int) index + 1].x();
+Distribution_Points::getAreaEnd(int index) const {
+    return myPoints[index + 1].x();
 }
 
 
 SUMOReal
-Distribution_Points::getAreaPerc(size_t index) const {
+Distribution_Points::getAreaPerc(int index) const {
     if (!myProbabilitiesAreComputed) {
         SUMOReal sum = 0;
-        size_t i;
         if (myInterpolateDist) {
-            for (i = 0; i < myPoints.size() - 1; i++) {
+            for (int i = 0; i < (int)myPoints.size() - 1; i++) {
                 SUMOReal width = getAreaEnd(i) - getAreaBegin(i);
-                SUMOReal minval = MIN2(myPoints[(int) i].y(), myPoints[(int) i].y());
-                SUMOReal maxval = MAX2(myPoints[(int) i].y(), myPoints[(int) i].y());
+                SUMOReal minval = MIN2(myPoints[i].y(), myPoints[i].y());
+                SUMOReal maxval = MAX2(myPoints[i].y(), myPoints[i].y());
                 SUMOReal amount = minval * width + (maxval - minval) * width / (SUMOReal) 2.;
                 myProbabilities.push_back(amount);
                 sum += amount;
             }
         } else {
-            for (i = 0; i < myPoints.size() - 1; i++) {
-                myProbabilities.push_back(myPoints[(int) i].y());
-                sum += myPoints[(int) i].y();
+            for (int i = 0; i < (int)myPoints.size() - 1; i++) {
+                myProbabilities.push_back(myPoints[i].y());
+                sum += myPoints[i].y();
             }
         }
         // normalize
         if (myInterpolateDist) {
-            for (i = 0; i < myPoints.size() - 1; i++) {
+            for (int i = 0; i < (int)myPoints.size() - 1; i++) {
                 myProbabilities[i] = myProbabilities[i] / sum;
             }
         } else {
-            for (i = 0; i < myPoints.size() - 1; i++) {
+            for (int i = 0; i < (int)myPoints.size() - 1; i++) {
                 myProbabilities[i] = myProbabilities[i] / sum;
             }
         }

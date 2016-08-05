@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    06 Jul 2006
-/// @version $Id: Command_SaveTLSSwitches.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: Command_SaveTLSSwitches.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Writes information about the green durations of a tls
 /****************************************************************************/
@@ -63,7 +63,7 @@ Command_SaveTLSSwitches::execute(SUMOTime currentTime) {
     MSTrafficLightLogic* light = myLogics.getActive();
     const MSTrafficLightLogic::LinkVectorVector& links = light->getLinks();
     const std::string& state = light->getCurrentPhaseDef().getState();
-    for (unsigned int i = 0; i < (unsigned int) links.size(); i++) {
+    for (int i = 0; i < (int) links.size(); i++) {
         if (state[i] == LINKSTATE_TL_GREEN_MAJOR || state[i] == LINKSTATE_TL_GREEN_MINOR) {
             if (myPreviousLinkStates.find(i) == myPreviousLinkStates.end()) {
                 // was not saved before

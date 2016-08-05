@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: OptionsIO.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: OptionsIO.h 21172 2016-07-15 08:34:36Z behrisch $
 ///
 // Helper for parsing command line arguments and reading configuration files
 /****************************************************************************/
@@ -73,7 +73,7 @@ public:
      *  command line arguments, first, then to load values from this configuration
      *  file and reset them by other values from the command line.
      */
-    static void getOptions();
+    static void getOptions(const bool commandLineOnly = false);
 
 
     /** @brief Loads and parses the configuration

@@ -2,7 +2,7 @@
 /// @file    GNEDialog_Wizard.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEDialog_Wizard.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEDialog_Wizard.cpp 21044 2016-06-28 09:07:49Z palcraft $
 ///
 // The "About" - dialog for NETEDIT, (adapted from GUIDialog_AboutSUMO)
 /****************************************************************************/
@@ -69,8 +69,8 @@ FXIMPLEMENT(GNEDialog_Wizard::InputFloat, FXHorizontalFrame, InputFloatMap, ARRA
 // ===========================================================================
 // method definitions
 // ===========================================================================
-GNEDialog_Wizard::GNEDialog_Wizard(FXWindow* parent,  const char* name, int width, int height)
-    : FXDialogBox(parent, name, DECOR_CLOSE | DECOR_TITLE, 0, 0, width, height) {
+GNEDialog_Wizard::GNEDialog_Wizard(FXWindow* parent,  const char* name, int width, int height) :
+    FXDialogBox(parent, name, DECOR_CLOSE | DECOR_TITLE, 0, 0, width, height) {
     OptionsCont& oc = OptionsCont::getOptions();
     FXVerticalFrame* contentFrame = new FXVerticalFrame(this, LAYOUT_FILL_X | LAYOUT_FILL_Y);
 

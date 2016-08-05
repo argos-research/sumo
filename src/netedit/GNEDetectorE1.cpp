@@ -2,7 +2,7 @@
 /// @file    GNEDetectorE1.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetectorE1.cpp 19861 2016-02-01 09:08:47Z palcraft $
+/// @version $Id: GNEDetectorE1.cpp 21150 2016-07-12 12:28:35Z behrisch $
 ///
 ///
 /****************************************************************************/
@@ -38,7 +38,7 @@
 #include <utils/geom/GeomHelper.h>
 #include <utils/gui/windows/GUISUMOAbstractView.h>
 #include <utils/gui/windows/GUIAppEnum.h>
-#include <utils/gui/images/GUIIconSubSys.h>
+#include <utils/gui/images/GUITextureSubSys.h>
 #include <utils/gui/div/GUIParameterTableWindow.h>
 #include <utils/gui/globjects/GUIGLObjectPopupMenu.h>
 #include <utils/gui/div/GUIGlobalSelection.h>
@@ -53,18 +53,10 @@
 #include "GNEUndoList.h"
 #include "GNENet.h"
 #include "GNEChange_Attribute.h"
-#include "GNELogo_E1.cpp"
 
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
 #endif
-
-// ===========================================================================
-// static member definitions
-// ===========================================================================
-
-GUIGlID GNEDetectorE1::myDetectorE1GlID = 0;
-bool GNEDetectorE1::myDetectorE1Initialized = false;
 
 // ===========================================================================
 // member method definitions
@@ -75,13 +67,6 @@ GNEDetectorE1::GNEDetectorE1(const std::string& id, GNELane* lane, GNEViewNet* v
     mySplitByType(splitByType) {
     // Update geometry;
     updateGeometry();
-    // load detector logo, if wasn't inicializated
-    if (!myDetectorE1Initialized) {
-        FXImage* i = new FXGIFImage(getViewNet()->getNet()->getApp(), GNELogo_E1, IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP);
-        myDetectorE1GlID = GUITexturesHelper::add(i);
-        myDetectorE1Initialized = true;
-        delete i;
-    }
     // Set Colors
     myBaseColor = RGBColor(255, 255, 50, 0);
     myBaseColorSelected = RGBColor(255, 255, 125, 255);
@@ -114,7 +99,10 @@ GNEDetectorE1::updateGeometry() {
     myShapeRotations.push_back(myLane->getShape().rotationDegreeAtOffset(myLane->getPositionRelativeToParametricLenght(myPosition.x())) * -1);
 
     // Set offset of logo
-    myDetectorLogoOffset = Position(1,0);
+    myDetectorLogoOffset = Position(1, 0);
+
+    // Set block icon position
+    myBlockIconPosition = myShape.getLineCenter();
 
     // Set offset of the block icon
     myBlockIconOffset = Position(-1, 0);
@@ -124,34 +112,26 @@ GNEDetectorE1::updateGeometry() {
 }
 
 
+Position
+GNEDetectorE1::getPositionInView() const {
+    return myLane->getShape().positionAtOffset(myLane->getPositionRelativeToParametricLenght(myPosition.x()));
+}
+
+
 void
-GNEDetectorE1::writeAdditional(OutputDevice& device) {
+GNEDetectorE1::writeAdditional(OutputDevice& device, const std::string&) {
     // Write parameters
     device.openTag(getTag());
     device.writeAttr(SUMO_ATTR_ID, getID());
     device.writeAttr(SUMO_ATTR_LANE, myLane->getID());
     device.writeAttr(SUMO_ATTR_POSITION, myPosition.x());
     device.writeAttr(SUMO_ATTR_FREQUENCY, myFreq);
-    if(!myFilename.empty())
+    if (!myFilename.empty()) {
         device.writeAttr(SUMO_ATTR_FILE, myFilename);
+    }
     device.writeAttr(SUMO_ATTR_SPLIT_VTYPE, mySplitByType);
     // Close tag
     device.closeTag();
-}
-
-
-GUIParameterTableWindow*
-GNEDetectorE1::getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent) {
-    /** NOT YET SUPPORTED **/
-    // Ignore Warning
-    UNUSED_PARAMETER(parent);
-    GUIParameterTableWindow* ret = new GUIParameterTableWindow(app, *this, 2);
-    // add items
-    ret->mkItem("id", false, getID());
-    /** @TODO complet with the rest of parameters **/
-    // close building
-    ret->closeBuilding();
-    return ret;
 }
 
 
@@ -173,8 +153,8 @@ GNEDetectorE1::drawGL(const GUIVisualizationSettings& s) const {
     glBegin(GL_QUADS);
     glVertex2d(-1.0,  2);
     glVertex2d(-1.0, -2);
-    glVertex2d( 1.0, -2);
-    glVertex2d( 1.0,  2);
+    glVertex2d(1.0, -2);
+    glVertex2d(1.0,  2);
     glEnd();
     glTranslated(0, 0, .01);
     glBegin(GL_LINES);
@@ -189,8 +169,8 @@ GNEDetectorE1::drawGL(const GUIVisualizationSettings& s) const {
         glBegin(GL_QUADS);
         glVertex2f(-1.0,  2);
         glVertex2f(-1.0, -2);
-        glVertex2f( 1.0, -2);
-        glVertex2f( 1.0,  2);
+        glVertex2f(1.0, -2);
+        glVertex2f(1.0,  2);
         glEnd();
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
@@ -209,13 +189,12 @@ GNEDetectorE1::drawGL(const GUIVisualizationSettings& s) const {
     glPopMatrix();
 
     // Check if the distance is enought to draw details
-    if (s.scale * exaggeration >= 10) {        
+    if (s.scale * exaggeration >= 10) {
         // Add a draw matrix
-        drawDetectorIcon(myDetectorE1GlID);
+        drawDetectorIcon(GUITextureSubSys::getGif(GNETEXTURE_E1));
 
         // Show Lock icon depending of the Edit mode
-        //if(dynamic_cast<GNEViewNet*>(parent)->showLockIcon())
-            drawLockIcon();
+        drawLockIcon();
     }
 
     // Finish draw
@@ -228,7 +207,7 @@ std::string
 GNEDetectorE1::getAttribute(SumoXMLAttr key) const {
     switch (key) {
         case SUMO_ATTR_ID:
-            return getMicrosimID();
+            return getAdditionalID();
         case SUMO_ATTR_LANE:
             return toString(myLane->getAttribute(SUMO_ATTR_ID));
         case SUMO_ATTR_POSITION:
@@ -253,7 +232,6 @@ GNEDetectorE1::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoLi
     switch (key) {
         case SUMO_ATTR_ID:
         case SUMO_ATTR_LANE:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
         case SUMO_ATTR_POSITION:
         case SUMO_ATTR_FREQUENCY:
         case SUMO_ATTR_FILE:
@@ -272,8 +250,17 @@ bool
 GNEDetectorE1::isValid(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
+            if (myViewNet->getNet()->getAdditional(getTag(), value) == NULL) {
+                return true;
+            } else {
+                return false;
+            }
         case SUMO_ATTR_LANE:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            if (myViewNet->getNet()->retrieveLane(value, false) != NULL) {
+                return true;
+            } else {
+                return false;
+            }
         case SUMO_ATTR_POSITION:
             return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) >= 0 && parse<SUMOReal>(value) <= (myLane->getLaneParametricLenght()));
         case SUMO_ATTR_FREQUENCY:
@@ -295,8 +282,11 @@ void
 GNEDetectorE1::setAttribute(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
+            setAdditionalID(value);
+            break;
         case SUMO_ATTR_LANE:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            changeLane(myViewNet->getNet()->retrieveLane(value));
+            break;
         case SUMO_ATTR_POSITION:
             myPosition = Position(parse<SUMOReal>(value), 0);
             updateGeometry();

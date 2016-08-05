@@ -2,7 +2,7 @@
 /// @file    GNEReferenceCounter.h
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEReferenceCounter.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEReferenceCounter.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A class that counts references to itself
 // We may wish to keep references to junctions/nodes either in the network or in the undoList
@@ -88,7 +88,7 @@ public:
 
 
 private:
-    size_t myCount;
+    int myCount;
 
 };
 

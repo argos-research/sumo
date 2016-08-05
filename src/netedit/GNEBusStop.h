@@ -2,7 +2,7 @@
 /// @file    GNEBusStop.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEBusStop.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEBusStop.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 /// A class for visualizing busStop geometry (adapted from GUILaneWrapper)
 /****************************************************************************/
@@ -77,22 +77,13 @@ public:
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element
      */
-    void writeAdditional(OutputDevice& device);
+    void writeAdditional(OutputDevice& device, const std::string&);
 
     /// @brief get string vector with the lines of the busStop
     std::vector<std::string> getLines() const;
 
     /// @name inherited from GUIGlObject
     /// @{
-    /**@brief Returns an own parameter window
-     *
-     * @param[in] app The application needed to build the parameter window
-     * @param[in] parent The parent window needed to build the parameter window
-     * @return The built parameter window
-     * @see GUIGlObject::getParameterWindow
-     */
-    GUIParameterTableWindow* getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent);
-
     /**@brief Draws the object
      * @param[in] s The settings for the current view (may influence drawing)
      * @see GUIGlObject::drawGL

@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: MSActuatedTrafficLightLogic.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSActuatedTrafficLightLogic.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // An actuated (adaptive) traffic light logic
 /****************************************************************************/
@@ -73,7 +73,7 @@ public:
     MSActuatedTrafficLightLogic(MSTLLogicControl& tlcontrol,
                                 const std::string& id, const std::string& programID,
                                 const MSSimpleTrafficLightLogic::Phases& phases,
-                                unsigned int step, SUMOTime delay,
+                                int step, SUMOTime delay,
                                 const std::map<std::string, std::string>& parameter,
                                 const std::string& basePath);
 

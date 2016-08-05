@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2012-04-26
-/// @version $Id: MSFullExport.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSFullExport.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // Dumping a hugh List of Parameters available in the Simulation
 /****************************************************************************/
@@ -140,7 +140,7 @@ MSFullExport::writeTLS(OutputDevice& of, SUMOTime /* timestep */) {
         }
 
         std::string lane_output = "";
-        for (unsigned int i1 = 0; i1 < laneIDs.size(); ++i1) {
+        for (int i1 = 0; i1 < (int)laneIDs.size(); ++i1) {
             lane_output += laneIDs[i1] + " ";
         }
 

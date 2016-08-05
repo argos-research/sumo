@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUIViewTraffic.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIViewTraffic.h 21203 2016-07-20 07:16:38Z behrisch $
 ///
 // A view on the simulation; this view is a microscopic one
 /****************************************************************************/
@@ -88,7 +88,7 @@ public:
     /** @brief Returns the id of the tracked vehicle (-1 if none)
      * @return The glID of the vehicle to track
      */
-    int getTrackedID() const;
+    GUIGlID getTrackedID() const;
 
     bool setColorScheme(const std::string& name);
 
@@ -121,7 +121,7 @@ protected:
     GUILane* getLaneUnderCursor();
 
 private:
-    int myTrackedID;
+    GUIGlID myTrackedID;
 
 #ifdef HAVE_FFMPEG
     GUIVideoEncoder* myCurrentVideo;

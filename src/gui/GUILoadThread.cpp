@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILoadThread.cpp 20995 2016-06-17 14:06:28Z behrisch $
+/// @version $Id: GUILoadThread.cpp 21010 2016-06-20 13:32:41Z behrisch $
 ///
 // Class describing the thread that performs the loading of a simulation
 /****************************************************************************/
@@ -142,13 +142,13 @@ GUILoadThread::run() {
             oc.set("verbose", "true");
         }
         MsgHandler::initOutputOptions();
+        if (!MSFrame::checkOptions()) {
+            throw ProcessError();
+        }
         XMLSubSys::setValidation(oc.getString("xml-validation"), oc.getString("xml-validation.net"));
         GUIGlobals::gRunAfterLoad = oc.getBool("start");
         GUIGlobals::gQuitOnEnd = oc.getBool("quit-on-end");
         GUIGlobals::gDemoAutoReload = oc.getBool("demo");
-        if (!MSFrame::checkOptions()) {
-            throw ProcessError();
-        }
     } catch (ProcessError& e) {
         if (std::string(e.what()) != std::string("Process Error") && std::string(e.what()) != std::string("")) {
             WRITE_ERROR(e.what());

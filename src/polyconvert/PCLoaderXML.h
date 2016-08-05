@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Thu, 02.11.2006
-/// @version $Id: PCLoaderXML.h 20801 2016-05-28 05:31:30Z behrisch $
+/// @version $Id: PCLoaderXML.h 21148 2016-07-12 08:47:10Z behrisch $
 ///
 // A reader for polygons and pois stored in XML-format
 /****************************************************************************/
@@ -109,27 +109,6 @@ private:
 
     /// @brief Settings to use
     OptionsCont& myOptions;
-
-
-    /// @name Temporary storages used when parsing polygons
-    /// @{
-
-    /// @brief The id of the currently parsed polygon
-    std::string myCurrentID;
-
-    /// @brief The type of the currently parsed polygon
-    std::string myCurrentType;
-
-    /// @brief The color of the currently parsed polygon
-    RGBColor myCurrentColor;
-
-    /// @brief Whether the current polygon must not be prunned
-    bool myCurrentIgnorePrunning;
-
-    /// @brief The layer of the currently parsed polygon
-    SUMOReal myCurrentLayer;
-    /// @}
-
 
 };
 

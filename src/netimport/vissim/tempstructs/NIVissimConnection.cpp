@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: NIVissimConnection.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIVissimConnection.cpp 21202 2016-07-19 13:40:35Z behrisch $
 ///
 // -------------------
 /****************************************************************************/
@@ -218,9 +218,9 @@ NIVissimConnection::buildGeom() {
 }
 
 
-unsigned int
+int
 NIVissimConnection::buildEdgeConnections(NBEdgeCont& ec) {
-    unsigned int unsetConnections = 0;
+    int unsetConnections = 0;
     // try to determine the connected edges
     NBEdge* fromEdge = 0;
     NBEdge* toEdge = 0;
@@ -260,8 +260,8 @@ NIVissimConnection::buildEdgeConnections(NBEdgeCont& ec) {
     if (fromLanes.size() != toLanes.size()) {
         WRITE_WARNING("Lane sizes differ for connection '" + toString(getID()) + "'.");
     } else {
-        for (unsigned int index = 0; index < fromLanes.size(); ++index) {
-            if (fromEdge->getNumLanes() <= static_cast<unsigned int>(fromLanes[index])) {
+        for (int index = 0; index < (int)fromLanes.size(); ++index) {
+            if (fromEdge->getNumLanes() <= fromLanes[index]) {
                 WRITE_WARNING("Could not set connection between '" + fromEdge->getID() + "_" + toString(fromLanes[index]) + "' and '" + toEdge->getID() + "_" + toString(toLanes[index]) + "'.");
                 ++unsetConnections;
             } else if (!fromEdge->addLane2LaneConnection(fromLanes[index], toEdge, toLanes[index], NBEdge::L2L_VALIDATED)) {
@@ -276,13 +276,13 @@ NIVissimConnection::buildEdgeConnections(NBEdgeCont& ec) {
 
 void
 NIVissimConnection::dict_buildNBEdgeConnections(NBEdgeCont& ec) {
-    unsigned int unsetConnections = 0;
+    int unsetConnections = 0;
     // go through connections
     for (DictType::iterator i = myDict.begin(); i != myDict.end(); i++) {
         unsetConnections += (*i).second->buildEdgeConnections(ec);
     }
     if (unsetConnections != 0) {
-        WRITE_WARNING(toString<size_t>(unsetConnections) + " of " + toString<size_t>(myDict.size()) + " connections could not be assigned.");
+        WRITE_WARNING(toString<int>(unsetConnections) + " of " + toString<int>((int)myDict.size()) + " connections could not be assigned.");
     }
 }
 

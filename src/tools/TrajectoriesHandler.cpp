@@ -2,7 +2,7 @@
 /// @file    TrajectoriesHandler.cpp
 /// @author  Michael Behrisch
 /// @date    14.03.2014
-/// @version $Id: TrajectoriesHandler.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: TrajectoriesHandler.cpp 21131 2016-07-08 07:59:22Z behrisch $
 ///
 // An XML-Handler for amitran and netstate trajectories
 /****************************************************************************/
@@ -49,9 +49,10 @@
 // ===========================================================================
 // method definitions
 // ===========================================================================
-TrajectoriesHandler::TrajectoriesHandler(const bool computeA, const bool computeAForward, const SUMOEmissionClass defaultClass,
+TrajectoriesHandler::TrajectoriesHandler(const bool computeA, const bool computeAForward,
+        const bool accelZeroCorrection, const SUMOEmissionClass defaultClass,
         const SUMOReal defaultSlope, std::ostream* stdOut, OutputDevice* xmlOut)
-    : SUMOSAXHandler(""), myComputeA(computeA), myComputeAForward(computeAForward), myDefaultClass(defaultClass),
+    : SUMOSAXHandler(""), myComputeA(computeA), myComputeAForward(computeAForward), myAccelZeroCorrection(accelZeroCorrection), myDefaultClass(defaultClass),
       myDefaultSlope(defaultSlope), myStdOut(stdOut), myXMLOut(xmlOut), myCurrentTime(-1), myStepSize(TS) {}
 
 
@@ -133,6 +134,9 @@ TrajectoriesHandler::computeEmissions(const std::string id, const SUMOEmissionCl
         if (myComputeAForward) {
             v -= a;
         }
+    }
+    if (myAccelZeroCorrection && v == 0.) {
+        a = 0.;
     }
     if (a == INVALID_VALUE) {
         throw ProcessError("Acceleration information is missing; try running with --compute-a.");

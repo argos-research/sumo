@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIMEVehicle.h 20689 2016-05-10 13:20:11Z behrisch $
+/// @version $Id: GUIMEVehicle.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -92,7 +92,7 @@ public:
     }
 
     /// @brief gets the color value according to the current scheme index
-    SUMOReal getColorValue(size_t activeScheme) const;
+    SUMOReal getColorValue(int activeScheme) const;
 
     /// @brief draws the given guiShape if it has distinc carriages/modules and eturns true if so
     bool drawAction_drawCarriageClass(const GUIVisualizationSettings& s, SUMOVehicleShape guiShape, bool asImage) const;

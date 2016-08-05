@@ -2,7 +2,7 @@
 /// @file    GNECrossing.cpp
 /// @author  Jakob Erdmann
 /// @date    June 2011
-/// @version $Id: GNECrossing.cpp 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNECrossing.cpp 21131 2016-07-08 07:59:22Z behrisch $
 ///
 // A class for visualizing Inner Lanes (used when editing traffic lights)
 /****************************************************************************/
@@ -69,7 +69,7 @@ GNECrossing::GNECrossing(GNEJunction& parentJunction, const std::string& id) :
 GNECrossing::~GNECrossing() {}
 
 
-void 
+void
 GNECrossing::updateGeometry() {
     int segments = (int) myShape.size() - 1;
     if (segments >= 0) {

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 25 July 2005
-/// @version $Id: DijkstraRouterTT.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: DijkstraRouterTT.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Dijkstra shortest path algorithm using travel time
 /****************************************************************************/
@@ -272,7 +272,7 @@ public:
         std::copy(tmp.rbegin(), tmp.rend(), std::back_inserter(edges));
     }
 
-    const EdgeInfo& getEdgeInfo(size_t index) const {
+    const EdgeInfo& getEdgeInfo(int index) const {
         return myEdgeInfos[index];
     }
 

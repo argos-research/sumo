@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Thu, 13 Dec 2012
-/// @version $Id: MSStateHandler.cpp 20634 2016-05-04 06:21:48Z namdre $
+/// @version $Id: MSStateHandler.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Parser and output filter for routes and vehicles state saving and loading
 /****************************************************************************/
@@ -80,13 +80,13 @@ MSStateHandler::saveState(const std::string& file, SUMOTime step) {
     MSRoute::dict_saveState(out);
     MSNet::getInstance()->getVehicleControl().saveState(out);
     if (MSGlobals::gUseMesoSim) {
-        for (size_t i = 0; i < MSEdge::dictSize(); i++) {
+        for (int i = 0; i < MSEdge::dictSize(); i++) {
             for (MESegment* s = MSGlobals::gMesoNet->getSegmentForEdge(*MSEdge::getAllEdges()[i]); s != 0; s = s->getNextSegment()) {
                 s->saveState(out);
             }
         }
     } else {
-        for (size_t i = 0; i < MSEdge::dictSize(); i++) {
+        for (int i = 0; i < MSEdge::dictSize(); i++) {
             const std::vector<MSLane*>& lanes = MSEdge::getAllEdges()[i]->getLanes();
             for (std::vector<MSLane*>::const_iterator it = lanes.begin(); it != lanes.end(); ++it) {
                 (*it)->saveState(out);

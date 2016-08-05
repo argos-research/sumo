@@ -6,7 +6,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSEdge.h 20901 2016-06-07 11:50:11Z namdre $
+/// @version $Id: MSEdge.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A road/street connecting two junctions
 /****************************************************************************/
@@ -339,8 +339,8 @@ public:
     /** @brief Returns the number of edges that may be reached from this edge
      * @return The number of following edges
      */
-    unsigned int getNumSuccessors() const {
-        return (unsigned int) mySuccessors.size();
+    int getNumSuccessors() const {
+        return (int) mySuccessors.size();
     }
 
 
@@ -362,8 +362,8 @@ public:
      *
      * @return The number of edges following this edge
      */
-    unsigned int getNumPredecessors() const {
-        return (unsigned int) myPredecessors.size();
+    int getNumPredecessors() const {
+        return (int) myPredecessors.size();
     }
 
 
@@ -648,7 +648,7 @@ public:
     /// @brief whether this edge allows changing to the opposite direction edge
     bool canChangeToOpposite();
 
-    /// @brief get the mean speed 
+    /// @brief get the mean speed
     SUMOReal getMeanSpeed() const;
 
     /// @brief grant exclusive access to the mesoscopic state
@@ -666,7 +666,7 @@ public:
     static MSEdge* dictionary(const std::string& id);
 
     /// @brief Returns the number of edges
-    static size_t dictSize();
+    static int dictSize();
 
     /// @brief Returns all edges with a numerical id
     static const MSEdgeVector& getAllEdges();

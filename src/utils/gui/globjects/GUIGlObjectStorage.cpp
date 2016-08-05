@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIGlObjectStorage.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIGlObjectStorage.cpp 21202 2016-07-19 13:40:35Z behrisch $
 ///
 // A storage for displayed objects via their numerical id
 /****************************************************************************/
@@ -52,7 +52,7 @@ GUIGlObjectStorage GUIGlObjectStorage::gIDStorage;
 // method definitions
 // ===========================================================================
 GUIGlObjectStorage::GUIGlObjectStorage()
-    : myAktID(0) {}
+    : myAktID(1) {}
 
 
 GUIGlObjectStorage::~GUIGlObjectStorage() {}

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSTrafficLightLogic.cpp 20521 2016-04-21 11:16:52Z behrisch $
+/// @version $Id: MSTrafficLightLogic.cpp 21217 2016-07-22 10:57:44Z behrisch $
 ///
 // The parent class for traffic light logics
 /****************************************************************************/
@@ -226,7 +226,7 @@ MSTrafficLightLogic::setTrafficLightSignals(SUMOTime t) const {
     // get the current traffic light signal combination
     const std::string& state = getCurrentPhaseDef().getState();
     // go through the links
-    for (size_t i = 0; i < myLinks.size(); i++) {
+    for (int i = 0; i < (int)myLinks.size(); i++) {
         const LinkVector& currGroup = myLinks[i];
         LinkState ls = (LinkState) state[i];
         for (LinkVector::const_iterator j = currGroup.begin(); j != currGroup.end(); j++) {

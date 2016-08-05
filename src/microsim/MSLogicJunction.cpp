@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Wed, 12 Dez 2001
-/// @version $Id: MSLogicJunction.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSLogicJunction.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // with one ore more logics.
 /****************************************************************************/
@@ -72,7 +72,7 @@ MSLogicJunction::postloadInit() {
         int bla = 0;
     }
     // inform links where they have to report approaching vehicles to
-    size_t requestPos = 0;
+    int requestPos = 0;
     std::vector<MSLane*>::iterator i;
     // going through the incoming lanes...
     for(i=myIncomingLanes.begin(); i!=myIncomingLanes.end(); ++i) {

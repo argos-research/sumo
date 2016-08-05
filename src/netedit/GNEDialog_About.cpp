@@ -2,7 +2,7 @@
 /// @file    GNEDialog_About.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEDialog_About.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEDialog_About.cpp 21131 2016-07-08 07:59:22Z behrisch $
 ///
 // The "About" - dialog for NETEDIT, (adapted from GUIDialog_AboutSUMO)
 /****************************************************************************/
@@ -98,8 +98,8 @@ static const char* dlr_icon[] = {
 // ===========================================================================
 // method definitions
 // ===========================================================================
-GNEDialog_About::GNEDialog_About(FXWindow* parent)
-    : FXDialogBox(parent, "About NETEDIT", DECOR_CLOSE | DECOR_TITLE) {
+GNEDialog_About::GNEDialog_About(FXWindow* parent) :
+    FXDialogBox(parent, "About NETEDIT", DECOR_CLOSE | DECOR_TITLE) {
     FXVerticalFrame* f1 = new FXVerticalFrame(this, LAYOUT_TOP | FRAME_NONE | LAYOUT_FILL_X, 0, 0, 0, 0, 0, 0, 1, 1);
     // build icons
     FXHorizontalFrame* f2 = new FXHorizontalFrame(f1, LAYOUT_TOP | LAYOUT_CENTER_X | FRAME_NONE, 0, 0, 0, 0, 0, 0, 1, 1);

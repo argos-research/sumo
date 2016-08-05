@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mar, 2003
-/// @version $Id: NGNet.h 20507 2016-04-20 11:40:48Z namdre $
+/// @version $Id: NGNet.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The class storing the generated network
 /****************************************************************************/
@@ -185,7 +185,7 @@ public:
      *
      * @return The number of stored nodes
      */
-    size_t nodeNo() const;
+    int nodeNo() const;
 
 
 private:

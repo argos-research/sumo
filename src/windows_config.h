@@ -7,7 +7,7 @@
 /// @author  Felix Brack
 /// @author  Jakob Erdmann
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: windows_config.h 20489 2016-04-19 08:56:08Z behrisch $
+/// @version $Id: windows_config.h 21238 2016-07-26 08:17:35Z namdre $
 ///
 // The general windows configuration file
 /****************************************************************************/
@@ -62,11 +62,11 @@
 #define GEO_OUTPUT_ACCURACY 6
 
 /* Define if auto-generated version.h should be used. */
-#define HAVE_VERSION_H 1
+//#define HAVE_VERSION_H 1
 
 /* Version number of package */
 #ifndef HAVE_VERSION_H
-#define VERSION_STRING "0.26.0"
+#define VERSION_STRING "0.27.1"
 #endif
 
 /* Define if junction internal lanes should be used. */

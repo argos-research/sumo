@@ -2,7 +2,7 @@
 /// @file    GNEViewNet.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEViewNet.cpp 20993 2016-06-17 11:50:24Z palcraft $
+/// @version $Id: GNEViewNet.cpp 21196 2016-07-19 10:54:43Z namdre $
 ///
 // A view on the network being edited (adapted from GUIViewTraffic)
 /****************************************************************************/
@@ -42,6 +42,7 @@
 #include <utils/gui/windows/GUIDanielPerspectiveChanger.h>
 #include <utils/gui/windows/GUIAppEnum.h>
 #include <utils/gui/images/GUIIconSubSys.h>
+#include <utils/gui/images/GUITextureSubSys.h>
 #include <utils/gui/windows/GUIDialog_ViewSettings.h>
 #include <utils/gui/settings/GUICompleteSchemeStorage.h>
 #include <utils/gui/images/GUITexturesHelper.h>
@@ -73,7 +74,6 @@
 #include "GNEChange_Attribute.h"
 
 
-
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
 #endif // CHECK_MEMORY_LEAKS
@@ -103,9 +103,9 @@ FXIMPLEMENT(GNEViewNet, GUISUMOAbstractView, GNEViewNetMap, ARRAYNUMBER(GNEViewN
 // ===========================================================================
 // member method definitions
 // ===========================================================================
-GNEViewNet::GNEViewNet(FXComposite* tmpParent, FXComposite* actualParent, GUIMainWindow& app, 
-    GNEViewParent* viewParent, GNENet* net, GNEUndoList* undoList, 
-    FXGLVisual* glVis, FXGLCanvas* share, FXToolBar* toolBar) :
+GNEViewNet::GNEViewNet(FXComposite* tmpParent, FXComposite* actualParent, GUIMainWindow& app,
+                       GNEViewParent* viewParent, GNENet* net, GNEUndoList* undoList,
+                       FXGLVisual* glVis, FXGLCanvas* share, FXToolBar* toolBar) :
     GUISUMOAbstractView(tmpParent, app, viewParent, net->getVisualisationSpeedUp(), glVis, share),
     myViewParent(viewParent),
     myNet(net),
@@ -303,25 +303,25 @@ GNEViewNet::setStatusBarText(const std::string& text) {
 }
 
 
-bool 
+bool
 GNEViewNet::selectEdges() {
     return mySelectEdges->getCheck() != 0;
 }
 
 
-bool 
+bool
 GNEViewNet::autoSelectNodes() {
     return myExtendToEdgeNodes->getCheck() != 0;
 }
 
 
-void 
+void
 GNEViewNet::setSelectionScaling(SUMOReal selectionScale) {
     myVisualizationSettings->selectionScale = selectionScale;
 }
 
 
-bool 
+bool
 GNEViewNet::changeAllPhases() const {
     return myChangeAllPhases->getCheck() != FALSE;
 }
@@ -392,7 +392,7 @@ GNEViewNet::onLeftBtnPress(FXObject* obj, FXSelector sel, void* data) {
     setFocus();
     // interpret object under curser
     if (makeCurrent()) {
-        unsigned int id = getObjectUnderCursor();
+        int id = getObjectUnderCursor();
         GUIGlObject* pointed = GUIGlObjectStorage::gIDStorage.getObjectBlocking(id);
         GUIGlObjectStorage::gIDStorage.unblockObject(id);
         GNEJunction* pointed_junction = 0;
@@ -455,7 +455,7 @@ GNEViewNet::onLeftBtnPress(FXObject* obj, FXSelector sel, void* data) {
                             if (newEdge) {
                                 if (myAutoCreateOppositeEdge->getCheck()) {
                                     myNet->createEdge(
-                                        pointed_junction, myCreateEdgeSource, myViewParent->getInspectorFrame()->getEdgeTemplate(), myUndoList);
+                                        pointed_junction, myCreateEdgeSource, myViewParent->getInspectorFrame()->getEdgeTemplate(), myUndoList, "-" + newEdge->getNBEdge()->getID());
                                 }
                                 myCreateEdgeSource->unMarkAsCreateEdgeSource();
                                 if (myUndoList->hasCommandGroup()) {
@@ -505,10 +505,10 @@ GNEViewNet::onLeftBtnPress(FXObject* obj, FXSelector sel, void* data) {
                         myMoveSelection = true;
                     } else {
                         myAdditionalToMove = pointed_additional;
-                        if(myAdditionalToMove->getLane()) {
+                        if (myAdditionalToMove->getLane()) {
                             myAdditionalFirstPosition.set(pointed_additional->getLane()->getShape().nearest_offset_to_point2D(getPositionInformation(), false), 0, 0);
                             myUndoList->p_begin("position of " + toString(pointed_additional->getTag()));
-                        } else{
+                        } else {
                             myAdditionalFirstPosition = pointed_additional->getPositionInView();
                             myUndoList->p_begin("position of " + toString(pointed_additional->getTag()));
                         }
@@ -573,7 +573,7 @@ GNEViewNet::onLeftBtnPress(FXObject* obj, FXSelector sel, void* data) {
                     pointedO = pointed_additional;
                 }
 
-                std::list<GNEAttributeCarrier*> selected;
+                std::vector<GNEAttributeCarrier*> selected;
                 if (pointedO && gSelected.isSelected(pointedO->getType(), pointedO->getGlID())) {
                     std::set<GUIGlID> selectedIDs = gSelected.getSelected(pointedO->getType());
                     selected = myNet->retrieveAttributeCarriers(selectedIDs, pointedO->getType());
@@ -622,8 +622,11 @@ GNEViewNet::onLeftBtnPress(FXObject* obj, FXSelector sel, void* data) {
                 break;
 
             case GNE_MODE_ADDITIONAL:
-                if(pointed_additional == NULL && myViewParent->getAdditionalFrame()->addAdditional(pointed_lane, this)) {
-                    update();
+                if (pointed_additional == NULL) {
+                    GNENetElement* netElement = dynamic_cast<GNENetElement*>(pointed);
+                    if (myViewParent->getAdditionalFrame()->addAdditional(netElement, this)) {
+                        update();
+                    }
                 }
                 GUISUMOAbstractView::onLeftBtnPress(obj, sel, data);
                 break;
@@ -679,14 +682,13 @@ GNEViewNet::onLeftBtnRelease(FXObject* obj, FXSelector sel, void* data) {
 
 
 long
-GNEViewNet::onDoubleClicked(FXObject* obj, FXSelector sel, void* data) {
+GNEViewNet::onDoubleClicked(FXObject*, FXSelector, void*) {
     // If current edit mode is INSPECT or ADDITIONAL
-    if(myEditMode == GNE_MODE_INSPECT || myEditMode == GNE_MODE_ADDITIONAL) {
-        FXEvent* e = (FXEvent*) data;
+    if (myEditMode == GNE_MODE_INSPECT || myEditMode == GNE_MODE_ADDITIONAL) {
         setFocus();
         // interpret object under curser
         if (makeCurrent()) {
-            unsigned int id = getObjectUnderCursor();
+            int id = getObjectUnderCursor();
             GUIGlObject* pointed = GUIGlObjectStorage::gIDStorage.getObjectBlocking(id);
             GUIGlObjectStorage::gIDStorage.unblockObject(id);
             // If there are a pointed element an is an additional
@@ -713,10 +715,10 @@ GNEViewNet::onMouseMove(FXObject* obj, FXSelector sel, void* data) {
         myMoveSrc = myEdgeToMove->moveGeometry(myMoveSrc, getPositionInformation());
     } else if (myAdditionalToMove) {
         // If additional is placed over lane, move it across it
-        if(myAdditionalToMove->getLane()) {
+        if (myAdditionalToMove->getLane()) {
             SUMOReal posOfMouseOverLane = myAdditionalToMove->getLane()->getShape().nearest_offset_to_point2D(getPositionInformation(), false);
             myAdditionalToMove->moveAdditional(posOfMouseOverLane - myAdditionalFirstPosition.x(), 0, myUndoList);
-            myAdditionalFirstPosition.set(posOfMouseOverLane,0, 0);
+            myAdditionalFirstPosition.set(posOfMouseOverLane, 0, 0);
         } else {
             myAdditionalToMove->moveAdditional(getPositionInformation().x(), getPositionInformation().y(), myUndoList);
             myAdditionalFirstPosition = getPositionInformation();
@@ -859,7 +861,7 @@ GNEViewNet::getCurrentEditMode() const {
 
 bool
 GNEViewNet::showLockIcon() const {
-    return(myEditMode == GNE_MODE_MOVE || myEditMode == GNE_MODE_INSPECT || myEditMode == GNE_MODE_ADDITIONAL);
+    return (myEditMode == GNE_MODE_MOVE || myEditMode == GNE_MODE_INSPECT || myEditMode == GNE_MODE_ADDITIONAL);
 }
 
 
@@ -867,7 +869,7 @@ GNEJunction*
 GNEViewNet::getJunctionAtCursorPosition(Position& /* pos */) {
     GNEJunction* junction = 0;
     if (makeCurrent()) {
-        unsigned int id = getObjectAtPosition(myPopupSpot);
+        int id = getObjectAtPosition(myPopupSpot);
         GUIGlObject* pointed = GUIGlObjectStorage::gIDStorage.getObjectBlocking(id);
         GUIGlObjectStorage::gIDStorage.unblockObject(id);
         if (pointed) {
@@ -890,7 +892,7 @@ GNEEdge*
 GNEViewNet::getEdgeAtCursorPosition(Position& /* pos */) {
     GNEEdge* edge = 0;
     if (makeCurrent()) {
-        unsigned int id = getObjectAtPosition(myPopupSpot);
+        int id = getObjectAtPosition(myPopupSpot);
         GUIGlObject* pointed = GUIGlObjectStorage::gIDStorage.getObjectBlocking(id);
         GUIGlObjectStorage::gIDStorage.unblockObject(id);
         if (pointed) {
@@ -914,7 +916,7 @@ GNELane*
 GNEViewNet::getLaneAtCurserPosition(Position& /* pos */) {
     GNELane* lane = 0;
     if (makeCurrent()) {
-        unsigned int id = getObjectAtPosition(myPopupSpot);
+        int id = getObjectAtPosition(myPopupSpot);
         GUIGlObject* pointed = GUIGlObjectStorage::gIDStorage.getObjectBlocking(id);
         GUIGlObjectStorage::gIDStorage.unblockObject(id);
         if (pointed) {
@@ -1019,8 +1021,8 @@ GNEViewNet::onCmdStraightenEdges(FXObject*, FXSelector, void*) {
     if (edge != 0) {
         if (gSelected.isSelected(GLO_EDGE, edge->getGlID())) {
             myUndoList->p_begin("straighten selected edges");
-            std::list<GNEEdge*> edges = myNet->retrieveEdges(true);
-            for (std::list<GNEEdge*>::iterator it = edges.begin(); it != edges.end(); it++) {
+            std::vector<GNEEdge*> edges = myNet->retrieveEdges(true);
+            for (std::vector<GNEEdge*>::iterator it = edges.begin(); it != edges.end(); it++) {
                 (*it)->setAttribute(SUMO_ATTR_SHAPE, "", myUndoList);
             }
             myUndoList->p_end();
@@ -1060,8 +1062,8 @@ GNEViewNet::onCmdDuplicateLane(FXObject*, FXSelector, void*) {
     if (lane != 0) {
         if (gSelected.isSelected(GLO_LANE, lane->getGlID())) {
             myUndoList->p_begin("duplicate selected lanes");
-            std::list<GNELane*> lanes = myNet->retrieveLanes(true);
-            for (std::list<GNELane*>::iterator it = lanes.begin(); it != lanes.end(); it++) {
+            std::vector<GNELane*> lanes = myNet->retrieveLanes(true);
+            for (std::vector<GNELane*>::iterator it = lanes.begin(); it != lanes.end(); it++) {
                 myNet->duplicateLane(*it, myUndoList);
             }
             myUndoList->p_end();
@@ -1141,7 +1143,6 @@ GNEViewNet::setEditMode(EditMode mode) {
     } else {
         myPreviousEditMode = myEditMode;
         myEditMode = mode;
-        myVisualizationSettings->laneColorer.setActive(0); //default
         switch (mode) {
             case GNE_MODE_CONNECT:
             case GNE_MODE_TLS:
@@ -1280,8 +1281,8 @@ GNEViewNet::updateModeSpecificControls() {
 void
 GNEViewNet::deleteSelectedJunctions() {
     myUndoList->p_begin("delete selected junctions");
-    std::list<GNEJunction*> junctions = myNet->retrieveJunctions(true);
-    for (std::list<GNEJunction*>::iterator it = junctions.begin(); it != junctions.end(); it++) {
+    std::vector<GNEJunction*> junctions = myNet->retrieveJunctions(true);
+    for (std::vector<GNEJunction*>::iterator it = junctions.begin(); it != junctions.end(); it++) {
         myNet->deleteJunction(*it, myUndoList);
     }
     myUndoList->p_end();
@@ -1292,14 +1293,14 @@ void
 GNEViewNet::deleteSelectedEdges() {
     if (mySelectEdges->getCheck()) {
         myUndoList->p_begin("delete selected edges");
-        std::list<GNEEdge*> edges = myNet->retrieveEdges(true);
-        for (std::list<GNEEdge*>::iterator it = edges.begin(); it != edges.end(); it++) {
+        std::vector<GNEEdge*> edges = myNet->retrieveEdges(true);
+        for (std::vector<GNEEdge*>::iterator it = edges.begin(); it != edges.end(); it++) {
             myNet->deleteEdge(*it, myUndoList);
         }
     } else {
         myUndoList->p_begin("delete selected lanes");
-        std::list<GNELane*> lanes = myNet->retrieveLanes(true);
-        for (std::list<GNELane*>::iterator it = lanes.begin(); it != lanes.end(); it++) {
+        std::vector<GNELane*> lanes = myNet->retrieveLanes(true);
+        for (std::vector<GNELane*>::iterator it = lanes.begin(); it != lanes.end(); it++) {
             myNet->deleteLane(*it, myUndoList);
         }
     }

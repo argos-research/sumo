@@ -2,7 +2,7 @@
 /// @file    GNEEdge.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEEdge.h 20993 2016-06-17 11:50:24Z palcraft $
+/// @version $Id: GNEEdge.h 21205 2016-07-20 08:04:48Z palcraft $
 ///
 // A road/street connecting two junctions (netedit-version, adapted from GUIEdge)
 // Basically a container for an NBEdge with drawing and editing capabilities
@@ -61,11 +61,11 @@ public:
     /// @brief Definition of the lane's positions vector
     typedef std::vector<GNELane*> LaneVector;
 
-    /// @brief Definition of the additionals list
-    typedef std::list<GNEAdditional*> AdditionalList;
+    /// @brief Definition of the additionals vector
+    typedef std::vector<GNEAdditional*> AdditionalVector;
 
-    /// @brief Definition of the additionalSets list
-    typedef std::list<GNEAdditionalSet*> AdditionalSetList;
+    /// @brief Definition of the additionalSets vector
+    typedef std::vector<GNEAdditionalSet*> AdditionalSetVector;
 
     /**@brief Constructor.
      * @param[in] nbe The represented edge
@@ -129,7 +129,7 @@ public:
     /// @brief returns the destination-junction
     GNEJunction* getDest() const;
 
-    /**@brief change the edge geometry 
+    /**@brief change the edge geometry
      * It is up to the Edge to decide whether an new geometry node should be
      * generated or an existing node should be moved
      * @param[in] oldPos The origin of the mouse movement
@@ -142,7 +142,7 @@ public:
     //// @brief manipulate the given geometry and return whether it was changed
     static bool changeGeometry(PositionVector& geom, const std::string& id, const Position& oldPos, const Position& newPos, bool relative = false, bool moveEndPoints = false);
 
-    /**@brief change the edge geometry 
+    /**@brief change the edge geometry
      * @param[in] delta All inner points are moved by adding delta
      */
     void moveGeometry(const Position& delta);
@@ -194,7 +194,7 @@ public:
      * let the lanes recompute their precomputed geometry information
      * (needed after computing junction shapes)
      */
-    void updateLaneGeometriesAndAdditionals();
+    void updateLaneGeometries();
 
     /// @brief copy edge attributes from tpl
     void copyTemplate(GNEEdge* tpl, GNEUndoList* undolist);
@@ -216,22 +216,22 @@ public:
     void setMicrosimID(const std::string& newID);
 
     /// @brief add additional to this edge
-    bool addAdditional(GNEAdditional *additional);
+    bool addAdditional(GNEAdditional* additional);
 
     /// @brief remove additional from this edge
-    bool removeAdditional(GNEAdditional *additional);
+    bool removeAdditional(GNEAdditional* additional);
 
     /// @brief return list of additionals associated with this edge
-    const std::list<GNEAdditional*> &getAdditionals() const;
+    const std::vector<GNEAdditional*>& getAdditionals() const;
 
     /// @brief add GNEAdditionalSet to this edge
-    bool addAdditionalSet(GNEAdditionalSet *additionalSet);
+    bool addAdditionalSet(GNEAdditionalSet* additionalSet);
 
     /// @brief remove GNEAdditionalSet from this edge
-    bool removeAdditionalSet(GNEAdditionalSet *additionalSet);
+    bool removeAdditionalSet(GNEAdditionalSet* additionalSet);
 
     /// @brief return list of additionalSets associated with this edge
-    const std::list<GNEAdditionalSet*> &getAdditionalSets();
+    const std::vector<GNEAdditionalSet*>& getAdditionalSets();
 
     // the radius in which to register clicks for geometry nodes
     static const SUMOReal SNAP_RADIUS;
@@ -255,11 +255,11 @@ protected:
     /// @brief modification status of the connections
     std::string myConnectionStatus;
 
-    /// @brief list with the additonals vinculated with this edge
-    AdditionalList myAdditionals;
+    /// @brief vector with the additonals vinculated with this edge
+    AdditionalVector myAdditionals;
 
-    /// @brief list with the additonalSets vinculated with this edge
-    AdditionalSetList myAdditionalSets;
+    /// @brief vector with the additonalSets vinculated with this edge
+    AdditionalSetVector myAdditionalSets;
 
 private:
     /// @brief set attribute after validation
@@ -277,7 +277,7 @@ private:
      * with this number are restored. If none are found the attributes for the
      * leftmost lane are copied
      */
-    void setNumLanes(unsigned int numLanes, GNEUndoList* undoList);
+    void setNumLanes(int numLanes, GNEUndoList* undoList);
 
     /// @brief@brief increase number of lanes by one use the given attributes and restore the GNELane
     void addLane(GNELane* lane, const NBEdge::Lane& laneAttrs);
@@ -286,10 +286,10 @@ private:
     void removeLane(GNELane* lane);
 
     /// @brief adds a connection
-    void addConnection(unsigned int fromLane, const std::string& toEdgeID, unsigned int toLane, bool mayPass);
+    void addConnection(int fromLane, const std::string& toEdgeID, int toLane, bool mayPass);
 
     /// @brief removes a connection
-    void removeConnection(unsigned int fromLane, const std::string& toEdgeID, unsigned int toLane);
+    void removeConnection(int fromLane, const std::string& toEdgeID, int toLane);
 };
 
 

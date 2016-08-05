@@ -2,7 +2,7 @@
 /// @file    MSDeterministicHiLevelTrafficLightLogic.h
 /// @author  Riccardo Belletti
 /// @date    Mar 2014
-/// @version $Id: MSDeterministicHiLevelTrafficLightLogic.h 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSDeterministicHiLevelTrafficLightLogic.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The class for deterministic high level traffic light logic
 /****************************************************************************/
@@ -55,7 +55,7 @@ public:
      * @param[in] parameters Parameters defined for the tll
      */
     MSDeterministicHiLevelTrafficLightLogic(MSTLLogicControl& tlcontrol, const std::string& id,
-                                            const std::string& subid, const Phases& phases, unsigned int step,
+                                            const std::string& subid, const Phases& phases, int step,
                                             SUMOTime delay,
                                             const std::map<std::string, std::string>& parameters);
 

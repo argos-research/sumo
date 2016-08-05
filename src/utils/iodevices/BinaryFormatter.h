@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    2012
-/// @version $Id: BinaryFormatter.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: BinaryFormatter.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Output formatter for plain XML output
 /****************************************************************************/
@@ -264,20 +264,20 @@ template <typename E>
 bool BinaryFormatter::writeHeader(std::ostream& into, const SumoXMLTag& rootElement) {
     if (myXMLStack.empty()) {
         writeStaticHeader(into);
-        const unsigned int numEdges = (const unsigned int)E::getAllEdges().size();
+        const int numEdges = (const int)E::getAllEdges().size();
         FileHelpers::writeByte(into, BF_LIST);
         FileHelpers::writeInt(into, numEdges);
-        for (unsigned int i = 0; i < numEdges; i++) {
+        for (int i = 0; i < numEdges; i++) {
             FileHelpers::writeByte(into, BF_STRING);
             FileHelpers::writeString(into, E::getAllEdges()[i]->getID());
         }
         FileHelpers::writeByte(into, BF_LIST);
         FileHelpers::writeInt(into, numEdges);
-        for (unsigned int i = 0; i < numEdges; i++) {
+        for (int i = 0; i < numEdges; i++) {
             E* e = E::getAllEdges()[i];
             FileHelpers::writeByte(into, BF_LIST);
             FileHelpers::writeInt(into, e->getNumSuccessors());
-            for (unsigned int j = 0; j < e->getNumSuccessors(); j++) {
+            for (int j = 0; j < e->getNumSuccessors(); j++) {
                 FileHelpers::writeByte(into, BF_INTEGER);
                 FileHelpers::writeInt(into, e->getSuccessors()[j]->getNumericalID());
             }
@@ -306,7 +306,6 @@ void BinaryFormatter::writeAttr(dummy& into, const std::string& attr, const T& v
 template<> void BinaryFormatter::writeAttr(std::ostream& into, const SumoXMLAttr attr, const bool& val);
 template<> void BinaryFormatter::writeAttr(std::ostream& into, const SumoXMLAttr attr, const SUMOReal& val);
 template<> void BinaryFormatter::writeAttr(std::ostream& into, const SumoXMLAttr attr, const int& val);
-template<> void BinaryFormatter::writeAttr(std::ostream& into, const SumoXMLAttr attr, const unsigned int& val);
 template<> void BinaryFormatter::writeAttr(std::ostream& into, const SumoXMLAttr attr, const SumoXMLNodeType& val);
 template<> void BinaryFormatter::writeAttr(std::ostream& into, const SumoXMLAttr attr, const SumoXMLEdgeFunc& val);
 template<> void BinaryFormatter::writeAttr(std::ostream& into, const SumoXMLAttr attr, const Position& val);

@@ -7,7 +7,7 @@
 /// @author  Melanie Knocke
 /// @author  Yun-Pang Floetteroed
 /// @date    Sept 2002
-/// @version $Id: ROEdge.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ROEdge.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // A basic edge for routing applications
 /****************************************************************************/
@@ -63,7 +63,7 @@ ROEdgeVector ROEdge::myEdges;
 // ===========================================================================
 // method definitions
 // ===========================================================================
-ROEdge::ROEdge(const std::string& id, RONode* from, RONode* to, unsigned int index, const int priority) :
+ROEdge::ROEdge(const std::string& id, RONode* from, RONode* to, int index, const int priority) :
     Named(id),
     myFromJunction(from),
     myToJunction(to),
@@ -74,7 +74,7 @@ ROEdge::ROEdge(const std::string& id, RONode* from, RONode* to, unsigned int ind
     myUsingTTTimeLine(false),
     myUsingETimeLine(false),
     myCombinedPermissions(0) {
-    while (myEdges.size() <= index) {
+    while ((int)myEdges.size() <= index) {
         myEdges.push_back(0);
     }
     myEdges[index] = this;
@@ -215,21 +215,21 @@ ROEdge::getStoredEffort(SUMOReal time, SUMOReal& ret) const {
 }
 
 
-unsigned int
+int
 ROEdge::getNumSuccessors() const {
     if (getFunc() == ET_SINK) {
         return 0;
     }
-    return (unsigned int) myFollowingEdges.size();
+    return (int) myFollowingEdges.size();
 }
 
 
-unsigned int
+int
 ROEdge::getNumPredecessors() const {
     if (getFunc() == ET_SOURCE) {
         return 0;
     }
-    return (unsigned int) myApproachingEdges.size();
+    return (int) myApproachingEdges.size();
 }
 
 

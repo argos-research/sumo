@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Jul 2006
-/// @version $Id: NINavTeqHelper.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NINavTeqHelper.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Some parser methods shared around several formats containing NavTeq-Nets
 /****************************************************************************/
@@ -80,7 +80,7 @@ public:
      * @return The converted lane number
      * @exception ProcessError If the given lane number definition is not a number or if it is not known
      */
-    static unsigned int getLaneNumber(const std::string& id,
+    static int getLaneNumber(const std::string& id,
                                       const std::string& laneNoS, SUMOReal speed);
 
 

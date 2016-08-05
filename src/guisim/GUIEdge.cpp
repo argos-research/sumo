@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: GUIEdge.cpp 20901 2016-06-07 11:50:11Z namdre $
+/// @version $Id: GUIEdge.cpp 21232 2016-07-25 13:06:55Z namdre $
 ///
 // A road/street connecting two junctions (gui-version)
 /****************************************************************************/
@@ -49,6 +49,7 @@
 #include <microsim/MSEdge.h>
 #include <microsim/MSJunction.h>
 #include <microsim/MSLaneChanger.h>
+#include <microsim/MSInsertionControl.h>
 #include <microsim/MSGlobals.h>
 #include <microsim/logging/CastingFunctionBinding.h>
 #include <microsim/logging/FunctionBinding.h>
@@ -90,8 +91,8 @@ GUIEdge::~GUIEdge() {
 
 
 MSLane&
-GUIEdge::getLane(size_t laneNo) {
-    assert(laneNo < myLanes->size());
+GUIEdge::getLane(int laneNo) {
+    assert(laneNo < (int)myLanes->size());
     return *((*myLanes)[laneNo]);
 }
 
@@ -155,7 +156,7 @@ GUIEdge::getBoundary() const {
 
 void
 GUIEdge::fill(std::vector<GUIEdge*>& netsWrappers) {
-    size_t size = MSEdge::dictSize();
+    int size = MSEdge::dictSize();
     netsWrappers.reserve(size);
     for (DictType::iterator i = myDict.begin(); i != myDict.end(); ++i) {
         if (i->second->getPurpose() != MSEdge::EDGEFUNCTION_DISTRICT) {
@@ -195,7 +196,7 @@ GUIEdge::getParameterWindow(GUIMainWindow& app,
     ret->mkItem("mean vehicle speed [m/s]", true, new FunctionBinding<GUIEdge, SUMOReal>(this, &GUIEdge::getMeanSpeed));
     ret->mkItem("flow [veh/h/lane]", true, new FunctionBinding<GUIEdge, SUMOReal>(this, &GUIEdge::getFlow));
     ret->mkItem("routing speed [m/s]", true, new FunctionBinding<MSEdge, SUMOReal>(this, &MSEdge::getRoutingSpeed));
-    ret->mkItem("#vehicles", true, new CastingFunctionBinding<GUIEdge, SUMOReal, unsigned int>(this, &GUIEdge::getVehicleNo));
+    ret->mkItem("#vehicles", true, new CastingFunctionBinding<GUIEdge, SUMOReal, int>(this, &GUIEdge::getVehicleNo));
     ret->mkItem("vehicle ids", false, getVehicleIDs());
     // add segment items
     MESegment* segment = getSegmentAtPosition(parent.getPositionInformation());
@@ -206,7 +207,7 @@ GUIEdge::getParameterWindow(GUIMainWindow& app,
     ret->mkItem("segment brutto occupancy [%]", true, new FunctionBinding<MESegment, SUMOReal>(segment, &MESegment::getRelativeOccupancy, 100));
     ret->mkItem("segment mean vehicle speed [m/s]", true, new FunctionBinding<MESegment, SUMOReal>(segment, &MESegment::getMeanSpeed));
     ret->mkItem("segment flow [veh/h/lane]", true, new FunctionBinding<MESegment, SUMOReal>(segment, &MESegment::getFlow));
-    ret->mkItem("segment #vehicles", true, new CastingFunctionBinding<MESegment, SUMOReal, size_t>(segment, &MESegment::getCarNumber));
+    ret->mkItem("segment #vehicles", true, new CastingFunctionBinding<MESegment, SUMOReal, int>(segment, &MESegment::getCarNumber));
     ret->mkItem("segment leader leave time", true, new FunctionBinding<MESegment, SUMOReal>(segment, &MESegment::getEventTimeSeconds));
 
     // close building
@@ -305,7 +306,7 @@ GUIEdge::drawMesoVehicles(const GUIVisualizationSettings& s) const {
         // draw the meso vehicles
         vehicleControl->secureVehicles();
         AbstractMutex::ScopedLocker locker(myLock);
-        size_t laneIndex = 0;
+        int laneIndex = 0;
         MESegment::Queue queue;
         for (std::vector<MSLane*>::const_iterator msl = myLanes->begin(); msl != myLanes->end(); ++msl, ++laneIndex) {
             GUILane* l = static_cast<GUILane*>(*msl);
@@ -317,11 +318,11 @@ GUIEdge::drawMesoVehicles(const GUIVisualizationSettings& s) const {
                 if (laneIndex < segment->numQueues()) {
                     // make a copy so we don't have to worry about synchronization
                     queue = segment->getQueue(laneIndex);
-                    const size_t queueSize = queue.size();
+                    const int queueSize = (int)queue.size();
                     SUMOReal vehiclePosition = segmentOffset + length;
                     // draw vehicles beginning with the leader at the end of the segment
                     SUMOReal xOff = 0;
-                    for (size_t i = 0; i < queueSize; ++i) {
+                    for (int i = 0; i < queueSize; ++i) {
                         GUIMEVehicle* veh = static_cast<GUIMEVehicle*>(queue[queueSize - i - 1]);
                         const SUMOReal vehLength = veh->getVehicleType().getLengthWithGap();
                         while (vehiclePosition < segmentOffset) {
@@ -347,13 +348,13 @@ GUIEdge::drawMesoVehicles(const GUIVisualizationSettings& s) const {
 
 
 
-unsigned int
+int
 GUIEdge::getVehicleNo() const {
-    size_t vehNo = 0;
+    int vehNo = 0;
     for (MESegment* segment = MSGlobals::gMesoNet->getSegmentForEdge(*this); segment != 0; segment = segment->getNextSegment()) {
         vehNo += segment->getCarNumber();
     }
-    return (unsigned int)vehNo;
+    return (int)vehNo;
 }
 
 
@@ -414,7 +415,7 @@ GUIEdge::setColor(const GUIVisualizationSettings& s) const {
 
 
 bool
-GUIEdge::setFunctionalColor(size_t activeScheme) const {
+GUIEdge::setFunctionalColor(int activeScheme) const {
     switch (activeScheme) {
         case 9: {
             const PositionVector& shape = getLanes()[0]->getShape();
@@ -430,7 +431,7 @@ GUIEdge::setFunctionalColor(size_t activeScheme) const {
 
 bool
 GUIEdge::setMultiColor(const GUIColorer& c) const {
-    const size_t activeScheme = c.getActive();
+    const int activeScheme = c.getActive();
     mySegmentColors.clear();
     switch (activeScheme) {
         case 10: // alternating segments
@@ -477,7 +478,7 @@ GUIEdge::setMultiColor(const GUIColorer& c) const {
 
 
 SUMOReal
-GUIEdge::getColorValue(size_t activeScheme) const {
+GUIEdge::getColorValue(int activeScheme) const {
     switch (activeScheme) {
         case 1:
             return gSelected.isSelected(getType(), getGlID());
@@ -495,13 +496,15 @@ GUIEdge::getColorValue(size_t activeScheme) const {
             return getRelativeSpeed();
         case 8:
             return getRoutingSpeed();
+        case 16:
+            return MSNet::getInstance()->getInsertionControl().getPendingEmits(getLanes()[0]);
     }
     return 0;
 }
 
 
 SUMOReal
-GUIEdge::getScaleValue(size_t activeScheme) const {
+GUIEdge::getScaleValue(int activeScheme) const {
     switch (activeScheme) {
         case 1:
             return gSelected.isSelected(getType(), getGlID());
@@ -515,6 +518,8 @@ GUIEdge::getScaleValue(size_t activeScheme) const {
             return getFlow();
         case 6:
             return getRelativeSpeed();
+        case 7:
+            return MSNet::getInstance()->getInsertionControl().getPendingEmits(getLanes()[0]);
     }
     return 0;
 }

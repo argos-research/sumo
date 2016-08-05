@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBTrafficLightDefinition.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBTrafficLightDefinition.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The base class for traffic light logic definitions
 /****************************************************************************/
@@ -344,7 +344,7 @@ protected:
      * @param[in] brakingTime Duration a vehicle needs for braking in front of the tls
      * @return The computed logic
      */
-    virtual NBTrafficLightLogic* myCompute(unsigned int brakingTime) = 0;
+    virtual NBTrafficLightLogic* myCompute(int brakingTime) = 0;
 
 
     /** @brief Collects the links participating in this traffic light
@@ -363,7 +363,7 @@ protected:
      * This time depends on the maximum speed allowed on incoming junctions.
      * It is computed as max_speed_allowed / minimum_vehicle_decleration
      */
-    unsigned int computeBrakingTime(SUMOReal minDecel) const;
+    int computeBrakingTime(SUMOReal minDecel) const;
 
 
     // @return whether this traffic light is invalid and should be computed

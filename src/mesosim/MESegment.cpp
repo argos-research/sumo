@@ -2,7 +2,7 @@
 /// @file    MESegment.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MESegment.cpp 20900 2016-06-07 11:45:43Z namdre $
+/// @version $Id: MESegment.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // A single mesoscopic segment (cell)
 /****************************************************************************/
@@ -55,6 +55,8 @@
 #endif // CHECK_MEMORY_LEAKS
 
 #define DEFAULT_VEH_LENGHT_WITH_GAP 7.5f
+// avoid division by zero when driving very slowly
+#define MESO_MIN_SPEED ((SUMOReal)0.05)
 
 // ===========================================================================
 // static member defintion
@@ -69,7 +71,7 @@ const SUMOReal MESegment::DO_NOT_PATCH_JAM_THRESHOLD(std::numeric_limits<SUMORea
 MESegment::MESegment(const std::string& id,
                      const MSEdge& parent, MESegment* next,
                      SUMOReal length, SUMOReal speed,
-                     unsigned int idx,
+                     int idx,
                      SUMOTime tauff, SUMOTime taufj,
                      SUMOTime taujf, SUMOTime taujj,
                      SUMOReal jamThresh, bool multiQueue, bool junctionControl,
@@ -80,7 +82,7 @@ MESegment::MESegment(const std::string& id,
     myTau_fj((SUMOTime)(taufj / parent.getLanes().size())), // Eissfeldt p. 90 and 151 ff.
     myTau_jf((SUMOTime)(taujf / parent.getLanes().size())),
     myTau_jj((SUMOTime)(taujj / parent.getLanes().size())),
-    myTau_length(speed * parent.getLanes().size() / TIME2STEPS(1) ),
+    myTau_length(MAX2(MESO_MIN_SPEED, speed) * parent.getLanes().size() / TIME2STEPS(1)),
     myHeadwayCapacity(length / DEFAULT_VEH_LENGHT_WITH_GAP * parent.getLanes().size())/* Eissfeldt p. 69 */,
     myCapacity(length * parent.getLanes().size()),
     myOccupancy(0.f),
@@ -97,15 +99,15 @@ MESegment::MESegment(const std::string& id,
     myBlockTimes.push_back(-1);
     const std::vector<MSLane*>& lanes = parent.getLanes();
     if (multiQueue && lanes.size() > 1) {
-        unsigned int numFollower = parent.getNumSuccessors();
+        int numFollower = parent.getNumSuccessors();
         if (numFollower > 1) {
             while (myCarQues.size() < lanes.size()) {
                 myCarQues.push_back(std::vector<MEVehicle*>());
                 myBlockTimes.push_back(-1);
             }
-            for (unsigned int i = 0; i < numFollower; ++i) {
+            for (int i = 0; i < numFollower; ++i) {
                 const MSEdge* edge = parent.getSuccessors()[i];
-                myFollowerMap[edge] = std::vector<size_t>();
+                myFollowerMap[edge] = std::vector<int>();
                 const std::vector<MSLane*>* allowed = parent.allowedLanes(*edge);
                 assert(allowed != 0);
                 assert(allowed->size() > 0);
@@ -154,16 +156,23 @@ MESegment::recomputeJamThreshold(SUMOReal jamThresh) {
     // f(n_jam_threshold) = myTau_jf (for continuity)
     // f(myHeadwayCapacity) = myTau_jj & myHeadwayCapacity
 
-    const SUMOReal n_jam_threshold = myHeadwayCapacity * myJamThreshold / myCapacity; // number of vehicles above which the segment is jammed
-    // solving f(x) = a * x + b
-    myA = (STEPS2TIME(myTau_jj) * myHeadwayCapacity - STEPS2TIME(myTau_jf)) / (myHeadwayCapacity - n_jam_threshold);
-    myB = myHeadwayCapacity * (STEPS2TIME(myTau_jj) - myA);
+    if (myJamThreshold < myCapacity) {
+        // jamming is possible
+        const SUMOReal n_jam_threshold = myHeadwayCapacity * myJamThreshold / myCapacity; // number of vehicles above which the segment is jammed
+        // solving f(x) = a * x + b
+        myA = (STEPS2TIME(myTau_jj) * myHeadwayCapacity - STEPS2TIME(myTau_jf)) / (myHeadwayCapacity - n_jam_threshold);
+        myB = myHeadwayCapacity * (STEPS2TIME(myTau_jj) - myA);
 
-    // note that the original Eissfeldt model (p. 69) used different fixed points
-    // f(n_jam_threshold) = n_jam_threshold * myTau_jj
-    // f(myHeadwayCapacity) = myTau_jf * myHeadwayCapacity
-    //
-    // However, this systematically underestimates the backpropagation speed of the jam front (see #2244)
+        // note that the original Eissfeldt model (p. 69) used different fixed points
+        // f(n_jam_threshold) = n_jam_threshold * myTau_jj
+        // f(myHeadwayCapacity) = myTau_jf * myHeadwayCapacity
+        //
+        // However, this systematically underestimates the backpropagation speed of the jam front (see #2244)
+    } else {
+        // dummy values. Should not be used
+        myA = 0;
+        myB = myTau_jf;
+    }
 }
 
 
@@ -174,9 +183,10 @@ MESegment::jamThresholdForSpeed(SUMOReal speed, SUMOReal jamThresh) const {
     // and multiply by the space these vehicles would occupy
     // the jamThresh parameter is scale the resulting value
     if (speed == 0) {
-        return std::numeric_limits<double>::max();    // FIXME: This line is just an adhoc-fix to avoid division by zero (Leo)
+        return std::numeric_limits<double>::max();  // never jam. Irrelevant at speed 0 anyway
     }
-    return std::ceil((myLength / (-jamThresh * speed * STEPS2TIME(myTau_ff)))) * (SUMOVTypeParameter::getDefault().length + SUMOVTypeParameter::getDefault().minGap);
+    const SUMOReal defaultLengthWithGap = SUMOVTypeParameter::getDefault().length + SUMOVTypeParameter::getDefault().minGap;
+    return std::ceil((myLength / (-jamThresh * speed * STEPS2TIME(myTau_ff + defaultLengthWithGap / myTau_length)))) * defaultLengthWithGap;
 }
 
 
@@ -274,11 +284,11 @@ MESegment::initialise(MEVehicle* veh, SUMOTime time) {
 }
 
 
-size_t
+int
 MESegment::getCarNumber() const {
-    size_t total = 0;
+    int total = 0;
     for (Queues::const_iterator k = myCarQues.begin(); k != myCarQues.end(); ++k) {
-        total += k->size();
+        total += (int)k->size();
     }
     return total;
 }
@@ -291,10 +301,10 @@ MESegment::getMeanSpeed(bool useCached) const {
         myLastMeanSpeedUpdate = currentTime;
         const SUMOTime tau = free() ? myTau_ff : myTau_jf;
         SUMOReal v = 0;
-        size_t count = 0;
+        int count = 0;
         for (Queues::const_iterator k = myCarQues.begin(); k != myCarQues.end(); ++k) {
             SUMOTime earliestExitTime = currentTime;
-            count += k->size();
+            count += (int)k->size();
             for (std::vector<MEVehicle*>::const_reverse_iterator veh = k->rbegin(); veh != k->rend(); ++veh) {
                 v += (*veh)->getConservativeSpeed(earliestExitTime); // earliestExitTime is updated!
                 earliestExitTime += tau;
@@ -362,7 +372,7 @@ SUMOTime
 MESegment::getNextInsertionTime(SUMOTime earliestEntry) const {
     // since we do not know which queue will be used we give a conservative estimate
     SUMOTime earliestLeave = earliestEntry;
-    for (size_t i = 0; i < myCarQues.size(); ++i) {
+    for (int i = 0; i < (int)myCarQues.size(); ++i) {
         earliestLeave = MAX2(earliestLeave, myBlockTimes[i]);
     }
     if (myEdge.getSpeedLimit() == 0) {
@@ -466,7 +476,7 @@ MESegment::addReminders(MEVehicle* veh) const {
 
 void
 MESegment::receive(MEVehicle* veh, SUMOTime time, bool isDepart, bool afterTeleport) {
-    const SUMOReal speed = isDepart ? -1 : veh->getSpeed(); // on the previous segment
+    const SUMOReal speed = isDepart ? -1 : MAX2(veh->getSpeed(), MESO_MIN_SPEED); // on the previous segment
     veh->setSegment(this); // for arrival checking
     veh->setLastEntryTime(time);
     veh->setBlockTime(SUMOTime_MAX);
@@ -485,15 +495,15 @@ MESegment::receive(MEVehicle* veh, SUMOTime time, bool isDepart, bool afterTelep
     }
     // route continues
     const SUMOReal maxSpeedOnEdge = veh->getEdge()->getVehicleMaxSpeed(veh);
-    const SUMOReal uspeed = MAX2(maxSpeedOnEdge, (SUMOReal).05);
-    size_t nextQueIndex = 0;
+    const SUMOReal uspeed = MAX2(maxSpeedOnEdge, MESO_MIN_SPEED);
+    int nextQueIndex = 0;
     if (myCarQues.size() > 1) {
         const MSEdge* succ = veh->succEdge(1);
         // succ may be invalid if called from initialise() with an invalid route
         if (succ != 0 && myFollowerMap.count(succ) > 0) {
-            const std::vector<size_t>& indices = myFollowerMap[succ];
+            const std::vector<int>& indices = myFollowerMap[succ];
             nextQueIndex = indices[0];
-            for (std::vector<size_t>::const_iterator i = indices.begin() + 1; i != indices.end(); ++i) {
+            for (std::vector<int>::const_iterator i = indices.begin() + 1; i != indices.end(); ++i) {
                 if (myCarQues[*i].size() < myCarQues[nextQueIndex].size()) {
                     nextQueIndex = *i;
                 }
@@ -575,6 +585,7 @@ MESegment::setSpeedForQueue(SUMOReal newSpeed, SUMOTime currentTime, SUMOTime bl
     for (std::vector<MEVehicle*>::const_reverse_iterator i = vehs.rbegin() + 1; i != vehs.rend(); ++i) {
         (*i)->updateDetectors(currentTime, false);
         newEvent = MAX2(newArrival(*i, newSpeed, currentTime), newEvent + myTau_ff);
+        //newEvent = MAX2(newArrival(*i, newSpeed, currentTime), newEvent + myTau_ff + (SUMOTime)((*(i - 1))->getVehicleType().getLength() / myTau_length));
         (*i)->setEventTime(newEvent);
     }
 }
@@ -592,7 +603,8 @@ MESegment::newArrival(const MEVehicle* const v, SUMOReal newSpeed, SUMOTime curr
 void
 MESegment::setSpeed(SUMOReal newSpeed, SUMOTime currentTime, SUMOReal jamThresh) {
     recomputeJamThreshold(jamThresh);
-    for (size_t i = 0; i < myCarQues.size(); ++i) {
+    //myTau_length = MAX2(MESO_MIN_SPEED, newSpeed) * myEdge.getLanes().size() / TIME2STEPS(1);
+    for (int i = 0; i < (int)myCarQues.size(); ++i) {
         if (myCarQues[i].size() != 0) {
             setSpeedForQueue(newSpeed, currentTime, myBlockTimes[i], myCarQues[i]);
         }
@@ -603,7 +615,7 @@ MESegment::setSpeed(SUMOReal newSpeed, SUMOTime currentTime, SUMOReal jamThresh)
 SUMOTime
 MESegment::getEventTime() const {
     SUMOTime result = SUMOTime_MAX;
-    for (size_t i = 0; i < myCarQues.size(); ++i) {
+    for (int i = 0; i < (int)myCarQues.size(); ++i) {
         if (myCarQues[i].size() != 0 && myCarQues[i].back()->getEventTime() < result) {
             result = myCarQues[i].back()->getEventTime();
         }
@@ -618,7 +630,7 @@ MESegment::getEventTime() const {
 void
 MESegment::saveState(OutputDevice& out) {
     out.openTag(SUMO_TAG_SEGMENT);
-    for (size_t i = 0; i < myCarQues.size(); ++i) {
+    for (int i = 0; i < (int)myCarQues.size(); ++i) {
         out.openTag(SUMO_TAG_VIEWSETTINGS_VEHICLES).writeAttr(SUMO_ATTR_TIME, toString<SUMOTime>(myBlockTimes[i]));
         out.writeAttr(SUMO_ATTR_VALUE, myCarQues[i]);
         out.closeTag();
@@ -628,7 +640,7 @@ MESegment::saveState(OutputDevice& out) {
 
 
 void
-MESegment::loadState(std::vector<std::string>& vehIds, MSVehicleControl& vc, const SUMOTime block, const unsigned int queIdx) {
+MESegment::loadState(std::vector<std::string>& vehIds, MSVehicleControl& vc, const SUMOTime block, const int queIdx) {
     for (std::vector<std::string>::const_iterator it = vehIds.begin(); it != vehIds.end(); ++it) {
         MEVehicle* v = static_cast<MEVehicle*>(vc.getVehicle(*it));
         assert(v != 0);

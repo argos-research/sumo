@@ -1,8 +1,8 @@
 /****************************************************************************/
 /// @file    GNENetElement.h
-/// @author  Pablo Álvarez López
+/// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNENetElement.h 20785 2016-05-24 10:51:45Z palcraft $
+/// @version $Id: GNENetElement.h 21166 2016-07-14 12:59:19Z palcraft $
 ///
 // A abstract class for net elements
 /****************************************************************************/
@@ -30,7 +30,6 @@
 #include <config.h>
 #endif
 
-#include <list>
 #include <string>
 #include <utility>
 #include <vector>
@@ -71,8 +70,11 @@ public:
     /// @note: must be called when geometry changes (i.e. lane moved) and implemented in ALL childrens
     virtual void updateGeometry() = 0;
 
+    /// Returns the NetElement's geometry
+    //virtual Boundary getBoundary() const;
+
     /// @brief get Net in which this element is placed
-    GNENet *getNet() const;
+    GNENet* getNet() const;
 
     /// @name inherited from GUIGlObject
     /// @{

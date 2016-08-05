@@ -1,8 +1,8 @@
 /****************************************************************************/
 /// @file    GNERouteProbe.h
 /// @author  Pablo Alvarez Lopez
-/// @date    Nov 2015
-/// @version $Id: GNERouteProbe.h 19790 2016-01-25 11:59:12Z palcraft $
+/// @date    May 2016
+/// @version $Id: GNERouteProbe.h 21150 2016-07-12 12:28:35Z behrisch $
 ///
 ///
 /****************************************************************************/
@@ -56,22 +56,25 @@ public:
      * @param[in] begin The time at which to start generating output
      * @param[in] blocked set initial blocking state of item
      */
-    GNERouteProbe(const std::string& id, GNEViewNet* viewNet, GNEEdge *edge, int frequency, const std::string& filename, int begin, bool blocked);
+    GNERouteProbe(const std::string& id, GNEViewNet* viewNet, GNEEdge* edge, int frequency, const std::string& filename, int begin, bool blocked);
 
     /// @brief Destructor
     ~GNERouteProbe();
 
-    /// @brief change the position of the RouteProbe geometry 
+    /// @brief change the position of the RouteProbe geometry
     void moveAdditional(SUMOReal, SUMOReal, GNEUndoList*);
 
     /// @brief update pre-computed geometry information
     /// @note: must be called when geometry changes (i.e. lane moved)
     void updateGeometry();
 
+    /// @brief Returns position of RouteProbe in view
+    Position getPositionInView() const;
+
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element
      */
-    void writeAdditional(OutputDevice& device);
+    void writeAdditional(OutputDevice& device, const std::string&);
 
     /// @brief get edge in which the RouteProbe is placed
     GNEEdge* getEdge() const;
@@ -100,15 +103,10 @@ public:
 
     /// @name inherited from GUIGlObject
     /// @{
-    /**@brief Returns an own parameter window
-     *
-     * @param[in] app The application needed to build the parameter window
-     * @param[in] parent The parent window needed to build the parameter window
-     * @return The built parameter window
-     * @see GUIGlObject::getParameterWindow
-     */
-    GUIParameterTableWindow* getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent);
+    /// @brief Returns the name of the parent object
+    /// @return This object's parent id
 
+    const std::string& getParentName() const;
     /**@brief Draws the object
      * @param[in] s The settings for the current view (may influence drawing)
      * @see GUIGlObject::drawGL
@@ -141,7 +139,7 @@ public:
 
 protected:
     /// @brief edge of routeProbe
-    GNEEdge *myEdge;
+    GNEEdge* myEdge;
 
     /// @brief Frequency of RouteProbe
     int myFrequency;
@@ -159,18 +157,6 @@ protected:
     int numberOfLanes;
 
 private:
-    /// @brief variable to save RouteProbe icon
-    static GUIGlID myRouteProbeGlID;
-
-    /// @brief variable to save RouteProbe selected icon
-    static GUIGlID myRouteProbeSelectedGlID;
-
-    /// @brief check if RouteProbe icon was inicilalizated
-    static bool myRouteProbeInitialized;
-
-    /// @brief check if RouteProbe selected icon was inicilalizated
-    static bool myRouteProbeSelectedInitialized;
-
     /// @brief set attribute after validation
     void setAttribute(SumoXMLAttr key, const std::string& value);
 

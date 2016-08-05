@@ -2,7 +2,7 @@
 /// @file    MEVehicle.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MEVehicle.cpp 20899 2016-06-07 11:29:08Z namdre $
+/// @version $Id: MEVehicle.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A vehicle from the mesoscopic point of view
 /****************************************************************************/
@@ -263,7 +263,7 @@ MEVehicle::mayProceed() const {
 }
 
 
-SUMOReal 
+SUMOReal
 MEVehicle::getCurrentTLSPenaltySeconds() const {
     if (mySegment == 0) {
         return 0;
@@ -347,9 +347,9 @@ MEVehicle::loadState(const SUMOSAXAttributes& attrs, const SUMOTime offset) {
     if (attrs.hasAttribute(SUMO_ATTR_POSITION)) {
         throw ProcessError("Error: Invalid vehicles in state (may be a micro state)!");
     }
-    unsigned int routeOffset;
+    int routeOffset;
     int segIndex;
-    unsigned int queIndex;
+    int queIndex;
     std::istringstream bis(attrs.getString(SUMO_ATTR_STATE));
     bis >> myDeparture;
     bis >> routeOffset;
@@ -365,7 +365,7 @@ MEVehicle::loadState(const SUMOSAXAttributes& attrs, const SUMOTime offset) {
         myCurrEdge += routeOffset;
         if (segIndex >= 0) {
             MESegment* seg = MSGlobals::gMesoNet->getSegmentForEdge(**myCurrEdge);
-            while (seg->getIndex() != (unsigned int)segIndex) {
+            while (seg->getIndex() != (int)segIndex) {
                 seg = seg->getNextSegment();
                 assert(seg != 0);
             }

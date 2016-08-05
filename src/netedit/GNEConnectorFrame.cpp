@@ -2,7 +2,7 @@
 /// @file    GNEConnectorFrame.cpp
 /// @author  Jakob Erdmann
 /// @date    May 2011
-/// @version $Id: GNEConnectorFrame.cpp 20472 2016-04-15 15:36:45Z palcraft $
+/// @version $Id: GNEConnectorFrame.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The Widget for modifying lane-to-lane connections
 /****************************************************************************/
@@ -201,7 +201,7 @@ GNEConnectorFrame::handleLaneClick(GNELane* lane, bool mayDefinitelyPass, bool a
         myNumChanges = 0;
         myViewNet->getUndoList()->p_begin("modify connections");
     } else if (myPotentialTargets.count(lane) || allowConflict) {
-        const unsigned int fromIndex = myCurrentLane->getIndex();
+        const int fromIndex = myCurrentLane->getIndex();
         GNEEdge& srcEdge = myCurrentLane->getParentEdge();
         GNEEdge& destEdge = lane->getParentEdge();
         const std::string& destEdgeID = destEdge.getMicrosimID();
@@ -216,7 +216,7 @@ GNEConnectorFrame::handleLaneClick(GNELane* lane, bool mayDefinitelyPass, bool a
             case UNCONNECTED:
                 if (toggle) {
                     myViewNet->getUndoList()->add(new GNEChange_Connection(&srcEdge, fromIndex,
-                                    destEdgeID, lane->getIndex(), mayDefinitelyPass, true), true);
+                                                  destEdgeID, lane->getIndex(), mayDefinitelyPass, true), true);
                     lane->setSpecialColor(mayDefinitelyPass ? &targetPassColor : &targetColor);
                     changed = true;
                 }
@@ -224,7 +224,7 @@ GNEConnectorFrame::handleLaneClick(GNELane* lane, bool mayDefinitelyPass, bool a
             case CONNECTED:
             case CONNECTED_PASS:
                 myViewNet->getUndoList()->add(new GNEChange_Connection(&srcEdge, fromIndex, destEdgeID, lane->getIndex(),
-                                status == CONNECTED_PASS, false), true);
+                                              status == CONNECTED_PASS, false), true);
                 lane->setSpecialColor(&potentialTargetColor);
                 changed = true;
                 deletedConnection = NBConnection(srcEdge.getNBEdge(), fromIndex,
@@ -280,8 +280,8 @@ long
 GNEConnectorFrame::onCmdSelectDeadEnds(FXObject*, FXSelector, void*) {
     std::vector<GUIGlID> selectIDs;
     // every edge knows its outgoing connections so we can look at each edge in isolation
-    const std::list<GNEEdge*> edges = myViewNet->getNet()->retrieveEdges();
-    for (std::list<GNEEdge*>::const_iterator edge_it = edges.begin(); edge_it != edges.end(); edge_it++) {
+    const std::vector<GNEEdge*> edges = myViewNet->getNet()->retrieveEdges();
+    for (std::vector<GNEEdge*>::const_iterator edge_it = edges.begin(); edge_it != edges.end(); edge_it++) {
         const GNEEdge::LaneVector& lanes = (*edge_it)->getLanes();
         for (GNEEdge::LaneVector::const_iterator it_lane = lanes.begin(); it_lane != lanes.end(); it_lane++) {
             if ((*edge_it)->getNBEdge()->getConnectionsFromLane((*it_lane)->getIndex()).size() == 0) {
@@ -299,8 +299,8 @@ GNEConnectorFrame::onCmdSelectDeadStarts(FXObject*, FXSelector, void*) {
     GNENet* net = myViewNet->getNet();
     std::set<GUIGlID> selectIDs;
     // every edge knows only its outgoing connections so we look at whole junctions
-    const std::list<GNEJunction*> junctions = net->retrieveJunctions();
-    for (std::list<GNEJunction*>::const_iterator junction_it = junctions.begin(); junction_it != junctions.end(); junction_it++) {
+    const std::vector<GNEJunction*> junctions = net->retrieveJunctions();
+    for (std::vector<GNEJunction*>::const_iterator junction_it = junctions.begin(); junction_it != junctions.end(); junction_it++) {
         // first collect all outgoing lanes
         const EdgeVector& outgoing = (*junction_it)->getNBNode()->getOutgoingEdges();
         for (EdgeVector::const_iterator it = outgoing.begin(); it != outgoing.end(); it++) {
@@ -334,8 +334,8 @@ long
 GNEConnectorFrame::onCmdSelectConflicts(FXObject*, FXSelector, void*) {
     std::vector<GUIGlID> selectIDs;
     // conflicts happen per edge so we can look at each edge in isolation
-    const std::list<GNEEdge*> edges = myViewNet->getNet()->retrieveEdges();
-    for (std::list<GNEEdge*>::const_iterator edge_it = edges.begin(); edge_it != edges.end(); edge_it++) {
+    const std::vector<GNEEdge*> edges = myViewNet->getNet()->retrieveEdges();
+    for (std::vector<GNEEdge*>::const_iterator edge_it = edges.begin(); edge_it != edges.end(); edge_it++) {
         NBEdge* nbe = (*edge_it)->getNBEdge();
         const EdgeVector destinations = nbe->getConnectedEdges();
         const std::vector<NBEdge::Connection>& connections = nbe->getConnections();
@@ -361,8 +361,8 @@ GNEConnectorFrame::onCmdSelectConflicts(FXObject*, FXSelector, void*) {
 long
 GNEConnectorFrame::onCmdSelectPass(FXObject*, FXSelector, void*) {
     std::vector<GUIGlID> selectIDs;
-    const std::list<GNEEdge*> edges = myViewNet->getNet()->retrieveEdges();
-    for (std::list<GNEEdge*>::const_iterator edge_it = edges.begin(); edge_it != edges.end(); edge_it++) {
+    const std::vector<GNEEdge*> edges = myViewNet->getNet()->retrieveEdges();
+    for (std::vector<GNEEdge*>::const_iterator edge_it = edges.begin(); edge_it != edges.end(); edge_it++) {
         GNEEdge* edge = *edge_it;
         NBEdge* nbe = edge->getNBEdge();
         const std::vector<NBEdge::Connection>& connections = nbe->getConnections();
@@ -471,7 +471,7 @@ GNEConnectorFrame::initTargets() {
         }
     }
     // set color for existing connections
-    const unsigned int fromIndex = myCurrentLane->getIndex();
+    const int fromIndex = myCurrentLane->getIndex();
     NBEdge* srcEdge = myCurrentLane->getParentEdge().getNBEdge();
     std::vector<NBEdge::Connection> connections = srcEdge->getConnectionsFromLane(fromIndex);
     for (std::set<GNELane*>::iterator it = myPotentialTargets.begin(); it != myPotentialTargets.end(); it++) {
@@ -511,9 +511,9 @@ GNEConnectorFrame::cleanup() {
 GNEConnectorFrame::LaneStatus
 GNEConnectorFrame::getLaneStatus(const std::vector<NBEdge::Connection>& connections, GNELane* targetLane) {
     NBEdge* srcEdge = myCurrentLane->getParentEdge().getNBEdge();
-    const unsigned int fromIndex = myCurrentLane->getIndex();
+    const int fromIndex = myCurrentLane->getIndex();
     NBEdge* destEdge = targetLane->getParentEdge().getNBEdge();
-    const unsigned int toIndex = targetLane->getIndex();
+    const int toIndex = targetLane->getIndex();
     std::vector<NBEdge::Connection>::const_iterator con_it = find_if(
                 connections.begin(), connections.end(),
                 NBEdge::connections_finder(fromIndex, destEdge, toIndex));
@@ -532,11 +532,11 @@ GNEConnectorFrame::getLaneStatus(const std::vector<NBEdge::Connection>& connecti
 }
 
 
-unsigned int
+int
 GNEConnectorFrame::getTLLLinkNumber(const std::vector<NBEdge::Connection>& connections, GNELane* targetLane) {
-    const unsigned int fromIndex = myCurrentLane->getIndex();
+    const int fromIndex = myCurrentLane->getIndex();
     NBEdge* destEdge = targetLane->getParentEdge().getNBEdge();
-    const unsigned int toIndex = targetLane->getIndex();
+    const int toIndex = targetLane->getIndex();
     std::vector<NBEdge::Connection>::const_iterator it = find_if(
                 connections.begin(), connections.end(),
                 NBEdge::connections_finder(fromIndex, destEdge, toIndex));

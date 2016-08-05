@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIEdge.h 20496 2016-04-19 12:08:29Z namdre $
+/// @version $Id: GUIEdge.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A road/street connecting two junctions (gui-version)
 /****************************************************************************/
@@ -88,7 +88,7 @@ public:
     Boundary getBoundary() const;
 
     /// returns the enumerated lane (!!! why not private with a friend?)
-    MSLane& getLane(size_t laneNo);
+    MSLane& getLane(int laneNo);
 
 
 
@@ -164,7 +164,7 @@ public:
         MSEdge::removeContainer(c);
     }
 
-    unsigned int getVehicleNo() const;
+    int getVehicleNo() const;
     std::string getVehicleIDs() const;
     SUMOReal getBruttoOccupancy() const;
     SUMOReal getAllowedSpeed() const;
@@ -177,16 +177,16 @@ public:
     void setColor(const GUIVisualizationSettings& s) const;
 
     /// @brief sets the color according to the current scheme index and some edge function
-    bool setFunctionalColor(size_t activeScheme) const;
+    bool setFunctionalColor(int activeScheme) const;
 
     /// @brief sets multiple colors according to the current scheme index and edge function
     bool setMultiColor(const GUIColorer& c) const;
 
     /// @brief gets the color value according to the current scheme index
-    SUMOReal getColorValue(size_t activeScheme) const;
+    SUMOReal getColorValue(int activeScheme) const;
 
     /// @brief gets the scaling value according to the current scheme index
-    SUMOReal getScaleValue(size_t activeScheme) const;
+    SUMOReal getScaleValue(int activeScheme) const;
 
     /// @brief returns the segment closest to the given position
     MESegment* getSegmentAtPosition(const Position& pos);

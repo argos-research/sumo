@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 29.04.2005
-/// @version $Id: MSAbstractLaneChangeModel.cpp 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: MSAbstractLaneChangeModel.cpp 21083 2016-07-01 12:03:17Z namdre $
 ///
 // Interface for lane-change models
 /****************************************************************************/
@@ -46,6 +46,7 @@
  * static members
  * ----------------------------------------------------------------------- */
 bool MSAbstractLaneChangeModel::myAllowOvertakingRight(false);
+bool MSAbstractLaneChangeModel::myLCOutput(false);
 
 /* -------------------------------------------------------------------------
  * MSAbstractLaneChangeModel-methods
@@ -54,6 +55,7 @@ bool MSAbstractLaneChangeModel::myAllowOvertakingRight(false);
 void
 MSAbstractLaneChangeModel::initGlobalOptions(const OptionsCont& oc) {
     myAllowOvertakingRight = oc.getBool("lanechange.overtake-right");
+    myLCOutput = oc.isSet("lanechange-output");
 }
 
 
@@ -161,6 +163,18 @@ MSAbstractLaneChangeModel::primaryLaneChanged(MSLane* source, MSLane* target, in
     source->leftByLaneChange(&myVehicle);
     myVehicle.enterLaneAtLaneChange(target);
     target->enteredByLaneChange(&myVehicle);
+    if (myLCOutput) {
+        OutputDevice& of = OutputDevice::getDeviceByOption("lanechange-output");
+        of.openTag("change");
+        of.writeAttr(SUMO_ATTR_ID, myVehicle.getID());
+        of.writeAttr(SUMO_ATTR_TIME, time2string(MSNet::getInstance()->getCurrentTimeStep()));
+        of.writeAttr(SUMO_ATTR_FROM, source->getID());
+        of.writeAttr(SUMO_ATTR_TO, target->getID());
+        of.writeAttr(SUMO_ATTR_DIR, direction);
+        of.writeAttr(SUMO_ATTR_SPEED, myVehicle.getSpeed());
+        of.writeAttr("reason", toString((LaneChangeAction)(myOwnState & ~(LCA_RIGHT | LCA_LEFT))));
+        of.closeTag();
+    }
     changed();
 }
 

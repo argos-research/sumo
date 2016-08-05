@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Aug 2003
-/// @version $Id: GUIInductLoop.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIInductLoop.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The gui-version of the MSInductLoop, together with the according
 /****************************************************************************/
@@ -93,9 +93,9 @@ GUIInductLoop::leaveDetectorByLaneChange(SUMOVehicle& veh, SUMOReal lastPos) {
 
 
 std::vector<MSInductLoop::VehicleData>
-GUIInductLoop::collectVehiclesOnDet(SUMOTime t) const {
+GUIInductLoop::collectVehiclesOnDet(SUMOTime t, bool leaveTime) const {
     AbstractMutex::ScopedLocker locker(myLock);
-    return MSInductLoop::collectVehiclesOnDet(t);
+    return MSInductLoop::collectVehiclesOnDet(t, leaveTime);
 }
 
 
@@ -134,7 +134,7 @@ GUIInductLoop::MyWrapper::getParameterWindow(GUIMainWindow& app,
     ret->mkItem("lane", false, myDetector.getLane()->getID());
     // values
     ret->mkItem("passed vehicles [#]", true,
-                new FunctionBinding<GUIInductLoop, unsigned int>(&myDetector, &GUIInductLoop::getCurrentPassedNumber));
+                new FunctionBinding<GUIInductLoop, int>(&myDetector, &GUIInductLoop::getCurrentPassedNumber));
     ret->mkItem("speed [m/s]", true,
                 new FunctionBinding<GUIInductLoop, SUMOReal>(&myDetector, &GUIInductLoop::getCurrentSpeed));
     ret->mkItem("occupancy [%]", true,

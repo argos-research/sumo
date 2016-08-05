@@ -2,7 +2,7 @@
 /// @file    GNEDetectorE3.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetectorE3.cpp 19861 2016-02-01 09:08:47Z palcraft $
+/// @version $Id: GNEDetectorE3.cpp 21160 2016-07-14 08:03:04Z behrisch $
 ///
 ///
 /****************************************************************************/
@@ -39,7 +39,7 @@
 #include <utils/geom/GeomHelper.h>
 #include <utils/gui/windows/GUISUMOAbstractView.h>
 #include <utils/gui/windows/GUIAppEnum.h>
-#include <utils/gui/images/GUIIconSubSys.h>
+#include <utils/gui/images/GUITextureSubSys.h>
 #include <utils/gui/div/GUIParameterTableWindow.h>
 #include <utils/gui/globjects/GUIGLObjectPopupMenu.h>
 #include <utils/gui/div/GUIGlobalSelection.h>
@@ -55,49 +55,26 @@
 #include "GNEUndoList.h"
 #include "GNENet.h"
 #include "GNEChange_Attribute.h"
-#include "GNELogo_E3.cpp"
-#include "GNELogo_E3Selected.cpp"
 
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
 #endif
 
 // ===========================================================================
-// static member definitions
-// ===========================================================================
-GUIGlID GNEDetectorE3::myDetectorE3GlID = 0;
-GUIGlID GNEDetectorE3::myDetectorE3SelectedGlID = 0;
-bool GNEDetectorE3::myDetectorE3Initialized = false;
-bool GNEDetectorE3::myDetectorE3SelectedInitialized = false;
-
-// ===========================================================================
 // member method definitions
 // ===========================================================================
 
-GNEDetectorE3::GNEDetectorE3(const std::string& id, GNEViewNet* viewNet, Position pos, SUMOReal freq, const std::string& filename, bool blocked) :
+GNEDetectorE3::GNEDetectorE3(const std::string& id, GNEViewNet* viewNet, Position pos, int freq, const std::string& filename, SUMOTime timeThreshold, SUMOReal speedThreshold, bool blocked) :
     GNEAdditionalSet(id, viewNet, pos, SUMO_TAG_E3DETECTOR, blocked),
     myFreq(freq),
     myFilename(filename),
-    myCounterId(0) {
+    myTimeThreshold(timeThreshold),
+    mySpeedThreshold(speedThreshold) {
     // Update geometry;
     updateGeometry();
     // Set colors
     myBaseColor = RGBColor(76, 170, 50, 255);
     myBaseColorSelected = RGBColor(161, 255, 135, 255);
-    // load detector E3 logo, if wasn't inicializated
-    if (!myDetectorE3Initialized) {
-        FXImage* i = new FXGIFImage(getViewNet()->getNet()->getApp(), GNELogo_E3, IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP);
-        myDetectorE3GlID = GUITexturesHelper::add(i);
-        myDetectorE3Initialized = true;
-        delete i;
-    }
-    // load detector E3 selected logo, if wasn't inicializated
-    if (!myDetectorE3SelectedInitialized) {
-        FXImage* i = new FXGIFImage(getViewNet()->getNet()->getApp(), GNELogo_E3Selected, IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP);
-        myDetectorE3SelectedGlID = GUITexturesHelper::add(i);
-        myDetectorE3SelectedInitialized = true;
-        delete i;
-    }
 }
 
 
@@ -110,8 +87,8 @@ GNEDetectorE3::updateGeometry() {
     // Clear shape
     myShape.clear();
 
-    // Set position
-    myShape.push_back(myPosition);
+    // Set block icon position
+    myBlockIconPosition = myPosition;
 
     // Set block icon offset
     myBlockIconOffset = Position(-0.5, -0.5);
@@ -119,15 +96,29 @@ GNEDetectorE3::updateGeometry() {
     // Set block icon rotation, and using their rotation for draw logo
     setBlockIconRotation();
 
+    // Set position
+    myShape.push_back(myPosition);
+
+    // Add shape of childs (To avoid graphics errors)
+    for (childAdditionals::iterator i = myChildAdditionals.begin(); i != myChildAdditionals.end(); i++) {
+        myShape.append((*i)->getShape());
+    }
+
     // Update connections
     updateConnections();
 }
 
 
+Position
+GNEDetectorE3::getPositionInView() const {
+    return myPosition;
+}
+
+
 void
-GNEDetectorE3::moveAdditional(SUMOReal posx, SUMOReal posy, GNEUndoList *undoList) {
+GNEDetectorE3::moveAdditional(SUMOReal posx, SUMOReal posy, GNEUndoList* undoList) {
     // if item isn't blocked
-    if(myBlocked == false) {
+    if (myBlocked == false) {
         // change Position
         undoList->p_add(new GNEChange_Attribute(this, SUMO_ATTR_POSITION, toString(Position(posx, posy, 0))));
     }
@@ -135,38 +126,33 @@ GNEDetectorE3::moveAdditional(SUMOReal posx, SUMOReal posy, GNEUndoList *undoLis
 
 
 void
-GNEDetectorE3::writeAdditional(OutputDevice& device) {
+GNEDetectorE3::writeAdditional(OutputDevice& device, const std::string& currentDirectory) {
     // Only save E3 if have Entry/Exits
-    if(getNumberOfAdditionalChilds() > 0) {
+    if (getNumberOfAdditionalChilds() > 0) {
         // Write parameters
         device.openTag(getTag());
         device.writeAttr(SUMO_ATTR_ID, getID());
         device.writeAttr(SUMO_ATTR_FREQUENCY, myFreq);
-        if(!myFilename.empty())
+        if (!myFilename.empty()) {
             device.writeAttr(SUMO_ATTR_FILE, myFilename);
+        }
+        device.writeAttr(SUMO_ATTR_HALTING_TIME_THRESHOLD, myTimeThreshold);
+        device.writeAttr(SUMO_ATTR_HALTING_SPEED_THRESHOLD, mySpeedThreshold);
         device.writeAttr(SUMO_ATTR_X, myPosition.x());
         device.writeAttr(SUMO_ATTR_Y, myPosition.y());
-        writeAdditionalChildrens(device);
+        // Write childs of this element
+        writeAdditionalChildrens(device, currentDirectory);
         // Close tag
         device.closeTag();
-    }
-    else
+    } else {
         WRITE_WARNING(toString(getTag()) + " with ID = '" + getID() + "' cannot be writed in additional file because don't have childs.");
+    }
 }
 
 
-GUIParameterTableWindow*
-GNEDetectorE3::getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent) {
-    /** NOT YET SUPPORTED **/
-    // Ignore Warning
-    UNUSED_PARAMETER(parent);
-    GUIParameterTableWindow* ret = new GUIParameterTableWindow(app, *this, 2);
-    // add items
-    ret->mkItem("id", false, getID());
-    /** @TODO complet with the rest of parameters **/
-    // close building
-    ret->closeBuilding();
-    return ret;
+const std::string&
+GNEDetectorE3::getParentName() const {
+    return myViewNet->getNet()->getMicrosimID();
 }
 
 
@@ -182,17 +168,17 @@ GNEDetectorE3::drawGL(const GUIVisualizationSettings& s) const {
     glRotated(180, 0, 0, 1);
 
     // Draw icon depending of detector is or isn't selected
-    if(isAdditionalSelected()) 
-        GUITexturesHelper::drawTexturedBox(myDetectorE3SelectedGlID, 1);
-    else
-        GUITexturesHelper::drawTexturedBox(myDetectorE3GlID, 1);
+    if (isAdditionalSelected()) {
+        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_E3SELECTED), 1);
+    } else {
+        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_E3), 1);
+    }
 
     // Pop logo matrix
     glPopMatrix();
 
     // Show Lock icon depending of the Edit mode
-    //if(dynamic_cast<GNEViewNet*>(parent)->showLockIcon())
-        drawLockIcon(0.4);
+    drawLockIcon(0.4);
 
     // Draw connections
     drawConnections();
@@ -209,13 +195,17 @@ std::string
 GNEDetectorE3::getAttribute(SumoXMLAttr key) const {
     switch (key) {
         case SUMO_ATTR_ID:
-            return getMicrosimID();
+            return getAdditionalID();
         case SUMO_ATTR_POSITION:
             return toString(myPosition);
         case SUMO_ATTR_FREQUENCY:
             return toString(myFreq);
         case SUMO_ATTR_FILE:
             return myFilename;
+        case SUMO_ATTR_HALTING_TIME_THRESHOLD:
+            return toString(myTimeThreshold);
+        case SUMO_ATTR_HALTING_SPEED_THRESHOLD:
+            return toString(mySpeedThreshold);
         default:
             throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
     }
@@ -229,10 +219,11 @@ GNEDetectorE3::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoLi
     }
     switch (key) {
         case SUMO_ATTR_ID:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
         case SUMO_ATTR_FREQUENCY:
         case SUMO_ATTR_POSITION:
         case SUMO_ATTR_FILE:
+        case SUMO_ATTR_HALTING_TIME_THRESHOLD:
+        case SUMO_ATTR_HALTING_SPEED_THRESHOLD:
             undoList->p_add(new GNEChange_Attribute(this, key, value));
             updateGeometry();
             break;
@@ -246,7 +237,11 @@ bool
 GNEDetectorE3::isValid(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            if (myViewNet->getNet()->getAdditional(getTag(), value) == NULL) {
+                return true;
+            } else {
+                return false;
+            }
         case SUMO_ATTR_POSITION:
             bool ok;
             return GeomConvHelper::parseShapeReporting(value, "user-supplied position", 0, ok, false).size() == 1;
@@ -254,8 +249,11 @@ GNEDetectorE3::isValid(SumoXMLAttr key, const std::string& value) {
             return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) >= 0);
         case SUMO_ATTR_FILE:
             return isValidFileValue(value);
-        case SUMO_ATTR_LINES:
-            return isValidStringVector(value);
+        case SUMO_ATTR_HALTING_TIME_THRESHOLD:
+            // @ToDo SUMOTIME
+            return canParse<int>(value);
+        case SUMO_ATTR_HALTING_SPEED_THRESHOLD:
+            return canParse<SUMOReal>(value);
         default:
             throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
     }
@@ -266,7 +264,8 @@ void
 GNEDetectorE3::setAttribute(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            setAdditionalID(value);
+            break;
         case SUMO_ATTR_POSITION:
             bool ok;
             myPosition = GeomConvHelper::parseShapeReporting(value, "user-supplied position", 0, ok, false)[0];
@@ -278,6 +277,13 @@ GNEDetectorE3::setAttribute(SumoXMLAttr key, const std::string& value) {
             break;
         case SUMO_ATTR_FILE:
             myFilename = value;
+            break;
+        case SUMO_ATTR_HALTING_TIME_THRESHOLD:
+            // @todo SUMOTIME
+            myTimeThreshold = parse<int>(value);
+            break;
+        case SUMO_ATTR_HALTING_SPEED_THRESHOLD:
+            mySpeedThreshold = parse<SUMOReal>(value);
             break;
         default:
             throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");

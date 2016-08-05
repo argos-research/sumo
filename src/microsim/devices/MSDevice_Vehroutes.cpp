@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 30.01.2009
-/// @version $Id: MSDevice_Vehroutes.cpp 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: MSDevice_Vehroutes.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // A device which collects info on the vehicle trip
 /****************************************************************************/
@@ -82,7 +82,7 @@ MSDevice_Vehroutes::init() {
 
 
 MSDevice_Vehroutes*
-MSDevice_Vehroutes::buildVehicleDevices(SUMOVehicle& v, std::vector<MSDevice*>& into, unsigned int maxRoutes) {
+MSDevice_Vehroutes::buildVehicleDevices(SUMOVehicle& v, std::vector<MSDevice*>& into, int maxRoutes) {
     if (maxRoutes < INT_MAX) {
         return new MSDevice_Vehroutes(v, "vehroute_" + v.getID(), maxRoutes);
     }
@@ -112,7 +112,7 @@ MSDevice_Vehroutes::StateListener::vehicleStateChanged(const SUMOVehicle* const 
 // ---------------------------------------------------------------------------
 // MSDevice_Vehroutes-methods
 // ---------------------------------------------------------------------------
-MSDevice_Vehroutes::MSDevice_Vehroutes(SUMOVehicle& holder, const std::string& id, unsigned int maxRoutes)
+MSDevice_Vehroutes::MSDevice_Vehroutes(SUMOVehicle& holder, const std::string& id, int maxRoutes)
     : MSDevice(holder, id), myCurrentRoute(&holder.getRoute()), myMaxRoutes(maxRoutes), myLastSavedAt(0) {
     myCurrentRoute->addReference();
 }
@@ -187,12 +187,12 @@ MSDevice_Vehroutes::writeXMLRoute(OutputDevice& os, int index) const {
         const MSEdge* lastEdge = 0;
         int numWritten = 0;
         if (myHolder.getNumberReroutes() > 0) {
-            assert(myReplacedRoutes.size() <= myHolder.getNumberReroutes());
-            unsigned int i = static_cast<unsigned int>(myReplacedRoutes.size());
+            assert((int)myReplacedRoutes.size() <= myHolder.getNumberReroutes());
+            int i = (int)myReplacedRoutes.size();
             while (i > 0 && myReplacedRoutes[i - 1].edge) {
                 i--;
             }
-            for (; i < myReplacedRoutes.size(); ++i) {
+            for (; i < (int)myReplacedRoutes.size(); ++i) {
                 numWritten += myReplacedRoutes[i].route->writeEdgeIDs(os, lastEdge, myReplacedRoutes[i].edge);
                 lastEdge = myReplacedRoutes[i].edge;
             }
@@ -256,7 +256,7 @@ MSDevice_Vehroutes::generateOutput() const {
             }
             od.openTag(SUMO_TAG_ROUTE_DISTRIBUTION).writeAttr(SUMO_ATTR_LAST, index);
             const std::vector<SUMOReal>& probs = routeDist->getProbs();
-            for (unsigned int i = 0; i < routes.size(); ++i) {
+            for (int i = 0; i < (int)routes.size(); ++i) {
                 od.setPrecision();
                 od.openTag(SUMO_TAG_ROUTE).writeAttr(SUMO_ATTR_COST, routes[i]->getCosts());
                 od.setPrecision(8);
@@ -273,7 +273,7 @@ MSDevice_Vehroutes::generateOutput() const {
     } else {
         if (myReplacedRoutes.size() > 0) {
             od.openTag(SUMO_TAG_ROUTE_DISTRIBUTION);
-            for (unsigned int i = 0; i < myReplacedRoutes.size(); ++i) {
+            for (int i = 0; i < (int)myReplacedRoutes.size(); ++i) {
                 writeXMLRoute(od, i);
             }
         }
@@ -327,7 +327,7 @@ MSDevice_Vehroutes::addRoute() {
         } else {
             myReplacedRoutes.push_back(RouteReplaceInfo(0, MSNet::getInstance()->getCurrentTimeStep(), myCurrentRoute));
         }
-        if (myReplacedRoutes.size() > myMaxRoutes) {
+        if ((int)myReplacedRoutes.size() > myMaxRoutes) {
             myReplacedRoutes.front().route->release();
             myReplacedRoutes.erase(myReplacedRoutes.begin());
         }

@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Yun-Pang Floetteroed
 /// @date    Wed, 21 Jan 2004
-/// @version $Id: ROAbstractEdgeBuilder.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ROAbstractEdgeBuilder.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Interface for building instances of router-edges
 /****************************************************************************/
@@ -87,14 +87,14 @@ protected:
     /** @brief Returns the index of the edge to built
      * @return Next valid edge index
      */
-    unsigned int getNextIndex() {
+    int getNextIndex() {
         return myCurrentIndex++;
     }
 
 
 private:
     /// @brief The next edge's index
-    unsigned int myCurrentIndex;
+    int myCurrentIndex;
 
 
 private:

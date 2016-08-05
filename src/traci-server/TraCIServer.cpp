@@ -11,7 +11,7 @@
 /// @author  Michael Behrisch
 /// @author  Mario Krumnow
 /// @date    2007/10/24
-/// @version $Id: TraCIServer.cpp 20969 2016-06-15 08:02:52Z namdre $
+/// @version $Id: TraCIServer.cpp 21202 2016-07-19 13:40:35Z behrisch $
 ///
 /// TraCI server used to control sumo by a remote TraCI client (e.g., ns2)
 /****************************************************************************/
@@ -399,8 +399,8 @@ TraCIServer::runEmbedded(std::string pyFile) {
 
 int
 TraCIServer::dispatchCommand() {
-    unsigned int commandStart = myInputStorage.position();
-    unsigned int commandLength = myInputStorage.readUnsignedByte();
+    int commandStart = myInputStorage.position();
+    int commandLength = myInputStorage.readUnsignedByte();
     if (commandLength == 0) {
         commandLength = myInputStorage.readInt();
     }
@@ -475,11 +475,11 @@ TraCIServer::dispatchCommand() {
         }
     }
     if (!success) {
-        while (myInputStorage.valid_pos() && myInputStorage.position() < commandStart + commandLength) {
+        while (myInputStorage.valid_pos() && (int)myInputStorage.position() < commandStart + commandLength) {
             myInputStorage.readChar();
         }
     }
-    if (myInputStorage.position() != commandStart + commandLength) {
+    if ((int)myInputStorage.position() != commandStart + commandLength) {
         std::ostringstream msg;
         msg << "Wrong position in requestMessage after dispatching command.";
         msg << " Expected command length was " << commandLength;
@@ -587,13 +587,13 @@ TraCIServer::initialiseSubscription(const TraCIServer::Subscription& s) {
         } else {
             bool needNewSubscription = true;
             for (std::vector<Subscription>::iterator i = mySubscriptions.begin(); i != mySubscriptions.end(); ++i) {
-                if (s.commandId == i->commandId && s.id == i->id && 
-                    s.beginTime == i->beginTime && s.endTime == i->endTime &&
-                    s.contextVars == i->contextVars && s.contextDomain == i->contextDomain && s.range == i->range) {
+                if (s.commandId == i->commandId && s.id == i->id &&
+                        s.beginTime == i->beginTime && s.endTime == i->endTime &&
+                        s.contextVars == i->contextVars && s.contextDomain == i->contextDomain && s.range == i->range) {
                     std::vector<std::vector<unsigned char> >::const_iterator k = s.parameters.begin();
                     for (std::vector<int>::const_iterator j = s.variables.begin(); j != s.variables.end(); ++j, ++k) {
                         const int offset = std::find(i->variables.begin(), i->variables.end(), *j) - i->variables.begin();
-                        if (offset == i->variables.size() || i->parameters[offset] != *k) {
+                        if (offset == (int)i->variables.size() || i->parameters[offset] != *k) {
                             i->variables.push_back(*j);
                             i->parameters.push_back(*k);
                         }
@@ -830,7 +830,7 @@ TraCIServer::processSingleSubscription(const Subscription& s, tcpip::Storage& wr
             }
         }
     }
-    unsigned int length = (1 + 4) + 1 + (4 + (int)(s.id.length())) + 1 + (int)outputStorage.size();
+    int length = (1 + 4) + 1 + (4 + (int)(s.id.length())) + 1 + (int)outputStorage.size();
     if (s.contextVars) {
         length += 4;
     }
@@ -1000,9 +1000,9 @@ TraCIServer::readTypeCheckingPolygon(tcpip::Storage& inputStorage, PositionVecto
         return false;
     }
     into.clear();
-    unsigned int noEntries = inputStorage.readUnsignedByte();
+    int noEntries = inputStorage.readUnsignedByte();
     PositionVector shape;
-    for (unsigned int i = 0; i < noEntries; ++i) {
+    for (int i = 0; i < noEntries; ++i) {
         SUMOReal x = inputStorage.readDouble();
         SUMOReal y = inputStorage.readDouble();
         into.push_back(Position(x, y));

@@ -2,7 +2,7 @@
 /// @file    GNEDetectorE3.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetectorE3.h 19790 2016-01-25 11:59:12Z palcraft $
+/// @version $Id: GNEDetectorE3.h 21150 2016-07-12 12:28:35Z behrisch $
 ///
 ///
 /****************************************************************************/
@@ -45,7 +45,7 @@ class GNELane;
  * @class GNEDetectorE3
  * ------------
  */
-class GNEDetectorE3 : public GNEAdditionalSet{
+class GNEDetectorE3 : public GNEAdditionalSet {
 public:
     /**@brief GNEDetectorE3 Constructor
      * @param[in] id The storage of gl-ids to get the one for this lane representation from
@@ -53,9 +53,11 @@ public:
      * @param[in] pos position (center) of the detector in the map
      * @param[in] freq the aggregation period the values the detector collects shall be summed up.
      * @param[in] filename The path to the output file
+     * @param[in] timeThreshold The time-based threshold that describes how much time has to pass until a vehicle is recognized as halting
+     * @param[in] speedThreshold The speed-based threshold that describes how slow a vehicle has to be to be recognized as halting
      * @param[in] blocked set initial blocking state of item
      */
-    GNEDetectorE3(const std::string& id, GNEViewNet* viewNet, Position pos, SUMOReal freq, const std::string& filename, bool blocked);
+    GNEDetectorE3(const std::string& id, GNEViewNet* viewNet, Position pos, int freq, const std::string& filename, SUMOTime timeThreshold, SUMOReal speedThreshold, bool blocked);
 
     /// @brief GNEDetectorE3 6Destructor
     ~GNEDetectorE3();
@@ -64,28 +66,26 @@ public:
     /// @note: must be called when geometry changes (i.e. lane moved)
     void updateGeometry();
 
-    /**@brief change the position of the E3 geometry 
+    /// @brief Returns position of detector E3 in view
+    Position getPositionInView() const;
+
+    /**@brief change the position of the E3 geometry
      * @param[in] posx new x position of item in the map
      * @param[in] posy new y position of item in the map
      * @param[in] undoList pointer to the undo list
      */
-    void moveAdditional(SUMOReal posx, SUMOReal posy, GNEUndoList *undoList);
+    void moveAdditional(SUMOReal posx, SUMOReal posy, GNEUndoList* undoList);
 
     /**@brief writte additionalSet element into a xml file
      * @param[in] device device in which write parameters of additionalSet element
      */
-    void writeAdditional(OutputDevice& device);
+    void writeAdditional(OutputDevice& device, const std::string& currentDirectory);
 
     /// @name inherited from GUIGlObject
     /// @{
-    /**@brief Returns an own parameter window
-     *
-     * @param[in] app The application needed to build the parameter window
-     * @param[in] parent The parent window needed to build the parameter window
-     * @return The built parameter window
-     * @see GUIGlObject::getParameterWindow
-     */
-    GUIParameterTableWindow* getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent);
+    /// @brief Returns the name of the parent object
+    /// @return This object's parent id
+    const std::string& getParentName() const;
 
     /**@brief Draws the object
      * @param[in] s The settings for the current view (may influence drawing)
@@ -119,30 +119,21 @@ public:
 
 protected:
     /// @brief frequency of E3 detector
-    SUMOReal myFreq;
+    int myFreq;
 
     /// @brief fielname of E3 detector
     std::string myFilename;
 
-    /// @brief counter for Id's of GNEDetectorE3EntryExit
-    int myCounterId;
+    /// @brief The time-based threshold that describes how much time has to pass until a vehicle is recognized as halting
+    SUMOTime myTimeThreshold;
+
+    /// @brief The speed-based threshold that describes how slow a vehicle has to be to be recognized as halting
+    SUMOReal mySpeedThreshold;
 
     /// @brief vector with the GNEDetectorE3EntryExits of the detector
     std::vector<GNEDetectorE3EntryExit*> myGNEDetectorE3EntryExits;
 
 private:
-    /// @brief variable to save detector E3 icon
-    static GUIGlID myDetectorE3GlID;
-
-    /// @brief variable to save detector E3 selected icon
-    static GUIGlID myDetectorE3SelectedGlID;
-
-    /// @brief check if detector E3 icon was inicilalizated
-    static bool myDetectorE3Initialized;
-
-    /// @brief check if detector E3 selected icon was inicilalizated
-    static bool myDetectorE3SelectedInitialized;
-
     /// @brief set attribute after validation
     void setAttribute(SumoXMLAttr key, const std::string& value);
 

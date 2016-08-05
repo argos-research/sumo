@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_GUI.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: TraCIServerAPI_GUI.cpp 21186 2016-07-18 12:04:16Z namdre $
 ///
 // APIs for getting/setting GUI values via TraCI
 /****************************************************************************/
@@ -139,8 +139,9 @@ TraCIServerAPI_GUI::processSet(TraCIServer& server, tcpip::Storage& inputStorage
             if (!server.readTypeCheckingDouble(inputStorage, zoom)) {
                 return server.writeErrorStatusCmd(CMD_SET_GUI_VARIABLE, "The zoom must be given as a double.", outputStorage);
             }
-            off.set(v->getChanger().getXPos(), v->getChanger().getYPos(), zoom);
-            v->setViewport(off, p);
+            off.set(v->getChanger().getXPos(), v->getChanger().getYPos(), v->getChanger().zoom2ZPos(zoom));
+            p.set(off.x(), off.y(), 0);
+            v->setViewportFromTo(off, p);
         }
         break;
         case VAR_VIEW_OFFSET: {
@@ -148,8 +149,9 @@ TraCIServerAPI_GUI::processSet(TraCIServer& server, tcpip::Storage& inputStorage
             if (!server.readTypeCheckingPosition2D(inputStorage, off)) {
                 return server.writeErrorStatusCmd(CMD_SET_GUI_VARIABLE, "The view port must be given as a position.", outputStorage);
             }
-            off.set(off.x(), off.y(), v->getChanger().getZoom());
-            v->setViewport(off, p);
+            off.set(off.x(), off.y(), v->getChanger().getZPos());
+            p.set(off.x(), off.y(), 0);
+            v->setViewportFromTo(off, p);
         }
         break;
         case VAR_VIEW_SCHEMA: {

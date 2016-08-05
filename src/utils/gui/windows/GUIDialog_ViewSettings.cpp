@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Wed, 21. Dec 2005
-/// @version $Id: GUIDialog_ViewSettings.cpp 20964 2016-06-14 12:19:54Z namdre $
+/// @version $Id: GUIDialog_ViewSettings.cpp 21228 2016-07-25 09:21:08Z namdre $
 ///
 // The dialog to change the view (gui) settings.
 /****************************************************************************/
@@ -106,7 +106,7 @@ GUIDialog_ViewSettings::GUIDialog_ViewSettings(GUISUMOAbstractView* parent,
         mySchemeName = new FXComboBox(frame0, 20, this, MID_SIMPLE_VIEW_NAMECHANGE, COMBOBOX_INSERT_LAST | FRAME_SUNKEN | LAYOUT_LEFT | LAYOUT_CENTER_Y | COMBOBOX_STATIC);
         const std::vector<std::string>& names = gSchemeStorage.getNames();
         for (std::vector<std::string>::const_iterator i = names.begin(); i != names.end(); ++i) {
-            size_t index = mySchemeName->appendItem((*i).c_str());
+            int index = mySchemeName->appendItem((*i).c_str());
             if ((*i) == mySettings->name) {
                 mySchemeName->setCurrentItem((FXint) index);
             }
@@ -248,12 +248,25 @@ GUIDialog_ViewSettings::GUIDialog_ViewSettings(GUISUMOAbstractView* parent,
         myHideMacroConnectors = new FXCheckButton(m22, "Hide macro connectors", this, MID_SIMPLE_VIEW_COLORCHANGE);
         myHideMacroConnectors->setCheck(mySettings->hideConnectors);
         new FXLabel(m22, " ", 0, LAYOUT_CENTER_Y);
+        myShowLaneDirection = new FXCheckButton(m22, "Show lane direction", this, MID_SIMPLE_VIEW_COLORCHANGE);
+        myShowLaneDirection->setCheck(mySettings->showLaneDirection);
+        new FXLabel(m22, " ", 0, LAYOUT_CENTER_Y);
+        myShowSublanes = new FXCheckButton(m22, "Show sublanes", this, MID_SIMPLE_VIEW_COLORCHANGE);
+        myShowSublanes->setCheck(mySettings->showSublanes);
+        new FXLabel(m22, " ", 0, LAYOUT_CENTER_Y);
         new FXLabel(m22, "Exaggerate width by", 0, LAYOUT_CENTER_Y);
         myLaneWidthUpscaleDialer =
             new FXRealSpinDial(m22, 10, this, MID_SIMPLE_VIEW_COLORCHANGE,
                                LAYOUT_TOP | FRAME_SUNKEN | FRAME_THICK);
         myLaneWidthUpscaleDialer->setRange(0, 10000);
         myLaneWidthUpscaleDialer->setValue(mySettings->laneWidthExaggeration);
+
+        new FXLabel(m22, "Minimum size", 0, LAYOUT_CENTER_Y);
+        myLaneMinWidthDialer =
+            new FXRealSpinDial(m22, 10, this, MID_SIMPLE_VIEW_COLORCHANGE,
+                               LAYOUT_TOP | FRAME_SUNKEN | FRAME_THICK);
+        myLaneMinWidthDialer->setRange(0, 10000);
+        myLaneMinWidthDialer->setValue(mySettings->laneMinSize);
 
         // edge name
         myEdgeNamePanel = new NamePanel(m22, this, "Show edge name", mySettings->edgeName);
@@ -457,6 +470,13 @@ GUIDialog_ViewSettings::GUIDialog_ViewSettings(GUISUMOAbstractView* parent,
         myDrawJunctionShape->setCheck(mySettings->drawJunctionShape);
         myDrawCrossingsAndWalkingAreas = new FXCheckButton(m42, "Draw crossings/walkingareas", this, MID_SIMPLE_VIEW_COLORCHANGE);
         myDrawCrossingsAndWalkingAreas->setCheck(mySettings->drawCrossingsAndWalkingareas);
+
+        new FXHorizontalSeparator(frame4, SEPARATOR_GROOVE | LAYOUT_FILL_X);
+
+        FXMatrix* m43 =
+            new FXMatrix(frame4, 2, LAYOUT_FILL_X | LAYOUT_BOTTOM | LAYOUT_LEFT | MATRIX_BY_COLUMNS,
+                         0, 0, 0, 0, 10, 10, 10, 10, 5, 5);
+        myJunctionSizePanel = new SizePanel(m43, this, mySettings->junctionSize);
     } {
         // detectors / triggers
         new FXTabItem(tabbook, "Detectors/Trigger", NULL, TAB_LEFT_NORMAL, 0, 0, 0, 0, 4, 8, 4, 4);
@@ -581,6 +601,7 @@ GUIDialog_ViewSettings::~GUIDialog_ViewSettings() {
     // delete size panels
     delete myVehicleSizePanel;
     delete myPersonSizePanel;
+    delete myJunctionSizePanel;
     delete myPOISizePanel;
     delete myPolySizePanel;
     delete myAddSizePanel;
@@ -641,7 +662,10 @@ GUIDialog_ViewSettings::onCmdNameChange(FXObject*, FXSelector, void* data) {
     myCwaEdgeNamePanel->update(mySettings->cwaEdgeName);
     myStreetNamePanel->update(mySettings->streetName);
     myHideMacroConnectors->setCheck(mySettings->hideConnectors);
+    myShowLaneDirection->setCheck(mySettings->showLaneDirection);
+    myShowSublanes->setCheck(mySettings->showSublanes);
     myLaneWidthUpscaleDialer->setValue(mySettings->laneWidthExaggeration);
+    myLaneMinWidthDialer->setValue(mySettings->laneMinSize);
 
     myVehicleColorMode->setCurrentItem((FXint) mySettings->vehicleColorer.getActive());
     myVehicleShapeDetail->setCurrentItem(mySettings->vehicleQuality);
@@ -669,6 +693,7 @@ GUIDialog_ViewSettings::onCmdNameChange(FXObject*, FXSelector, void* data) {
     myJunctionIndexPanel->update(mySettings->drawLinkJunctionIndex);
     myJunctionNamePanel->update(mySettings->junctionName);
     myInternalJunctionNamePanel->update(mySettings->internalJunctionName);
+    myJunctionSizePanel->update(mySettings->junctionSize);
 
     myAddNamePanel->update(mySettings->addName);
     myAddSizePanel->update(mySettings->addSize);
@@ -702,7 +727,7 @@ GUIDialog_ViewSettings::updateColorRanges(FXObject* sender, std::vector<FXColorW
         std::vector<FXRealSpinDial*>::const_iterator threshEnd,
         std::vector<FXButton*>::const_iterator buttonIt,
         GUIColorScheme& scheme) {
-    size_t pos = 0;
+    int pos = 0;
     while (colIt != colEnd) {
         if (scheme.isFixed()) {
             if (sender == *colIt) {
@@ -755,7 +780,7 @@ GUIDialog_ViewSettings::updateScaleRanges(FXObject* sender, std::vector<FXRealSp
         std::vector<FXRealSpinDial*>::const_iterator threshEnd,
         std::vector<FXButton*>::const_iterator buttonIt,
         GUIScaleScheme& scheme) {
-    size_t pos = 0;
+    int pos = 0;
     while (scaleIt != scaleEnd) {
         if (scheme.isFixed()) {
             if (sender == *scaleIt) {
@@ -804,12 +829,12 @@ GUIDialog_ViewSettings::updateScaleRanges(FXObject* sender, std::vector<FXRealSp
 long
 GUIDialog_ViewSettings::onCmdColorChange(FXObject* sender, FXSelector, void* /*val*/) {
     GUIVisualizationSettings tmpSettings = *mySettings;
-    size_t prevLaneMode = mySettings->getLaneEdgeMode();
-    size_t prevLaneScaleMode = mySettings->getLaneEdgeScaleMode();
-    size_t prevVehicleMode = mySettings->vehicleColorer.getActive();
-    size_t prevPersonMode = mySettings->personColorer.getActive();
-    size_t prevContainerMode = mySettings->containerColorer.getActive();
-    size_t prevJunctionMode = mySettings->junctionColorer.getActive();
+    int prevLaneMode = mySettings->getLaneEdgeMode();
+    int prevLaneScaleMode = mySettings->getLaneEdgeScaleMode();
+    int prevVehicleMode = mySettings->vehicleColorer.getActive();
+    int prevPersonMode = mySettings->personColorer.getActive();
+    int prevContainerMode = mySettings->containerColorer.getActive();
+    int prevJunctionMode = mySettings->junctionColorer.getActive();
     bool doRebuildColorMatrices = false;
 
     tmpSettings.name = mySettings->name;
@@ -833,7 +858,10 @@ GUIDialog_ViewSettings::onCmdColorChange(FXObject* sender, FXSelector, void* /*v
     tmpSettings.cwaEdgeName = myCwaEdgeNamePanel->getSettings();
     tmpSettings.streetName = myStreetNamePanel->getSettings();
     tmpSettings.hideConnectors = (myHideMacroConnectors->getCheck() != FALSE);
+    tmpSettings.showLaneDirection = (myShowLaneDirection->getCheck() != FALSE);
+    tmpSettings.showSublanes = (myShowSublanes->getCheck() != FALSE);
     tmpSettings.laneWidthExaggeration = (SUMOReal) myLaneWidthUpscaleDialer->getValue();
+    tmpSettings.laneMinSize = (SUMOReal) myLaneMinWidthDialer->getValue();
 
     tmpSettings.vehicleColorer.setActive(myVehicleColorMode->getCurrentItem());
     tmpSettings.vehicleQuality = myVehicleShapeDetail->getCurrentItem();
@@ -861,6 +889,7 @@ GUIDialog_ViewSettings::onCmdColorChange(FXObject* sender, FXSelector, void* /*v
     tmpSettings.drawLinkJunctionIndex = myJunctionIndexPanel->getSettings();
     tmpSettings.junctionName = myJunctionNamePanel->getSettings();
     tmpSettings.internalJunctionName = myInternalJunctionNamePanel->getSettings();
+    tmpSettings.junctionSize = myJunctionSizePanel->getSettings();
 
     tmpSettings.addName = myAddNamePanel->getSettings();
     tmpSettings.addSize = myAddSizePanel->getSettings();
@@ -1020,11 +1049,7 @@ GUIDialog_ViewSettings::loadSettings(const std::string& file) {
     if (handler.getDelay() >= 0) {
         myParent->setDelay(handler.getDelay());
     }
-    Position lookFrom, lookAt;
-    handler.setViewport(lookFrom, lookAt);
-    if (lookFrom.z() > 0) {
-        myParent->setViewport(lookFrom, lookAt);
-    }
+    handler.applyViewport(myParent);
     rebuildColorMatrices(true);
 }
 
@@ -1087,7 +1112,7 @@ GUIDialog_ViewSettings::onCmdSaveSetting(FXObject*, FXSelector, void* /*data*/) 
             return 1;
         }
         name = text->getText().text();
-        for (size_t i = 0; i < name.length(); ++i) {
+        for (int i = 0; i < (int)name.length(); ++i) {
             if (name[i] != '_' && (name[i] < 'a' || name[i] > 'z') && (name[i] < 'A' || name[i] > 'Z') && (name[i] < '0' || name[i] > '9')) {
                 name = "";
                 break;

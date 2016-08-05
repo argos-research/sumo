@@ -2,7 +2,7 @@
 /// @file    GNETLSEditorFrame.cpp
 /// @author  Jakob Erdmann
 /// @date    May 2011
-/// @version $Id: GNETLSEditorFrame.cpp 20472 2016-04-15 15:36:45Z palcraft $
+/// @version $Id: GNETLSEditorFrame.cpp 21217 2016-07-22 10:57:44Z behrisch $
 ///
 // The Widget for modifying traffic lights
 /****************************************************************************/
@@ -376,7 +376,7 @@ GNETLSEditorFrame::onCmdGuess(FXObject*, FXSelector, void*) {
 
 long
 GNETLSEditorFrame::onCmdPhaseSwitch(FXObject*, FXSelector, void*) {
-    const unsigned int index = myPhaseTable->getCurrentRow();
+    const int index = myPhaseTable->getCurrentRow();
     const NBTrafficLightLogic::PhaseDefinition& phase = getPhases()[index];
     myPhaseTable->selectRow(index);
     // need not hold since links could have been deleted somewhere else and indices may be reused
@@ -399,8 +399,8 @@ long
 GNETLSEditorFrame::onCmdPhaseCreate(FXObject*, FXSelector, void*) {
     myHaveModifications = true;
     // allows insertion at first position by deselecting via arrow keys
-    unsigned int newIndex = myPhaseTable->getSelStartRow() + 1;
-    unsigned int oldIndex = MAX2(0, myPhaseTable->getSelStartRow());
+    int newIndex = myPhaseTable->getSelStartRow() + 1;
+    int oldIndex = MAX2(0, myPhaseTable->getSelStartRow());
     // copy current row
     const SUMOTime duration = getSUMOTime(myPhaseTable->getItemText(oldIndex, 0));
     const std::string state = myPhaseTable->getItemText(oldIndex, 1).text();
@@ -559,7 +559,7 @@ GNETLSEditorFrame::initDefinitions() {
 
 
 void
-GNETLSEditorFrame::initPhaseTable(unsigned int index) {
+GNETLSEditorFrame::initPhaseTable(int index) {
     myPhaseTable->setVisibleRows(1);
     myPhaseTable->setVisibleColumns(2);
     myPhaseTable->hide();
@@ -568,7 +568,7 @@ GNETLSEditorFrame::initPhaseTable(unsigned int index) {
         myPhaseTable->setTableSize((int)phases.size(), 2);
         myPhaseTable->setVisibleRows((int)phases.size());
         myPhaseTable->setVisibleColumns(2);
-        for (unsigned int row = 0; row < phases.size(); row++) {
+        for (int row = 0; row < (int)phases.size(); row++) {
             myPhaseTable->setItemText(row, 0, toString(STEPS2TIME(phases[row].duration)).c_str());
             myPhaseTable->setItemText(row, 1, phases[row].state.c_str());
             myPhaseTable->getItem(row, 1)->setJustify(FXTableItem::LEFT);
@@ -600,7 +600,7 @@ GNETLSEditorFrame::handleChange(GNEInternalLane* lane) {
     myHaveModifications = true;
     if (myViewNet->changeAllPhases()) {
         const std::vector<NBTrafficLightLogic::PhaseDefinition>& phases = getPhases();
-        for (unsigned int row = 0; row < phases.size(); row++) {
+        for (int row = 0; row < (int)phases.size(); row++) {
             myEditedDef->getLogic()->setPhaseState(row, lane->getTLIndex(), lane->getLinkState());
         }
     } else {
@@ -627,8 +627,8 @@ GNETLSEditorFrame::handleMultiChange(GNELane* lane, FXObject* obj, FXSelector se
         } else {
             // if the edge is selected, apply changes to all lanes of all selected edges
             if (gSelected.isSelected(GLO_EDGE, edge.getGlID())) {
-                std::list<GNEEdge*> edges = myViewNet->getNet()->retrieveEdges(true);
-                for (std::list<GNEEdge*>::iterator it = edges.begin(); it != edges.end(); it++) {
+                std::vector<GNEEdge*> edges = myViewNet->getNet()->retrieveEdges(true);
+                for (std::vector<GNEEdge*>::iterator it = edges.begin(); it != edges.end(); it++) {
                     for (GNEEdge::LaneVector::const_iterator it_lane = (*it)->getLanes().begin(); it_lane != (*it)->getLanes().end(); it_lane++) {
                         fromIDs.insert((*it_lane)->getMicrosimID());
                     }
@@ -636,8 +636,8 @@ GNETLSEditorFrame::handleMultiChange(GNELane* lane, FXObject* obj, FXSelector se
             }
             // if the lane is selected, apply changes to all selected lanes
             if (gSelected.isSelected(GLO_LANE, lane->getGlID())) {
-                std::list<GNELane*> lanes = myViewNet->getNet()->retrieveLanes(true);
-                for (std::list<GNELane*>::iterator it_lane = lanes.begin(); it_lane != lanes.end(); it_lane++) {
+                std::vector<GNELane*> lanes = myViewNet->getNet()->retrieveLanes(true);
+                for (std::vector<GNELane*>::iterator it_lane = lanes.begin(); it_lane != lanes.end(); it_lane++) {
                     fromIDs.insert((*it_lane)->getMicrosimID());
                 }
             }

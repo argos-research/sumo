@@ -2,7 +2,7 @@
 /// @file    GNEFrame.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNEFrame.cpp 20831 2016-05-31 15:13:48Z palcraft $
+/// @version $Id: GNEFrame.cpp 21131 2016-07-08 07:59:22Z behrisch $
 ///
 /// The Widget for add additional elements
 /****************************************************************************/
@@ -53,7 +53,7 @@
 // method definitions
 // ===========================================================================
 
-GNEFrame::GNEFrame(FXComposite* parent, GNEViewNet* viewNet, const std::string &frameLabel) : 
+GNEFrame::GNEFrame(FXComposite* parent, GNEViewNet* viewNet, const std::string& frameLabel) :
     FXScrollWindow(parent, LAYOUT_FILL),
     myViewNet(viewNet) {
     // Create font
@@ -84,13 +84,13 @@ GNEFrame::getViewNet() const {
 }
 
 
-FXLabel* 
+FXLabel*
 GNEFrame::getFrameHeaderLabel() const {
     return myFrameHeaderLabel;
 }
 
 
-FXFont *
+FXFont*
 GNEFrame::getFrameHeaderFont() const {
     return myFrameHeaderFont;
 }

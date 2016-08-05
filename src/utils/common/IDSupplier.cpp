@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: IDSupplier.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: IDSupplier.cpp 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // A class that generates enumerated and prefixed string-ids
 /****************************************************************************/
@@ -72,7 +72,7 @@ IDSupplier::avoid(const std::string& id) {
     // does it start with prefix?
     if (id.find(myPrefix) == 0) {
         long number;
-        std::istringstream buf(id.substr(myPrefix.size(), std::string::npos));
+        std::istringstream buf(id.substr(myPrefix.size()));
         buf >> number;
         // does it continue with a number?
         if (!buf.fail()) {

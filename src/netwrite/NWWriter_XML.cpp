@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 11.05.2011
-/// @version $Id: NWWriter_XML.cpp 20550 2016-04-26 10:57:45Z namdre $
+/// @version $Id: NWWriter_XML.cpp 21217 2016-07-22 10:57:44Z behrisch $
 ///
 // Exporter writing networks using XML (native input) format
 /****************************************************************************/
@@ -223,7 +223,7 @@ NWWriter_XML::writeEdgesAndConnections(const OptionsCont& oc, NBNodeCont& nc, NB
             writePermissions(edevice, e->getPermissions(0));
         }
         if (e->needsLaneSpecificOutput()) {
-            for (unsigned int i = 0; i < e->getLanes().size(); ++i) {
+            for (int i = 0; i < (int)e->getLanes().size(); ++i) {
                 const NBEdge::Lane& lane = e->getLanes()[i];
                 edevice.openTag(SUMO_TAG_LANE);
                 edevice.writeAttr(SUMO_ATTR_INDEX, i);

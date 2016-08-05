@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2004-11-23
-/// @version $Id: MSInductLoop.h 20818 2016-05-30 14:45:36Z namdre $
+/// @version $Id: MSInductLoop.h 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // An unextended detector measuring at a fixed position on a fixed lane.
 /****************************************************************************/
@@ -200,7 +200,7 @@ public:
      * @return The number of vehicles that have passed the detector
      * @todo recheck (especially if more than one vehicle has passed)
      */
-    unsigned int getCurrentPassedNumber() const;
+    int getCurrentPassedNumber() const;
 
 
     /** @brief Returns the ids of vehicles that have passed the detector
@@ -283,11 +283,11 @@ public:
     /** @brief Returns vehicle data for vehicles that have been on the detector starting at the given time
      *
      * @param[in] t The time from which vehicles shall be counted
-     * @param[in] full Whether entryTime or leaveTime shall be compaired against t 
-     *            (the latter gives a more complete picture but may include vehicles in multiple steps  even if they did not stay on the detectort)
+     * @param[in] leaveTime Whether entryTime or leaveTime shall be compared against t
+     *            (the latter gives a more complete picture but may include vehicles in multiple steps even if they did not stay on the detector)
      * @return The list of vehicles
      */
-    virtual std::vector<VehicleData> collectVehiclesOnDet(SUMOTime t, bool leaveTime=false) const;
+    virtual std::vector<VehicleData> collectVehiclesOnDet(SUMOTime t, bool leaveTime = false) const;
 
 
 protected:
@@ -350,7 +350,7 @@ protected:
     SUMOReal myLastOccupancy;
 
     /// @brief The number of dismissed vehicles
-    unsigned myDismissedVehicleNumber;
+    int myDismissedVehicleNumber;
 
 
     /// @brief Type of myVehicleDataCont.

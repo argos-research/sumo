@@ -2,7 +2,7 @@
 /// @file    GNEPoly.h
 /// @author  Jakob Erdmann
 /// @date    Sept 2012
-/// @version $Id: GNEPoly.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEPoly.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 // A class for visualizing and editing POIS in netedit (adapted from
 // GUIPolygon and NLHandler)
@@ -133,7 +133,7 @@ public:
 
     /// @brief draw the polygon and also little movement handles
 
-    /**@brief change the polygon geometry 
+    /**@brief change the polygon geometry
      * It is up to the Polygon to decide whether an new geometry node should be
      * generated or an existing node should be moved
      * @param[in] oldPos The origin of the mouse movement

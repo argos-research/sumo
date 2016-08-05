@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLEdgeControlBuilder.h 20550 2016-04-26 10:57:45Z namdre $
+/// @version $Id: NLEdgeControlBuilder.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Interface for building edges
 /****************************************************************************/
@@ -142,10 +142,10 @@ public:
 
 protected:
     /// @brief A running number for lane numbering
-    unsigned int myCurrentNumericalLaneID;
+    int myCurrentNumericalLaneID;
 
     /// @brief A running number for edge numbering
-    unsigned int myCurrentNumericalEdgeID;
+    int myCurrentNumericalEdgeID;
 
     /// @brief Temporary, internal storage for built edges
     MSEdgeVector myEdges;

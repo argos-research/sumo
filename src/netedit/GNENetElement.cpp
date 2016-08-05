@@ -1,8 +1,8 @@
 /****************************************************************************/
 /// @file    GNENetElement.cpp
-/// @author  Pablo Álvarez López
+/// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNENetElement.cpp 20472 2016-04-15 15:36:45Z palcraft $
+/// @version $Id: GNENetElement.cpp 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // A abstract class for netElements
 /****************************************************************************/
@@ -66,15 +66,16 @@ GNENetElement::GNENetElement(GNENet* net, const std::string& id, GUIGlObjectType
 GNENetElement::~GNENetElement() {}
 
 
-GNENet *
+GNENet*
 GNENetElement::getNet() const {
     return myNet;
 }
 
 
-const std::string& 
+const std::string&
 GNENetElement::getParentName() const {
     return myNet->getMicrosimID();
-};
+}
+
 
 /****************************************************************************/

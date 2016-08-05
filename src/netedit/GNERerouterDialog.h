@@ -2,7 +2,7 @@
 /// @file    GNERerouterDialog.h
 /// @author  Pablo Alvarez Lopez
 /// @date    April 2016
-/// @version $Id: GNERerouterDialog.h 20472 2016-04-15 15:36:45Z palcraft $
+/// @version $Id: GNERerouterDialog.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 /// Dialog for edit rerouters
 /****************************************************************************/
@@ -54,7 +54,7 @@ class GNERerouterDialog : public GNEAdditionalDialog {
 
 public:
     // Constructor
-    GNERerouterDialog(GNERerouter *rerouterParent);
+    GNERerouterDialog(GNERerouter* rerouterParent);
 
     // destructor
     ~GNERerouterDialog();
@@ -76,9 +76,12 @@ protected:
     GNERerouterDialog() {}
 
     /// @brief pointer to rerouter parent
-    GNERerouter *myRerouterParent;
+    GNERerouter* myRerouterParent;
 
 private:
+    /// @brief update data table
+    void updateTable();
+
     /// @brief Invalidated copy constructor.
     GNERerouterDialog(const GNERerouterDialog&);
 

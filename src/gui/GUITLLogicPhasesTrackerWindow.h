@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Oct/Nov 2003
-/// @version $Id: GUITLLogicPhasesTrackerWindow.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUITLLogicPhasesTrackerWindow.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A window displaying the phase diagram of a tl-logic
 /****************************************************************************/
@@ -210,10 +210,10 @@ private:
     std::vector<std::string> myLinkNames;
 
     /// @brief The index of the first phase that fits into the window
-    size_t myFirstPhase2Show;
+    int myFirstPhase2Show;
 
     /// @brief The offset to draw the first phase (left offset)
-    size_t myFirstPhaseOffset;
+    int myFirstPhaseOffset;
 
     /// @brief The time the diagram begins at
     SUMOTime myFirstTime2Show;

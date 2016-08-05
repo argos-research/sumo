@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, May 2005
-/// @version $Id: MSCalibrator.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSCalibrator.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Calibrates the flow on an edge by removing an inserting vehicles
 /****************************************************************************/
@@ -236,11 +236,11 @@ protected:
     /// @brief The frequeny with which to check for calibration
     SUMOTime myFrequency;
     /// @brief The number of vehicles that were removed in the current interval
-    unsigned int myRemoved;
+    int myRemoved;
     /// @brief The number of vehicles that were inserted in the current interval
-    unsigned int myInserted;
+    int myInserted;
     /// @brief The number of vehicles that were removed when clearin a jam
-    unsigned int myClearedInJam;
+    int myClearedInJam;
     /// @brief The information whether the speed adaption has been reset
     bool mySpeedIsDefault;
     /// @brief The information whether speed was adapted in the current interval

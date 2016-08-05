@@ -2,7 +2,7 @@
 /// @file    GNEChange_Additional.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEChange_Additional.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEChange_Additional.h 21150 2016-07-12 12:28:35Z behrisch $
 ///
 /// A network change in which a additional element is created or deleted
 /****************************************************************************/

@@ -8,7 +8,7 @@
 /// @author  Robbin Blokpoel
 /// @author  Jakob Erdmann
 /// @date    Mon Feb 03 2014 10:13 CET
-/// @version $Id: MSE2Collector.cpp 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: MSE2Collector.cpp 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // An areal (along a single lane) detector
 /****************************************************************************/
@@ -321,7 +321,7 @@ MSE2Collector::detectorUpdate(const SUMOTime /* step */) {
             jamLengthInMeters -= ((*(*i)->firstStandingVehicle)->getVehicleType().getLengthWithGap() -
                                   (myLane->getLength() - (*(*i)->firstStandingVehicle)->getBackPositionOnLane(myLane)));
         }
-        unsigned jamLengthInVehicles = (unsigned) distance((*i)->firstStandingVehicle, (*i)->lastStandingVehicle) + 1;
+        int jamLengthInVehicles = (int)distance((*i)->firstStandingVehicle, (*i)->lastStandingVehicle) + 1;
         // apply them to the statistics
         myCurrentMaxJamLengthInMeters = MAX2(myCurrentMaxJamLengthInMeters, jamLengthInMeters);
         myCurrentMaxJamLengthInVehicles = MAX2(myCurrentMaxJamLengthInVehicles, jamLengthInVehicles);
@@ -330,9 +330,9 @@ MSE2Collector::detectorUpdate(const SUMOTime /* step */) {
         myCurrentJamLengthInMeters += jamLengthInMeters;
         myCurrentJamLengthInVehicles += jamLengthInVehicles;
     }
-    myCurrentJamNo = (unsigned) jams.size();
+    myCurrentJamNo = (int) jams.size();
 
-    const unsigned numVehicles = (unsigned) myKnownVehicles.size();
+    const int numVehicles = (int) myKnownVehicles.size();
     myVehicleSamples += numVehicles;
     myTimeSamples += 1;
     // compute occupancy values
@@ -376,7 +376,7 @@ MSE2Collector::writeXMLOutput(OutputDevice& dev, SUMOTime startTime, SUMOTime st
 
     SUMOTime haltingDurationSum = 0;
     SUMOTime maxHaltingDuration = 0;
-    unsigned haltingNo = 0;
+    int haltingNo = 0;
     for (std::vector<SUMOTime>::iterator i = myPastStandingDurations.begin(); i != myPastStandingDurations.end(); ++i) {
         haltingDurationSum += (*i);
         maxHaltingDuration = MAX2(maxHaltingDuration, (*i));
@@ -391,7 +391,7 @@ MSE2Collector::writeXMLOutput(OutputDevice& dev, SUMOTime startTime, SUMOTime st
 
     SUMOTime intervalHaltingDurationSum = 0;
     SUMOTime intervalMaxHaltingDuration = 0;
-    unsigned intervalHaltingNo = 0;
+    int intervalHaltingNo = 0;
     for (std::vector<SUMOTime>::iterator i = myPastIntervalStandingDurations.begin(); i != myPastIntervalStandingDurations.end(); ++i) {
         intervalHaltingDurationSum += (*i);
         intervalMaxHaltingDuration = MAX2(intervalMaxHaltingDuration, (*i));
@@ -434,9 +434,9 @@ MSE2Collector::writeXMLDetectorProlog(OutputDevice& dev) const {
 }
 
 
-unsigned
+int
 MSE2Collector::getCurrentVehicleNumber() const {
-    return (unsigned) myKnownVehicles.size();
+    return (int) myKnownVehicles.size();
 }
 
 int
@@ -531,13 +531,13 @@ MSE2Collector::getCurrentMeanLength() const {
 }
 
 
-unsigned
+int
 MSE2Collector::getCurrentJamNumber() const {
     return myCurrentJamNo;
 }
 
 
-unsigned
+int
 MSE2Collector::getCurrentMaxJamLengthInVehicles() const {
     return myCurrentMaxJamLengthInVehicles;
 }
@@ -549,7 +549,7 @@ MSE2Collector::getCurrentMaxJamLengthInMeters() const {
 }
 
 
-unsigned
+int
 MSE2Collector::getCurrentJamLengthInVehicles() const {
     return myCurrentJamLengthInVehicles;
 }
@@ -561,7 +561,7 @@ MSE2Collector::getCurrentJamLengthInMeters() const {
 }
 
 
-unsigned
+int
 MSE2Collector::getCurrentStartedHalts() const {
     return myCurrentStartedHalts;
 }

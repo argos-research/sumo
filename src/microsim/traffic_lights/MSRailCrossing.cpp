@@ -2,7 +2,7 @@
 /// @file    MSRailCrossing.cpp
 /// @author  Jakob Erdmann
 /// @date    Dez 2015
-/// @version $Id: MSRailCrossing.cpp 20925 2016-06-08 13:02:47Z namdre $
+/// @version $Id: MSRailCrossing.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A rail signal logic
 /****************************************************************************/
@@ -152,11 +152,11 @@ MSRailCrossing::getPhaseIndexAtTime(SUMOTime) const {
 }
 
 SUMOTime
-MSRailCrossing::getOffsetFromIndex(unsigned int) const {
+MSRailCrossing::getOffsetFromIndex(int) const {
     return 0;
 }
 
-unsigned int
+int
 MSRailCrossing::getIndexFromOffset(SUMOTime) const {
     return 0;
 }

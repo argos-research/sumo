@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIDanielPerspectiveChanger.cpp 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GUIDanielPerspectiveChanger.cpp 21186 2016-07-18 12:04:16Z namdre $
 ///
 // A class that allows to steer the visual output in dependence to
 /****************************************************************************/
@@ -116,6 +116,24 @@ GUIDanielPerspectiveChanger::getYPos() const {
 SUMOReal
 GUIDanielPerspectiveChanger::getZoom() const {
     return myOrigWidth / myViewPort.getWidth() * 100;
+}
+
+
+SUMOReal
+GUIDanielPerspectiveChanger::getZPos() const {
+    return myViewPort.getWidth();
+}
+
+
+SUMOReal
+GUIDanielPerspectiveChanger::zoom2ZPos(SUMOReal zoom) const {
+    return myOrigWidth / (zoom / 100);
+}
+
+
+SUMOReal
+GUIDanielPerspectiveChanger::zPos2Zoom(SUMOReal zPos) const {
+    return (myOrigWidth / zPos) * 100;
 }
 
 
@@ -244,13 +262,19 @@ GUIDanielPerspectiveChanger::setViewport(SUMOReal zoom,
 }
 
 
+void 
+GUIDanielPerspectiveChanger::setViewportFrom(SUMOReal xPos, SUMOReal yPos, SUMOReal zPos) {
+    setViewport(zPos2Zoom(zPos), xPos, yPos);
+}
+
+
 void
 GUIDanielPerspectiveChanger::changeCanvassLeft(int change) {
     myViewPort = Boundary(
-        myViewPort.xmin() - myCallback.p2m(change),
-        myViewPort.ymin(),
-        myViewPort.xmax(),
-        myViewPort.ymax());
+                     myViewPort.xmin() - myCallback.p2m(change),
+                     myViewPort.ymin(),
+                     myViewPort.xmax(),
+                     myViewPort.ymax());
 }
 
 

@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: GenericSAXHandler.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GenericSAXHandler.cpp 21202 2016-07-19 13:40:35Z behrisch $
 ///
 // A handler which converts occuring elements and attributes into enums
 /****************************************************************************/
@@ -90,9 +90,9 @@ GenericSAXHandler::getFileName() const {
 
 XMLCh*
 GenericSAXHandler::convert(const std::string& name) const {
-    size_t len = name.length();
+    int len = (int)name.length();
     XMLCh* ret = new XMLCh[len + 1];
-    size_t i = 0;
+    int i = 0;
     for (; i < len; i++) {
         ret[i] = (XMLCh) name[i];
     }
@@ -130,17 +130,16 @@ GenericSAXHandler::endElement(const XMLCh* const /*uri*/,
     int element = convertTag(name);
     // collect characters
     if (myCharactersVector.size() != 0) {
-        size_t len = 0;
-        unsigned i;
-        for (i = 0; i < myCharactersVector.size(); ++i) {
-            len += myCharactersVector[i].length();
+        int len = 0;
+        for (int i = 0; i < (int)myCharactersVector.size(); ++i) {
+            len += (int)myCharactersVector[i].length();
         }
         char* buf = new char[len + 1];
-        size_t pos = 0;
-        for (i = 0; i < myCharactersVector.size(); ++i) {
+        int pos = 0;
+        for (int i = 0; i < (int)myCharactersVector.size(); ++i) {
             memcpy((unsigned char*) buf + pos, (unsigned char*) myCharactersVector[i].c_str(),
                    sizeof(char)*myCharactersVector[i].length());
-            pos += myCharactersVector[i].length();
+            pos += (int)myCharactersVector[i].length();
         }
         buf[pos] = 0;
 
@@ -175,7 +174,7 @@ GenericSAXHandler::registerParent(const int tag, GenericSAXHandler* handler) {
 void
 GenericSAXHandler::characters(const XMLCh* const chars,
                               const XERCES3_SIZE_t length) {
-    myCharactersVector.push_back(TplConvert::_2str(chars, static_cast<unsigned int>(length)));
+    myCharactersVector.push_back(TplConvert::_2str(chars, (int)length));
 }
 
 

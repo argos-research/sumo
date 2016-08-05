@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    29. March 2012
-/// @version $Id: NBAlgorithms_Ramps.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBAlgorithms_Ramps.cpp 21179 2016-07-16 10:00:39Z namdre $
 ///
 // Algorithms for highway on-/off-ramps computation
 /****************************************************************************/
@@ -161,7 +161,7 @@ NBRampsComputer::buildOnRamp(NBNode* cur, NBNodeCont& nc, NBEdgeCont& ec, NBDist
     NBEdge* potHighway, *potRamp, *cont;
     getOnRampEdges(cur, &potHighway, &potRamp, &cont);
     // compute the number of lanes to append
-    const unsigned int firstLaneNumber = cont->getNumLanes();
+    const int firstLaneNumber = cont->getNumLanes();
     int toAdd = (potRamp->getNumLanes() + potHighway->getNumLanes()) - firstLaneNumber;
     NBEdge* first = cont;
     NBEdge* last = cont;
@@ -250,7 +250,7 @@ NBRampsComputer::buildOffRamp(NBNode* cur, NBNodeCont& nc, NBEdgeCont& ec, NBDis
     NBEdge* potHighway, *potRamp, *prev;
     getOffRampEdges(cur, &potHighway, &potRamp, &prev);
     // compute the number of lanes to append
-    const unsigned int firstLaneNumber = prev->getNumLanes();
+    const int firstLaneNumber = prev->getNumLanes();
     int toAdd = (potRamp->getNumLanes() + potHighway->getNumLanes()) - firstLaneNumber;
     NBEdge* first = prev;
     NBEdge* last = prev;

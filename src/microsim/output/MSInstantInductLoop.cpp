@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    2011-09.08
-/// @version $Id: MSInstantInductLoop.cpp 20970 2016-06-15 10:59:59Z behrisch $
+/// @version $Id: MSInstantInductLoop.cpp 21148 2016-07-12 08:47:10Z behrisch $
 ///
 // An instantaneous induction loop
 /****************************************************************************/
@@ -121,7 +121,7 @@ MSInstantInductLoop::write(const char* state, SUMOReal t, SUMOVehicle& veh, SUMO
 
 
 bool
-MSInstantInductLoop::notifyLeave(SUMOVehicle& veh, SUMOReal lastPos, MSMoveReminder::Notification reason) {
+MSInstantInductLoop::notifyLeave(SUMOVehicle& veh, SUMOReal /* lastPos */, MSMoveReminder::Notification reason) {
     if (reason == MSMoveReminder::NOTIFICATION_JUNCTION) {
         // vehicle might have jumped over detector at the end of the lane. we need
         // one more notifyMove to register it

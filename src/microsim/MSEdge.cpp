@@ -8,7 +8,7 @@
 /// @author  Michael Behrisch
 /// @author  Sascha Krieg
 /// @date    Tue, 06 Mar 2001
-/// @version $Id: MSEdge.cpp 20901 2016-06-07 11:50:11Z namdre $
+/// @version $Id: MSEdge.cpp 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // A road/street connecting two junctions
 /****************************************************************************/
@@ -633,7 +633,7 @@ MSEdge::getMeanSpeed() const {
         }
     } else {
         for (std::vector<MSLane*>::const_iterator i = myLanes->begin(); i != myLanes->end(); ++i) {
-            const SUMOReal vehNo = (SUMOReal) (*i)->getVehicleNumber();
+            const SUMOReal vehNo = (SUMOReal)(*i)->getVehicleNumber();
             v += vehNo * (*i)->getMeanSpeed();
             no += vehNo;
         }
@@ -689,9 +689,9 @@ MSEdge::dictionary(const std::string& id) {
 }
 
 
-size_t
+int
 MSEdge::dictSize() {
-    return myDict.size();
+    return (int)myDict.size();
 }
 
 

@@ -7,7 +7,7 @@
 @author  Daniel Krajzewicz
 @author  Jakob Erdmann
 @date    2008-10-09
-@version $Id: connection.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: connection.py 21131 2016-07-08 07:59:22Z behrisch $
 
 Python implementation of the TraCI interface.
 
@@ -24,6 +24,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 import socket
 import struct
+import sys
 
 try:
     import traciemb
@@ -46,7 +47,12 @@ class Connection:
 
     def __init__(self, host, port):
         if not _embedded:
-            self._socket = socket.socket()
+            if sys.platform.startswith('java'):
+                # working around jython 2.7.0 bug #2273
+                self._socket = socket.socket(
+                    socket.AF_INET, socket.SOCK_STREAM, socket.IPPROTO_TCP)
+            else:
+                self._socket = socket.socket()
             self._socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
             self._socket.connect((host, port))
         self._string = bytes()

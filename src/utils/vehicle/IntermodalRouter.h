@@ -2,7 +2,7 @@
 /// @file    IntermodalRouter.h
 /// @author  Jakob Erdmann
 /// @date    Mon, 03 March 2014
-/// @version $Id: IntermodalRouter.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: IntermodalRouter.h 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // The Pedestrian Router build a special network and (delegegates to a SUMOAbstractRouter)
 /****************************************************************************/
@@ -251,7 +251,7 @@ public:
                              &trip, msTime, intoPed);
         if (success) {
             std::string lastLine = "";
-            for (size_t i = 0; i < intoPed.size(); ++i) {
+            for (int i = 0; i < (int)intoPed.size(); ++i) {
                 if (intoPed[i]->includeInRoute(false)) {
                     if (intoPed[i]->getLine() == "!stop") {
                         into.back().destStop = intoPed[i]->getID();
@@ -275,7 +275,7 @@ public:
         }
 #ifdef IntermodalRouter_DEBUG_ROUTES
         SUMOReal time = STEPS2TIME(msTime);
-        for (size_t i = 0; i < intoPed.size(); ++i) {
+        for (int i = 0; i < intoPed.size(); ++i) {
             time += myInternalRouter->getEffort(intoPed[i], &trip, time);
         }
         std::cout << TIME2STEPS(msTime) << " trip from " << from->getID() << " to " << to->getID()

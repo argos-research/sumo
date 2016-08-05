@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: Distribution_Points.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: Distribution_Points.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The description of a distribution by a curve
 /****************************************************************************/
@@ -57,10 +57,10 @@ public:
     /// Returns the maximum value of this distribution
     SUMOReal getMax() const;
 
-    size_t getAreaNo() const;
-    SUMOReal getAreaBegin(size_t index) const;
-    SUMOReal getAreaEnd(size_t index) const;
-    SUMOReal getAreaPerc(size_t index) const;
+    int getAreaNo() const;
+    SUMOReal getAreaBegin(int index) const;
+    SUMOReal getAreaEnd(int index) const;
+    SUMOReal getAreaPerc(int index) const;
 
 
 protected:

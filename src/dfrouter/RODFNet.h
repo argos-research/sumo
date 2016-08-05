@@ -4,7 +4,7 @@
 /// @author  Eric Nicolay
 /// @author  Michael Behrisch
 /// @date    Thu, 16.03.2006
-/// @version $Id: RODFNet.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: RODFNet.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A DFROUTER-network
 /****************************************************************************/
@@ -168,7 +168,7 @@ private:
     mutable std::map<std::string, ROEdge*> myDetectorEdges;
 
     bool myAmInHighwayMode;
-    mutable size_t mySourceNumber, mySinkNumber, myInBetweenNumber, myInvalidNumber;
+    mutable int mySourceNumber, mySinkNumber, myInBetweenNumber, myInvalidNumber;
 
     /// @brief List of ids of edges that shall not be used
     std::vector<std::string> myDisallowedEdges;

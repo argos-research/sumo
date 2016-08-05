@@ -2,7 +2,7 @@
 /// @file    GNEVariableSpeedSignalDialog.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    April 2016
-/// @version $Id: GNEVariableSpeedSignalDialog.cpp 20472 2016-04-15 15:36:45Z palcraft $
+/// @version $Id: GNEVariableSpeedSignalDialog.cpp 21131 2016-07-08 07:59:22Z behrisch $
 ///
 /// A class for edit phases of Variable Speed Signals
 /****************************************************************************/
@@ -30,6 +30,8 @@
 #include <iostream>
 #include <utils/gui/windows/GUIAppEnum.h>
 #include <utils/common/TplCheck.h>
+#include <utils/gui/images/GUIIconSubSys.h>
+
 #include "GNEVariableSpeedSignalDialog.h"
 #include "GNEVariableSpeedSignal.h"
 
@@ -43,56 +45,46 @@
 // ===========================================================================
 
 FXDEFMAP(GNEVariableSpeedSignalDialog) GNERerouterDialogMap[] = {
-    FXMAPFUNC(SEL_COMMAND, MID_GNE_MODE_ADDITIONALDIALOG_ACCEPT, GNEVariableSpeedSignalDialog::onCmdAccept),
-    FXMAPFUNC(SEL_COMMAND, MID_GNE_MODE_ADDITIONALDIALOG_CANCEL, GNEVariableSpeedSignalDialog::onCmdCancel),
-    FXMAPFUNC(SEL_COMMAND, MID_GNE_MODE_ADDITIONALDIALOG_RESET,  GNEVariableSpeedSignalDialog::onCmdReset),
-    FXMAPFUNC(SEL_COMMAND, MID_GNE_VARIABLESPEEDSIGNAL_ADDROW,   GNEVariableSpeedSignalDialog::onCmdAddRow),
+    FXMAPFUNC(SEL_COMMAND,       MID_GNE_MODE_ADDITIONALDIALOG_ACCEPT,  GNEVariableSpeedSignalDialog::onCmdAccept),
+    FXMAPFUNC(SEL_COMMAND,       MID_GNE_MODE_ADDITIONALDIALOG_CANCEL,  GNEVariableSpeedSignalDialog::onCmdCancel),
+    FXMAPFUNC(SEL_COMMAND,       MID_GNE_MODE_ADDITIONALDIALOG_RESET,   GNEVariableSpeedSignalDialog::onCmdReset),
+    FXMAPFUNC(SEL_COMMAND,       MID_GNE_VARIABLESPEEDSIGNAL_ADDROW,    GNEVariableSpeedSignalDialog::onCmdAddRow),
+    FXMAPFUNC(SEL_DOUBLECLICKED, MID_GNE_VARIABLESPEEDSIGNAL_REMOVEROW, GNEVariableSpeedSignalDialog::onCmdRemoveRow),
 };
 
 // Object implementation
 FXIMPLEMENT(GNEVariableSpeedSignalDialog, FXDialogBox, GNERerouterDialogMap, ARRAYNUMBER(GNERerouterDialogMap))
 
 // ===========================================================================
-// static member definitions
-// ===========================================================================
-
-static int dialogWidth = 240;
-static int dialogHeight = 240;
-
-// ===========================================================================
 // member method definitions
 // ===========================================================================
 
-GNEVariableSpeedSignalDialog::GNEVariableSpeedSignalDialog(GNEVariableSpeedSignal *variableSpeedSignalParent) : 
-    GNEAdditionalDialog(variableSpeedSignalParent, dialogWidth, dialogHeight),
+GNEVariableSpeedSignalDialog::GNEVariableSpeedSignalDialog(GNEVariableSpeedSignal* variableSpeedSignalParent) :
+    GNEAdditionalDialog(variableSpeedSignalParent, 240, 240),
     myVariableSpeedSignalParent(variableSpeedSignalParent) {
 
-    // List with the data
+    // create List with the data
     myDataList = new FXTable(myContentFrame, this, MID_GNE_VARIABLESPEEDSIGNAL_REMOVEROW, LAYOUT_FILL_X | LAYOUT_FILL_Y);
+    myDataList->setEditable(false);
 
-    // Configure list
-    myDataList->setTableSize(4, 3);
-    myDataList->setVisibleColumns(3);
-    myDataList->setColumnWidth(0, dialogWidth * 0.35);
-    myDataList->setColumnWidth(1, dialogWidth * 0.35);
-    myDataList->setColumnWidth(2, (dialogWidth * 0.3) - 10);
-    myDataList->setColumnText(0, "timeStep");
-    myDataList->setColumnText(1, "speed");
-    myDataList->setColumnText(2, "remove");
-    myDataList->getRowHeader()->setWidth(0);
-
-    // Horizontal frame for row elements
+    // create Horizontal frame for row elements
     myRowFrame = new FXHorizontalFrame(myContentFrame, LAYOUT_FILL_X);
 
-    // Text field with step
-    myRowStep = new FXTextField(myRowFrame, 10, this, MID_GNE_VARIABLESPEEDSIGNAL_CHANGEVALUE, LAYOUT_FILL_COLUMN | LAYOUT_FILL_X);
+    // create Text field for the timeStep
+    myRowStep = new FXTextField(myRowFrame, 10, this, MID_GNE_VARIABLESPEEDSIGNAL_CHANGEVALUE, FRAME_THICK | LAYOUT_FILL_X);
 
-    // Text field with speed
-    myRowSpeed = new FXTextField(myRowFrame, 10, this, MID_GNE_VARIABLESPEEDSIGNAL_CHANGEVALUE, LAYOUT_FILL_COLUMN | LAYOUT_FILL_X);
+    // create Text field for the speed
+    myRowSpeed = new FXTextField(myRowFrame, 10, this, MID_GNE_VARIABLESPEEDSIGNAL_CHANGEVALUE, FRAME_THICK | LAYOUT_FILL_X);
 
-    // Button for insert row
-    myAddRow = new FXButton(myRowFrame, "Add", 0, this, MID_GNE_VARIABLESPEEDSIGNAL_ADDROW);
-        
+    // create Button for insert row
+    myAddRow = new FXButton(myRowFrame, "Add", 0, this, MID_GNE_VARIABLESPEEDSIGNAL_ADDROW, FRAME_THICK);
+
+    // Get values of variable speed signal
+    myVSSValues = myVariableSpeedSignalParent->getVariableSpeedSignalSteps();
+
+    // update table
+    updateTable();
+
     // Execute additional dialog (To make it modal)
     execute();
 }
@@ -101,59 +93,118 @@ GNEVariableSpeedSignalDialog::~GNEVariableSpeedSignalDialog() {
 }
 
 
-long 
-GNEVariableSpeedSignalDialog::onCMDInsertRow(FXObject*, FXSelector, void*) {
-    return 1;
-}
+long
+GNEVariableSpeedSignalDialog::onCmdAddRow(FXObject*, FXSelector, void*) {
+    // Declare variables for time and speed
+    SUMOTime time;
+    SUMOReal speed;
 
+    // Get Time
+    if (TplCheck::_str2SUMOTime(myRowStep->getText().text()) == false) {
+        return 0;
+    } else {
+// @toDo IMPLEMENT _str2Time TO TIME
+        time = TplConvert::_str2int(myRowStep->getText().text());
+    }
 
-long 
-GNEVariableSpeedSignalDialog::onCmdRemoveRow(FXObject*, FXSelector, void*) {
-    return 1;
-}
+    // get SPeed
+    if (TplCheck::_str2SUMOReal(myRowSpeed->getText().text()) == false) {
+        return 0;
+    } else {
+        speed = TplConvert::_str2SUMOReal(myRowSpeed->getText().text());
+    }
 
+    // Set new time and their speed if don't exist already
+    if (myVSSValues.find(time) == myVSSValues.end()) {
+        myVSSValues[time] = speed;
+    } else {
+        return false;
+    }
 
-long 
-GNEVariableSpeedSignalDialog::onCmdAccept(FXObject* sender, FXSelector sel, void* ptr) {
-    // Stop Modal with positive out
-    getApp()->stopModal(this,TRUE);
+    // Update table
+    updateTable();
     return 1;
 }
 
 
 long
-GNEVariableSpeedSignalDialog::onCmdCancel(FXObject* sender, FXSelector sel, void* ptr) {
+GNEVariableSpeedSignalDialog::onCmdRemoveRow(FXObject*, FXSelector, void*) {
+    // Iterate over rows to find the row to erase
+    for (int i = 0; i < myDataList->getNumRows(); i++) {
+        if (myDataList->getItem(i, 2)->isSelected()) {
+            // Remove element of table and map
+// @todo IMPLEMENT _2SUMOTIme
+            myVSSValues.erase(TplConvert::_2int(myDataList->getItem(i, 0)->getText().text()));
+            myDataList->removeRows(i);
+            // update table
+            updateTable();
+            return 1;
+        }
+    }
+    return 0;
+}
+
+
+long
+GNEVariableSpeedSignalDialog::onCmdAccept(FXObject*, FXSelector, void*) {
+    // Save new data in Variable Speed Signal edited
+    myVariableSpeedSignalParent->setVariableSpeedSignalSteps(myVSSValues);
+    // Stop Modal with positive out
+    getApp()->stopModal(this, TRUE);
+    return 1;
+}
+
+
+long
+GNEVariableSpeedSignalDialog::onCmdCancel(FXObject*, FXSelector, void*) {
     // Stop Modal with negative out
-    getApp()->stopModal(this,FALSE);
+    getApp()->stopModal(this, FALSE);
     return 1;
 }
 
 
 long
 GNEVariableSpeedSignalDialog::onCmdReset(FXObject*, FXSelector, void*) {
-    return 1;
-}
-
-
-long
-GNEVariableSpeedSignalDialog::onCmdAddRow(FXObject* sender, FXSelector sel, void* data) {
-
-    if(TplCheck::_str2SUMOTime(myRowStep->getText().text()) == false)
-        return 0;
-
-    if(TplCheck::_str2SUMOReal(myRowSpeed->getText().text()) == false)
-        return 0;
-
-    fillTable();
-
+    // Get old values
+    myVSSValues = myVariableSpeedSignalParent->getVariableSpeedSignalSteps();
+    updateTable();
     return 1;
 }
 
 
 void
-GNEVariableSpeedSignalDialog::fillTable()
-{
-
+GNEVariableSpeedSignalDialog::updateTable() {
+    // clear table
+    myDataList->clearItems();
+    // set number of rows
+    myDataList->setTableSize(int(myVSSValues.size()), 3);
+    // Configure list
+    myDataList->setVisibleColumns(3);
+    myDataList->setColumnWidth(0, getWidth() * 0.35);
+    myDataList->setColumnWidth(1, getWidth() * 0.35);
+    myDataList->setColumnWidth(2, (getWidth() * 0.3) - 10);
+    myDataList->setColumnText(0, "timeStep");
+    myDataList->setColumnText(1, "speed (km/h)");
+    myDataList->setColumnText(2, "remove");
+    myDataList->getRowHeader()->setWidth(0);
+    // Declare index for rows and pointer to FXTableItem
+    int indexRow = 0;
+    FXTableItem* item = 0;
+    // iterate over values
+    for (std::map<SUMOTime, SUMOReal>::iterator i = myVSSValues.begin(); i != myVSSValues.end(); i++) {
+        // Set time
+        item = new FXTableItem(toString(i->first).c_str());
+        myDataList->setItem(indexRow, 0, item);
+        // Set speed
+        item = new FXTableItem(toString(i->second).c_str());
+        myDataList->setItem(indexRow, 1, item);
+        // set remove
+        item = new FXTableItem("", GUIIconSubSys::getIcon(ICON_REMOVE));
+        item->setJustify(FXTableItem::CENTER_X | FXTableItem::CENTER_Y);
+        myDataList->setItem(indexRow, 2, item);
+        // Update index
+        indexRow++;
+    }
 }
 
 /****************************************************************************/

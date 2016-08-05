@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NIVissimDisturbance.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIVissimDisturbance.cpp 21202 2016-07-19 13:40:35Z behrisch $
 ///
 // -------------------
 /****************************************************************************/
@@ -358,7 +358,7 @@ NIVissimDisturbance::dict_SetDisturbances() {
 void
 NIVissimDisturbance::reportRefused() {
     if (refusedProhibits > 0) {
-        WRITE_WARNING("Could not build " + toString<size_t>(refusedProhibits) + " of " + toString<size_t>(myDict.size()) + " disturbances.");
+        WRITE_WARNING("Could not build " + toString<int>(refusedProhibits) + " of " + toString<int>((int)myDict.size()) + " disturbances.");
     }
 }
 

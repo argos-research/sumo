@@ -2,7 +2,7 @@
 /// @file    GNEStoppingPlace.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Dec 2015
-/// @version $Id: GNEStoppingPlace.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEStoppingPlace.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 /// A abstract class to define common parameters of lane area in which vehicles can halt (GNE version)
 /****************************************************************************/
@@ -66,17 +66,21 @@ public:
     /// @brief update pre-computed geometry information
     virtual void updateGeometry() = 0;
 
-    /**@brief change the position of the StoppingPlace geometry 
+    /// @brief Returns position of StoppingPlace in view
+    Position getPositionInView() const;
+
+    /**@brief change the position of the StoppingPlace geometry
      * @param[in] posx new position of StoppingPlaceover lane
      * @param[in] posy unused
      * @param[in] undoList pointer to the undo list
      */
-    void moveAdditional(SUMOReal posx, SUMOReal posy, GNEUndoList *undoList);
+    void moveAdditional(SUMOReal posx, SUMOReal posy, GNEUndoList* undoList);
 
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element
+     * @param[in] currentDirectory current directory in which this additional are writted
      */
-    virtual void writeAdditional(OutputDevice& device) = 0;
+    virtual void writeAdditional(OutputDevice& device, const std::string& currentDirectory) = 0;
 
     /// @brief Returns pointer to Lane of stopping place
     GNELane* getLane() const;
@@ -84,6 +88,9 @@ public:
     /// @brief Remove reference to Lane of stopping place
     /// @note will be automatic called in lane destructor
     void removeLaneReference();
+
+    /// @brief change lane of stopping place
+    void changeLane(GNELane* newLane);
 
     /// @brief Returns the Start position of the stoppingPlace
     SUMOReal getStartPosition() const;
@@ -108,15 +115,6 @@ public:
     /// @brief Returns the name of the parent object
     /// @return This object's parent id
     const std::string& getParentName() const;
-
-    /**@brief Returns an own parameter window
-     *
-     * @param[in] app The application needed to build the parameter window
-     * @param[in] parent The parent window needed to build the parameter window
-     * @return The built parameter window
-     * @see GUIGlObject::getParameterWindow
-     */
-    virtual GUIParameterTableWindow* getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent) = 0;
 
     /**@brief Draws the object
      * @param[in] s The settings for the current view (may influence drawing)
@@ -167,7 +165,7 @@ protected:
     /// @brief sign selected color (Default blue)
     RGBColor mySignColorSelected;
 
-     /// @brief Text color (Default cyan)
+    /// @brief Text color (Default cyan)
     RGBColor myTextColor;
 
     /// @brief Text color selected (Default blue)
@@ -177,11 +175,8 @@ private:
     /// @brief set attribute after validation
     virtual void setAttribute(SumoXMLAttr key, const std::string& value) = 0;
 
-    /// @brief Invalidate return position of additional
-    const Position &getPositionInView() const;
-
     /// @brief Invalidate set new position in the view
-    void setPosition(const Position &pos);
+    void setPosition(const Position& pos);
 };
 
 

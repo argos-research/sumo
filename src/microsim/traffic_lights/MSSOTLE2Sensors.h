@@ -3,7 +3,7 @@
 /// @author  Gianfilippo Slager
 /// @author  Federico Caselli
 /// @date    Feb 2010
-/// @version $Id: MSSOTLE2Sensors.h 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSSOTLE2Sensors.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The class for SOTL sensors of "E2" type
 /****************************************************************************/
@@ -147,7 +147,7 @@ protected:
 
     SUMOReal speedThresholdParam;
     std::map<std::string, std::vector<std::string> > m_continueSensorOnLanes;
-    std::map<const std::string, unsigned int> m_typeWeightMap;
+    std::map<const std::string, int> m_typeWeightMap;
 
 };
 

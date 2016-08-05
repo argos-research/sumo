@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: OptionsLoader.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: OptionsLoader.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A SAX-Handler for loading options
 /****************************************************************************/
@@ -92,7 +92,7 @@ void OptionsLoader::setValue(const std::string& key,
 
 void OptionsLoader::characters(const XMLCh* const chars,
                                const XERCES3_SIZE_t length) {
-    myValue = myValue + TplConvert::_2str(chars, (unsigned int) length);
+    myValue = myValue + TplConvert::_2str(chars, (int) length);
 }
 
 

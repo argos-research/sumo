@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSVehicleType.h 20550 2016-04-26 10:57:45Z namdre $
+/// @version $Id: MSVehicleType.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The car-following model and parameter
 /****************************************************************************/
@@ -282,7 +282,7 @@ public:
     /** @brief Get this vehicle type's person capacity
      * @return The person capacity of this vehicle type
      */
-    unsigned int getPersonCapacity() const {
+    int getPersonCapacity() const {
         return myParameter.personCapacity;
     }
 
@@ -290,7 +290,7 @@ public:
     /** @brief Get this vehicle type's container capacity
      * @return The container capacity of this vehicle type
      */
-    unsigned int getContainerCapacity() const {
+    int getContainerCapacity() const {
         return myParameter.containerCapacity;
     }
 

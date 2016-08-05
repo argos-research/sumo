@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 13.12.2005
-/// @version $Id: MSStoppingPlace.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSStoppingPlace.h 21184 2016-07-18 07:12:20Z behrisch $
 ///
 // A lane area vehicles can halt at
 /****************************************************************************/
@@ -145,8 +145,8 @@ public:
 
     /** @brief Returns the number of transportables waiting on this stop
     */
-    unsigned int getTransportableNumber() const {
-        return static_cast<unsigned int>(myWaitingTransportables.size());
+    int getTransportableNumber() const {
+        return (int)myWaitingTransportables.size();
     }
 
     /// @brief adds a transportable to this stop

@@ -2,7 +2,7 @@
 /// @file    GNEApplicationWindow.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEApplicationWindow.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEApplicationWindow.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The main window of Netedit (adapted from GUIApplicationWindow)
 /****************************************************************************/
@@ -263,7 +263,7 @@ protected:
     GNELoadThread* myLoadThread;
 
     /// @brief The current view number
-    size_t myViewNumber;
+    int myViewNumber;
 
     /// @brief information whether the gui is currently loading and the load-options shall be greyed out
     bool myAmLoading;

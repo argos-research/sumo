@@ -2,7 +2,7 @@
 /// @file    FXWorkerThread.h
 /// @author  Michael Behrisch
 /// @date    2014-07-13
-/// @version $Id: FXWorkerThread.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: FXWorkerThread.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A thread class together with a pool and a task for parallelized computation
 /****************************************************************************/
@@ -267,7 +267,7 @@ public:
             myMutex.unlock();
             t->run(this);
             myCounter++;
-//            if (myCounter % 1000 == 0) std::cout << (size_t)this << " ran " << myCounter << " tasks " << std::endl;
+//            if (myCounter % 1000 == 0) std::cout << (int)this << " ran " << myCounter << " tasks " << std::endl;
             myPool.addFinished(t);
         }
 //        std::cout << "ran " << myCounter << " tasks " << std::endl;

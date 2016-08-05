@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NIFrame.cpp 20661 2016-05-09 08:48:28Z namdre $
+/// @version $Id: NIFrame.cpp 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // Sets and checks options for netimport
 /****************************************************************************/
@@ -255,6 +255,9 @@ NIFrame::fillOptions() {
     oc.doRegister("osm.elevation", new Option_Bool(false));
     oc.addDescription("osm.elevation", "Processing", "Imports elevation data");
 
+    oc.doRegister("osm.layer-elevation", new Option_Float(0));
+    oc.addDescription("osm.layer-elevation", "Processing", "Reconstruct (relative) elevation based on layer data. Each layer is raised by FLOAT m");
+
     // register opendrive options
     oc.doRegister("opendrive.import-all-lanes", new Option_Bool(false));
     oc.addDescription("opendrive.import-all-lanes", "Processing", "Imports all lane types");
@@ -277,7 +280,7 @@ NIFrame::checkOptions() {
     ok &= oc.checkDependingSuboptions("visum-file", "visum.");
     ok &= oc.checkDependingSuboptions("vissim-file", "vissim.");
 #ifdef HAVE_PROJ
-    unsigned numProjections = oc.getBool("simple-projection") + oc.getBool("proj.utm") + oc.getBool("proj.dhdn") + (oc.getString("proj").length() > 1);
+    int numProjections = oc.getBool("simple-projection") + oc.getBool("proj.utm") + oc.getBool("proj.dhdn") + (oc.getString("proj").length() > 1);
     if ((oc.isSet("osm-files") || oc.isSet("dlr-navteq-prefix") || oc.isSet("shapefile-prefix")) && numProjections == 0) {
         if (oc.isDefault("proj")) {
             oc.set("proj.utm", "true");

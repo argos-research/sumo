@@ -2,7 +2,7 @@
 /// @file    netedit_main.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: netedit_main.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: netedit_main.cpp 21172 2016-07-15 08:34:36Z behrisch $
 ///
 // Main for NETEDIT (adapted from guisim_main)
 /****************************************************************************/
@@ -61,13 +61,8 @@
 
 
 // ===========================================================================
-// methods
+// main function
 // ===========================================================================
-
-
-/* -------------------------------------------------------------------------
- * main
- * ----------------------------------------------------------------------- */
 int
 main(int argc, char** argv) {
     // make the output aware of threading
@@ -86,24 +81,13 @@ main(int argc, char** argv) {
 #endif
         // initialise subsystems
         XMLSubSys::init();
-        OptionsCont& oc = OptionsCont::getOptions();
         GNELoadThread::fillOptions(oc);
         OptionsIO::setArgs(argc, argv);
-        OptionsIO::getOptions();
+        OptionsIO::getOptions(true);
         if (oc.processMetaOptions(false)) {
             SystemFrame::close();
             return 0;
         }
-        XMLSubSys::setValidation(oc.getString("xml-validation"), oc.getString("xml-validation.net"));
-        // within gui-based applications, nothing is reported to the console
-        /*
-        MsgHandler::getErrorInstance()->report2cout(false);
-        MsgHandler::getErrorInstance()->report2cerr(false);
-        MsgHandler::getWarningInstance()->report2cout(false);
-        MsgHandler::getWarningInstance()->report2cerr(false);
-        MsgHandler::getMessageInstance()->report2cout(false);
-        MsgHandler::getMessageInstance()->report2cerr(false);
-        */
         // Make application
         FXApp application("Netedit", "DLR");
         // Open display
@@ -112,21 +96,17 @@ main(int argc, char** argv) {
         if (!FXGLVisual::supported(&application, major, minor)) {
             throw ProcessError("This system has no OpenGL support. Exiting.");
         }
-        // initialise global settings
-        GUITexturesHelper::allowTextures(!oc.getBool("disable-textures"));
-
         // build the main window
         GNEApplicationWindow* window =
         new GNEApplicationWindow(&application, "*.netc.cfg,*.netccfg");
-        window->dependentBuild();
         gSchemeStorage.init(&application);
-        // init simulation and visualization structures
-        // initGuiShapeNames();
+        window->dependentBuild();
         // Create app
         application.addSignal(SIGINT, window, MID_QUIT);
         application.create();
         // Load configuration given on command line
-        if (oc.isSet("configuration-file") || oc.isSet("sumo-net-file")) {
+        if (argc > 1) {
+            OptionsIO::setArgs(argc, argv);
             window->loadOnStartup();
         }
         // Run

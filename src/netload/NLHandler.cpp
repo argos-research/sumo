@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Felix Brack
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLHandler.cpp 20928 2016-06-08 19:37:36Z behrisch $
+/// @version $Id: NLHandler.cpp 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // The XML-Handler for network loading
 /****************************************************************************/
@@ -1026,8 +1026,8 @@ NLHandler::addConnection(const SUMOSAXAttributes& attrs) {
             WRITE_ERROR("Unknown to-edge '" + toID + "' in connection");
             return;
         }
-        if (fromLaneIdx < 0 || static_cast<unsigned int>(fromLaneIdx) >= from->getLanes().size() ||
-                toLaneIdx < 0 || static_cast<unsigned int>(toLaneIdx) >= to->getLanes().size()) {
+        if (fromLaneIdx < 0 || fromLaneIdx >= (int)from->getLanes().size() ||
+              toLaneIdx < 0 || toLaneIdx >= (int)to->getLanes().size()) {
             WRITE_ERROR("Invalid lane index in connection from '" + from->getID() + "' to '" + to->getID() + "'.");
             return;
         }

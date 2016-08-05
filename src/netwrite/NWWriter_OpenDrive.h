@@ -2,7 +2,7 @@
 /// @file    NWWriter_OpenDrive.h
 /// @author  Daniel Krajzewicz
 /// @date    Tue, 04.05.2011
-/// @version $Id: NWWriter_OpenDrive.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NWWriter_OpenDrive.h 21176 2016-07-15 13:57:37Z namdre $
 ///
 // Exporter writing networks using the openDRIVE format
 /****************************************************************************/
@@ -42,6 +42,7 @@ class NBEdge;
 class OptionsCont;
 class PositionVector;
 class OutputDevice;
+class OutputDevice_String;
 
 
 // ===========================================================================
@@ -62,7 +63,21 @@ public:
     static void writeNetwork(const OptionsCont& oc, NBNetBuilder& nb);
 
 protected:
-    static void writePlanView(const PositionVector& shape, OutputDevice& device);
+    /// @brief write geometry as sequence of lines (sumo style)
+    static SUMOReal writeGeomLines(const PositionVector& shape, OutputDevice& device, OutputDevice& elevationDevice, SUMOReal offset = 0);
+
+    /// @brief write geometry as sequence of lines and bezier curves
+    static void writeGeomSmooth(const PositionVector& shape, SUMOReal speed, OutputDevice& device, OutputDevice& elevationDevice);
+
+    /// @brief write geometry as a single bezier curve (paramPoly3)
+    static SUMOReal writeGeomPP3(OutputDevice& device,
+                                 OutputDevice& elevationDevice,
+                                 PositionVector init,
+                                 SUMOReal length,
+                                 SUMOReal offset = 0);
+
+    static void writeElevationProfile(const PositionVector& shape, OutputDevice& device, const OutputDevice_String& elevationDevice); 
+
     static void writeEmptyCenterLane(OutputDevice& device, const std::string& mark, SUMOReal markWidth);
     static int getID(const std::string& origID, StringBijection<int>& map, int& lastID);
 

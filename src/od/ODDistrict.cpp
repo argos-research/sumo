@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Yun-Pang Floetteroed
 /// @date    Sept 2002
-/// @version $Id: ODDistrict.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ODDistrict.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A district (origin/destination)
 /****************************************************************************/
@@ -78,15 +78,15 @@ ODDistrict::getRandomSink() const {
 }
 
 
-unsigned int
+int
 ODDistrict::sinkNumber() const {
-    return (unsigned int) mySinks.getVals().size();
+    return (int) mySinks.getVals().size();
 }
 
 
-unsigned int
+int
 ODDistrict::sourceNumber() const {
-    return (unsigned int) mySources.getVals().size();
+    return (int) mySources.getVals().size();
 }
 
 

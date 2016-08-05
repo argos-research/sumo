@@ -1,8 +1,8 @@
 /****************************************************************************/
 /// @file    GNEProhibition.cpp
-/// @author  Pablo Álvarez López
+/// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNEProhibition.cpp 20472 2016-04-15 15:36:45Z palcraft $
+/// @version $Id: GNEProhibition.cpp 21117 2016-07-05 12:57:12Z palcraft $
 ///
 // A class for visualizing prohibitions between edges
 /****************************************************************************/

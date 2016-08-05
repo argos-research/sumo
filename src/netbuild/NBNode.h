@@ -5,7 +5,7 @@
 /// @author  Yun-Pang Floetteroed
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBNode.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NBNode.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The representation of a single node
 /****************************************************************************/
@@ -101,7 +101,7 @@ public:
         NBEdge* myCurrentOutgoing;
 
         /// @brief The available lanes to which connections shall be built
-        std::vector<unsigned int> myAvailableLanes;
+        std::vector<int> myAvailableLanes;
 
     public:
         /** @brief Constructor
@@ -113,12 +113,12 @@ public:
         /// @brief Destructor
         ~ApproachingDivider();
 
-        unsigned int numAvailableLanes() const {
-            return (unsigned int)myAvailableLanes.size();
+        int numAvailableLanes() const {
+            return (int)myAvailableLanes.size();
         }
 
         /** the bresenham-callback */
-        void execute(const unsigned int src, const unsigned int dest);
+        void execute(const int src, const int dest);
 
         /** the method that spreads the wished number of lanes from the
             the lane given by the bresenham-call to both left and right */
@@ -341,7 +341,7 @@ public:
      * @param[in, opt. changed] tc The traffic lights container to update
      * @return The number of removed edges
      */
-    unsigned int removeSelfLoops(NBDistrictCont& dc, NBEdgeCont& ec, NBTrafficLightLogicCont& tc);
+    int removeSelfLoops(NBDistrictCont& dc, NBEdgeCont& ec, NBTrafficLightLogicCont& tc);
     /// @}
 
 
@@ -562,10 +562,16 @@ public:
         SUMOReal extrapolateBeg,
         SUMOReal extrapolateEnd) const;
 
+    static PositionVector bezierControlPoints(
+        const PositionVector& begShape,
+        const PositionVector& endShape,
+        bool isTurnaround,
+        SUMOReal extrapolateBeg,
+        SUMOReal extrapolateEnd);
 
     /** @brief Replaces occurences of the first edge within the list of incoming by the second
         Connections are remapped, too */
-    void replaceIncoming(NBEdge* which, NBEdge* by, unsigned int laneOff);
+    void replaceIncoming(NBEdge* which, NBEdge* by, int laneOff);
 
     /** @brief Replaces occurences of every edge from the given list within the list of incoming by the second
         Connections are remapped, too */
@@ -573,7 +579,7 @@ public:
 
     /** @brief Replaces occurences of the first edge within the list of outgoing by the second
         Connections are remapped, too */
-    void replaceOutgoing(NBEdge* which, NBEdge* by, unsigned int laneOff);
+    void replaceOutgoing(NBEdge* which, NBEdge* by, int laneOff);
 
     /** @brief Replaces occurences of every edge from the given list within the list of outgoing by the second
         Connections are remapped, too */
@@ -594,7 +600,7 @@ public:
     /* @brief build pedestrian crossings
      * @return The next index for creating internal lanes
      * */
-    unsigned int buildCrossings();
+    int buildCrossings();
 
     /* @brief build pedestrian walking areas and set connections from/to walkingAreas
      * @param[in] cornerDetail The detail level when generating the inner curve
@@ -650,7 +656,7 @@ public:
     const Crossing& getCrossing(const std::string& id) const;
 
     /// @brief set tl indices of this nodes crossing starting at the given index
-    void setCrossingTLIndices(unsigned int startIndex);
+    void setCrossingTLIndices(int startIndex);
 
     /// @brief return the number of lane-to-lane connections at this junction (excluding crossings)
     int numNormalConnections() const;
@@ -718,7 +724,7 @@ private:
 
 
     void replaceInConnectionProhibitions(NBEdge* which, NBEdge* by,
-                                         unsigned int whichLaneOff, unsigned int byLaneOff);
+                                         int whichLaneOff, int byLaneOff);
 
 
     void remapRemoved(NBTrafficLightLogicCont& tc,

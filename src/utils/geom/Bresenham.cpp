@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Fri, 07 Jun 2002
-/// @version $Id: Bresenham.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: Bresenham.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A class to realise a uniform n:m - relationship using the
 /****************************************************************************/
@@ -42,12 +42,12 @@
 // method definitions
 // ===========================================================================
 void
-Bresenham::compute(BresenhamCallBack* callBack, const unsigned int val1, const unsigned int val2) {
-    const unsigned int smaller = MIN2(val1, val2);
-    const unsigned int greater = MAX2(val1, val2);
-    unsigned int pos = 0;
-    unsigned int c = smaller;
-    for (unsigned int i = 0; i < greater; i++) {
+Bresenham::compute(BresenhamCallBack* callBack, const int val1, const int val2) {
+    const int smaller = MIN2(val1, val2);
+    const int greater = MAX2(val1, val2);
+    int pos = 0;
+    int c = smaller;
+    for (int i = 0; i < greater; i++) {
         if (smaller == val1) {
             callBack->execute(pos, i);
         } else {

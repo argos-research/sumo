@@ -8,7 +8,7 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSFrame.cpp 20988 2016-06-16 13:32:24Z behrisch $
+/// @version $Id: MSFrame.cpp 21198 2016-07-19 11:34:56Z namdre $
 ///
 // Sets and checks options for microsim; inits global outputs and settings
 /****************************************************************************/
@@ -201,6 +201,8 @@ MSFrame::fillOptions() {
     oc.doRegister("bt-output", new Option_FileName());
     oc.addDescription("bt-output", "Output", "Save bluetooth visibilities into FILE (in conjunction with device.btreceiver and device.btsender)");
 
+    oc.doRegister("lanechange-output", new Option_FileName());
+    oc.addDescription("lanechange-output", "Output", "Record lane changes and their motivations for all vehicles into FILE");
 
 #ifdef _DEBUG
     oc.doRegister("movereminder-output", new Option_FileName());
@@ -209,11 +211,15 @@ MSFrame::fillOptions() {
     oc.addDescription("movereminder-output.vehicles", "Output", "List of vehicle ids which shall save their movereminder states");
 #endif
 
-    oc.doRegister("save-state.times", new Option_IntVector(IntVector()));//!!! check, describe
+    oc.doRegister("save-state.times", new Option_IntVector(IntVector()));
     oc.addDescription("save-state.times", "Output", "Use INT[] as times at which a network state written");
-    oc.doRegister("save-state.prefix", new Option_FileName("state"));//!!! check, describe
+    oc.doRegister("save-state.period", new Option_String("-1", "TIME"));
+    oc.addDescription("save-state.period", "Output", "save state repeatedly after TIME period");
+    oc.doRegister("save-state.prefix", new Option_FileName("state"));
     oc.addDescription("save-state.prefix", "Output", "Prefix for network states");
-    oc.doRegister("save-state.files", new Option_FileName());//!!! check, describe
+    oc.doRegister("save-state.suffix", new Option_FileName(".sbx"));
+    oc.addDescription("save-state.suffix", "Output", "Suffix for network states (.sbx or .xml)");
+    oc.doRegister("save-state.files", new Option_FileName());//
     oc.addDescription("save-state.files", "Output", "Files for network states");
 
     // register the simulation settings
@@ -288,6 +294,9 @@ MSFrame::fillOptions() {
 
     oc.doRegister("lanechange.overtake-right", new Option_Bool(false));
     oc.addDescription("lanechange.overtake-right", "Processing", "Whether overtaking on the right on motorways is permitted");
+
+    oc.doRegister("tls.all-off", new Option_Bool(false));
+    oc.addDescription("tls.all-off", "Processing", "Switches off all traffic lights.");
 
     // pedestrian model
     oc.doRegister("pedestrian.model", new Option_String("striping"));
@@ -422,6 +431,7 @@ MSFrame::buildStreams() {
     //OutputDevice::createDeviceByOption("vtk-output", "vtk-export");
     OutputDevice::createDeviceByOption("link-output", "link-output");
     OutputDevice::createDeviceByOption("bt-output", "bt-output");
+    OutputDevice::createDeviceByOption("lanechange-output", "lanechanges");
 
 #ifdef _DEBUG
     OutputDevice::createDeviceByOption("movereminder-output", "movereminder-output");
@@ -452,6 +462,13 @@ MSFrame::checkOptions() {
     if (oc.isSet("gui-settings-file") &&
             oc.getString("gui-settings-file") != "" &&
             !oc.isUsableFileList("gui-settings-file")) {
+        ok = false;
+    }
+    if (oc.getBool("demo") && oc.isDefault("start")) {
+        oc.set("start", "true");
+    }
+    if (oc.getBool("demo") && oc.getBool("quit-on-end")) {
+        WRITE_ERROR("You can either restart or quit on end.");
         ok = false;
     }
     if (oc.getBool("meso-junction-control.limited") && !oc.getBool("meso-junction-control")) {

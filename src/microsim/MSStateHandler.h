@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Thu, 13 Dec 2012
-/// @version $Id: MSStateHandler.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSStateHandler.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Parser and output filter for routes and vehicles state saving and loading
 /****************************************************************************/
@@ -97,7 +97,7 @@ private:
     SUMOTime myTime;
     MESegment* mySegment;
     std::pair<int, int> myEdgeAndLane;
-    unsigned int myQueIndex;
+    int myQueIndex;
 
     /// @brief The currently parsed vehicle type
     SUMOVTypeParameter* myCurrentVType;

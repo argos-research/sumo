@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Tue Dec 02 2003 22:17 CET
-/// @version $Id: MSE3Collector.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSE3Collector.h 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // A detector of vehicles passing an area between entry/exit points
 /****************************************************************************/
@@ -351,13 +351,13 @@ protected:
         /// @brief The sum of registered speeds the vehicle has/had inside the area
         SUMOReal speedSum;
         /// @brief The sum of haltings the vehicle has/had within the area
-        unsigned haltings;
+        int haltings;
         /// @brief Begin time of last halt begin
         SUMOReal haltingBegin;
         /// @brief The sum of registered speeds the vehicle has/had inside the area during the current interval
         SUMOReal intervalSpeedSum;
         /// @brief The sum of haltings the vehicle has/had within the area during the current interval
-        unsigned intervalHaltings;
+        int intervalHaltings;
         /// @brief An internal information whether the update step was performed
         bool hadUpdate;
     };

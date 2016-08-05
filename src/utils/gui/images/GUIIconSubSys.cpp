@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Andreas Gaubatz
 /// @date    Mon, 08.03.2004
-/// @version $Id: GUIIconSubSys.cpp 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GUIIconSubSys.cpp 21131 2016-07-08 07:59:22Z behrisch $
 ///
 // Helper for icons loading and usage
 /****************************************************************************/
@@ -141,12 +141,13 @@ static const char* empty_xpm[] = {
 // ===========================================================================
 // static member variable definitions
 // ===========================================================================
-GUIIconSubSys* GUIIconSubSys::myInstance = 0;
 
+GUIIconSubSys* GUIIconSubSys::myInstance = 0;
 
 // ===========================================================================
 // member definitions
 // ===========================================================================
+
 GUIIconSubSys::GUIIconSubSys(FXApp* a) {
     // build icons
     myIcons[ICON_APP] = new FXXPMIcon(a, document_xpm);
@@ -154,7 +155,7 @@ GUIIconSubSys::GUIIconSubSys(FXApp* a) {
     myIcons[ICON_OPEN_CONFIG] = new FXXPMIcon(a, fileopen_xpm);
     myIcons[ICON_OPEN_NET] = new FXXPMIcon(a, netopen_xpm);
     myIcons[ICON_OPEN_SHAPES] = new FXXPMIcon(a, shapeopen_xpm);
-	myIcons[ICON_OPEN_ADDITIONALS] = new FXXPMIcon(a, shapeopen_xpm);
+    myIcons[ICON_OPEN_ADDITIONALS] = new FXXPMIcon(a, shapeopen_xpm);
     myIcons[ICON_RELOAD] = new FXXPMIcon(a, reload_xpm);
     myIcons[ICON_SAVE] = new FXXPMIcon(a, filesave_xpm);
     myIcons[ICON_CLOSE] = 0;//new FXXPMIcon(a, close);
@@ -276,7 +277,6 @@ GUIIconSubSys::close() {
     delete myInstance;
     myInstance = 0;
 }
-
 
 
 /****************************************************************************/

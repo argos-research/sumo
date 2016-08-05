@@ -2,7 +2,7 @@
 /// @file    GNEAdditionalSet.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Feb 2016
-/// @version $Id: GNEAdditionalSet.h 19909 2016-02-08 12:22:59Z palcraft $
+/// @version $Id: GNEAdditionalSet.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 /// A abstract class for representation of additionalSet elements
 /****************************************************************************/
@@ -50,8 +50,7 @@ class GNEViewNet;
  * @class GNEAdditionalSet
  * @brief An Element wich group additionalSet elements
  */
-class GNEAdditionalSet : public GNEAdditional
-{
+class GNEAdditionalSet : public GNEAdditional {
 public:
 
     /**@brief Constructor.
@@ -63,9 +62,9 @@ public:
      * @param[in] edgeChilds
      * @param[in] laneChilds
      */
-    GNEAdditionalSet(const std::string& id, GNEViewNet* viewNet, Position pos, SumoXMLTag tag, bool blocked = false, 
-                     std::vector<GNEAdditional*> additionalChilds = std::vector<GNEAdditional*>(), 
-                     std::vector<GNEEdge*> edgeChilds = std::vector<GNEEdge*>(), 
+    GNEAdditionalSet(const std::string& id, GNEViewNet* viewNet, Position pos, SumoXMLTag tag, bool blocked = false,
+                     std::vector<GNEAdditional*> additionalChilds = std::vector<GNEAdditional*>(),
+                     std::vector<GNEEdge*> edgeChilds = std::vector<GNEEdge*>(),
                      std::vector<GNELane*> laneChilds = std::vector<GNELane*>());
 
     /// @brief Destructor
@@ -75,62 +74,80 @@ public:
     //  @note: must be called when geometry changes (i.e. lane moved)
     virtual void updateGeometry() = 0;
 
+    /**@brief writte additionalSet element into a xml file
+     * @param[in] device device in which write parameters of additionalSet element
+     */
+    virtual void writeAdditional(OutputDevice& device, const std::string& currentDirectory) = 0;
+
     /**@brief add additional element to this set
      * @param[in] additionalSet pointer to GNEadditionalSet element to add
      * @return true if was sucesfully added, false in other case
      */
-    bool addAdditionalChild(GNEAdditional *additional);
+    bool addAdditionalChild(GNEAdditional* additional);
 
     /**@brief remove additional element to this set
      * @param[in] additionalSet pointer to GNEadditionalSet element to remove
      * @return true if was sucesfully removed, false in other case
      */
-    bool removeAdditionalChild(GNEAdditional *additional);
+    bool removeAdditionalChild(GNEAdditional* additional);
 
     /**@brief add edge element to this set
      * @param[in] edgeSet pointer to GNEEdge element to add
      * @param[in] position position of edge in which connection will be placed
      * @return true if was sucesfully added, false in other case
      */
-    bool addEdgeChild(GNEEdge *edge);
+    bool addEdgeChild(GNEEdge* edge);
 
     /**@brief remove edge element to this set
      * @param[in] edgeSet pointer to GNEEdge element to remove
      * @return true if was sucesfully removed, false in other case
      */
-    bool removeEdgeChild(GNEEdge *edge);
+    bool removeEdgeChild(GNEEdge* edge);
 
     /**@brief add lane element to this set
      * @param[in] laneSet pointer to GNELane element to add
      * @param[in] position position of edge in which connection will be placed
      * @return true if was sucesfully added, false in other case
      */
-    bool addLaneChild(GNELane *lane);
+    bool addLaneChild(GNELane* lane);
 
     /**@brief remove lane element to this set
      * @param[in] laneSet pointer to GNELane element to remove
      * @return true if was sucesfully removed, false in other case
      */
-    bool removeLaneChild(GNELane *lane);
+    bool removeLaneChild(GNELane* lane);
 
-    /**@brief writte additionalSet element into a xml file
-     * @param[in] device device in which write parameters of additionalSet element
-     */
-    virtual void writeAdditional(OutputDevice& device) = 0;
-    
-    /// @brief get number of childs of this additionalSet
+    /// @brief get number of additional childs of this additionalSet
     int getNumberOfAdditionalChilds() const;
+
+    /// @brief get number of edge childs of this additionalSet
+    int getNumberOfEdgeChilds() const;
+
+    /// @brief get number of lane childs of this additionalSet
+    int getNumberOfLaneChilds() const;
+
+    /// @brief get ids of additional childs
+    std::vector<std::string> getAdditionalChildIds() const;
+
+    /// @brief get ids of edge childs
+    std::vector<std::string> getEdgeChildIds() const;
+
+    /// @brief get ids of lane childs
+    std::vector<std::string> getLaneChildIds() const;
+
+    /// @brief set edge childs
+    /// @note preexisting edge childs will be erased
+    void setEdgeChilds(std::vector<GNEEdge*> edges);
+
+    /// @brief set lane childs
+    /// @note preexisting lane childs will be erased
+    void setLaneChilds(std::vector<GNELane*> lanes);
 
     /// @name inherited from GUIGlObject
     /// @{
-    /**@brief Returns an own parameter window
-     *
-     * @param[in] app The application needed to build the parameter window
-     * @param[in] parent The parent window needed to build the parameter window
-     * @return The built parameter window
-     * @see GUIGlObject::getParameterWindow
-     */
-    virtual GUIParameterTableWindow* getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent) = 0;
+    /// @brief Returns the name of the parent object
+    /// @return This object's parent id
+    virtual const std::string& getParentName() const = 0;
 
     /**@brief Draws the object
      * @param[in] s The settings for the current view (may influence drawing)
@@ -163,26 +180,27 @@ public:
     /// @}
 
 protected:
+    /// @brief struct for edge childs
     struct edgeChild {
-        GNEEdge *edge;
+        GNEEdge* edge;
         std::vector<Position> positionsOverLanes;
         std::vector<SUMOReal> rotationsOverLanes;
     };
 
+    /// @brief struct for lane childs
     struct laneChild {
-        GNELane *lane;
+        GNELane* lane;
         Position positionOverLane;
         SUMOReal rotationOverLane;
     };
 
-
     /// @brief typedef for containers
-    typedef std::list<GNEAdditional*> childAdditionals;
-    typedef std::list<edgeChild> childEdges;
-    typedef std::list<laneChild> childLanes;
+    typedef std::vector<GNEAdditional*> childAdditionals;
+    typedef std::vector<edgeChild> childEdges;
+    typedef std::vector<laneChild> childLanes;
 
     /// @brief list of additional childs (Position and rotations is derived from additional)
-    std::list<GNEAdditional*> myChildAdditionals;
+    std::vector<GNEAdditional*> myChildAdditionals;
 
     /// @brief map of child edges and their positions and rotation
     childEdges myChildEdges;
@@ -201,8 +219,11 @@ protected:
     /// @note must be called at end of function drawGl(...) of additionalSet
     void drawConnections() const;
 
-    /// @brief write children of this additionalSet
-    void writeAdditionalChildrens(OutputDevice& device);
+    /**@brief writte children of this additionalSet
+     * @param[in] device device in which write parameters of additional element
+     * @param[in] currentDirectory current directory in which this additional are writted
+     */
+    void writeAdditionalChildrens(OutputDevice& device, const std::string& currentDirectory);
 
 private:
     /// @brief set attribute after validation

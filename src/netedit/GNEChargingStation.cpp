@@ -2,7 +2,7 @@
 /// @file    GNEChargingStation.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEChargingStation.cpp 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEChargingStation.cpp 21131 2016-07-08 07:59:22Z behrisch $
 ///
 /// A class for visualizing chargingStation geometry (adapted from GUILaneWrapper)
 /****************************************************************************/
@@ -64,7 +64,7 @@
 // member method definitions
 // ===========================================================================
 
-GNEChargingStation::GNEChargingStation(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal startPos, SUMOReal endPos, SUMOReal chargingPower, SUMOReal efficiency, bool chargeInTransit, SUMOReal chargeDelay, bool blocked) :
+GNEChargingStation::GNEChargingStation(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal startPos, SUMOReal endPos, SUMOReal chargingPower, SUMOReal efficiency, bool chargeInTransit, int chargeDelay, bool blocked) :
     GNEStoppingPlace(id, viewNet, SUMO_TAG_CHARGING_STATION, lane, startPos, endPos, blocked),
     myChargingPower(chargingPower),
     myEfficiency(efficiency),
@@ -104,7 +104,7 @@ GNEChargingStation::updateGeometry() {
     int numberOfSegments = (int) myShape.size() - 1;
 
     // If number of segments is more than 0
-    if(numberOfSegments >= 0) {
+    if (numberOfSegments >= 0) {
 
         // Reserve memory (To improve efficiency)
         myShapeRotations.reserve(numberOfSegments);
@@ -131,13 +131,17 @@ GNEChargingStation::updateGeometry() {
     PositionVector tmpShape = myShape;
 
     // Move shape to side
-    if(myRotationLefthand)
+    if (myRotationLefthand) {
         tmpShape.move2side(-1.5);
-    else
+    } else {
         tmpShape.move2side(1.5);
+    }
 
     // Get position of the sign
     mySignPos = tmpShape.getLineCenter();
+
+    // Set block icon position
+    myBlockIconPosition = myShape.getLineCenter();
 
     // Set block icon rotation, and using their rotation for sign
     setBlockIconRotation(myLane);
@@ -145,7 +149,8 @@ GNEChargingStation::updateGeometry() {
 
 
 void
-GNEChargingStation::writeAdditional(OutputDevice& device) {
+GNEChargingStation::writeAdditional(OutputDevice& device, const std::string&) {
+    // Write additional
     device.openTag(getTag());
     device.writeAttr(SUMO_ATTR_ID, getID());
     device.writeAttr(SUMO_ATTR_LANE, myLane->getID());
@@ -153,10 +158,11 @@ GNEChargingStation::writeAdditional(OutputDevice& device) {
     device.writeAttr(SUMO_ATTR_ENDPOS, myEndPos);
     device.writeAttr(SUMO_ATTR_CHARGINGPOWER, myChargingPower);
     device.writeAttr(SUMO_ATTR_EFFICIENCY, myEfficiency);
-    if(myChargeInTransit)
+    if (myChargeInTransit) {
         device.writeAttr(SUMO_ATTR_CHARGEINTRANSIT, "true");
-    else
+    } else {
         device.writeAttr(SUMO_ATTR_CHARGEINTRANSIT, "false");
+    }
     device.writeAttr(SUMO_ATTR_CHARGEDELAY, myChargeDelay);
     // Close tag
     device.closeTag();
@@ -189,7 +195,7 @@ GNEChargingStation::getChargeDelay() {
 
 void
 GNEChargingStation::setChargingPower(SUMOReal chargingPower) {
-    if(chargingPower > 0) {
+    if (chargingPower > 0) {
         myChargingPower = chargingPower;
     } else {
         throw InvalidArgument("Value of charging Power must be greather than 0");
@@ -199,7 +205,7 @@ GNEChargingStation::setChargingPower(SUMOReal chargingPower) {
 
 void
 GNEChargingStation::setEfficiency(SUMOReal efficiency) {
-    if(efficiency >= 0 && efficiency <= 1) {
+    if (efficiency >= 0 && efficiency <= 1) {
         myEfficiency = efficiency;
     } else {
         throw InvalidArgument("Value of efficiency must be between 0 and 1");
@@ -215,7 +221,7 @@ GNEChargingStation::setChargeInTransit(bool chargeInTransit) {
 
 void
 GNEChargingStation::setChargeDelay(SUMOReal chargeDelay) {
-    if(chargeDelay < 0) {
+    if (chargeDelay < 0) {
         myChargeDelay = chargeDelay;
     } else {
         throw InvalidArgument("Value of chargeDelay cannot be negative");
@@ -235,10 +241,11 @@ GNEChargingStation::drawGL(const GUIVisualizationSettings& s) const {
     glTranslated(0, 0, getType());
 
     // Set Color
-    if(isAdditionalSelected())
+    if (isAdditionalSelected()) {
         GLHelper::setColor(myBaseColorSelected);
-    else
+    } else {
         GLHelper::setColor(myBaseColor);
+    }
 
     // Get exaggeration
     const SUMOReal exaggeration = s.addSize.getExaggeration(s);
@@ -252,10 +259,11 @@ GNEChargingStation::drawGL(const GUIVisualizationSettings& s) const {
         glPushMatrix();
 
         // Set color of the charging power
-        if(isAdditionalSelected())
+        if (isAdditionalSelected()) {
             GLHelper::setColor(myTextColorSelected);
-        else
+        } else {
             GLHelper::setColor(myTextColor);
+        }
 
         // push charging power matrix
         glPushMatrix();
@@ -278,7 +286,7 @@ GNEChargingStation::drawGL(const GUIVisualizationSettings& s) const {
         // Set polyfront scale to 1
         pfSetScale(1.f);
 
-         // traslate matrix
+        // traslate matrix
         glTranslated(1.2, 0, 0);
 
         // draw charging power
@@ -294,17 +302,19 @@ GNEChargingStation::drawGL(const GUIVisualizationSettings& s) const {
         int noPoints = 9;
 
         // If the scale * exaggeration is more than 25, recalculate nº points
-        if (s.scale * exaggeration > 25)
+        if (s.scale * exaggeration > 25) {
             noPoints = MIN2((int)(9.0 + (s.scale * exaggeration) / 10.0), 36);
+        }
 
         // Scale matrix
         glScaled(exaggeration, exaggeration, 1);
 
         // Set base color
-        if(isAdditionalSelected())
+        if (isAdditionalSelected()) {
             GLHelper::setColor(myBaseColorSelected);
-        else
+        } else {
             GLHelper::setColor(myBaseColor);
+        }
 
         // Draw extern
         GLHelper::drawFilledCircle((SUMOReal) 1.1, noPoints);
@@ -313,25 +323,27 @@ GNEChargingStation::drawGL(const GUIVisualizationSettings& s) const {
         glTranslated(0, 0, .1);
 
         // Set sign color
-        if(isAdditionalSelected())
+        if (isAdditionalSelected()) {
             GLHelper::setColor(mySignColorSelected);
-        else
+        } else {
             GLHelper::setColor(mySignColor);
+        }
         // Draw internt sign
         GLHelper::drawFilledCircle((SUMOReal) 0.9, noPoints);
 
         // Draw sign 'C'
-        if (s.scale * exaggeration >= 4.5)
-            if(isAdditionalSelected())
+        if (s.scale * exaggeration >= 4.5) {
+            if (isAdditionalSelected()) {
                 GLHelper::drawText("C", Position(), .1, 1.6, myBaseColorSelected, myBlockIconRotation);
-            else
+            } else {
                 GLHelper::drawText("C", Position(), .1, 1.6, myBaseColor, myBlockIconRotation);
+            }
+        }
         // Pop sign matrix
         glPopMatrix();
 
         // Draw icon
-        //if(dynamic_cast<GNEViewNet*>(parent)->showLockIcon())
-            GNEAdditional::drawLockIcon();
+        GNEAdditional::drawLockIcon();
     }
 
     // Pop base matrix
@@ -345,26 +357,11 @@ GNEChargingStation::drawGL(const GUIVisualizationSettings& s) const {
 }
 
 
-GUIParameterTableWindow*
-GNEChargingStation::getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent) {
-    /** NOT YET SUPPORTED **/
-    // Ignore Warning
-    UNUSED_PARAMETER(parent);
-    GUIParameterTableWindow* ret = new GUIParameterTableWindow(app, *this, 2);
-    // add items
-    ret->mkItem("id", false, getID());
-    /** @TODO complet with the rest of parameters **/
-    // close building
-    ret->closeBuilding();
-    return ret;
-}
-
-
 std::string
 GNEChargingStation::getAttribute(SumoXMLAttr key) const {
     switch (key) {
         case SUMO_ATTR_ID:
-            return getMicrosimID();
+            return getAdditionalID();
         case SUMO_ATTR_LANE:
             return toString(myLane->getAttribute(SUMO_ATTR_ID));
         case SUMO_ATTR_STARTPOS:
@@ -393,7 +390,6 @@ GNEChargingStation::setAttribute(SumoXMLAttr key, const std::string& value, GNEU
     switch (key) {
         case SUMO_ATTR_ID:
         case SUMO_ATTR_LANE:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
         case SUMO_ATTR_STARTPOS:
         case SUMO_ATTR_ENDPOS:
         case SUMO_ATTR_CHARGINGPOWER:
@@ -412,10 +408,19 @@ bool
 GNEChargingStation::isValid(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
+            if (myViewNet->getNet()->getAdditional(getTag(), value) == NULL) {
+                return true;
+            } else {
+                return false;
+            }
         case SUMO_ATTR_LANE:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            if (myViewNet->getNet()->retrieveLane(value, false) != NULL) {
+                return true;
+            } else {
+                return false;
+            }
         case SUMO_ATTR_STARTPOS:
-            return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) >= 0 && parse<SUMOReal>(value) < (myEndPos-1));
+            return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) >= 0 && parse<SUMOReal>(value) < (myEndPos - 1));
         case SUMO_ATTR_ENDPOS:
             return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) >= 1 && parse<SUMOReal>(value) > myStartPos);
         case SUMO_ATTR_CHARGINGPOWER:
@@ -439,8 +444,11 @@ void
 GNEChargingStation::setAttribute(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
+            setAdditionalID(value);
+            break;
         case SUMO_ATTR_LANE:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            changeLane(myViewNet->getNet()->retrieveLane(value));
+            break;
         case SUMO_ATTR_STARTPOS:
             myStartPos = parse<SUMOReal>(value);
             updateGeometry();
@@ -458,10 +466,11 @@ GNEChargingStation::setAttribute(SumoXMLAttr key, const std::string& value) {
             myEfficiency = parse<SUMOReal>(value);
             break;
         case SUMO_ATTR_CHARGEINTRANSIT:
-            if(value == "true")
+            if (value == "true") {
                 myChargeInTransit = true;
-            else
+            } else {
                 myChargeInTransit = false;
+            }
             break;
         case SUMO_ATTR_CHARGEDELAY:
             myChargeDelay = parse<int>(value);

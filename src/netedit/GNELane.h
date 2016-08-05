@@ -2,7 +2,7 @@
 /// @file    GNELane.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNELane.h 20993 2016-06-17 11:50:24Z palcraft $
+/// @version $Id: GNELane.h 21227 2016-07-25 09:14:48Z namdre $
 ///
 // A class for visualizing Lane geometry (adapted from GUILaneWrapper)
 /****************************************************************************/
@@ -56,12 +56,11 @@ class GNELane : public GNENetElement, public FXDelegator {
     FXDECLARE(GNELane)
 
 public:
-    /// @brief Definition of the additionals list
-    typedef std::list<GNEAdditional*> AdditionalList;
+    /// @brief Definition of the additionals vector
+    typedef std::vector<GNEAdditional*> AdditionalVector;
 
-    /// @brief Definition of the additionalSets list
-    typedef std::list<GNEAdditionalSet*> AdditionalSetList;
-
+    /// @brief Definition of the additionalSets vector
+    typedef std::vector<GNEAdditionalSet*> AdditionalSetVector;
 
     /**@brief Constructor
      * @param[in] idStorage The storage of gl-ids to get the one for this lane representation from
@@ -100,9 +99,7 @@ public:
     /// @brief multiplexes message to two targets
     long onDefault(FXObject*, FXSelector, void*);
 
-    /**@brief Returns underlying parent edge
-     * @return The underlying GNEEdge
-     */
+    /// @brief Returns underlying parent edge
     GNEEdge& getParentEdge();
 
     /**@brief Returns the boundary to which the view shall be centered in order to show the object
@@ -128,15 +125,15 @@ public:
     /// @brief returns the vector with the shape lengths
     const std::vector<SUMOReal>& getShapeLengths() const;
 
-    /// @brief returns the boundry (including lanes)
-    Boundary getBoundary() const;
-
     /// @brief update pre-computed geometry information
     //  @note: must be called when geometry changes (i.e. junction moved)
     void updateGeometry();
 
+    /// @brief returns the boundry (including lanes)
+    Boundary getBoundary() const;
+
     /// @brief returns the index of the lane
-    unsigned int getIndex() const;
+    int getIndex() const;
 
     /// @nrief returns the current speed of lane
     SUMOReal getSpeed() const;
@@ -144,7 +141,7 @@ public:
     /* @brief method for setting the index of the lane
      * @param[in] index The new index of lane
      */
-    void setIndex(unsigned int index);
+    void setIndex(int index);
 
     /// @brief returns the parameteric length of the lane
     /// @note is the same as their Edge parent
@@ -170,26 +167,26 @@ public:
     /* @brief method for adding a reference of a additional element placed in this lane
      * @param[in] additional Pointer to additional element
      */
-    void addAdditional(GNEAdditional *additional);
+    void addAdditional(GNEAdditional* additional);
 
     /* @brief method for remove a reference of a additional element placed in this lane
      * @param[in] additional Pointer to additional element previously added
        @return true if additional element was sucesfully removed, flase in other case
      */
-    bool removeAdditional(GNEAdditional *additional);
+    bool removeAdditional(GNEAdditional* additional);
 
     /// @brief method to obtain a list of additional elements associated to this lane
     /// @return set with all additional elements
-    const std::list<GNEAdditional*> &getAdditionals() const;
+    const std::vector<GNEAdditional*>& getAdditionals() const;
 
     /// @brief add GNEAdditionalSet to this lane
-    bool addAdditionalSet(GNEAdditionalSet *additionalSet);
+    bool addAdditionalSet(GNEAdditionalSet* additionalSet);
 
     /// @brief remove GNEAdditionalSet from this lane
-    bool removeAdditionalSet(GNEAdditionalSet *additionalSet);
+    bool removeAdditionalSet(GNEAdditionalSet* additionalSet);
 
     /// @brief return list of additionalSets associated with this lane
-    const std::list<GNEAdditionalSet*> &getAdditionalSets();
+    const std::vector<GNEAdditionalSet*>& getAdditionalSets();
 
     /// @name inherited from GNEAttributeCarrier
     /// @{
@@ -239,10 +236,10 @@ protected:
     /// @}
 
     /// @brief list with the additonals vinculated with this lane
-    AdditionalList myAdditionals;
+    AdditionalVector myAdditionals;
 
     /// @brief list with the additonalSets vinculated with this lane
-    AdditionalSetList myAdditionalSets;
+    AdditionalSetVector myAdditionalSets;
 
     /// @brief optional special color
     const RGBColor* mySpecialColor;
@@ -282,10 +279,10 @@ private:
     void drawLane2LaneConnections() const;
 
     /// @brief return value for lane coloring according to the given scheme
-    SUMOReal getColorValue(size_t activeScheme) const;
+    SUMOReal getColorValue(int activeScheme) const;
 
     /// @brief sets the color according to the current scheme index and some lane function
-    bool setFunctionalColor(size_t activeScheme) const;
+    bool setFunctionalColor(int activeScheme) const;
 
     /// @brief sets multiple colors according to the current scheme index and some lane function
     bool setMultiColor(const GUIColorer& c) const;
@@ -299,6 +296,9 @@ private:
     /// @brief draw crossties for railroads
     /// @todo: XXX This duplicates the code of GUILane::drawCrossties and needs to be
     void drawCrossties(SUMOReal length, SUMOReal spacing, SUMOReal halfWidth) const;
+
+    /// @brief direction indicators for lanes
+    void drawDirectionIndicators() const;
 };
 
 

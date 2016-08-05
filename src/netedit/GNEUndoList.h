@@ -2,7 +2,7 @@
 /// @file    GNEUndoList.h
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEUndoList.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEUndoList.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 // FXUndoList is pretty dandy but some features are missing:
 //   - we cannot find out wether we have currently begun an undo-group and
@@ -89,7 +89,7 @@ public:
 
     /// @brief special method, avoid empty changes, always execute
     void p_add(GNEChange_Attribute* cmd);
-    
+
     /// @name FOX-callbacks
     /// @{
     /// @brief event after Undo

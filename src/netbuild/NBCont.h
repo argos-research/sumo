@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Sascha Krieg
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: NBCont.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBCont.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Some list definitions
 /****************************************************************************/
@@ -53,7 +53,7 @@ typedef std::set<NBEdge*> EdgeSet;
 
 /** container for (sorted) lanes.
     The lanes are sorted from rightmost (id=0) to leftmost (id=nolanes-1) */
-typedef std::vector<size_t> LaneVector;
+typedef std::vector<int> LaneVector;
 
 
 #endif

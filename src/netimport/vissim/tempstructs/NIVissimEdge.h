@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    End of 2002
-/// @version $Id: NIVissimEdge.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NIVissimEdge.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A temporary storage for edges imported from Vissim
 /****************************************************************************/
@@ -100,7 +100,7 @@ public:
 
     void removeFromConnectionCluster(NIVissimConnectionCluster* c);
     void addToConnectionCluster(NIVissimConnectionCluster* c);
-    void setSpeed(size_t lane, int speedDist);
+    void setSpeed(int lane, int speedDist);
     bool addToTreatAsSame(NIVissimEdge* e);
 
     NIVissimConnection* getConnectionTo(NIVissimEdge* e);
@@ -263,7 +263,7 @@ private:
     std::string myType;
 
     /// The number of lanes the edge has
-    unsigned int myNoLanes;
+    int myNoLanes;
 
     /// Additional load values for this edge
     SUMOReal myZuschlag1, myZuschlag2;

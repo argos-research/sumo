@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Wed, 12 Dez 2001
-/// @version $Id: MSJunctionLogic.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSJunctionLogic.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // kinds of logic-implementations.
 /****************************************************************************/
@@ -46,13 +46,13 @@ MSLogicJunction::LinkBits MSJunctionLogic::myDummyFoes;
 // ===========================================================================
 // member method definitions
 // ===========================================================================
-unsigned int
+int
 MSJunctionLogic::nLinks() {
     return myNLinks;
 }
 
 
-MSJunctionLogic::MSJunctionLogic(unsigned int nLinks) :
+MSJunctionLogic::MSJunctionLogic(int nLinks) :
     myNLinks(nLinks) {}
 
 

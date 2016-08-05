@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Laura Bieker
 @date    2008
-@version $Id: dailyBuildMSVC.py 20954 2016-06-13 07:14:56Z behrisch $
+@version $Id: dailyBuildMSVC.py 21162 2016-07-14 10:34:35Z behrisch $
 
 Does the nightly svn update on the windows server and the visual
 studio build. The script is also used for the meso build.
@@ -72,7 +72,8 @@ def runTests(options, env, svnrev, debugSuffix=""):
     if options.no_tests:
         return
     prefix = env["FILEPREFIX"] + debugSuffix
-    env["SUMO_BATCH_RESULT"] = os.path.join(options.rootDir, prefix + "batch_result")
+    env["SUMO_BATCH_RESULT"] = os.path.join(
+        options.rootDir, prefix + "batch_result")
     env["SUMO_REPORT"] = os.path.join(options.remoteDir, prefix + "report")
     testLog = os.path.join(options.remoteDir, prefix + "test.log")
     env["TEXTTEST_TMP"] = os.path.join(
@@ -84,7 +85,9 @@ def runTests(options, env, svnrev, debugSuffix=""):
     for name in ["dfrouter", "duarouter", "jtrrouter", "marouter", "netconvert", "netgenerate",
                  "od2trips", "sumo", "polyconvert", "sumo-gui", "activitygen",
                  "emissionsDrivingCycle", "emissionsMap"]:
-        binary = os.path.join(options.rootDir, options.binDir, name + debugSuffix + ".exe")
+        image = name + debugSuffix + ".exe"
+        subprocess.call(["taskkill", "/f", "/im", image])
+        binary = os.path.join(options.rootDir, options.binDir, image)
         if name == "sumo-gui":
             if os.path.exists(binary):
                 env["GUISIM_BINARY"] = binary
@@ -96,7 +99,8 @@ def runTests(options, env, svnrev, debugSuffix=""):
                (date.today().strftime("%d%b%y"), svnrev)]
     ttBin = "texttestc.py"
     if options.suffix == "extra":
-        runInternalTests.runInternal("", fullOpt, log, True, True)
+        runInternalTests.runInternal(
+            debugSuffix, fullOpt, log, True, True, debugSuffix == "")
     else:
         subprocess.call([ttBin] + fullOpt, env=env,
                         stdout=log, stderr=subprocess.STDOUT, shell=True)
@@ -240,5 +244,5 @@ for platform, dllDir in platformDlls:
     log.close()
 runTests(options, env, svnrev, "D")
 log = open(prefix + "Dstatus.log", 'w')
-status.printStatus(makeLog, makeAllLog, env["SMTP_SERVER"], log)
+status.printStatus(makeAllLog, makeAllLog, env["SMTP_SERVER"], log)
 log.close()

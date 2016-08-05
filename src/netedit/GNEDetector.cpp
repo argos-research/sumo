@@ -2,7 +2,7 @@
 /// @file    GNEDetectorE1.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetectorE1.cpp 19861 2016-02-01 09:08:47Z palcraft $
+/// @version $Id: GNEDetector.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 ///
 /****************************************************************************/
@@ -63,7 +63,7 @@
 // member method definitions
 // ===========================================================================
 
-GNEDetector::GNEDetector(const std::string& id, GNEViewNet* viewNet, SumoXMLTag tag, GNELane* lane, SUMOReal posOverLane, int freq, const std::string &filename, bool blocked, GNEAdditionalSet *parent) :
+GNEDetector::GNEDetector(const std::string& id, GNEViewNet* viewNet, SumoXMLTag tag, GNELane* lane, SUMOReal posOverLane, int freq, const std::string& filename, bool blocked, GNEAdditionalSet* parent) :
     GNEAdditional(id, viewNet, Position(posOverLane, 0), tag, parent, blocked),
     myLane(lane),
     myFreq(freq),
@@ -73,19 +73,20 @@ GNEDetector::GNEDetector(const std::string& id, GNEViewNet* viewNet, SumoXMLTag 
 
 
 GNEDetector::~GNEDetector() {
-    if(myLane)
+    if (myLane) {
         myLane->removeAdditional(this);
+    }
 }
 
 
 void
-GNEDetector::moveAdditional(SUMOReal posx, SUMOReal posy, GNEUndoList *undoList) {
+GNEDetector::moveAdditional(SUMOReal posx, SUMOReal posy, GNEUndoList* undoList) {
     // Due a detector is placed over an lane ignore Warning of posy
     UNUSED_PARAMETER(posy);
     // if item isn't blocked
-    if(myBlocked == false) {
+    if (myBlocked == false) {
         // Move to Right if posx is positive, to left if posx is negative
-        if( ((posx > 0) && ((myPosition.x() + posx) < myLane->getLaneShapeLenght())) || ((posx < 0) && ((myPosition.x() + posx) > 0)) ) {
+        if (((posx > 0) && ((myPosition.x() + posx) < myLane->getLaneShapeLenght())) || ((posx < 0) && ((myPosition.x() + posx) > 0))) {
             // change attribute
             undoList->p_add(new GNEChange_Attribute(this, SUMO_ATTR_POSITION, toString(myPosition.x() + posx)));
         }
@@ -125,21 +126,23 @@ GNEDetector::getFilename() const {
 
 void
 GNEDetector::setPositionOverLane(SUMOReal pos) {
-    if(pos < 0)
+    if (pos < 0) {
         throw InvalidArgument("Position '" + toString(pos) + "' not allowed. Must be greather than 0");
-    else if(pos > myLane->getLaneShapeLenght())
+    } else if (pos > myLane->getLaneShapeLenght()) {
         throw InvalidArgument("Position '" + toString(pos) + "' not allowed. Must be smaller than lane length");
-    else
+    } else {
         myPosition = Position(pos, 0);
+    }
 }
 
 
 void
 GNEDetector::setFrequency(int freq) {
-    if (freq >= 0)
+    if (freq >= 0) {
         myFreq = freq;
-    else
+    } else {
         throw InvalidArgument("Frequency '" + toString(freq) + "' not allowed. Must be greather than 0");
+    }
 }
 
 
@@ -149,14 +152,24 @@ GNEDetector::setFilename(std::string filename) {
 }
 
 
+void
+GNEDetector::changeLane(GNELane* newLane) {
+    myLane->removeAdditional(this);
+    myLane = newLane;
+    myLane->addAdditional(this);
+    updateGeometry();
+    getViewNet()->update();
+}
+
+
 const std::string&
 GNEDetector::getParentName() const {
-        return myLane->getMicrosimID();
+    return myLane->getMicrosimID();
 }
 
 
 void
-GNEDetector::drawDetectorIcon(const unsigned int GNELogoID, SUMOReal sizex, SUMOReal sizey) const {
+GNEDetector::drawDetectorIcon(const int GNELogoID, SUMOReal sizex, SUMOReal sizey) const {
     // Add a draw matrix
     glPushMatrix();
     // Traslate to center
@@ -170,7 +183,7 @@ GNEDetector::drawDetectorIcon(const unsigned int GNELogoID, SUMOReal sizex, SUMO
     //Traslate offset
     glTranslated(myDetectorLogoOffset.x(), myDetectorLogoOffset.y(), 0);
     // Draw detector logo
-    GUITexturesHelper::drawTexturedBox(GNELogoID, sizex, sizey, (-1*sizex), (-1*sizey));
+    GUITexturesHelper::drawTexturedBox(GNELogoID, sizex, sizey, (-1 * sizex), (-1 * sizey));
     // Pop detector logo matrix
     glPopMatrix();
 }

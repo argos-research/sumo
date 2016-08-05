@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    2005-05-04
-/// @version $Id: GUIDialog_EditViewport.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIDialog_EditViewport.h 21186 2016-07-18 12:04:16Z namdre $
 ///
 // A dialog to change the viewport
 /****************************************************************************/
@@ -136,7 +136,7 @@ protected:
     Position myOldLookFrom, myOldLookAt;
 
     /// @brief The spin dialers used to change the view
-    FXRealSpinDial* myZoom, *myXOff, *myYOff;
+    FXRealSpinDial* myZoom, *myXOff, *myYOff, *myZOff;
 
 #ifdef HAVE_OSG
     /// @brief The spin dialers used to change the view at (osg only)

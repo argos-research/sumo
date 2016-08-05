@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILane.h 20863 2016-06-03 09:27:22Z behrisch $
+/// @version $Id: GUILane.h 21226 2016-07-25 08:44:02Z namdre $
 ///
 // Representation of a lane in the micro simulation (gui-version)
 /****************************************************************************/
@@ -83,9 +83,9 @@ public:
      * @see MSLane
      */
     GUILane(const std::string& id, SUMOReal maxSpeed,
-            SUMOReal length, MSEdge* const edge, unsigned int numericalID,
+            SUMOReal length, MSEdge* const edge, int numericalID,
             const PositionVector& shape, SUMOReal width,
-            SVCPermissions permissions, unsigned int index);
+            SVCPermissions permissions, int index);
 
 
     /// @brief Destructor
@@ -224,6 +224,9 @@ public:
     /// @brief draw crossties for railroads or pedestrian crossings
     void drawCrossties(SUMOReal length, SUMOReal spacing, SUMOReal halfWidth) const;
 
+    /// @brief direction indicators for lanes
+    void drawDirectionIndicators() const;
+
     SUMOReal getEdgeLaneNumber() const;
 
     /** @brief Returns the stored traveltime for the edge of this lane
@@ -286,13 +289,13 @@ private:
 
 private:
     /// @brief gets the color value according to the current scheme index
-    SUMOReal getColorValue(size_t activeScheme) const;
+    SUMOReal getColorValue(int activeScheme) const;
 
     /// @brief gets the scaling value according to the current scheme index
-    SUMOReal getScaleValue(size_t activeScheme) const;
+    SUMOReal getScaleValue(int activeScheme) const;
 
     /// @brief sets the color according to the current scheme index and some lane function
-    bool setFunctionalColor(size_t activeScheme) const;
+    bool setFunctionalColor(int activeScheme) const;
 
     /// @brief sets multiple colors according to the current scheme index and some lane function
     bool setMultiColor(const GUIColorer& c) const;

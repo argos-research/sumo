@@ -2,7 +2,7 @@
 /// @file    GNEFrame.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNEFrame.h 20819 2016-05-30 15:06:19Z palcraft $
+/// @version $Id: GNEFrame.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 /// Abstract class for lateral frames in NetEdit
 /****************************************************************************/
@@ -30,7 +30,6 @@
 #endif
 
 #include <fx.h>
-#include <list>
 #include <netbuild/NBEdge.h>
 #include <netbuild/NBTrafficLightLogic.h>
 #include <utils/foxtools/FXRealSpinDial.h>
@@ -52,16 +51,13 @@ class GNEUndoList;
  * Abstract class for lateral frames in NetEdit
  */
 class GNEFrame : public FXScrollWindow {
-    /// @brief FOX-declaration
-    //FXDECLARE(GNEFrame)
-
 public:
     /**@brief Constructor
      * @brief parent FXFrame in which this GNEFrame is placed
      * @brief viewNet viewNet that uses this GNEFrame
      * @brief frameLabel label of the frame
      */
-    GNEFrame(FXComposite* parent, GNEViewNet* viewNet, const std::string &frameLabel);
+    GNEFrame(FXComposite* parent, GNEViewNet* viewNet, const std::string& frameLabel);
 
     /// @brief destructor
     ~GNEFrame();
@@ -73,20 +69,20 @@ public:
     virtual void hide() = 0;
 
     /// @brief get view net
-    GNEViewNet *getViewNet() const;
+    GNEViewNet* getViewNet() const;
 
     /// @brief get the label for the frame's header
     FXLabel* getFrameHeaderLabel() const;
 
     /// @brief get font of the header's frame
-    FXFont *getFrameHeaderFont() const;
+    FXFont* getFrameHeaderFont() const;
 
 protected:
     /// @brief FOX needs this
     GNEFrame() {}
 
     /// @brief @brief the window to inform when the tls is modfied
-    GNEViewNet *myViewNet;
+    GNEViewNet* myViewNet;
 
     /// @brief Font for the Header
     FXFont* myFrameHeaderFont;

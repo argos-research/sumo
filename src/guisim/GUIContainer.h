@@ -3,7 +3,7 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Wed, 01.08.2014
-/// @version $Id: GUIContainer.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIContainer.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -194,10 +194,10 @@ private:
     void setColor(const GUIVisualizationSettings& s) const;
 
     /// @brief gets the color value according to the current scheme index
-    SUMOReal getColorValue(size_t activeScheme) const;
+    SUMOReal getColorValue(int activeScheme) const;
 
     /// @brief sets the color according to the current scheme index and some vehicle function
-    bool setFunctionalColor(size_t activeScheme) const;
+    bool setFunctionalColor(int activeScheme) const;
 
     /// @name drawing helper methods
     /// @{

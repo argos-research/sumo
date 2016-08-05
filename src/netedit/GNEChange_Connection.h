@@ -2,7 +2,7 @@
 /// @file    GNEChange_Connection.h
 /// @author  Jakob Erdmann
 /// @date    May 2011
-/// @version $Id: GNEChange_Connection.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEChange_Connection.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A network change in which a single connection is created or deleted
 /****************************************************************************/
@@ -57,8 +57,8 @@ public:
      * @param[in] laneAttrs The attributes of the lane to be created/deleted
      * @param[in] forward Whether to create/delete (true/false)
      */
-    GNEChange_Connection(GNEEdge* edge, unsigned int fromLane,
-                         const std::string& toEdgeID, unsigned int toLane,
+    GNEChange_Connection(GNEEdge* edge, int fromLane,
+                         const std::string& toEdgeID, int toLane,
                          bool mayDefinitelyPass, bool forward);
 
     /// @brief Destructor
@@ -88,13 +88,13 @@ private:
     GNEEdge* myEdge;
 
     /// @brief the lane from which the connection originates
-    unsigned int myFromLane;
+    int myFromLane;
 
     /// @brief the id of the target edge
     const std::string myToEdgeID;
 
     /// @brief the target lane of the connection
-    unsigned int myToLane;
+    int myToLane;
     /// @}
 
     /// @brief whether this connection never yields

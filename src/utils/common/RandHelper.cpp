@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Tue, 29.05.2005
-/// @version $Id: RandHelper.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: RandHelper.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 //
 /****************************************************************************/
@@ -73,7 +73,7 @@ RandHelper::initRandGlobal(MTRand* which) {
     if (oc.getBool("random")) {
 #ifdef _MSC_VER
         long s = myRandomNumberGenerator.hash(time(NULL), clock()) + SysUtils::getWindowsTicks();
-        unsigned int s2 = (unsigned int)(s & 0xffff) ^ (s >> 16);
+        int s2 = (int)(s & 0xffff) ^ (s >> 16);
         which->seed(s2);
 #else
         which->seed();

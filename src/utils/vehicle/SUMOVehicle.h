@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Tue, 17 Feb 2009
-/// @version $Id: SUMOVehicle.h 20910 2016-06-08 06:33:11Z namdre $
+/// @version $Id: SUMOVehicle.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Abstract base class for vehicle representations
 /****************************************************************************/
@@ -263,7 +263,7 @@ public:
     /** @brief Returns the number of new routes this vehicle got
      * @return the number of new routes this vehicle got
      */
-    virtual unsigned int getNumberReroutes() const = 0;
+    virtual int getNumberReroutes() const = 0;
 
     /** @brief Returns this vehicle's devices
      * @return This vehicle's devices

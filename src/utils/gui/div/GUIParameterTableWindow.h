@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: GUIParameterTableWindow.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIParameterTableWindow.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The window that holds the table of an object's parameter
 /****************************************************************************/
@@ -76,7 +76,7 @@ public:
      * @param[in] noRows Number of rows to allocate
      */
     GUIParameterTableWindow(GUIMainWindow& app,
-                            GUIGlObject& o, size_t noRows);
+                            GUIGlObject& o, int noRows);
 
 
     /// @brief Destructor

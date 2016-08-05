@@ -12,7 +12,7 @@
 /// @author  Jakob Erdmann
 /// @author  Laura Bieker
 /// @date    2007/10/24
-/// @version $Id: TraCIConstants.h 20550 2016-04-26 10:57:45Z namdre $
+/// @version $Id: TraCIConstants.h 21106 2016-07-04 12:52:52Z behrisch $
 ///
 /// holds codes used for TraCI
 /****************************************************************************/
@@ -34,7 +34,7 @@
 // ****************************************
 // VERSION
 // ****************************************
-#define TRACI_VERSION 11
+#define TRACI_VERSION 12
 
 
 // ****************************************
@@ -407,10 +407,13 @@
 #define ID_COUNT 0x01
 
 // subscribe object variables (get: all)
-#define OBJECT_VARIABLES_SUBSCRIPTION 0x02
+#define AUTOMATIC_VARIABLES_SUBSCRIPTION 0x02
 
 // subscribe context variables (get: all)
-#define SURROUNDING_VARIABLES_SUBSCRIPTION 0x03
+#define AUTOMATIC_CONTEXT_SUBSCRIPTION 0x03
+
+// generic attributes (get/set: all)
+#define GENERIC_ATTRIBUTE 0x03
 
 // last step vehicle number (get: induction loops, multi-entry/multi-exit detector, lanes, edges)
 #define LAST_STEP_VEHICLE_NUMBER 0x10
@@ -502,6 +505,8 @@
 // list of not allowed vehicle classes (get&set: lanes)
 #define LANE_DISALLOWED 0x35
 
+// slope (get: edge, lane, vehicle, person)
+#define VAR_SLOPE 0x36
 
 // speed (get: vehicle)
 #define VAR_SPEED 0x40
@@ -679,6 +684,9 @@
 
 // current time step (get: simulation)
 #define VAR_TIME_STEP 0x70
+
+// current electricity consumption of a node (get: vehicle, lane, edge)
+#define VAR_ELECTRICITYCONSUMPTION 0x71
 
 // number of loaded vehicles (get: simulation)
 #define VAR_LOADED_VEHICLES_NUMBER 0x71

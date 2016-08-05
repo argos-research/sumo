@@ -2,7 +2,7 @@
 /// @file    GNETLSEditorFrame.h
 /// @author  Jakob Erdmann
 /// @date    May 2011
-/// @version $Id: GNETLSEditorFrame.h 20785 2016-05-24 10:51:45Z palcraft $
+/// @version $Id: GNETLSEditorFrame.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The Widget for modifying traffic lights
 /****************************************************************************/
@@ -189,7 +189,7 @@ private:
     FXTable* myPhaseTable;
 
     /// @brief index of the phase being shown
-    unsigned int myPhaseIndex;
+    int myPhaseIndex;
 
 private:
     /// @brief update descrition
@@ -206,7 +206,7 @@ private:
 
     /// @brief initialies the phase table
     /// @param[in] index The index to select
-    void initPhaseTable(unsigned int index = 0);
+    void initPhaseTable(int index = 0);
 
     /// @brief the phase of the current traffic light
     const std::vector<NBTrafficLightLogic::PhaseDefinition>& getPhases();

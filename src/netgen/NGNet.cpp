@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mar, 2003
-/// @version $Id: NGNet.cpp 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: NGNet.cpp 21202 2016-07-19 13:40:35Z behrisch $
 ///
 // The class storing the generated network
 /****************************************************************************/
@@ -253,9 +253,9 @@ NGNet::add(NGEdge* edge) {
 }
 
 
-size_t
+int
 NGNet::nodeNo() const {
-    return myNodeList.size();
+    return (int)myNodeList.size();
 }
 
 

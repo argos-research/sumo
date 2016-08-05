@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    ?
-/// @version $Id: StringTokenizer.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: StringTokenizer.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A java-style StringTokenizer for c++ (stl)
 /****************************************************************************/
@@ -119,13 +119,13 @@ public:
     std::string next();
 
     /** returns the number of existing substrings */
-    size_t size() const;
+    int size() const;
 
     /** returns the first substring without moving the iterator */
     std::string front();
 
     /** returns the item at the given position */
-    std::string get(size_t pos) const;
+    std::string get(int pos) const;
 
     std::vector<std::string> getVector();
 
@@ -140,13 +140,13 @@ private:
 
 private:
     /** a list of positions/lengths */
-    typedef std::vector<size_t> SizeVector;
+    typedef std::vector<int> SizeVector;
 
     /** the string to split */
     std::string   myTosplit;
 
     /** the current position in the list of substrings */
-    size_t        myPos;
+    int        myPos;
 
     /** the list of substring starts */
     SizeVector    myStarts;

@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: MSRoute.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSRoute.h 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // A vehicle route
 /****************************************************************************/
@@ -88,7 +88,7 @@ public:
     MSRouteIterator end() const;
 
     /// Returns the number of edges to pass
-    unsigned size() const;
+    int size() const;
 
     /// returns the destination edge
     const MSEdge* getLastEdge() const;
@@ -113,7 +113,7 @@ public:
 
     bool containsAnyOf(const MSEdgeVector& edgelist) const;
 
-    const MSEdge* operator[](unsigned index) const;
+    const MSEdge* operator[](int index) const;
 
     /// @name State I/O (mesosim only)
     /// @{
@@ -237,7 +237,7 @@ private:
     const bool myAmPermanent;
 
     /// Information by how many vehicles the route is used
-    mutable unsigned int myReferenceCounter;
+    mutable int myReferenceCounter;
 
     /// The color
     const RGBColor* const myColor;

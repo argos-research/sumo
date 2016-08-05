@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 08.03.2004
-/// @version $Id: GUITexturesHelper.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUITexturesHelper.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Global storage for textures; manages and draws them
 /****************************************************************************/
@@ -81,13 +81,13 @@ GUITexturesHelper::add(FXImage* i) {
 
 
 void
-GUITexturesHelper::drawTexturedBox(unsigned int which, SUMOReal size) {
+GUITexturesHelper::drawTexturedBox(int which, SUMOReal size) {
     drawTexturedBox(which, size, size, -size, -size);
 }
 
 
 void
-GUITexturesHelper::drawTexturedBox(unsigned int which,
+GUITexturesHelper::drawTexturedBox(int which,
                                    SUMOReal sizeX1, SUMOReal sizeY1,
                                    SUMOReal sizeX2, SUMOReal sizeY2) {
     if (!myAllowTextures) {
@@ -129,9 +129,7 @@ GUITexturesHelper::getTextureID(const std::string& filename, const bool mirrorX)
             if (mirrorX) {
                 i->mirror(false, true);
             }
-            if (MFXImageHelper::scalePower2(i, getMaxTextureSize())) {
-                WRITE_WARNING("Scaling '" + filename + "'.");
-            }
+            MFXImageHelper::scalePower2(i, getMaxTextureSize());
             GUIGlID id = add(i);
             delete i;
             myTextures[filename] = (int)id;

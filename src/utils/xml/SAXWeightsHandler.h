@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Fri, 30 Mar 2007
-/// @version $Id: SAXWeightsHandler.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: SAXWeightsHandler.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // An XML-handler for network weights
 /****************************************************************************/
@@ -128,7 +128,7 @@ public:
         SUMOReal myAggValue;
 
         /// The number of lanes read for the current edge
-        size_t myNoLanes;
+        int myNoLanes;
 
         /// Information whether the attribute has been found for the current edge
         bool myHadAttribute;

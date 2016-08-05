@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2008/04/07
-/// @version $Id: TraCITestClient.cpp 20908 2016-06-08 06:16:43Z namdre $
+/// @version $Id: TraCITestClient.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 /// A test execution class
 /****************************************************************************/
@@ -372,9 +372,9 @@ TraCITestClient::validateSubscription(tcpip::Storage& inMsg) {
         if (cmdId >= RESPONSE_SUBSCRIBE_INDUCTIONLOOP_VARIABLE && cmdId <= RESPONSE_SUBSCRIBE_GUI_VARIABLE) {
             answerLog << "  CommandID=" << cmdId;
             answerLog << "  ObjectID=" << inMsg.readString();
-            unsigned int varNo = inMsg.readUnsignedByte();
+            int varNo = inMsg.readUnsignedByte();
             answerLog << "  #variables=" << varNo << std::endl;
-            for (unsigned int i = 0; i < varNo; ++i) {
+            for (int i = 0; i < varNo; ++i) {
                 answerLog << "      VariableID=" << inMsg.readUnsignedByte();
                 bool ok = inMsg.readUnsignedByte() == RTYPE_OK;
                 answerLog << "      ok=" << ok;
@@ -386,13 +386,13 @@ TraCITestClient::validateSubscription(tcpip::Storage& inMsg) {
             answerLog << "  CommandID=" << cmdId;
             answerLog << "  ObjectID=" << inMsg.readString();
             answerLog << "  Domain=" << inMsg.readUnsignedByte();
-            unsigned int varNo = inMsg.readUnsignedByte();
+            int varNo = inMsg.readUnsignedByte();
             answerLog << "  #variables=" << varNo << std::endl;
-            unsigned int objNo = inMsg.readInt();
+            int objNo = inMsg.readInt();
             answerLog << "  #objects=" << objNo << std::endl;
-            for (unsigned int j = 0; j < objNo; ++j) {
+            for (int j = 0; j < objNo; ++j) {
                 answerLog << "   ObjectID=" << inMsg.readString() << std::endl;
-                for (unsigned int i = 0; i < varNo; ++i) {
+                for (int i = 0; i < varNo; ++i) {
                     answerLog << "      VariableID=" << inMsg.readUnsignedByte();
                     bool ok = inMsg.readUnsignedByte() == RTYPE_OK;
                     answerLog << "      ok=" << ok;
@@ -687,6 +687,8 @@ TraCITestClient::testAPI() {
     answerLog << "  vehicle:\n";
     answerLog << "    getRoadID: " << vehicle.getRoadID("0") << "\n";
     answerLog << "    getLaneID: " << vehicle.getLaneID("0") << "\n";
+    answerLog << "    getSpeedMode: " << vehicle.getSpeedMode("0") << "\n";
+    answerLog << "    getSlope: " << vehicle.getSlope("0") << "\n";
     answerLog << "    getNextTLS:\n";
     std::vector<VehicleScope::NextTLSData> result = vehicle.getNextTLS("0");
     for (int i = 0; i < (int)result.size(); ++i) {

@@ -2,7 +2,7 @@
 /// @file    GNEChargingStation.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEChargingStation.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEChargingStation.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 /// A class for visualizing chargingStation geometry (adapted from GUILaneWrapper)
 /****************************************************************************/
@@ -46,8 +46,7 @@ class GNENet;
 // class definitions
 // ===========================================================================
 
-class GNEChargingStation : public GNEStoppingPlace
-{
+class GNEChargingStation : public GNEStoppingPlace {
 public:
     /**@brief Constructor of charging station
      * @param[in] id The storage of gl-ids to get the one for this lane representation from
@@ -61,7 +60,7 @@ public:
      * @param[in] chargeDelay delay in timeSteps in the charge
      * @param[in] blocked set initial blocking state of item
      */
-    GNEChargingStation(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal startPos, SUMOReal endPos, SUMOReal chargingPower, SUMOReal efficiency, bool chargeInTransit, SUMOReal chargeDelay, bool blocked);
+    GNEChargingStation(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal startPos, SUMOReal endPos, SUMOReal chargingPower, SUMOReal efficiency, bool chargeInTransit, int chargeDelay, bool blocked);
 
     /// @brief Destructor
     ~GNEChargingStation();
@@ -72,7 +71,7 @@ public:
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element
      */
-    void writeAdditional(OutputDevice& device);
+    void writeAdditional(OutputDevice& device, const std::string&);
 
     /**@brief Returns the charging power of the chargingStation
      * @return The charging power of the chargingStation
@@ -115,15 +114,6 @@ public:
 
     /// @name inherited from GUIGlObject
     /// @{
-    /**@brief Returns an own parameter window
-     *
-     * @param[in] app The application needed to build the parameter window
-     * @param[in] parent The parent window needed to build the parameter window
-     * @return The built parameter window
-     * @see GUIGlObject::getParameterWindow
-     */
-    GUIParameterTableWindow* getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent);
-
     /**@brief Draws the object
      * @param[in] s The settings for the current view (may influence drawing)
      * @see GUIGlObject::drawGL
@@ -165,7 +155,7 @@ protected:
     bool myChargeInTransit;
 
     /// @brief delay in the starting of charge
-    SUMOReal myChargeDelay;
+    int myChargeDelay;
 
 private:
     /// @brief set attribute after validation

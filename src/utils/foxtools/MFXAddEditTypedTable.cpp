@@ -2,7 +2,7 @@
 /// @file    MFXAddEditTypedTable.cpp
 /// @author  Daniel Krajzewicz
 /// @date    2004-07-02
-/// @version $Id: MFXAddEditTypedTable.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MFXAddEditTypedTable.cpp 21217 2016-07-22 10:57:44Z behrisch $
 ///
 // missing_desc
 /****************************************************************************/
@@ -166,7 +166,7 @@ MFXAddEditTypedTable::editItem(FXTableItem* item,FXint how)
             myEnumEditor->hide();
             myEnumEditor->clearItems();
             if(myEnums.size()>myEditedCol) {
-                for(size_t i=0; i<myEnums[myEditedCol].size(); i++) {
+                for(int i=0; i<myEnums[myEditedCol].size(); i++) {
                     myEnumEditor->appendItem(myEnums[myEditedCol][i].c_str());
                 }
             }
@@ -554,8 +554,8 @@ long MFXAddEditTypedTable::onDoubleClicked(FXObject*, FXSelector, void* ptr) {
 
 
 CellType
-MFXAddEditTypedTable::getCellType(size_t pos) const {
-    if (myCellTypes.size() <= pos) {
+MFXAddEditTypedTable::getCellType(int pos) const {
+    if ((int)myCellTypes.size() <= pos) {
         return CT_UNDEFINED;
     }
     return myCellTypes[pos];
@@ -563,20 +563,20 @@ MFXAddEditTypedTable::getCellType(size_t pos) const {
 
 
 void
-MFXAddEditTypedTable::setCellType(size_t pos, CellType t) {
-    while (myCellTypes.size() < pos + 1) {
+MFXAddEditTypedTable::setCellType(int pos, CellType t) {
+    while ((int)myCellTypes.size() < pos + 1) {
         myCellTypes.push_back(CT_UNDEFINED);
     }
     myCellTypes[pos] = t;
 }
 
 void
-MFXAddEditTypedTable::setNumberCellParams(size_t pos, double min, double max,
+MFXAddEditTypedTable::setNumberCellParams(int pos, double min, double max,
         double steps1,
         double steps2,
         double steps3,
         const std::string& format) {
-    while (myNumberCellParams.size() <= pos) {
+    while ((int)myNumberCellParams.size() <= pos) {
         NumberCellParams np;
         np.format = "undefined";
         myNumberCellParams.push_back(np);
@@ -594,7 +594,7 @@ MFXAddEditTypedTable::setNumberCellParams(size_t pos, double min, double max,
 
 
 MFXAddEditTypedTable::NumberCellParams
-MFXAddEditTypedTable::getNumberCellParams(size_t pos) const {
+MFXAddEditTypedTable::getNumberCellParams(int pos) const {
     if (myNumberCellParams.size() <= pos) {
         NumberCellParams np;
         np.format = "undefined";
@@ -606,9 +606,9 @@ MFXAddEditTypedTable::getNumberCellParams(size_t pos) const {
 
 
 void
-MFXAddEditTypedTable::setEnums(size_t pos,
+MFXAddEditTypedTable::setEnums(int pos,
                                const std::vector<std::string>& params) {
-    while (myEnums.size() <= pos) {
+    while ((int)myEnums.size() <= pos) {
         myEnums.push_back(std::vector<std::string>());
     }
     myEnums[pos] = params;
@@ -616,9 +616,9 @@ MFXAddEditTypedTable::setEnums(size_t pos,
 
 
 void
-MFXAddEditTypedTable::addEnum(size_t pos,
+MFXAddEditTypedTable::addEnum(int pos,
                               const std::string& e) {
-    while (myEnums.size() <= pos) {
+    while ((int)myEnums.size() <= pos) {
         myEnums.push_back(std::vector<std::string>());
     }
     myEnums[pos].push_back(e);
@@ -626,7 +626,7 @@ MFXAddEditTypedTable::addEnum(size_t pos,
 
 
 const std::vector<std::string>&
-MFXAddEditTypedTable::getEnums(size_t pos) const {
+MFXAddEditTypedTable::getEnums(int pos) const {
     return myEnums[pos];
 }
 

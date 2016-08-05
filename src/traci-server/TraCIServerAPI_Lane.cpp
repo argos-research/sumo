@@ -6,7 +6,7 @@
 /// @author  Laura Bieker
 /// @author  Mario Krumnow
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_Lane.cpp 20857 2016-06-03 06:26:52Z namdre $
+/// @version $Id: TraCIServerAPI_Lane.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // APIs for getting/setting lane values via TraCI
 /****************************************************************************/
@@ -61,7 +61,8 @@ TraCIServerAPI_Lane::processGet(TraCIServer& server, tcpip::Storage& inputStorag
     if (variable != ID_LIST && variable != LANE_LINK_NUMBER && variable != LANE_EDGE_ID && variable != VAR_LENGTH
             && variable != VAR_MAXSPEED && variable != LANE_LINKS && variable != VAR_SHAPE
             && variable != VAR_CO2EMISSION && variable != VAR_COEMISSION && variable != VAR_HCEMISSION && variable != VAR_PMXEMISSION
-            && variable != VAR_NOXEMISSION && variable != VAR_FUELCONSUMPTION && variable != VAR_NOISEEMISSION && variable != VAR_WAITING_TIME
+            && variable != VAR_NOXEMISSION && variable != VAR_FUELCONSUMPTION && variable != VAR_NOISEEMISSION
+            && variable != VAR_ELECTRICITYCONSUMPTION && variable != VAR_WAITING_TIME
             && variable != LAST_STEP_MEAN_SPEED && variable != LAST_STEP_VEHICLE_NUMBER
             && variable != LAST_STEP_VEHICLE_ID_LIST && variable != LAST_STEP_OCCUPANCY && variable != LAST_STEP_VEHICLE_HALTING_NUMBER
             && variable != LAST_STEP_LENGTH && variable != VAR_CURRENT_TRAVELTIME
@@ -111,7 +112,7 @@ TraCIServerAPI_Lane::processGet(TraCIServer& server, tcpip::Storage& inputStorag
             case LANE_LINKS: {
                 tempMsg.writeUnsignedByte(TYPE_COMPOUND);
                 tcpip::Storage tempContent;
-                unsigned int cnt = 0;
+                int cnt = 0;
                 tempContent.writeUnsignedByte(TYPE_INTEGER);
                 const MSLinkCont& links = lane->getLinkCont();
                 tempContent.writeInt((int) links.size());
@@ -177,8 +178,8 @@ TraCIServerAPI_Lane::processGet(TraCIServer& server, tcpip::Storage& inputStorag
             break;
             case VAR_SHAPE:
                 tempMsg.writeUnsignedByte(TYPE_POLYGON);
-                tempMsg.writeUnsignedByte((int)MIN2(static_cast<size_t>(255), lane->getShape().size()));
-                for (unsigned int iPoint = 0; iPoint < MIN2(static_cast<size_t>(255), lane->getShape().size()); ++iPoint) {
+                tempMsg.writeUnsignedByte(MIN2(255, (int)lane->getShape().size()));
+                for (int iPoint = 0; iPoint < MIN2(255, (int)lane->getShape().size()); ++iPoint) {
                     tempMsg.writeDouble(lane->getShape()[iPoint].x());
                     tempMsg.writeDouble(lane->getShape()[iPoint].y());
                 }
@@ -210,6 +211,10 @@ TraCIServerAPI_Lane::processGet(TraCIServer& server, tcpip::Storage& inputStorag
             case VAR_NOISEEMISSION:
                 tempMsg.writeUnsignedByte(TYPE_DOUBLE);
                 tempMsg.writeDouble(lane->getHarmonoise_NoiseEmissions());
+                break;
+            case VAR_ELECTRICITYCONSUMPTION:
+                tempMsg.writeUnsignedByte(TYPE_DOUBLE);
+                tempMsg.writeDouble(lane->getElectricityConsumption());
                 break;
             case LAST_STEP_VEHICLE_NUMBER:
                 tempMsg.writeUnsignedByte(TYPE_INTEGER);

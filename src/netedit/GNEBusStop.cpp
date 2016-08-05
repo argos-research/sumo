@@ -2,7 +2,7 @@
 /// @file    GNEBusStop.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEBusStop.cpp 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEBusStop.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 /// A lane area vehicles can halt at (GNE version)
 /****************************************************************************/
@@ -104,7 +104,7 @@ GNEBusStop::updateGeometry() {
     int numberOfSegments = (int) myShape.size() - 1;
 
     // If number of segments is more than 0
-    if(numberOfSegments >= 0) {
+    if (numberOfSegments >= 0) {
 
         // Reserve memory (To improve efficiency)
         myShapeRotations.reserve(numberOfSegments);
@@ -136,20 +136,25 @@ GNEBusStop::updateGeometry() {
     // Get position of the sign
     mySignPos = tmpShape.getLineCenter();
 
+    // Set block icon position
+    myBlockIconPosition = myShape.getLineCenter();
+
     // Set block icon rotation, and using their rotation for sign
     setBlockIconRotation(myLane);
 }
 
 
 void
-GNEBusStop::writeAdditional(OutputDevice& device) {
+GNEBusStop::writeAdditional(OutputDevice& device, const std::string&) {
     // Write parameters
     device.openTag(getTag());
     device.writeAttr(SUMO_ATTR_ID, getID());
     device.writeAttr(SUMO_ATTR_LANE, myLane->getID());
     device.writeAttr(SUMO_ATTR_STARTPOS, myStartPos);
     device.writeAttr(SUMO_ATTR_ENDPOS, myEndPos);
-    device.writeAttr(SUMO_ATTR_LINES, getAttribute(SUMO_ATTR_LINES));
+    if (myLines.size() > 0) {
+        device.writeAttr(SUMO_ATTR_LINES, getAttribute(SUMO_ATTR_LINES));
+    }
     // Close tag
     device.closeTag();
 }
@@ -173,10 +178,11 @@ GNEBusStop::drawGL(const GUIVisualizationSettings& s) const {
     glTranslated(0, 0, getType());
 
     // Set color of the base
-    if(isAdditionalSelected())
+    if (isAdditionalSelected()) {
         GLHelper::setColor(myBaseColorSelected);
-    else
+    } else {
         GLHelper::setColor(myBaseColor);
+    }
 
     // Obtain exaggeration of the draw
     const SUMOReal exaggeration = s.addSize.getExaggeration(s);
@@ -194,13 +200,14 @@ GNEBusStop::drawGL(const GUIVisualizationSettings& s) const {
         SUMOReal rotSign = OptionsCont::getOptions().getBool("lefthand");
 
         // Set color of the lines
-        if(isAdditionalSelected())
+        if (isAdditionalSelected()) {
             GLHelper::setColor(myTextColorSelected);
-        else
+        } else {
             GLHelper::setColor(myTextColor);
+        }
 
         // Iterate over every line
-        for (size_t i = 0; i != myLines.size(); ++i) {
+        for (int i = 0; i != myLines.size(); ++i) {
             // Add a new push matrix
             glPushMatrix();
 
@@ -239,8 +246,9 @@ GNEBusStop::drawGL(const GUIVisualizationSettings& s) const {
         int noPoints = 9;
 
         // If the scale * exaggeration is more than 25, recalculate nº points
-        if (s.scale * exaggeration > 25)
+        if (s.scale * exaggeration > 25) {
             noPoints = MIN2((int)(9.0 + (s.scale * exaggeration) / 10.0), 36);
+        }
 
         // scale matrix depending of the exaggeration
         glScaled(exaggeration, exaggeration, 1);
@@ -252,27 +260,29 @@ GNEBusStop::drawGL(const GUIVisualizationSettings& s) const {
         glTranslated(0, 0, .1);
 
         // Set color of the lines
-        if(isAdditionalSelected())
+        if (isAdditionalSelected()) {
             GLHelper::setColor(mySignColorSelected);
-        else
+        } else {
             GLHelper::setColor(mySignColor);
+        }
 
         // draw another circle in the same position, but a little bit more small
         GLHelper::drawFilledCircle((SUMOReal) 0.9, noPoints);
 
         // If the scale * exageration is equal or more than 4.5, draw H
-        if (s.scale * exaggeration >= 4.5)
-            if(isAdditionalSelected())
+        if (s.scale * exaggeration >= 4.5) {
+            if (isAdditionalSelected()) {
                 GLHelper::drawText("H", Position(), .1, 1.6, myBaseColorSelected, myBlockIconRotation);
-            else
+            } else {
                 GLHelper::drawText("H", Position(), .1, 1.6, myBaseColor, myBlockIconRotation);
+            }
+        }
 
         // pop draw matrix
         glPopMatrix();
 
         // Show Lock icon depending of the Edit mode
-        //if(dynamic_cast<GNEViewNet*>(parent)->showLockIcon())
-            drawLockIcon();
+        drawLockIcon();
     }
 
     // pop draw matrix
@@ -286,43 +296,19 @@ GNEBusStop::drawGL(const GUIVisualizationSettings& s) const {
 }
 
 
-GUIParameterTableWindow*
-GNEBusStop::getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent) {
-    /** NOT YET SUPPORTED **/
-    // Ignore Warning
-    UNUSED_PARAMETER(parent);
-    GUIParameterTableWindow* ret = new GUIParameterTableWindow(app, *this, 2);
-    // add items
-    ret->mkItem("id", false, getID());
-    /** @TODO complet with the rest of parameters **/
-    // close building
-    ret->closeBuilding();
-    return ret;
-}
-
-
 std::string
 GNEBusStop::getAttribute(SumoXMLAttr key) const {
     switch (key) {
         case SUMO_ATTR_ID:
-            return getMicrosimID();
+            return getAdditionalID();
         case SUMO_ATTR_LANE:
             return toString(myLane->getAttribute(SUMO_ATTR_ID));
         case SUMO_ATTR_STARTPOS:
             return toString(myStartPos);
         case SUMO_ATTR_ENDPOS:
             return toString(myEndPos);
-        case SUMO_ATTR_LINES: {
-            // Convert myLines vector into String with the schema "line1 line2 ... lineN"
-            std::string myLinesStr;
-            for(std::vector<std::string>::const_iterator i = myLines.begin(); i != myLines.end(); i++) {
-                if((*i) != myLines.back())
-                    myLinesStr += (*i) + " ";
-                else
-                    myLinesStr += (*i);
-            }
-            return myLinesStr;
-        }
+        case SUMO_ATTR_LINES:
+            return joinToString(myLines, " ");
         default:
             throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
     }
@@ -337,7 +323,6 @@ GNEBusStop::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoList*
     switch (key) {
         case SUMO_ATTR_ID:
         case SUMO_ATTR_LANE:
-            throw InvalidArgument("modifying " + toString(getType()) + "  attribute '" + toString(key) + "' not allowed");
         case SUMO_ATTR_STARTPOS:
         case SUMO_ATTR_ENDPOS:
         case SUMO_ATTR_LINES:
@@ -354,10 +339,19 @@ bool
 GNEBusStop::isValid(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
+            if (myViewNet->getNet()->getAdditional(getTag(), value) == NULL) {
+                return true;
+            } else {
+                return false;
+            }
         case SUMO_ATTR_LANE:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            if (myViewNet->getNet()->retrieveLane(value, false) != NULL) {
+                return true;
+            } else {
+                return false;
+            }
         case SUMO_ATTR_STARTPOS:
-            return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) >= 0 && parse<SUMOReal>(value) < (myEndPos-1));
+            return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) >= 0 && parse<SUMOReal>(value) < (myEndPos - 1));
         case SUMO_ATTR_ENDPOS:
             return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) >= 1 && parse<SUMOReal>(value) > myStartPos);
         case SUMO_ATTR_LINES:
@@ -375,8 +369,11 @@ void
 GNEBusStop::setAttribute(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
+            setAdditionalID(value);
+            break;
         case SUMO_ATTR_LANE:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            changeLane(myViewNet->getNet()->retrieveLane(value));
+            break;
         case SUMO_ATTR_STARTPOS:
             myStartPos = parse<SUMOReal>(value);
             updateGeometry();

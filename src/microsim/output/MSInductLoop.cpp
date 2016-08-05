@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    2004-11-23
-/// @version $Id: MSInductLoop.cpp 20818 2016-05-30 14:45:36Z namdre $
+/// @version $Id: MSInductLoop.cpp 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // An unextended detector measuring at a fixed position on a fixed lane.
 /****************************************************************************/
@@ -178,10 +178,10 @@ MSInductLoop::getCurrentOccupancy() const {
 }
 
 
-unsigned int
+int
 MSInductLoop::getCurrentPassedNumber() const {
     std::vector<VehicleData> d = collectVehiclesOnDet(MSNet::getInstance()->getCurrentTimeStep() - DELTA_T);
-    return (unsigned int) d.size();
+    return (int) d.size();
 }
 
 
@@ -249,7 +249,7 @@ void
 MSInductLoop::writeTypedXMLOutput(OutputDevice& dev, SUMOTime startTime, SUMOTime stopTime,
                                   const std::string& type, const VehicleDataCont& vdc, const VehicleMap& vm) {
     SUMOReal t(STEPS2TIME(stopTime - startTime));
-    unsigned nVehCrossed = (unsigned) vdc.size();
+    int nVehCrossed = (int) vdc.size();
     if (type == "") {
         nVehCrossed += myDismissedVehicleNumber;
     }

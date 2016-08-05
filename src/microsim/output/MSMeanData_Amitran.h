@@ -4,7 +4,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSMeanData_Amitran.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSMeanData_Amitran.h 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // Network state mean data collector for edges/lanes
 /****************************************************************************/
@@ -142,10 +142,10 @@ public:
         /// @name Collected values
         /// @{
         /// @brief The number of vehicles that entered this lane within the sample interval
-        unsigned amount;
+        int amount;
 
         /// @brief The number of vehicles that entered this lane within the sample interval by type
-        std::map<const MSVehicleType*, unsigned> typedAmount;
+        std::map<const MSVehicleType*, int> typedAmount;
 
         /// @brief The number of sampled vehicle movements by type (in s)
         std::map<const MSVehicleType*, SUMOReal> typedSamples;

@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Yun-Pang Floetteroed
 /// @date    05. Apr. 2006
-/// @version $Id: ODMatrix.h 20836 2016-06-01 09:00:35Z behrisch $
+/// @version $Id: ODMatrix.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // An O/D (origin/destination) matrix
 /****************************************************************************/
@@ -293,7 +293,7 @@ protected:
      * @return The number of left vehicles to insert
      */
     SUMOReal computeDeparts(ODCell* cell,
-                            size_t& vehName, std::vector<ODVehicle>& into,
+                            int& vehName, std::vector<ODVehicle>& into,
                             const bool uniform, const bool differSourceSink,
                             const std::string& prefix);
 

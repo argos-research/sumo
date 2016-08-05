@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: StringBijection.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: StringBijection.h 21202 2016-07-19 13:40:35Z behrisch $
 ///
 // Bidirectional map between string and something else
 /****************************************************************************/
@@ -132,8 +132,8 @@ public:
     }
 
 
-    size_t size() const {
-        return myString2T.size();
+    int size() const {
+        return (int)myString2T.size();
     }
 
 

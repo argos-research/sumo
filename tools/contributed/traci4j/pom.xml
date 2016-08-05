@@ -103,6 +103,7 @@
 		<jacoco.version>0.7.5.201505241946</jacoco.version>
 		<sourcePathes>src/java;src/java-gen</sourcePathes>
 		<maven.javadoc.failOnError>false</maven.javadoc.failOnError>
+		<additionalparam>-Xdoclint:none</additionalparam>
 	</properties>
 
 	<dependencies>

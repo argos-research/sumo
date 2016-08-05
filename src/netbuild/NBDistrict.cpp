@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBDistrict.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBDistrict.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // A class representing a single district
 /****************************************************************************/
@@ -175,14 +175,14 @@ NBDistrict::replaceOutgoing(const EdgeVector& which, NBEdge* const by) {
 
 void
 NBDistrict::removeFromSinksAndSources(NBEdge* const e) {
-    size_t i;
-    for (i = 0; i < mySinks.size(); ++i) {
+    int i;
+    for (i = 0; i < (int)mySinks.size(); ++i) {
         if (mySinks[i] == e) {
             mySinks.erase(mySinks.begin() + i);
             mySinkWeights.erase(mySinkWeights.begin() + i);
         }
     }
-    for (i = 0; i < mySources.size(); ++i) {
+    for (i = 0; i < (int)mySources.size(); ++i) {
         if (mySources[i] == e) {
             mySources.erase(mySources.begin() + i);
             mySourceWeights.erase(mySourceWeights.begin() + i);

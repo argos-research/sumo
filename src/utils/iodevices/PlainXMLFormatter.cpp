@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    2012
-/// @version $Id: PlainXMLFormatter.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: PlainXMLFormatter.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Static storage of an output device and its base (abstract) implementation
 /****************************************************************************/
@@ -41,7 +41,7 @@
 // ===========================================================================
 // member method definitions
 // ===========================================================================
-PlainXMLFormatter::PlainXMLFormatter(const unsigned int defaultIndentation)
+PlainXMLFormatter::PlainXMLFormatter(const int defaultIndentation)
     : myDefaultIndentation(defaultIndentation), myHavePendingOpener(false) {
 }
 

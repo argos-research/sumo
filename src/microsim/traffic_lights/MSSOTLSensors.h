@@ -3,7 +3,7 @@
 /// @author  Gianfilippo Slager
 /// @author  Anna Chiara Bellini
 /// @date    Feb 2010
-/// @version $Id: MSSOTLSensors.h 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSSOTLSensors.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The base abstract class for SOTL sensors
 /****************************************************************************/
@@ -132,7 +132,7 @@ public:
      * from sensors, like inductor loops. These logics need to know the current phase to guess the number
      * of vehicles waiting in front of a red light.
      */
-    virtual void stepChanged(unsigned int newStep) {
+    virtual void stepChanged(int newStep) {
         currentStep = newStep;
     }
 };

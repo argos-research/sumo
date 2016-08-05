@@ -2,7 +2,7 @@
 /// @file    OutputDevice_String.h
 /// @author  Michael Behrisch
 /// @date    2009
-/// @version $Id: OutputDevice_String.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: OutputDevice_String.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // An output device that encapsulates a stringstream
 /****************************************************************************/
@@ -49,7 +49,7 @@ public:
     /** @brief Constructor
      * @exception IOError Should not be thrown by this implementation
      */
-    OutputDevice_String(const bool binary = false, const unsigned int defaultIndentation = 0);
+    OutputDevice_String(const bool binary = false, const int defaultIndentation = 0);
 
 
     /// @brief Destructor
@@ -59,7 +59,7 @@ public:
     /** @brief Returns the current content as a string
      * @return The content as string
      */
-    std::string getString();
+    std::string getString() const;
 
 protected:
     /// @name Methods that override/implement OutputDevice-methods

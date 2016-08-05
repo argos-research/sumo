@@ -3,7 +3,7 @@
 /// @author  Riccardo Belletti
 /// @author  Simone Bacchilega
 /// @date    2014-09-30
-/// @version $Id: MSSOTLPolicy5DFamilyStimulus.cpp 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSSOTLPolicy5DFamilyStimulus.cpp 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // The class for Swarm-based low-level policy
 /****************************************************************************/
@@ -152,8 +152,8 @@ std::vector<std::string> inline MSSOTLPolicy5DFamilyStimulus::StringSplit(const 
 {
     std::vector<std::string> results;
 
-    size_t prev = 0;
-    size_t next = 0;
+    int prev = 0;
+    std::string::size_type next = 0;
 
     while ((next = source.find_first_of(delimiter, prev)) != std::string::npos)
     {

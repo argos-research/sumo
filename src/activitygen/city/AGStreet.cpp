@@ -5,7 +5,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    July 2010
-/// @version $Id: AGStreet.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: AGStreet.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Represents a SUMO edge and contains people and work densities
 /****************************************************************************/
@@ -41,7 +41,7 @@
 // ===========================================================================
 // method definitions
 // ===========================================================================
-AGStreet::AGStreet(const std::string& id, RONode* from, RONode* to, unsigned int index, const int priority) :
+AGStreet::AGStreet(const std::string& id, RONode* from, RONode* to, int index, const int priority) :
     ROEdge(id, from, to, index, priority), myPopulation(0.), myNumWorkplaces(0.) {
 }
 

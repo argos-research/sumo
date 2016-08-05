@@ -2,7 +2,7 @@
 /// @file    GNERerouter.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNERerouter.h 19790 2016-01-25 11:59:12Z palcraft $
+/// @version $Id: GNERerouter.h 21150 2016-07-12 12:28:35Z behrisch $
 ///
 ///
 /****************************************************************************/
@@ -160,7 +160,7 @@ public:
     // class rerouterInterval
     // ===========================================================================
 
-    class rerouterInterval {
+    class rerouterInterval : public std::pair<SUMOTime, SUMOTime> {
     public:
         /// @brief constructor
         rerouterInterval(SUMOTime begin, SUMOTime end);
@@ -170,27 +170,27 @@ public:
 
         /// @brief insert a new closing reroute
         /// @throw ProcessError if closing reroute was already inserted
-        void insertClosingReroutes(closingReroute *cr);
+        void insertClosingReroutes(closingReroute* cr);
 
         /// @brief remove a previously inserted closing reroute
         /// @throw ProcessError if closing reroute cannot be found in the container
-        void removeClosingReroutes(closingReroute *cr);
+        void removeClosingReroutes(closingReroute* cr);
 
         /// @brief insert destiny probability reroute
         /// @throw ProcessError if destiny probability reroute was already inserted
-        void insertDestProbReroutes(destProbReroute *dpr);
+        void insertDestProbReroutes(destProbReroute* dpr);
 
         /// @brief remove a previously inserted destiny probability reroute
         /// @throw ProcessError if destiny probability reroute cannot be found in the container
-        void removeDestProbReroutes(destProbReroute *dpr);
+        void removeDestProbReroutes(destProbReroute* dpr);
 
         /// @brief insert route probability reroute
         /// @throw ProcessError if route probability reroute was already inserted
-        void insertRouteProbReroute(routeProbReroute *rpr);
+        void insertRouteProbReroute(routeProbReroute* rpr);
 
         /// @brief remove a previously inserted route probability reroute
         /// @throw ProcessError if route probability reroute cannot be found in the container
-        void removeRouteProbReroute(routeProbReroute *rpr);
+        void removeRouteProbReroute(routeProbReroute* rpr);
 
         /// @brief get time begin
         SUMOTime getBegin() const;
@@ -207,21 +207,7 @@ public:
         /// @brief get reoute probability reroutes
         std::vector<routeProbReroute*> getRouteProbReroutes() const;
 
-        /// @brief set time begin
-        /// @throw InvalidArgument if begin time isn't valid
-        void setBegin(SUMOTime begin);
-
-        /// @brief set time end
-        /// @throw InvalidArgument if end time isn't valid
-        void setEnd(SUMOTime end);
-
     private:
-        /// @brief begin of interval
-        SUMOTime myBegin;
-
-        /// @brief end of interval
-        SUMOTime myEnd;
-
         /// @brief vector with the closingReroutes
         std::vector<closingReroute*> myClosingReroutes;
 
@@ -231,7 +217,7 @@ public:
         /// @brief vector with the routeProbReroutes
         std::vector<routeProbReroute*> myRouteProbReroutes;
     };
-    
+
     /**@brief Constructor
      * @param[in] id The storage of gl-ids to get the one for this lane representation from
      * @param[in] viewNet pointer to GNEViewNet of this additional element belongs
@@ -240,9 +226,10 @@ public:
      * @param[in] filename The path to the definition file
      * @param[in] probability The probability for vehicle rerouting
      * @param[in] off Whether the router should be inactive initially
+     * @param[in] rerouterIntervals set with the rerouter intervals
      * @param[in] blocked set initial blocking state of item
      */
-    GNERerouter(const std::string& id, GNEViewNet* viewNet, Position pos, std::vector<GNEEdge*> edges, const std::string& filename, SUMOReal probability, bool off, bool blocked);
+    GNERerouter(const std::string& id, GNEViewNet* viewNet, Position pos, std::vector<GNEEdge*> edges, const std::string& filename, SUMOReal probability, bool off, const std::set<rerouterInterval>& rerouterIntervals, bool blocked);
 
     /// @brief Destructor
     ~GNERerouter();
@@ -251,28 +238,31 @@ public:
     /// @note: must be called when geometry changes (i.e. lane moved)
     void updateGeometry();
 
+    /// @brief Returns position of Rerouter in view
+    Position getPositionInView() const;
+
     /// @brief open GNERerouterDialog
     void openAdditionalDialog();
 
-    /**@brief change the position of the rerouter geometry 
+    /**@brief change the position of the rerouter geometry
      * @param[in] posx new x position of rerouter in the map
      * @param[in] posy new y position of rerouter in the map
      * @param[in] undoList pointer to the undo list
      */
-    void moveAdditional(SUMOReal posx, SUMOReal posy, GNEUndoList *undoList);
+    void moveAdditional(SUMOReal posx, SUMOReal posy, GNEUndoList* undoList);
 
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element
      */
-    void writeAdditional(OutputDevice& device);
+    void writeAdditional(OutputDevice& device, const std::string&);
 
     /// @brief add edge to rerouter
     /// @return true if was sucesfully inserted, false if is duplicated
-    bool addEdge(GNEEdge *edge);
+    bool addEdge(GNEEdge* edge);
 
     /// @brief remove edge of rerouter
     /// @return true if was scuesfully removed, false if wasn't found
-    bool removeEdge(GNEEdge *edge);
+    bool removeEdge(GNEEdge* edge);
 
     /// @brief get filename of rerouter
     std::string getFilename() const;
@@ -294,15 +284,10 @@ public:
 
     /// @name inherited from GUIGlObject
     /// @{
-    /**@brief Returns an own parameter window
-     *
-     * @param[in] app The application needed to build the parameter window
-     * @param[in] parent The parent window needed to build the parameter window
-     * @return The built parameter window
-     * @see GUIGlObject::getParameterWindow
-     */
-    GUIParameterTableWindow* getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent);
+    /// @brief Returns the name of the parent object
+    /// @return This object's parent id
 
+    const std::string& getParentName() const;
     /**@brief Draws the object
      * @param[in] s The settings for the current view (may influence drawing)
      * @see GUIGlObject::drawGL
@@ -343,19 +328,10 @@ protected:
     /// @brief attribute to enable or disable inactive initially
     bool myOff;
 
+    /// @brief set with the rerouterInterval
+    std::set<rerouterInterval> myRerouterIntervals;
+
 private:
-    /// @brief variable to save rerouter icon
-    static GUIGlID myRerouterGlID;
-
-    /// @brief variable to save rerouter selected icon
-    static GUIGlID myRerouterSelectedGlID;
-
-    /// @brief check if rerouter icon was inicilalizated
-    static bool myRerouterInitialized;
-
-    /// @brief check if rerouter selected icon was inicilalizated
-    static bool myRerouterSelectedInitialized;
-
     /// @brief set attribute after validation
     void setAttribute(SumoXMLAttr key, const std::string& value);
 

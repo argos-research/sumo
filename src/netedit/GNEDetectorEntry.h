@@ -2,7 +2,7 @@
 /// @file    GNEDetectorEntry.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetectorE3.h 19790 2016-01-25 11:59:12Z palcraft $
+/// @version $Id: GNEDetectorEntry.h 21150 2016-07-12 12:28:35Z behrisch $
 ///
 ///
 /****************************************************************************/
@@ -54,7 +54,7 @@ public:
      * @param[in] parent pointer to GNEDetectorE3 of this additional element belongs
      * @param[in] blocked set initial blocking state of item
      */
-    GNEDetectorEntry(const std::string &id, GNEViewNet* viewNet, GNELane *lane, SUMOReal pos, GNEDetectorE3 *parent, bool blocked = false);
+    GNEDetectorEntry(const std::string& id, GNEViewNet* viewNet, GNELane* lane, SUMOReal pos, GNEDetectorE3* parent, bool blocked = false);
 
     /// @brief destructor
     ~GNEDetectorEntry();
@@ -63,25 +63,16 @@ public:
     /// @note: must be called when geometry changes (i.e. lane moved)
     void updateGeometry();
 
-    /// @brief get E3 parentecto
-    GNEDetectorE3* getE3Parent() const;
+    /// @brief Returns position of detector Entry in view
+    Position getPositionInView() const;
 
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element
      */
-    void writeAdditional(OutputDevice& device);
+    void writeAdditional(OutputDevice& device, const std::string&);
 
     /// @name inherited from GUIGlObject
     /// @{
-    /**@brief Returns an own parameter window
-     *
-     * @param[in] app The application needed to build the parameter window
-     * @param[in] parent The parent window needed to build the parameter window
-     * @return The built parameter window
-     * @see GUIGlObject::getParameterWindow
-     */
-    GUIParameterTableWindow* getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent);
-
     /**@brief Draws the object
      * @param[in] s The settings for the current view (may influence drawing)
      * @see GUIGlObject::drawGL

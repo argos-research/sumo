@@ -1,4 +1,0 @@
-<trips>
-    <vType id="t0" vClass="passenger"/>
-    <trip id="0" depart="3" from="beg" to="end" fromTaz="1" toTaz="2" type="t0"/>
-</trips>

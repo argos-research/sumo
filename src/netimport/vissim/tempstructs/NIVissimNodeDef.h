@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NIVissimNodeDef.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIVissimNodeDef.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // -------------------
 /****************************************************************************/
@@ -54,7 +54,7 @@ public:
 //    static std::vector<int> getWithin(const AbstractPoly &p, SUMOReal off=0.0);
 //    static void buildNodeClusters();
 //    static void dict_assignConnectionsToNodes();
-    static size_t dictSize();
+    static int dictSize();
     static void clearDict();
     static int getMaxID();
 protected:

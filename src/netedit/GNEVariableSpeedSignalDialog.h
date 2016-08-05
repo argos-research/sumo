@@ -2,7 +2,7 @@
 /// @file    GNEVariableSpeedSignalDialog.h
 /// @author  Pablo Alvarez Lopez
 /// @date    April 2016
-/// @version $Id: GNEVariableSpeedSignalDialog.h 20472 2016-04-15 15:36:45Z palcraft $
+/// @version $Id: GNEVariableSpeedSignalDialog.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 /// A class for edit phases of Variable Speed Signals
 /****************************************************************************/
@@ -55,30 +55,27 @@ class GNEVariableSpeedSignalDialog : public GNEAdditionalDialog {
 
 public:
     // Constructor
-    GNEVariableSpeedSignalDialog(GNEVariableSpeedSignal *variableSpeedSignalParent);
+    GNEVariableSpeedSignalDialog(GNEVariableSpeedSignal* variableSpeedSignalParent);
 
     // destructor
     ~GNEVariableSpeedSignalDialog();
 
     /// @name FOX-callbacks
     /// @{
-    /// @brief event after press insert button
-    long onCMDInsertRow(FXObject*, FXSelector, void*);
+    /// @brief event called after press add row button
+    long onCmdAddRow(FXObject*, FXSelector, void*);
 
-    /// @brief event after press remove row
+    /// @brief event called after press remove row
     long onCmdRemoveRow(FXObject*, FXSelector, void*);
 
-    /// @brief event after press accept button
-    long onCmdAccept(FXObject* sender, FXSelector sel, void* ptr);
+    /// @brief event called after press accept button
+    long onCmdAccept(FXObject*, FXSelector, void*);
 
-    /// @brief event after press cancel button
-    long onCmdCancel(FXObject* sender, FXSelector sel, void* ptr);
+    /// @brief event called after press cancel button
+    long onCmdCancel(FXObject*, FXSelector, void*);
 
-    /// @brief event after press cancel button
+    /// @brief event called after press cancel button
     long onCmdReset(FXObject*, FXSelector, void*);
-
-    /// @brief event after press add row button
-    long onCmdAddRow(FXObject* sender, FXSelector sel, void* data);
     /// @}
 
 protected:
@@ -86,32 +83,29 @@ protected:
     GNEVariableSpeedSignalDialog() {}
 
     /// @brief Pointer to Variable Speed Signal
-    GNEVariableSpeedSignal *myVariableSpeedSignalParent;
+    GNEVariableSpeedSignal* myVariableSpeedSignalParent;
 
-    /// @brief Map with the temporal VSSData
-    std::map<SUMOTime, SUMOReal> myVSSData;
+    /// @brief Map with the temporal VSSValues
+    std::map<SUMOTime, SUMOReal> myVSSValues;
 
     /// @brief Table with the data
-    FXTable *myDataList;
-
-    /// @brief Text field with data
-    FXLabel *myRowLabel;
-
-    /// @bbriefie Text field with step
-    FXTextField *myRowStep;
-
-    /// @brief Text field with speed
-    FXTextField *myRowSpeed;
-
-    /// @brief Button for insert row
-    FXButton *myAddRow;
+    FXTable* myDataList;
 
     /// @brief Horizontal frame for row elements
-    FXHorizontalFrame *myRowFrame;
+    FXHorizontalFrame* myRowFrame;
+
+    /// @bbriefie Text field with step
+    FXTextField* myRowStep;
+
+    /// @brief Text field with speed
+    FXTextField* myRowSpeed;
+
+    /// @brief Button for insert row
+    FXButton* myAddRow;
 
 private:
-    /// @brif reffill table
-    void fillTable();
+    /// @brief update data table
+    void updateTable();
 
     /// @brief Invalidated copy constructor.
     GNEVariableSpeedSignalDialog(const GNEVariableSpeedSignalDialog&);

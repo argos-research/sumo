@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Wed, 12 Dez 2001
-/// @version $Id: MSBitSetLogic.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSBitSetLogic.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Container for holding a right-of-way matrix
 /****************************************************************************/
@@ -47,7 +47,7 @@
  *
  * N is sum of the number of links of the junction's inLanes.
  */
-template< size_t N >
+template< int N >
 class MSBitSetLogic : public MSJunctionLogic {
 public:
     /** @brief Container that holds the right of way bitsets.
@@ -65,7 +65,7 @@ public:
 
 public:
     /// Use this constructor only.
-    MSBitSetLogic(unsigned int nLinks,
+    MSBitSetLogic(int nLinks,
                   Logic* logic,
                   Foes* foes,
                   std::bitset<SUMO_MAX_CONNECTIONS> conts)
@@ -81,16 +81,16 @@ public:
 
 
     /// @brief Returns the response for the given link
-    const MSLogicJunction::LinkBits& getResponseFor(unsigned int linkIndex) const {
+    const MSLogicJunction::LinkBits& getResponseFor(int linkIndex) const {
         return (*myLogic)[linkIndex];
     }
 
     /// @brief Returns the foes for the given link
-    const MSLogicJunction::LinkBits& getFoesFor(unsigned int linkIndex) const {
+    const MSLogicJunction::LinkBits& getFoesFor(int linkIndex) const {
         return (*myInternalLinksFoes)[linkIndex];
     }
 
-    bool getIsCont(unsigned int linkIndex) const {
+    bool getIsCont(int linkIndex) const {
         return myConts.test(linkIndex);
     }
 

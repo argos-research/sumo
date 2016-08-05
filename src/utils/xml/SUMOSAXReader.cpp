@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Nov 2012
-/// @version $Id: SUMOSAXReader.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: SUMOSAXReader.cpp 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // SAX-reader encapsulation containing binary reader
 /****************************************************************************/
@@ -143,7 +143,7 @@ SUMOSAXReader::parseFirst(std::string systemID) {
         elems.clear();
         *myBinaryInput >> elems;
         // !!! check edges here
-        std::vector< std::vector<unsigned int> > followers;
+        std::vector< std::vector<int> > followers;
         *myBinaryInput >> followers;
         // !!! check followers here
         return parseNext();

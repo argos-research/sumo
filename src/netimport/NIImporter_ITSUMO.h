@@ -2,7 +2,7 @@
 /// @file    NIImporter_ITSUMO.h
 /// @author  Daniel Krajzewicz
 /// @date    2011-09-16
-/// @version $Id: NIImporter_ITSUMO.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIImporter_ITSUMO.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Importer for networks stored in ITSUMO format
 /****************************************************************************/
@@ -136,10 +136,10 @@ private:
 
         struct Lane {
         public:
-            Lane(const std::string& _id, unsigned int _idx, SUMOReal _v)
+            Lane(const std::string& _id, int _idx, SUMOReal _v)
                 : id(_id), index(_idx), v(_v) {}
             std::string id;
-            unsigned int index;
+            int index;
             SUMOReal v;
         };
 

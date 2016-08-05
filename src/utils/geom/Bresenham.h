@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: Bresenham.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: Bresenham.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A class to realise a uniform n:m - relationship using the
 /****************************************************************************/
@@ -57,7 +57,7 @@ public:
         virtual ~BresenhamCallBack() { }
 
         /** called when a bresenham step has been computed */
-        virtual void execute(const unsigned int val1, const unsigned int val2) = 0;
+        virtual void execute(const int val1, const int val2) = 0;
     };
 
 public:
@@ -65,7 +65,7 @@ public:
         the higher number is increased by one for each step while the smaller
         is increased by smaller/higher.
         In each step, the callback is executed. */
-    static void compute(BresenhamCallBack* callBack, const unsigned int val1, const unsigned int val2);
+    static void compute(BresenhamCallBack* callBack, const int val1, const int val2);
 };
 
 

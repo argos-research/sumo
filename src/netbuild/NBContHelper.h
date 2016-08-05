@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: NBContHelper.h 20945 2016-06-09 14:22:58Z namdre $
+/// @version $Id: NBContHelper.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 // Some methods for traversing lists of edges
 /****************************************************************************/
@@ -104,10 +104,10 @@ public:
     class straightness_sorter {
     public:
         /// constructor
-        explicit straightness_sorter(NBEdge* e) : 
+        explicit straightness_sorter(NBEdge* e) :
             myReferencePos(e->getLaneShape(0).back()),
-            myReferenceAngle(e->getShapeEndAngle()) 
-        {}
+            myReferenceAngle(e->getShapeEndAngle()) {
+        }
 
     public:
         /// comparing operation

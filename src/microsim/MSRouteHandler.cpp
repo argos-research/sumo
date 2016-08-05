@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: MSRouteHandler.cpp 20768 2016-05-20 08:38:44Z behrisch $
+/// @version $Id: MSRouteHandler.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // Parser and container for routes during their loading
 /****************************************************************************/
@@ -625,20 +625,20 @@ MSRouteHandler::openRouteDistribution(const SUMOSAXAttributes& attrs) {
     if (attrs.hasAttribute(SUMO_ATTR_ROUTES)) {
         bool ok = true;
         StringTokenizer st(attrs.get<std::string>(SUMO_ATTR_ROUTES, myCurrentRouteDistributionID.c_str(), ok));
-        size_t probIndex = 0;
+        int probIndex = 0;
         while (st.hasNext()) {
             std::string routeID = st.next();
             const MSRoute* route = MSRoute::dictionary(routeID, &myParsingRNG);
             if (route == 0) {
                 throw ProcessError("Unknown route '" + routeID + "' in distribution '" + myCurrentRouteDistributionID + "'.");
             }
-            const SUMOReal prob = (probs.size() > probIndex ? probs[probIndex] : 1.0);
+            const SUMOReal prob = ((int)probs.size() > probIndex ? probs[probIndex] : 1.0);
             if (myCurrentRouteDistribution->add(prob, route, false)) {
                 route->addReference();
             }
             probIndex++;
         }
-        if (probs.size() > 0 && probIndex != probs.size()) {
+        if (probs.size() > 0 && probIndex != (int)probs.size()) {
             WRITE_WARNING("Got " + toString(probs.size()) + " probabilities for " + toString(probIndex) +
                           " routes in routeDistribution '" + myCurrentRouteDistributionID + "'");
         }
@@ -733,7 +733,7 @@ MSRouteHandler::closeVehicle() {
             }
         }
         // maybe we do not want this vehicle to be inserted due to scaling
-        unsigned int quota = vehControl.getQuota();
+        int quota = vehControl.getQuota();
         if (quota > 0) {
             vehControl.addVehicle(myVehicleParameter->id, vehicle);
             if (myVehicleParameter->departProcedure == DEPART_TRIGGERED) {
@@ -754,7 +754,7 @@ MSRouteHandler::closeVehicle() {
                 vehControl.registerOneWaitingForContainer();
             } else {
                 // !!! no upscaling for triggered vehicles yet
-                for (unsigned int i = 1; i < quota; i++) {
+                for (int i = 1; i < quota; i++) {
                     MSNet::getInstance()->getInsertionControl().add(vehicle);
                     SUMOVehicleParameter* newPars = new SUMOVehicleParameter(*myVehicleParameter);
                     newPars->id = myVehicleParameter->id + "." + toString(i);

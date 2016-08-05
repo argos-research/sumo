@@ -2,7 +2,7 @@
 /// @file    GNEChange_Connection.cpp
 /// @author  Jakob Erdmann
 /// @date    May 2011
-/// @version $Id: GNEChange_Connection.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEChange_Connection.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A network change in which a single connection is created or deleted
 /****************************************************************************/
@@ -47,8 +47,8 @@ FXIMPLEMENT_ABSTRACT(GNEChange_Connection, GNEChange, NULL, 0)
 
 
 // Constructor for creating an edge
-GNEChange_Connection::GNEChange_Connection(GNEEdge* edge, unsigned int fromLane,
-        const std::string& toEdgeID, unsigned int toLane,
+GNEChange_Connection::GNEChange_Connection(GNEEdge* edge, int fromLane,
+        const std::string& toEdgeID, int toLane,
         bool mayDefinitelyPass, bool forward):
     GNEChange(0, forward),
     myEdge(edge),

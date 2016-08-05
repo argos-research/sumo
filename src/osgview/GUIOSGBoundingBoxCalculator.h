@@ -3,7 +3,7 @@
 /// @author  Gordon Thomlinson
 /// @author  Michael Behrisch
 /// @date    19.01.2012
-/// @version $Id: GUIOSGBoundingBoxCalculator.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIOSGBoundingBoxCalculator.h 21202 2016-07-19 13:40:35Z behrisch $
 ///
 // Calculates the bounding box of an osg node
 // original source: http://www.vis-sim.com/osg/code/osgcode_bbox1.htm
@@ -61,11 +61,15 @@ public:
 
     void apply(osg::Geode& geode) {
         osg::BoundingBox bbox;
-        for (unsigned int i = 0; i < geode.getNumDrawables(); ++i) {
+        for (int i = 0; i < (int)geode.getNumDrawables(); ++i) {
+#if OSG_MIN_VERSION_REQUIRED(3,4,0)
+            bbox.expandBy(geode.getDrawable(i)->getBoundingBox());
+#else
             bbox.expandBy(geode.getDrawable(i)->getBound());
+#endif
         }
         osg::BoundingBox bboxTrans;
-        for (unsigned int i = 0; i < 8; ++i) {
+        for (int i = 0; i < 8; ++i) {
             osg::Vec3 xvec = bbox.corner(i) * myTransformMatrix;
             bboxTrans.expandBy(xvec);
         }

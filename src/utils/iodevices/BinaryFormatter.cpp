@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    2012
-/// @version $Id: BinaryFormatter.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: BinaryFormatter.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Static storage of an output device and its base (abstract) implementation
 /****************************************************************************/
@@ -153,13 +153,6 @@ void BinaryFormatter::writeAttr(std::ostream& into, const SumoXMLAttr attr, cons
 
 template<>
 void BinaryFormatter::writeAttr(std::ostream& into, const SumoXMLAttr attr, const int& val) {
-    BinaryFormatter::writeAttrHeader(into, attr, BF_INTEGER);
-    FileHelpers::writeInt(into, val);
-}
-
-
-template<>
-void BinaryFormatter::writeAttr(std::ostream& into, const SumoXMLAttr attr, const unsigned int& val) {
     BinaryFormatter::writeAttrHeader(into, attr, BF_INTEGER);
     FileHelpers::writeInt(into, val);
 }

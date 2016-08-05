@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Fri, 19 Jul 2002
-/// @version $Id: LineReader.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: LineReader.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Retrieves a file linewise and reports the lines to a handler.
 /****************************************************************************/
@@ -164,13 +164,13 @@ private:
     std::string myStrBuffer;
 
     /// @brief Information about how many characters were supplied to the LineHandler
-    unsigned int myRead;
+    int myRead;
 
     /// @brief Information how many bytes are available within the used file
-    unsigned int myAvailable;
+    int myAvailable;
 
     /// @brief Information how many bytes were read by the reader from the file
-    unsigned int myRread;
+    int myRread;
 
 };
 

@@ -2,7 +2,7 @@
 /// @file    GNEAttributeCarrier.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEAttributeCarrier.cpp 20987 2016-06-16 11:15:06Z palcraft $
+/// @version $Id: GNEAttributeCarrier.cpp 21142 2016-07-11 08:02:07Z palcraft $
 ///
 // Abstract Base class for gui objects which carry attributes
 /****************************************************************************/
@@ -106,8 +106,9 @@ GNEAttributeCarrier::getTag() const {
 std::vector<SumoXMLAttr>
 GNEAttributeCarrier::getAttrs() const {
     std::vector<SumoXMLAttr> attr;
-    for(std::vector<std::pair <SumoXMLAttr, std::string> >::const_iterator i = allowedAttributes(myTag).begin(); i != allowedAttributes(myTag).end(); i++)
+    for (std::vector<std::pair <SumoXMLAttr, std::string> >::const_iterator i = allowedAttributes(myTag).begin(); i != allowedAttributes(myTag).end(); i++) {
         attr.push_back(i->first);
+    }
     return attr;
 }
 
@@ -120,10 +121,11 @@ GNEAttributeCarrier::getID() const {
 
 SumoXMLTag
 GNEAttributeCarrier::getParentType(SumoXMLTag tag) {
-    if(hasParent(tag))
+    if (hasParent(tag)) {
         return myAllowedAdditionalWithParentTags[tag];
-    else
+    } else {
         return SUMO_TAG_NOTHING;
+    }
 }
 
 
@@ -144,27 +146,32 @@ GNEAttributeCarrier::isValidFileValue(const std::string& value) {
 bool
 GNEAttributeCarrier::isValidStringVector(const std::string& value) {
     // 1) check if value is empty
-    if(value.empty())
+    if (value.empty()) {
         return true;
+    }
     // 2) Check if there are duplicated spaces
-    for(int i = 1; i < value.size(); i++)
-        if(value.at(i-1) == ' ' && value.at(i) == ' ')
+    for (int i = 1; i < (int)value.size(); i++) {
+        if (value.at(i - 1) == ' ' && value.at(i) == ' ') {
             return false;
+        }
+    }
     // 3) Check if the first and last character aren't spaces
-    if((value.at(0) == ' ') || (value.at(value.size()-1) == ' '))
+    if ((value.at(0) == ' ') || (value.at(value.size() - 1) == ' ')) {
         return false;
+    }
     // 4) Check if every sub-string is valid
     int index = 0;
     std::string subString;
-    while(index < value.size()) {
-        if(value.at(index) == ' ') {
-            if(!isValidFileValue(subString))
+    while (index < (int)value.size()) {
+        if (value.at(index) == ' ') {
+            if (!isValidFileValue(subString)) {
                 return false;
-            else
+            } else {
                 subString.clear();
-        }
-        else
+            }
+        } else {
             subString.push_back(value.at(index));
+        }
         index++;
     }
     // 5) All right, then return true
@@ -249,6 +256,13 @@ GNEAttributeCarrier::allowedAttributes(SumoXMLTag tag) {
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_ENDPOS, "10"));
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_LINES, ""));
                 break;
+            case SUMO_TAG_CONTAINER_STOP:
+                attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_ID, ""));
+                attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_LANE, ""));
+                attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_STARTPOS, ""));
+                attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_ENDPOS, "10"));
+                attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_LINES, ""));
+                break;
             case SUMO_TAG_CHARGING_STATION:
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_ID, ""));
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_LANE, ""));
@@ -283,6 +297,8 @@ GNEAttributeCarrier::allowedAttributes(SumoXMLTag tag) {
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_ID, ""));
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_FREQUENCY, "100"));
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_FILE, ""));
+                attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_HALTING_TIME_THRESHOLD, "1"));
+                attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_HALTING_SPEED_THRESHOLD, "1.39"));
                 break;
             case SUMO_TAG_DET_ENTRY:
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_LANE, ""));
@@ -300,7 +316,7 @@ GNEAttributeCarrier::allowedAttributes(SumoXMLTag tag) {
             case SUMO_TAG_CALIBRATOR:
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_ID, ""));
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_LANE, ""));
-                attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_POSITION, ""));
+                // Currently unused attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_POSITION, ""));
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_FREQUENCY, "100"));
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_ROUTEPROBE, ""));
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_OUTPUT, ""));
@@ -321,8 +337,8 @@ GNEAttributeCarrier::allowedAttributes(SumoXMLTag tag) {
                 break;
             case SUMO_TAG_VAPORIZER:
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_EDGE, ""));
-                attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_STARTTIME, ""));
-                attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_END, ""));
+                attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_STARTTIME, "0"));
+                attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_END, "10"));
                 break;
             default:
                 WRITE_WARNING("allowed attributes for tag '" + toString(tag) + "' not defined");
@@ -341,6 +357,7 @@ GNEAttributeCarrier::allowedTags() {
         myAllowedTags.push_back(SUMO_TAG_LANE);
         myAllowedTags.push_back(SUMO_TAG_CONNECTION);
         myAllowedTags.push_back(SUMO_TAG_BUS_STOP);
+        myAllowedTags.push_back(SUMO_TAG_CONTAINER_STOP);
         myAllowedTags.push_back(SUMO_TAG_CHARGING_STATION);
         myAllowedTags.push_back(SUMO_TAG_E1DETECTOR);
         myAllowedTags.push_back(SUMO_TAG_E2DETECTOR);
@@ -375,6 +392,7 @@ GNEAttributeCarrier::allowedAdditionalTags() {
     // define on first access
     if (myAllowedAdditionalTags.empty()) {
         myAllowedAdditionalTags.push_back(SUMO_TAG_BUS_STOP);
+        myAllowedAdditionalTags.push_back(SUMO_TAG_CONTAINER_STOP);
         myAllowedAdditionalTags.push_back(SUMO_TAG_CHARGING_STATION);
         myAllowedAdditionalTags.push_back(SUMO_TAG_E1DETECTOR);
         myAllowedAdditionalTags.push_back(SUMO_TAG_E2DETECTOR);
@@ -419,20 +437,20 @@ bool
 GNEAttributeCarrier::isFloat(SumoXMLAttr attr) {
     // define on first access
     if (myNumericalFloatAttrs.empty()) {
-    myNumericalFloatAttrs.insert(SUMO_ATTR_SPEED);
-    myNumericalFloatAttrs.insert(SUMO_ATTR_LENGTH);
-    myNumericalFloatAttrs.insert(SUMO_ATTR_WIDTH);
-    myNumericalFloatAttrs.insert(SUMO_ATTR_ENDOFFSET);
-    myNumericalFloatAttrs.insert(SUMO_ATTR_RADIUS);
-    myNumericalFloatAttrs.insert(SUMO_ATTR_STARTPOS);
-    myNumericalFloatAttrs.insert(SUMO_ATTR_ENDPOS);
-    myNumericalFloatAttrs.insert(SUMO_ATTR_CHARGINGPOWER);
-    myNumericalFloatAttrs.insert(SUMO_ATTR_EFFICIENCY);
-    myNumericalFloatAttrs.insert(SUMO_ATTR_LENGTH);
-    myNumericalFloatAttrs.insert(SUMO_ATTR_HALTING_SPEED_THRESHOLD);
-    myNumericalFloatAttrs.insert(SUMO_ATTR_JAM_DIST_THRESHOLD);
-    myNumericalFloatAttrs.insert(SUMO_ATTR_PROB);
-    myNumericalFloatAttrs.insert(SUMO_ATTR_CONTPOS);
+        myNumericalFloatAttrs.insert(SUMO_ATTR_SPEED);
+        myNumericalFloatAttrs.insert(SUMO_ATTR_LENGTH);
+        myNumericalFloatAttrs.insert(SUMO_ATTR_WIDTH);
+        myNumericalFloatAttrs.insert(SUMO_ATTR_ENDOFFSET);
+        myNumericalFloatAttrs.insert(SUMO_ATTR_RADIUS);
+        myNumericalFloatAttrs.insert(SUMO_ATTR_STARTPOS);
+        myNumericalFloatAttrs.insert(SUMO_ATTR_ENDPOS);
+        myNumericalFloatAttrs.insert(SUMO_ATTR_CHARGINGPOWER);
+        myNumericalFloatAttrs.insert(SUMO_ATTR_EFFICIENCY);
+        myNumericalFloatAttrs.insert(SUMO_ATTR_LENGTH);
+        myNumericalFloatAttrs.insert(SUMO_ATTR_HALTING_SPEED_THRESHOLD);
+        myNumericalFloatAttrs.insert(SUMO_ATTR_JAM_DIST_THRESHOLD);
+        myNumericalFloatAttrs.insert(SUMO_ATTR_PROB);
+        myNumericalFloatAttrs.insert(SUMO_ATTR_CONTPOS);
     }
     return myNumericalFloatAttrs.count(attr) == 1;
 }
@@ -441,12 +459,13 @@ GNEAttributeCarrier::isFloat(SumoXMLAttr attr) {
 bool
 GNEAttributeCarrier::isBool(SumoXMLAttr attr) {
     // Iterate over additional tags
-    for(std::vector<SumoXMLTag>::const_iterator i = allowedTags().begin(); i != allowedTags().end(); i++) {
+    for (std::vector<SumoXMLTag>::const_iterator i = allowedTags().begin(); i != allowedTags().end(); i++) {
         // Obtain choices
         std::vector<std::string> choices = discreteChoices(*i, attr);
         // CHeck if choices are exactly "true" and "false"
-        if ((choices.size() == 2) && (choices.at(0) == "true") && (choices.at(1) == "false"))
+        if ((choices.size() == 2) && (choices.at(0) == "true") && (choices.at(1) == "false")) {
             return true;
+        }
     }
     return false;
 }
@@ -464,6 +483,7 @@ GNEAttributeCarrier::isList(SumoXMLAttr attr) {
     if (myListAttrs.empty()) {
         myListAttrs.insert(SUMO_ATTR_LINES);
         myListAttrs.insert(SUMO_ATTR_EDGES);
+        myListAttrs.insert(SUMO_ATTR_LANES);
     }
     return myListAttrs.count(attr) == 1;
 }
@@ -491,13 +511,13 @@ GNEAttributeCarrier::isUnique(SumoXMLAttr attr) {
 }
 
 
-
 bool
 GNEAttributeCarrier::isDiscrete(SumoXMLTag tag, SumoXMLAttr attr) {
-    if(discreteChoices(tag, attr).size() > 0)
+    if (discreteChoices(tag, attr).size() > 0) {
         return true;
-    else
+    } else {
         return false;
+    }
 }
 
 
@@ -515,9 +535,11 @@ GNEAttributeCarrier::hasParent(SumoXMLTag tag) {
 bool
 GNEAttributeCarrier::hasAttribute(SumoXMLTag tag, SumoXMLAttr attr) {
     const std::vector<std::pair <SumoXMLAttr, std::string> >& attrs = allowedAttributes(tag);
-    for(std::vector<std::pair <SumoXMLAttr, std::string> >::const_iterator i = attrs.begin(); i != attrs.end(); i++)
-        if(i->first == attr)
+    for (std::vector<std::pair <SumoXMLAttr, std::string> >::const_iterator i = attrs.begin(); i != attrs.end(); i++) {
+        if (i->first == attr) {
             return true;
+        }
+    }
     return false;
 }
 
@@ -582,7 +604,7 @@ GNEAttributeCarrier::discreteCombinableChoices(SumoXMLTag, SumoXMLAttr attr) {
 }
 
 
-std::string 
+std::string
 GNEAttributeCarrier::getDefinition(SumoXMLTag tag, SumoXMLAttr attr) {
     // define on first access
     if (myAttrDefinitions.empty()) {
@@ -643,6 +665,12 @@ GNEAttributeCarrier::getDefinition(SumoXMLTag tag, SumoXMLAttr attr) {
         myAttrDefinitions[SUMO_TAG_BUS_STOP][SUMO_ATTR_STARTPOS] = "The begin position on the lane (the lower position on the lane) in meters";
         myAttrDefinitions[SUMO_TAG_BUS_STOP][SUMO_ATTR_ENDPOS] = "The end position on the lane (the higher position on the lane) in meters, must be larger than startPos by more than 0.1m";
         myAttrDefinitions[SUMO_TAG_BUS_STOP][SUMO_ATTR_LINES] = "meant to be the names of the bus lines that stop at this bus stop. This is only used for visualization purposes";
+        // container Stop
+        myAttrDefinitions[SUMO_TAG_CONTAINER_STOP][SUMO_ATTR_ID] = "ID (Must be unique)";
+        myAttrDefinitions[SUMO_TAG_CONTAINER_STOP][SUMO_ATTR_LANE] = "The name of the lane the container stop shall be located at";
+        myAttrDefinitions[SUMO_TAG_CONTAINER_STOP][SUMO_ATTR_STARTPOS] = "The begin position on the lane (the lower position on the lane) in meters";
+        myAttrDefinitions[SUMO_TAG_CONTAINER_STOP][SUMO_ATTR_ENDPOS] = "The end position on the lane (the higher position on the lane) in meters, must be larger than startPos by more than 0.1m";
+        myAttrDefinitions[SUMO_TAG_CONTAINER_STOP][SUMO_ATTR_LINES] = "meant to be the names of the bus lines that stop at this container stop. This is only used for visualization purposes";
         // Charging Station
         myAttrDefinitions[SUMO_TAG_CHARGING_STATION][SUMO_ATTR_ID] = "ID (Must be unique)";
         myAttrDefinitions[SUMO_TAG_CHARGING_STATION][SUMO_ATTR_LANE] = "Lane of the charging station location";
@@ -702,7 +730,7 @@ GNEAttributeCarrier::getDefinition(SumoXMLTag tag, SumoXMLAttr attr) {
         myAttrDefinitions[SUMO_TAG_ROUTEPROBE][SUMO_ATTR_EDGE] = "The id of an edge in the simulation network";
         myAttrDefinitions[SUMO_TAG_ROUTEPROBE][SUMO_ATTR_FREQUENCY] = "The frequency in which to report the distribution";
         myAttrDefinitions[SUMO_TAG_ROUTEPROBE][SUMO_ATTR_FILE] = "The file for generated output";
-        myAttrDefinitions[SUMO_TAG_ROUTEPROBE][SUMO_ATTR_BEGIN] = "	The time at which to start generating output";
+        myAttrDefinitions[SUMO_TAG_ROUTEPROBE][SUMO_ATTR_BEGIN] = "The time at which to start generating output";
     }
     return myAttrDefinitions[tag][attr];
 }
@@ -711,18 +739,22 @@ GNEAttributeCarrier::getDefinition(SumoXMLTag tag, SumoXMLAttr attr) {
 int
 GNEAttributeCarrier::getHigherNumberOfAttributes() {
     int higherNumber = 0;
-    for(std::vector<SumoXMLTag>::const_iterator i = allowedTags().begin(); i != allowedTags().end(); i++)
-        if(allowedAttributes(*i).size() > higherNumber)
-            higherNumber = allowedAttributes(*i).size();
+    for (std::vector<SumoXMLTag>::const_iterator i = allowedTags().begin(); i != allowedTags().end(); i++) {
+        if ((int)allowedAttributes(*i).size() > higherNumber) {
+            higherNumber = (int)allowedAttributes(*i).size();
+        }
+    }
     return higherNumber;
 }
 
 
 template<> int
 GNEAttributeCarrier::getDefaultValue(SumoXMLTag tag, SumoXMLAttr attr) {
-    for(std::vector<std::pair<SumoXMLAttr, std::string> >::iterator i = _allowedAttributes.at(tag).begin(); i != _allowedAttributes.at(tag).end(); i++)
-        if((*i).first == attr)
+    for (std::vector<std::pair<SumoXMLAttr, std::string> >::iterator i = _allowedAttributes.at(tag).begin(); i != _allowedAttributes.at(tag).end(); i++) {
+        if ((*i).first == attr) {
             return TplConvert::_str2int((*i).second);
+        }
+    }
     // Write warning if attribute don't have a default value and return a empty value to avoid warnings
     WRITE_WARNING("attribute '" + toString(attr) + "' for tag '" + toString(tag) + "' don't have a default value");
     return 0;
@@ -731,9 +763,11 @@ GNEAttributeCarrier::getDefaultValue(SumoXMLTag tag, SumoXMLAttr attr) {
 
 template<> SUMOReal
 GNEAttributeCarrier::getDefaultValue(SumoXMLTag tag, SumoXMLAttr attr) {
-    for(std::vector<std::pair<SumoXMLAttr, std::string> >::iterator i = _allowedAttributes.at(tag).begin(); i != _allowedAttributes.at(tag).end(); i++)
-        if((*i).first == attr)
+    for (std::vector<std::pair<SumoXMLAttr, std::string> >::iterator i = _allowedAttributes.at(tag).begin(); i != _allowedAttributes.at(tag).end(); i++) {
+        if ((*i).first == attr) {
             return TplConvert::_str2SUMOReal((*i).second);
+        }
+    }
     // Write warning if attribute don't have a default value and return a empty value to avoid warnings
     WRITE_WARNING("attribute '" + toString(attr) + "' for tag '" + toString(tag) + "' don't have a default value");
     return 0;
@@ -742,9 +776,11 @@ GNEAttributeCarrier::getDefaultValue(SumoXMLTag tag, SumoXMLAttr attr) {
 
 template<> bool
 GNEAttributeCarrier::getDefaultValue(SumoXMLTag tag, SumoXMLAttr attr) {
-    for(std::vector<std::pair<SumoXMLAttr, std::string> >::iterator i = _allowedAttributes.at(tag).begin(); i != _allowedAttributes.at(tag).end(); i++)
-        if((*i).first == attr)
+    for (std::vector<std::pair<SumoXMLAttr, std::string> >::iterator i = _allowedAttributes.at(tag).begin(); i != _allowedAttributes.at(tag).end(); i++) {
+        if ((*i).first == attr) {
             return TplConvert::_str2Bool((*i).second);
+        }
+    }
     // Write warning if attribute don't have a default value and return a empty value to avoid warnings
     WRITE_WARNING("attribute '" + toString(attr) + "' for tag '" + toString(tag) + "' don't have a default value");
     return false;
@@ -753,9 +789,11 @@ GNEAttributeCarrier::getDefaultValue(SumoXMLTag tag, SumoXMLAttr attr) {
 
 template<> std::string
 GNEAttributeCarrier::getDefaultValue(SumoXMLTag tag, SumoXMLAttr attr) {
-    for(std::vector<std::pair<SumoXMLAttr, std::string> >::iterator i = _allowedAttributes.at(tag).begin(); i != _allowedAttributes.at(tag).end(); i++)
-        if((*i).first == attr)
+    for (std::vector<std::pair<SumoXMLAttr, std::string> >::iterator i = _allowedAttributes.at(tag).begin(); i != _allowedAttributes.at(tag).end(); i++) {
+        if ((*i).first == attr) {
             return (*i).second;
+        }
+    }
     // Write warning if attribute don't have a default value and return a empty value to avoid warnings
     WRITE_WARNING("attribute '" + toString(attr) + "' for tag '" + toString(tag) + "' don't have a default value");
     return "";
@@ -765,7 +803,6 @@ GNEAttributeCarrier::getDefaultValue(SumoXMLTag tag, SumoXMLAttr attr) {
 template<> std::vector<int>
 GNEAttributeCarrier::getDefaultValue(SumoXMLTag tag, SumoXMLAttr attr) {
     std::cout << "FINISH" << std::endl;
-    
 
     // Write warning if attribute don't have a default value and return a empty value to avoid warnings
     WRITE_WARNING("attribute '" + toString(attr) + "' for tag '" + toString(tag) + "' don't have a default value");
@@ -776,7 +813,6 @@ GNEAttributeCarrier::getDefaultValue(SumoXMLTag tag, SumoXMLAttr attr) {
 template<> std::vector<SUMOReal>
 GNEAttributeCarrier::getDefaultValue(SumoXMLTag tag, SumoXMLAttr attr) {
     std::cout << "FINISH" << std::endl;
-    
 
     // Write warning if attribute don't have a default value and return a empty value to avoid warnings
     WRITE_WARNING("attribute '" + toString(attr) + "' for tag '" + toString(tag) + "' don't have a default value");
@@ -796,12 +832,13 @@ GNEAttributeCarrier::getDefaultValue(SumoXMLTag tag, SumoXMLAttr attr) {
 
 template<> std::vector<std::string>
 GNEAttributeCarrier::getDefaultValue(SumoXMLTag tag, SumoXMLAttr attr) {
-    for(std::vector<std::pair<SumoXMLAttr, std::string> >::iterator i = _allowedAttributes.at(tag).begin(); i != _allowedAttributes.at(tag).end(); i++)
-        if((*i).first == attr) {
+    for (std::vector<std::pair<SumoXMLAttr, std::string> >::iterator i = _allowedAttributes.at(tag).begin(); i != _allowedAttributes.at(tag).end(); i++) {
+        if ((*i).first == attr) {
             std::vector<std::string> myVectorString;
             SUMOSAXAttributes::parseStringVector((*i).second, myVectorString);
             return myVectorString;
         }
+    }
     // Write warning if attribute don't have a default value and return a empty value to avoid warnings
     WRITE_WARNING("attribute '" + toString(attr) + "' for tag '" + toString(tag) + "' don't have a default value");
     return std::vector<std::string>();

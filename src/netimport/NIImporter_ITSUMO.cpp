@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    2011-09-16
-/// @version $Id: NIImporter_ITSUMO.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NIImporter_ITSUMO.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Importer for networks stored in ITSUMO format
 /****************************************************************************/
@@ -222,7 +222,7 @@ NIImporter_ITSUMO::Handler::myEndElement(int element) {
             for (std::vector<Section*>::iterator i = mySections.begin(); i != mySections.end(); ++i) {
                 for (std::vector<LaneSet*>::iterator j = (*i)->laneSets.begin(); j != (*i)->laneSets.end(); ++j) {
                     LaneSet* ls = (*j);
-                    NBEdge* edge = new NBEdge(ls->id, ls->from, ls->to, "", ls->v, (unsigned int)ls->lanes.size(), -1, NBEdge::UNSPECIFIED_WIDTH, NBEdge::UNSPECIFIED_OFFSET);
+                    NBEdge* edge = new NBEdge(ls->id, ls->from, ls->to, "", ls->v, (int)ls->lanes.size(), -1, NBEdge::UNSPECIFIED_WIDTH, NBEdge::UNSPECIFIED_OFFSET);
                     if (!myNetBuilder.getEdgeCont().insert(edge)) {
                         delete edge;
                         WRITE_ERROR("Could not add edge '" + ls->id + "'. Probably declared twice.");
@@ -296,7 +296,7 @@ NIImporter_ITSUMO::Handler::myEndElement(int element) {
                 std::string id = myParameter["laneID"];
                 int i = TplConvert::_2int(myParameter["i"].c_str());
                 SUMOReal v = TplConvert::_2SUMOReal(myParameter["v"].c_str());
-                myCurrentLanes.push_back(Lane(id, (unsigned int) i, v));
+                myCurrentLanes.push_back(Lane(id, (int) i, v));
             } catch (NumberFormatException&) {
                 WRITE_ERROR("Not numeric value in lane '" + myParameter["laneID"] + "'.");
             } catch (EmptyData&) {

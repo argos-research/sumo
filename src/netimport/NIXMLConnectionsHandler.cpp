@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Thu, 17 Oct 2002
-/// @version $Id: NIXMLConnectionsHandler.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIXMLConnectionsHandler.cpp 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // Importer for edge connections stored in XML
 /****************************************************************************/
@@ -175,7 +175,7 @@ NIXMLConnectionsHandler::myStartElement(int element,
 NBConnection
 NIXMLConnectionsHandler::parseConnection(const std::string& defRole, const std::string& def) {
     // split from/to
-    size_t div = def.find("->");
+    const std::string::size_type div = def.find("->");
     if (div == std::string::npos) {
         myErrorMsgHandler->inform("Missing connection divider in " + defRole + " '" + def + "'");
         return NBConnection::InvalidConnection;

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Oct/Nov 2003
-/// @version $Id: GUITLLogicPhasesTrackerWindow.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GUITLLogicPhasesTrackerWindow.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // A window displaying the phase diagram of a tl-logic
 /****************************************************************************/
@@ -173,8 +173,8 @@ GUITLLogicPhasesTrackerWindow::GUITLLogicPhasesTrackerWindow(
     myConnector = new GLObjectValuePassConnector<std::pair<SUMOTime, MSPhaseDefinition> >(wrapper, src, this);
     FXint height = (FXint)(myTLLogic->getLinks().size() * 20 + 30 + 8 + 30);
     app.addChild(this, true);
-    for (size_t i = 0; i < myTLLogic->getLinks().size(); ++i) {
-        myLinkNames.push_back(toString<size_t>(i));
+    for (int i = 0; i < (int)myTLLogic->getLinks().size(); ++i) {
+        myLinkNames.push_back(toString<int>(i));
     }
     FXVerticalFrame* glcanvasFrame =
         new FXVerticalFrame(this,
@@ -200,8 +200,8 @@ GUITLLogicPhasesTrackerWindow::GUITLLogicPhasesTrackerWindow(
     FXint height = (FXint)(myTLLogic->getLinks().size() * 20 + 30 + 8);
     setTitle("TLS-Tracker");
     app.addChild(this, true);
-    for (size_t i = 0; i < myTLLogic->getLinks().size(); ++i) {
-        myLinkNames.push_back(toString<size_t>(i));
+    for (int i = 0; i < (int)myTLLogic->getLinks().size(); ++i) {
+        myLinkNames.push_back(toString<int>(i));
     }
     FXVerticalFrame* glcanvasFrame =
         new FXVerticalFrame(this,
@@ -240,7 +240,7 @@ GUITLLogicPhasesTrackerWindow::drawValues(GUITLLogicPhasesTrackerPanel& caller) 
     // compute what shall be shown (what is visible)
     myFirstPhase2Show = 0;
     myFirstPhaseOffset = 0;
-    size_t leftOffset = 0;
+    int leftOffset = 0;
     myFirstTime2Show = 0;
     if (!myAmInTrackingMode) {
         myPhases.clear();
@@ -266,7 +266,7 @@ GUITLLogicPhasesTrackerWindow::drawValues(GUITLLogicPhasesTrackerPanel& caller) 
         // check whether no phases are known at all
         if (myDurations.size() != 0) {
             SUMOTime durs = 0;
-            size_t phaseOffset = myDurations.size() - 1;
+            int phaseOffset = (int)myDurations.size() - 1;
             DurationsVector::reverse_iterator i = myDurations.rbegin();
             while (i != myDurations.rend()) {
                 if (durs + (*i) > beginOffset) {
@@ -309,14 +309,14 @@ GUITLLogicPhasesTrackerWindow::drawValues(GUITLLogicPhasesTrackerPanel& caller) 
     // draw the link names and the lines dividing them
     SUMOReal h = (SUMOReal)(1.0 - h10);
     SUMOReal h2 = 12;
-    for (size_t i = 0; i < myTLLogic->getLinks().size() + 1; ++i) {
+    for (int i = 0; i < (int)myTLLogic->getLinks().size() + 1; ++i) {
         // draw the bar
         glBegin(GL_LINES);
         glVertex2d(0, h);
         glVertex2d((SUMOReal)(30. / width), h);
         glEnd();
         // draw the name
-        if (i < myTLLogic->getLinks().size()) {
+        if (i < (int)myTLLogic->getLinks().size()) {
             glRotated(180, 1, 0, 0);
             pfSetPosition(0, 0);
             glTranslated(0.0, -h + h20 - h4, 0);
@@ -353,12 +353,12 @@ GUITLLogicPhasesTrackerWindow::drawValues(GUITLLogicPhasesTrackerPanel& caller) 
     // and the initial phase information
     PhasesVector::iterator pi = myPhases.begin() + myFirstPhase2Show;
     DurationsVector::iterator pd = myDurations.begin() + myFirstPhase2Show;
-    size_t fpo = myFirstPhaseOffset;
+    int fpo = myFirstPhaseOffset;
 
     // start drawing
-    for (size_t i = 30; pd != myDurations.end();) {
+    for (int i = 30; pd != myDurations.end();) {
         // the first phase may be drawn incompletely
-        size_t duration = *pd - fpo;
+        int duration = *pd - fpo;
         // compute the heigh and the width of the phase
         h = (SUMOReal)(1.0 - h10);
         SUMOReal a = (SUMOReal) duration / width;

@@ -5,7 +5,7 @@
 /// @author  Christian Roessel
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIApplicationWindow.h 20995 2016-06-17 14:06:28Z behrisch $
+/// @version $Id: GUIApplicationWindow.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The main window of the SUMO-gui.
 /****************************************************************************/
@@ -314,7 +314,7 @@ protected:
     bool myWasStarted;
 
     /// The current view number
-    size_t myViewNumber;
+    int myViewNumber;
 
     /// information whether the gui is currently loading and the load-options shall be greyed out
     bool myAmLoading;
@@ -325,7 +325,7 @@ protected:
                 *myWindowsMenu, *myHelpMenu;
 
     /// Buttons showing and running values and triggering statistic windows
-    FXButton* myNetStatButton, *myVehStatButton, *myPedStatButton;
+    std::vector<FXButton*> myStatButtons;
 
     /// A window to display messages, warnings and error in
     GUIMessageWindow* myMessageWindow;
@@ -398,7 +398,7 @@ protected:
     SUMOReal myJamSoundTime;
     /// @brief A random number generator used to choose a gaming sound
     static MTRand myGamingRNG;
-    unsigned int myPreviousCollisionNumber;
+    int myPreviousCollisionNumber;
 
     /// performance indicators
     FXEX::FXLCDLabel* myWaitingTimeLabel;

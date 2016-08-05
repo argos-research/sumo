@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mar, 2003
-/// @version $Id: NGRandomNetBuilder.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NGRandomNetBuilder.cpp 21202 2016-07-19 13:40:35Z behrisch $
 ///
 // Additional structures for building random nets
 /****************************************************************************/
@@ -253,7 +253,7 @@ NGRandomNetBuilder::createNet(int numNodes) {
     myOuterNodes.push_back(outerNode);
 
     bool created = true;
-    while (((int) myNet.nodeNo() < numNodes) && (myOuterNodes.size() > 0)) {
+    while ((myNet.nodeNo() < numNodes) && (myOuterNodes.size() > 0)) {
         // brings last element to front
         if (!created) {
             myOuterNodes.push_front(myOuterNodes.back());

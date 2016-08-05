@@ -6,7 +6,7 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: ROMAEdge.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ROMAEdge.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A basic edge for routing applications
 /****************************************************************************/
@@ -42,7 +42,7 @@
 // ===========================================================================
 // method definitions
 // ===========================================================================
-ROMAEdge::ROMAEdge(const std::string& id, RONode* from, RONode* to, unsigned int index, const int priority)
+ROMAEdge::ROMAEdge(const std::string& id, RONode* from, RONode* to, int index, const int priority)
     : ROEdge(id, from, to, index, priority) {
 }
 

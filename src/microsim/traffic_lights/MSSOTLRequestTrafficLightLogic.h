@@ -3,7 +3,7 @@
 /// @author  Gianfilippo Slager
 /// @author  Anna Chiara Bellini
 /// @date    2013-02-25
-/// @version $Id: MSSOTLRequestTrafficLightLogic.h 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSSOTLRequestTrafficLightLogic.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The class for SOTL Request logics
 /****************************************************************************/
@@ -45,7 +45,7 @@ public:
      */
     MSSOTLRequestTrafficLightLogic(MSTLLogicControl& tlcontrol,
                                    const std::string& id, const std::string& subid, const Phases& phases,
-                                   unsigned int step, SUMOTime delay,
+                                   int step, SUMOTime delay,
                                    const std::map<std::string, std::string>& parameters) throw();
 
     /**
@@ -59,7 +59,7 @@ public:
      */
     MSSOTLRequestTrafficLightLogic(MSTLLogicControl& tlcontrol,
                                    const std::string& id, const std::string& subid, const Phases& phases,
-                                   unsigned int step, SUMOTime delay,
+                                   int step, SUMOTime delay,
                                    const std::map<std::string, std::string>& parameters,
                                    MSSOTLSensors* sensors) throw();
 

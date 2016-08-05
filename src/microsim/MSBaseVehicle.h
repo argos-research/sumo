@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 8 Nov 2010
-/// @version $Id: MSBaseVehicle.h 20910 2016-06-08 06:33:11Z namdre $
+/// @version $Id: MSBaseVehicle.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A base class for vehicle implementations
 /****************************************************************************/
@@ -269,7 +269,7 @@ public:
     /** @brief Returns the number of new routes this vehicle got
      * @return the number of new routes this vehicle got
      */
-    inline unsigned int getNumberReroutes() const {
+    inline int getNumberReroutes() const {
         return myNumberReroutes;
     }
 
@@ -422,7 +422,7 @@ protected:
     int myArrivalLane;
 
     /// @brief The number of reroutings
-    unsigned int myNumberReroutes;
+    int myNumberReroutes;
 
     /* @brief magic value for undeparted vehicles
      * @note: in previous versions this was -1

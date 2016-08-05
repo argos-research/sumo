@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 29.04.2005
-/// @version $Id: RandHelper.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: RandHelper.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 //
 /****************************************************************************/
@@ -74,11 +74,6 @@ public:
     }
 
     /// @brief Returns a random integer in [0, maxV-1]
-    static inline size_t rand(size_t maxV) {
-        return (size_t) RandHelper::myRandomNumberGenerator.randInt((MTRand::uint32)(maxV - 1));
-    }
-
-    /// @brief Returns a random integer in [0, maxV-1]
     static inline int rand(int maxV) {
         return (int) RandHelper::myRandomNumberGenerator.randInt((MTRand::uint32)(maxV - 1));
     }
@@ -115,10 +110,10 @@ public:
 
     /// @brief Returns a random element from the given vector
     template<class T>
-    static inline T
+    static inline const T&
     getRandomFrom(const std::vector<T>& v) {
         assert(v.size() > 0);
-        return v[rand(v.size())];
+        return v[rand((int)v.size())];
     }
 
 

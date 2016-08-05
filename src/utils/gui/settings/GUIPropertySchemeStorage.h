@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Laura Bieker
 /// @date    Mon, 20.07.2009
-/// @version $Id: GUIPropertySchemeStorage.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIPropertySchemeStorage.h 21206 2016-07-20 08:08:35Z behrisch $
 ///
 //
 /****************************************************************************/
@@ -69,13 +69,13 @@ public:
         cb.setCurrentItem((FXint)myActiveScheme);
     }
 
-    void setActive(size_t scheme) {
-        if (scheme < mySchemes.size()) {
+    void setActive(int scheme) {
+        if (scheme < (int)mySchemes.size()) {
             myActiveScheme = scheme;
         }
     }
 
-    size_t getActive() const {
+    int getActive() const {
         return myActiveScheme;
     }
 
@@ -115,13 +115,13 @@ public:
         mySchemes.push_back(scheme);
     }
 
-    size_t size() const {
-        return mySchemes.size();
+    int size() const {
+        return (int)mySchemes.size();
     }
 
 
 protected:
-    size_t myActiveScheme;
+    int myActiveScheme;
     std::vector<T> mySchemes;
 
 };

@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Oct 2003
-/// @version $Id: MS_E2_ZS_CollectorOverLanes.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MS_E2_ZS_CollectorOverLanes.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A detector which joins E2Collectors over consecutive lanes (backward)
 /****************************************************************************/
@@ -159,7 +159,7 @@ protected:
      * @todo Describe!
      */
     std::string  makeID(const std::string& baseID,
-                        size_t c, size_t r) const;
+                        int c, int r) const;
 
 
     /** @brief Builds a single collector
@@ -170,7 +170,7 @@ protected:
      * @param[in] end !!!
      * @todo Describe!
      */
-    virtual MSE2Collector* buildCollector(size_t c, size_t r,
+    virtual MSE2Collector* buildCollector(int c, int r,
                                           MSLane* l, SUMOReal start, SUMOReal end);
 
 

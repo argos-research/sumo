@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 04.05.2011
-/// @version $Id: NWWriter_SUMO.h 20550 2016-04-26 10:57:45Z namdre $
+/// @version $Id: NWWriter_SUMO.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Exporter writing networks using the SUMO format
 /****************************************************************************/
@@ -126,7 +126,6 @@ protected:
 
     /** @brief Writes a lane (<lane ...) of an edge
      * @param[in] into The device to write the edge into
-     * @param[in] eID The ID of the edge
      * @param[in] lID The ID of the lane
      * @param[in] origID The original ID of the edge in the input
      * @param[in] length Lane's length
@@ -135,10 +134,10 @@ protected:
      * @param[in] oppositeID The ID of the opposite lane for overtaking
      * @param[in] node The node to check for custom shape data
      */
-    static void writeLane(OutputDevice& into, const std::string& eID, const std::string& lID,
+    static void writeLane(OutputDevice& into, const std::string& lID,
                           SUMOReal speed, SVCPermissions permissions, SVCPermissions preferred,
                           SUMOReal endOffset, SUMOReal width, PositionVector shape,
-                          const std::string& origID, SUMOReal length, unsigned int index, bool origNames,
+                          const std::string& origID, SUMOReal length, int index, bool origNames,
                           const std::string& oppositeID, const NBNode* node = 0);
 
 

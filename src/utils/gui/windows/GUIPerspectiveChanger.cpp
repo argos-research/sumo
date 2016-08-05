@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIPerspectiveChanger.cpp 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GUIPerspectiveChanger.cpp 21148 2016-07-12 08:47:10Z behrisch $
 ///
 // A class that allows to steer the visual output in dependence to user
 /****************************************************************************/
@@ -41,7 +41,7 @@
 // ===========================================================================
 // method definitions
 // ===========================================================================
-GUIPerspectiveChanger::GUIPerspectiveChanger( GUISUMOAbstractView& callBack, const Boundary& viewPort) :
+GUIPerspectiveChanger::GUIPerspectiveChanger(GUISUMOAbstractView& callBack, const Boundary& viewPort) :
     myCallback(callBack),
     myViewPort(viewPort) {
 }
@@ -72,8 +72,8 @@ GUIPerspectiveChanger::onRightBtnRelease(void*) {
     return false;
 }
 
-void 
-GUIPerspectiveChanger::onDoubleClicked(void* data) {
+void
+GUIPerspectiveChanger::onDoubleClicked(void*) {
 }
 
 
@@ -113,10 +113,11 @@ GUIPerspectiveChanger::getMouseYPosition() const {
 
 Boundary
 GUIPerspectiveChanger::getViewport(bool fixRatio) {
-    if (fixRatio)
+    if (fixRatio) {
         return patchedViewPort();
-    else
-        return myViewPort;         
+    } else {
+        return myViewPort;
+    }
 }
 
 

@@ -2,7 +2,7 @@
 /// @file    GNECalibrator.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNECalibrator.cpp 19861 2016-02-01 09:08:47Z palcraft $
+/// @version $Id: GNECalibrator.cpp 21229 2016-07-25 11:07:26Z palcraft $
 ///
 ///
 /****************************************************************************/
@@ -55,6 +55,7 @@
 #include "GNENet.h"
 #include "GNEChange_Attribute.h"
 #include "GNERouteProbe.h"
+#include "GNECalibratorDialog.h"
 
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
@@ -65,16 +66,22 @@
 // member method definitions
 // ===========================================================================
 
-GNECalibrator::GNECalibrator(const std::string& id, GNEEdge* edge, GNEViewNet* viewNet, SUMOReal pos, SUMOTime frequency, const std::string& output, bool blocked) :
+GNECalibrator::GNECalibrator(const std::string& id, GNEEdge* edge, GNEViewNet* viewNet, SUMOReal pos, SUMOTime frequency, const std::string& output, const std::map<std::string, CalibratorFlow>& flowValues, bool blocked) :
     GNEAdditional(id, viewNet, Position(pos, 0), SUMO_TAG_CALIBRATOR, NULL, blocked),
     myEdge(edge),
     myFrequency(frequency),
-    myOutput(output) {
+    myOutput(output),
+    myRouteProbe(NULL), /** change this in the future **/
+    myFlowValues(flowValues) {
+    // this additional ISN'T movable
+    myMovable = false;
     // Update geometry;
     updateGeometry();
     // Set Colors
     myBaseColor = RGBColor(255, 255, 50, 0);
     myBaseColorSelected = RGBColor(255, 255, 125, 255);
+    // Center view in the position of calibrator
+    myViewNet->centerTo(getGlID(), false);
 }
 
 
@@ -98,7 +105,7 @@ GNECalibrator::updateGeometry() {
     myShape.clear();
 
     // Iterate over lanes
-    for(int i = 0; i < myEdge->getLanes().size(); i++) {
+    for (int i = 0; i < (int)myEdge->getLanes().size(); i++) {
 
         // Get shape of lane parent
         myShape.push_back(myEdge->getLanes().at(i)->getShape().positionAtOffset(myEdge->getLanes().at(i)->getPositionRelativeToParametricLenght(myPosition.x())));
@@ -115,32 +122,114 @@ GNECalibrator::updateGeometry() {
 }
 
 
+Position
+GNECalibrator::getPositionInView() const {
+    return myPosition;
+}
+
 void
-GNECalibrator::writeAdditional(OutputDevice& device) {
+GNECalibrator::openAdditionalDialog() {
+    // Open calibrator dialog
+    GNECalibratorDialog calibratorDialog(this);
+}
+
+
+void
+GNECalibrator::writeAdditional(OutputDevice& device, const std::string&) {
     // Write parameters
     device.openTag(getTag());
     device.writeAttr(SUMO_ATTR_ID, getID());
-    device.writeAttr(SUMO_ATTR_EDGE, myEdge->getID());
+    device.writeAttr(SUMO_ATTR_LANE, myEdge->getLanes().at(0)->getID());
     device.writeAttr(SUMO_ATTR_POSITION, myPosition.x());
-    device.writeAttr(SUMO_ATTR_FREQUENCY, myFrequency);
+    device.writeAttr(SUMO_ATTR_FREQUENCY, time2string(myFrequency));
     device.writeAttr(SUMO_ATTR_OUTPUT, myOutput);
+    // Write all flows of this calibrator
+    for (std::map<std::string, CalibratorFlow>::iterator i = myFlowValues.begin(); i != myFlowValues.end(); ++i) {
+        // Open flow tag
+        device.openTag(SUMO_TAG_FLOW);
+        // Write ID
+        device.writeAttr(SUMO_ATTR_ID, i->first);
+        // Write begin
+        device.writeAttr(SUMO_ATTR_BEGIN, i->second.begin);
+        // Write nd
+        device.writeAttr(SUMO_ATTR_END, i->second.end);
+        // Write type
+        device.writeAttr(SUMO_ATTR_TYPE, i->second.type);
+        // Write route
+        device.writeAttr(SUMO_ATTR_ROUTE, i->second.route);
+        // Write color
+        device.writeAttr(SUMO_ATTR_COLOR, i->second.color);
+        // Write depart lane
+        device.writeAttr(SUMO_ATTR_DEPARTLANE, i->second.departLane);
+        // Write depart pos
+        device.writeAttr(SUMO_ATTR_DEPARTPOS, i->second.departPos);
+        // Write depart speed
+        device.writeAttr(SUMO_ATTR_DEPARTSPEED, i->second.departSpeed);
+        // Write arrival lane
+        device.writeAttr(SUMO_ATTR_ARRIVALLANE, i->second.arrivalLane);
+        // Write arrival pos
+        device.writeAttr(SUMO_ATTR_ARRIVALPOS, i->second.arrivalPos);
+        // Write arrival speed
+        device.writeAttr(SUMO_ATTR_ARRIVALSPEED, i->second.arrivalSpeed);
+        // Write line
+        device.writeAttr(SUMO_ATTR_LINE, i->second.line);
+        // Write person number
+        device.writeAttr(SUMO_ATTR_PERSON_NUMBER, i->second.personNumber);
+        // Write container number
+        device.writeAttr(SUMO_ATTR_CONTAINER_NUMBER, i->second.containerNumber);
+        // Write vehsPerHour
+        device.writeAttr(SUMO_ATTR_VEHSPERHOUR, i->second.vehsPerHour);
+        // Write period
+        device.writeAttr(SUMO_ATTR_PERIOD, i->second.period);
+        // Write probability
+        device.writeAttr(SUMO_ATTR_PROB, i->second.probability);
+        // Write number
+        device.writeAttr(SUMO_ATTR_NUMBER, i->second.number);
+        // Close flow tag
+        device.closeTag();
+    }
     // Close tag
     device.closeTag();
 }
 
 
-GUIParameterTableWindow*
-GNECalibrator::getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent) {
-    /** NOT YET SUPPORTED **/
-    // Ignore Warning
-    UNUSED_PARAMETER(parent);
-    GUIParameterTableWindow* ret = new GUIParameterTableWindow(app, *this, 2);
-    // add items
-    ret->mkItem("id", false, getID());
-    /** @TODO complet with the rest of parameters **/
-    // close building
-    ret->closeBuilding();
-    return ret;
+std::map<std::string, GNECalibrator::CalibratorFlow>
+GNECalibrator::getFlowValues() const {
+    return myFlowValues;
+}
+
+
+void
+GNECalibrator::setFlowValues(std::map<std::string, GNECalibrator::CalibratorFlow> calibratorFlowValues) {
+    myFlowValues = calibratorFlowValues;
+}
+
+
+void
+GNECalibrator::insertFlow(const std::string& id, const CalibratorFlow& flow) {
+    if (myFlowValues.find(id) == myFlowValues.end()) {
+        myFlowValues[id] = flow;
+    } else {
+        throw InvalidArgument("Calibrators don't allow Flows with duplicate Id's (" + id + ")");
+    }
+
+}
+
+
+void
+GNECalibrator::removeFlow(const std::string& id) {
+    if (myFlowValues.find(id) != myFlowValues.end()) {
+        myFlowValues.erase(id);
+    } else {
+        throw InvalidArgument("Calibrator with Id''" + id + "' not exists");
+    }
+
+}
+
+
+const std::string&
+GNECalibrator::getParentName() const {
+    return myEdge->getMicrosimID();
 }
 
 
@@ -148,12 +237,11 @@ void
 GNECalibrator::drawGL(const GUIVisualizationSettings& s) const {
     // get values
     glPushName(getGlID());
-    SUMOReal width = (SUMOReal) 2.0 * s.scale;
     glLineWidth(1.0);
     const SUMOReal exaggeration = s.addSize.getExaggeration(s);
 
     glPushName(getGlID());
-    for (size_t i = 0; i < myShape.size(); ++i) {
+    for (int i = 0; i < (int)myShape.size(); ++i) {
         const Position& pos = myShape[i];
         SUMOReal rot = myShapeRotations[i];
         glPushMatrix();
@@ -197,15 +285,21 @@ std::string
 GNECalibrator::getAttribute(SumoXMLAttr key) const {
     switch (key) {
         case SUMO_ATTR_ID:
-            return getMicrosimID();
+            return getAdditionalID();
         case SUMO_ATTR_LANE:
-            return toString(myEdge->getAttribute(SUMO_ATTR_ID));
+            return toString(myEdge->getLanes().at(0)->getAttribute(SUMO_ATTR_ID));
         case SUMO_ATTR_POSITION:
             return toString(myPosition.x());
         case SUMO_ATTR_FREQUENCY:
-            return toString(myFrequency);
+            return time2string(myFrequency);
         case SUMO_ATTR_OUTPUT:
             return myOutput;
+        case SUMO_ATTR_ROUTEPROBE:
+            if (myRouteProbe) {
+                return myRouteProbe->getID();
+            } else {
+                return "";
+            }
         default:
             throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
     }
@@ -220,10 +314,10 @@ GNECalibrator::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoLi
     switch (key) {
         case SUMO_ATTR_ID:
         case SUMO_ATTR_LANE:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
         case SUMO_ATTR_POSITION:
         case SUMO_ATTR_FREQUENCY:
         case SUMO_ATTR_OUTPUT:
+        case SUMO_ATTR_ROUTEPROBE:
             undoList->p_add(new GNEChange_Attribute(this, key, value));
             updateGeometry();
             break;
@@ -238,13 +332,28 @@ bool
 GNECalibrator::isValid(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
+            if (myViewNet->getNet()->getAdditional(getTag(), value) == NULL) {
+                return true;
+            } else {
+                return false;
+            }
         case SUMO_ATTR_LANE:
+            if (myViewNet->getNet()->retrieveLane(value, false) != NULL) {
+                return true;
+            } else {
+                return false;
+            }
         case SUMO_ATTR_POSITION:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
         case SUMO_ATTR_FREQUENCY:
             return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) >= 0);
         case SUMO_ATTR_OUTPUT:
             return isValidFileValue(value);
+        case SUMO_ATTR_ROUTEPROBE:
+            if (myViewNet->getNet()->getAdditional(SUMO_TAG_ROUTEPROBE, value) != NULL) {
+                return true;
+            } else {
+                return false;
+            }
         default:
             throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
     }
@@ -258,18 +367,28 @@ void
 GNECalibrator::setAttribute(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
+            setAdditionalID(value);
+            break;
         case SUMO_ATTR_LANE:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            myEdge->removeAdditional(this);
+            myEdge = &(myViewNet->getNet()->retrieveLane(value)->getParentEdge());
+            myEdge->addAdditional(this);
+            updateGeometry();
+            getViewNet()->update();
+            break;
         case SUMO_ATTR_POSITION:
             myPosition = Position(parse<SUMOReal>(value), 0);
             updateGeometry();
             getViewNet()->update();
             break;
         case SUMO_ATTR_FREQUENCY:
-            myFrequency = parse<SUMOReal>(value);
+            myFrequency = string2time(value);
             break;
         case SUMO_ATTR_OUTPUT:
             myOutput = value;
+            break;
+        case SUMO_ATTR_ROUTEPROBE:
+            myRouteProbe = dynamic_cast<GNERouteProbe*>(myViewNet->getNet()->getAdditional(SUMO_TAG_ROUTEPROBE, value));
             break;
         default:
             throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");

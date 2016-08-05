@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVehicle.h 20907 2016-06-07 14:06:01Z namdre $
+/// @version $Id: GUIVehicle.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -117,7 +117,7 @@ public:
     void selectBlockingFoes() const;
 
     /// @brief gets the color value according to the current scheme index
-    SUMOReal getColorValue(size_t activeScheme) const;
+    SUMOReal getColorValue(int activeScheme) const;
 
     /** @brief Returns an own parameter window
      *

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 26.04.2011
-/// @version $Id: NIImporter_MATSim.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NIImporter_MATSim.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Importer for networks stored in MATSim format
 /****************************************************************************/
@@ -246,7 +246,7 @@ NIImporter_MATSim::EdgesHandler::myStartElement(int element,
     if (myLanesFromCapacity) {
         permLanes = myCapacity2Lanes.get(capacity);
     }
-    NBEdge* edge = new NBEdge(id, fromNode, toNode, "", freeSpeed, (unsigned int) permLanes, -1, NBEdge::UNSPECIFIED_WIDTH, NBEdge::UNSPECIFIED_OFFSET);
+    NBEdge* edge = new NBEdge(id, fromNode, toNode, "", freeSpeed, (int) permLanes, -1, NBEdge::UNSPECIFIED_WIDTH, NBEdge::UNSPECIFIED_OFFSET);
     edge->addParameter("capacity", toString(capacity));
     if (myKeepEdgeLengths) {
         edge->setLoadedLength(length);

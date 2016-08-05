@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Yun-Pang Floetteroed
 /// @date    Sept 2002
-/// @version $Id: RONetHandler.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: RONetHandler.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // The handler for SUMO-Networks
 /****************************************************************************/
@@ -304,10 +304,10 @@ RONetHandler::parseConnection(const SUMOSAXAttributes& attrs) {
     if (from->getFunc() == ROEdge::ET_INTERNAL) { // skip inner lane connections
         return;
     }
-    if (from->getLanes().size() <= (size_t)fromLane) {
+    if ((int)from->getLanes().size() <= fromLane) {
         throw ProcessError("invalid fromLane '" + toString(fromLane) + "' in connection from '" + fromID + "'.");
     }
-    if (to->getLanes().size() <= (size_t)toLane) {
+    if ((int)to->getLanes().size() <= toLane) {
         throw ProcessError("invalid toLane '" + toString(toLane) + "' in connection to '" + toID + "'.");
     }
     from->getLanes()[fromLane]->addOutgoingLane(to->getLanes()[toLane]);

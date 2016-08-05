@@ -2,7 +2,7 @@
 /// @file    MSTransportable.h
 /// @author  Michael Behrisch
 /// @date    Tue, 21 Apr 2015
-/// @version $Id: MSTransportable.h 20768 2016-05-20 08:38:44Z behrisch $
+/// @version $Id: MSTransportable.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 // The common superclass for modelling transportable objects like persons and containers
 /****************************************************************************/
@@ -286,7 +286,7 @@ public:
     public:
         /// constructor
         Stage_Driving(const MSEdge& destination, MSStoppingPlace* toStop,
-            const SUMOReal arrivalPos, const std::vector<std::string>& lines);
+                      const SUMOReal arrivalPos, const std::vector<std::string>& lines);
 
         /// destructor
         virtual ~Stage_Driving();

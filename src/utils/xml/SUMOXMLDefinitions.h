@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Sept 2002
-/// @version $Id: SUMOXMLDefinitions.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: SUMOXMLDefinitions.h 21062 2016-06-29 11:50:54Z palcraft $
 ///
 // Definitions of elements and attributes known by SUMO
 /****************************************************************************/
@@ -614,7 +614,8 @@ enum SumoXMLAttr {
     GNE_ATTR_PARENT,
     //@}
 
-    SUMO_ATTR_TARGETLANE
+    SUMO_ATTR_TARGETLANE,
+    SUMO_ATTR_CROSSING
 };
 
 /*

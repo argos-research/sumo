@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<configuration xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/dfrouterConfiguration.xsd">
+
+    <input>
+        <net-file value="input_tri.net.xml"/>
+        <detector-files value="input_tri.det.xml"/>
+        <measure-files value="input_tri_flows.txt"/>
+    </input>
+
+    <output>
+        <routes-output value="routes.rou.xml"/>
+        <emitters-output value="emitters.add.xml"/>
+    </output>
+
+    <processing>
+        <keep-longer-routes value="true"/>
+        <include-unused-routes value="true"/>
+    </processing>
+
+    <time>
+        <end value="60"/>
+    </time>
+
+    <report>
+        <xml-validation value="never"/>
+    </report>
+
+</configuration>

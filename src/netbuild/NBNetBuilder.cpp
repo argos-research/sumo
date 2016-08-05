@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    20 Nov 2001
-/// @version $Id: NBNetBuilder.cpp 20896 2016-06-07 10:40:32Z behrisch $
+/// @version $Id: NBNetBuilder.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Instance responsible for building networks
 /****************************************************************************/
@@ -145,7 +145,7 @@ NBNetBuilder::compute(OptionsCont& oc,
     if (oc.exists("junctions.join-exclude") && oc.isSet("junctions.join-exclude")) {
         myNodeCont.addJoinExclusion(oc.getStringVector("junctions.join-exclude"));
     }
-    unsigned int numJoined = myNodeCont.joinLoadedClusters(myDistrictCont, myEdgeCont, myTLLCont);
+    int numJoined = myNodeCont.joinLoadedClusters(myDistrictCont, myEdgeCont, myTLLCont);
     if (oc.getBool("junctions.join")) {
         before = SysUtils::getCurrentMillis();
         PROGRESS_BEGIN_MESSAGE("Joining junction clusters");
@@ -162,7 +162,7 @@ NBNetBuilder::compute(OptionsCont& oc,
     }
     //
     if (removeElements) {
-        unsigned int no = 0;
+        int no = 0;
         const bool removeGeometryNodes = oc.exists("geometry.remove") && oc.getBool("geometry.remove");
         before = SysUtils::getCurrentMillis();
         PROGRESS_BEGIN_MESSAGE("Removing empty nodes" + std::string(removeGeometryNodes ? " and geometry nodes" : ""));
@@ -422,7 +422,7 @@ NBNetBuilder::compute(OptionsCont& oc,
     //
     before = SysUtils::getCurrentMillis();
     PROGRESS_BEGIN_MESSAGE("Computing traffic light logics");
-    std::pair<unsigned int, unsigned int> numbers = myTLLCont.computeLogics(oc);
+    std::pair<int, int> numbers = myTLLCont.computeLogics(oc);
     PROGRESS_TIME_MESSAGE(before);
     std::string progCount = "";
     if (numbers.first != numbers.second) {

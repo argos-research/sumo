@@ -2,7 +2,7 @@
 /// @file    GNEConnectorFrame.h
 /// @author  Jakob Erdmann
 /// @date    May 2011
-/// @version $Id: GNEConnectorFrame.h 20785 2016-05-24 10:51:45Z palcraft $
+/// @version $Id: GNEConnectorFrame.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The Widget for modifying lane-to-lane connections
 /****************************************************************************/
@@ -113,7 +113,7 @@ private:
     std::set<GNELane*> myPotentialTargets;
 
     /// @brief number of changes
-    unsigned int myNumChanges;
+    int myNumChanges;
 
     /// @brief the internal lanes belonging the the current junction indexed by their tl-index
     std::map<int, GNEInternalLane*> myInternalLanes;
@@ -153,7 +153,7 @@ private:
      * @param[in] connections All connections of the current edge from the given lane
      * @param[in] targetLane The target lane of the connection
      */
-    unsigned int getTLLLinkNumber(const std::vector<NBEdge::Connection>& connections, GNELane* targetLane);
+    int getTLLLinkNumber(const std::vector<NBEdge::Connection>& connections, GNELane* targetLane);
 
     /// @brief builds internal lanes for the given node
     void buildIinternalLanes(NBNode* node);

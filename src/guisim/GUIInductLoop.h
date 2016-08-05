@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Aug 2003
-/// @version $Id: GUIInductLoop.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIInductLoop.h 21148 2016-07-12 08:47:10Z behrisch $
 ///
 // The gui-version of the MSInductLoop, together with the according
 /****************************************************************************/
@@ -87,10 +87,12 @@ public:
      * This method uses a mutex to prevent parallel read/write access to the vehicle buffer
      *
      * @param[in] t The time from which vehicles shall be counted
+     * @param[in] leaveTime Whether entryTime or leaveTime shall be compared against t
+     *            (the latter gives a more complete picture but may include vehicles in multiple steps even if they did not stay on the detector)
      * @return The list of vehicles
      * @see MSInductLoop::collectVehiclesOnDet()
      */
-    std::vector<VehicleData> collectVehiclesOnDet(SUMOTime t) const;
+    std::vector<VehicleData> collectVehiclesOnDet(SUMOTime t, bool leaveTime = false) const;
 
 
 protected:

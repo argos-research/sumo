@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: RouteCostCalculator.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: RouteCostCalculator.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Calculators for route costs and probabilities
 /****************************************************************************/
@@ -62,7 +62,7 @@ public:
     /** @brief calculate the probabilities in the logit model */
     virtual void calculateProbabilities(std::vector<R*> alternatives, const V* const veh, const SUMOTime time) = 0;
 
-    unsigned int getMaxRouteNumber() const {
+    int getMaxRouteNumber() const {
         return myMaxRouteNumber;
     }
 
@@ -90,7 +90,7 @@ private:
     static RouteCostCalculator* myInstance;
 
     /// @brief The maximum route alternatives number
-    unsigned int myMaxRouteNumber;
+    int myMaxRouteNumber;
 
     /// @brief Information whether all routes should be saved
     bool myKeepRoutes;

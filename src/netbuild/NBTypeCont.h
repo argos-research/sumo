@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBTypeCont.h 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: NBTypeCont.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A storage for available types of edges
 /****************************************************************************/
@@ -99,8 +99,8 @@ public:
     /** @brief Returns the number of known types
      * @return The number of known edge types (excluding the default)
      */
-    unsigned int size() const {
-        return (unsigned int) myTypes.size();
+    int size() const {
+        return (int) myTypes.size();
     }
 
 

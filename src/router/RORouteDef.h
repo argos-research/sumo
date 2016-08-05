@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: RORouteDef.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: RORouteDef.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Base class for a vehicle's route definition
 /****************************************************************************/
@@ -67,7 +67,7 @@ public:
      * @param[in] id The id of the route
      * @param[in] color The color of the route
      */
-    RORouteDef(const std::string& id, const unsigned int lastUsed,
+    RORouteDef(const std::string& id, const int lastUsed,
                const bool tryRepair, const bool mayBeDisconnected);
 
 
@@ -156,7 +156,7 @@ protected:
     mutable RORoute* myPrecomputed;
 
     /// @brief Index of the route used within the last step
-    mutable unsigned int myLastUsed;
+    mutable int myLastUsed;
 
     /// @brief The alternatives
     std::vector<RORoute*> myAlternatives;

@@ -6,7 +6,7 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Fri, 30.01.2009
-/// @version $Id: MSDevice_Transportable.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSDevice_Transportable.h 21184 2016-07-18 07:12:20Z behrisch $
 ///
 // A device which is used to keep track of persons and containers riding with a vehicle
 /****************************************************************************/
@@ -117,8 +117,8 @@ public:
     /** @brief Return the number of passengers / containers
      * @return The number of stored transportables
      */
-    unsigned int size() const {
-        return static_cast<unsigned int>(myTransportables.size());
+    int size() const {
+        return (int)myTransportables.size();
     }
 
 

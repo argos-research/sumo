@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: Option.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: Option.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Classes representing a single program option (with different types)
 /****************************************************************************/
@@ -43,7 +43,7 @@
 // ===========================================================================
 /**
  * @typedef IntVector
- * @brief Definition of a vector of unsigned ints
+ * @brief Definition of a vector of ints
  */
 typedef std::vector<int> IntVector;
 

@@ -6,7 +6,7 @@
 /// @author  Lukas Grohmann (AIT)
 /// @author  Gerald Richter (AIT)
 /// @date    Sept 2002
-/// @version $Id: NIImporter_Vissim.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NIImporter_Vissim.cpp 21202 2016-07-19 13:40:35Z behrisch $
 ///
 // -------------------
 /****************************************************************************/
@@ -488,7 +488,7 @@ NIImporter_Vissim::NIVissimXMLHandler_Fahrzeugklassendefinition::myStartElement(
         myElemData["id"].push_back(attrs.get<std::string>(VISSIM_ATTR_NO, 0, ok));
         myElemData["name"].push_back(attrs.get<std::string>(VISSIM_ATTR_NAME, 0, ok, false));
         std::string colorStr(attrs.get<std::string>(VISSIM_ATTR_COLOR, 0, ok));
-        for (size_t pos = colorStr.size() - 2; pos > 0; pos -= 2) {
+        for (int pos = (int)colorStr.size() - 2; pos > 0; pos -= 2) {
             colorStr.insert(pos, " ");
         }
         myElemData["color"].push_back(colorStr);

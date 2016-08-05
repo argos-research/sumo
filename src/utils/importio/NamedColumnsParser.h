@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Fri, 19 Jul 2002
-/// @version $Id: NamedColumnsParser.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NamedColumnsParser.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A parser to retrieve information from a table with known columns
 /****************************************************************************/
@@ -175,7 +175,7 @@ private:
 
 private:
     /** @brief The map's definition of column item names to their positions within the table */
-    typedef std::map<std::string, size_t> PosMap;
+    typedef std::map<std::string, int> PosMap;
 
     /// @brief The map of column item names to their positions within the table
     PosMap myDefinitionsMap;

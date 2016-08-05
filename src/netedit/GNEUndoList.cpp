@@ -2,7 +2,7 @@
 /// @file    GNEUndoList.cpp
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEUndoList.cpp 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEUndoList.cpp 21150 2016-07-12 12:28:35Z behrisch $
 ///
 // FXUndoList is pretty dandy but some features are missing:
 //   - we cannot find out wether we have currently begun an undo-group and
@@ -76,8 +76,8 @@ FXIMPLEMENT_ABSTRACT(GNEUndoList, FXUndoList, GNEUndoListMap, ARRAYNUMBER(GNEUnd
 // member method definitions
 // ===========================================================================
 
-GNEUndoList::GNEUndoList(GNEApplicationWindow* parent) : 
-    FXUndoList(), 
+GNEUndoList::GNEUndoList(GNEApplicationWindow* parent) :
+    FXUndoList(),
     myParent(parent) {
 }
 
@@ -172,30 +172,30 @@ GNEUndoList::p_onUpdRedo(FXObject* sender, FXSelector, void*) {
 }
 
 
-bool 
+bool
 GNEUndoList::hasCommandGroup() const {
     return myCommandGroups.size() != 0;
 }
 
 
-GNEUndoList::CommandGroup::CommandGroup(std::string description) : 
+GNEUndoList::CommandGroup::CommandGroup(std::string description) :
     myDescription(description) {
 }
 
 
-const std::string& 
+const std::string&
 GNEUndoList::CommandGroup::getDescription() {
     return myDescription;
 }
 
 
-FXString 
+FXString
 GNEUndoList::CommandGroup::undoName() const {
     return ("Undo " + myDescription).c_str();
 }
 
 
-FXString 
+FXString
 GNEUndoList::CommandGroup::redoName() const {
     return ("Redo " + myDescription).c_str();
 }

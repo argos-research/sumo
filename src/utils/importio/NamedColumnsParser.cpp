@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Fri, 19 Jul 2002
-/// @version $Id: NamedColumnsParser.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NamedColumnsParser.cpp 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // A parser to retrieve information from a table with known column
 /****************************************************************************/
@@ -86,7 +86,7 @@ NamedColumnsParser::get(const std::string& name, bool prune) const {
             throw UnknownElement(name);
         }
     }
-    size_t pos = (*i).second;
+    int pos = (*i).second;
     if (myLineParser.size() <= pos) {
         throw OutOfBoundsException();
     }
@@ -107,7 +107,7 @@ NamedColumnsParser::know(const std::string& name) const {
     if (i == myDefinitionsMap.end()) {
         return false;
     }
-    size_t pos = (*i).second;
+    int pos = (*i).second;
     return myLineParser.size() > pos;
 }
 
@@ -141,7 +141,7 @@ NamedColumnsParser::checkPrune(std::string& str, bool prune) const {
     if (!prune) {
         return;
     }
-    size_t idx = str.find_first_not_of(" ");
+    std::string::size_type idx = str.find_first_not_of(" ");
     if (idx != std::string::npos) {
         str = str.substr(idx);
     }

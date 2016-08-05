@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: RORouteHandler.cpp 20542 2016-04-25 11:40:14Z namdre $
+/// @version $Id: RORouteHandler.cpp 21236 2016-07-25 14:24:30Z namdre $
 ///
 // Parser and container for routes during their loading
 /****************************************************************************/
@@ -109,9 +109,13 @@ RORouteHandler::parseFromViaTo(std::string element,
     if (!attrs.hasAttribute(SUMO_ATTR_VIA)) {
         myInsertStopEdgesAt = (int)myActiveRoute.size();
     }
+    ConstROEdgeVector viaEdges;
     parseEdges(attrs.getOpt<std::string>(SUMO_ATTR_VIA, myVehicleParameter->id.c_str(), ok, "", true),
-               myActiveRoute, "for " + element + " '" + myVehicleParameter->id + "'");
-    myVehicleParameter->via = StringTokenizer(attrs.getOpt<std::string>(SUMO_ATTR_VIA, myVehicleParameter->id.c_str(), ok, "", true)).getVector();
+               viaEdges, "for " + element + " '" + myVehicleParameter->id + "'");
+    for (ConstROEdgeVector::const_iterator i = viaEdges.begin(); i != viaEdges.end(); ++i) {
+        myActiveRoute.push_back(*i);
+        myVehicleParameter->via.push_back((*i)->getID());
+    }
 
     if ((useTaz || !attrs.hasAttribute(SUMO_ATTR_TO)) && myVehicleParameter->wasSet(VEHPARS_TO_TAZ_SET)) {
         const ROEdge* toTaz = myNet.getEdge(myVehicleParameter->toTaz + "-sink");
@@ -552,7 +556,6 @@ RORouteHandler::closeFlow() {
     }
     if (myNet.getVehicleTypeSecure(myVehicleParameter->vtypeid) == 0) {
         myErrorOutput->inform("The vehicle type '" + myVehicleParameter->vtypeid + "' for flow '" + myVehicleParameter->id + "' is not known.");
-        myVehicleParameter->vtypeid = DEFAULT_VTYPE_ID;
     }
     if (myVehicleParameter->routeid[0] == '!' && myNet.getRouteDef(myVehicleParameter->routeid) == 0) {
         closeRoute(true);

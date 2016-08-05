@@ -2,7 +2,7 @@
 /// @file    GNECalibrator.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNECalibrator.h 19790 2016-01-25 11:59:12Z palcraft $
+/// @version $Id: GNECalibrator.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 ///
 /****************************************************************************/
@@ -33,6 +33,12 @@
 #include "GNEAdditional.h"
 
 // ===========================================================================
+// class declaration
+// ===========================================================================
+
+class GNERouteProbe;
+
+// ===========================================================================
 // class definitions
 // ===========================================================================
 /**
@@ -41,44 +47,80 @@
  */
 class GNECalibrator : public GNEAdditional {
 public:
+    /// @brief calibrator flow
+    struct CalibratorFlow {
+        // Parameters of vehicles
+        std::string type;
+        std::string route;
+        std::string color;
+        std::string departLane;
+        std::string departPos;
+        std::string departSpeed;
+        std::string arrivalLane;
+        std::string arrivalPos;
+        std::string arrivalSpeed;
+        std::string line;
+        int personNumber;
+        int containerNumber;
+        // Parameters of flows
+        SUMOTime begin;
+        SUMOTime end;
+        SUMOReal vehsPerHour;
+        SUMOReal period;
+        SUMOReal probability;
+        int number;
+    };
+
     /**@brief Constructor
      * @param[in] id The storage of gl-ids to get the one for this lane representation from
      * @param[in] edge Lane of this StoppingPlace belongs
      * @param[in] viewNet pointer to GNEViewNet of this additional element belongs
-     * @param[in] pos position of the detector on the lane
-
-
+     * @param[in] pos position of the calibrator on the edge (Currently not used)
      * @param[in] frequency the aggregation interval in which to calibrate the flows
      * @param[in] output The output file for writing calibrator information
+     * @param[in] flowValues values with the flow of calibrator
      * @param[in] blocked set initial blocking state of item
      */
-    GNECalibrator(const std::string& id, GNEEdge* edge, GNEViewNet* viewNet, SUMOReal pos, SUMOTime frequency, const std::string& output, bool blocked);
+    GNECalibrator(const std::string& id, GNEEdge* edge, GNEViewNet* viewNet, SUMOReal pos, SUMOTime frequency, const std::string& output, const std::map<std::string, CalibratorFlow>& flowValues, bool blocked);
 
     /// @brief Destructor
     ~GNECalibrator();
 
-    /// @brief change the position of the calibrator geometry 
+    /// @brief change the position of the calibrator geometry
     void moveAdditional(SUMOReal, SUMOReal, GNEUndoList*);
 
     /// @brief update pre-computed geometry information
-    /// @note: must be called when geometry changes (i.e. lane moved)
+    /// @note: must be called when geometry c6hanges (i.e. lane moved)
     void updateGeometry();
+
+    /// @brief Returns position of Calibrator in view
+    Position getPositionInView() const;
+
+    /// @brief open Calibrator Dialog
+    void openAdditionalDialog();
 
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element
      */
-    void writeAdditional(OutputDevice& device);
+    void writeAdditional(OutputDevice& device, const std::string&);
+
+    /// @brief get Calbratorflow values
+    std::map<std::string, CalibratorFlow> getFlowValues() const;
+
+    /// @brief set Calbratorflow values
+    void setFlowValues(std::map<std::string, CalibratorFlow> calibratorFlowValues);
+
+    /// @brief insert a new flow
+    void insertFlow(const std::string& id, const CalibratorFlow& flow);
+
+    /// @brief remove a existent flow
+    void removeFlow(const std::string& id);
 
     /// @name inherited from GUIGlObject
     /// @{
-    /**@brief Returns an own parameter window
-     *
-     * @param[in] app The application needed to build the parameter window
-     * @param[in] parent The parent window needed to build the parameter window
-     * @return The built parameter window
-     * @see GUIGlObject::getParameterWindow
-     */
-    GUIParameterTableWindow* getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent);
+    /// @brief Returns the name of the parent object
+    /// @return This object's parent id
+    const std::string& getParentName() const;
 
     /**@brief Draws the object
      * @param[in] s The settings for the current view (may influence drawing)
@@ -112,13 +154,19 @@ public:
 
 protected:
     /// @brief edge in which this calibrator is placed
-    GNEEdge *myEdge;
+    GNEEdge* myEdge;
 
     /// @brief Frequency of calibrator
     SUMOTime myFrequency;
 
     /// @brief output of calibrator
     std::string myOutput;
+
+    /// @brief pointer to RouteProbe
+    GNERouteProbe* myRouteProbe;
+
+    /// @brief Calbratorflow values
+    std::map<std::string, CalibratorFlow> myFlowValues;
 
 private:
     /// @brief set attribute after validation

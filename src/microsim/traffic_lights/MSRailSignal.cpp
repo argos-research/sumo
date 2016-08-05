@@ -3,7 +3,7 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Jan 2015
-/// @version $Id: MSRailSignal.cpp 20924 2016-06-08 12:02:32Z namdre $
+/// @version $Id: MSRailSignal.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A rail signal logic
 /****************************************************************************/
@@ -55,8 +55,7 @@ MSRailSignal::MSRailSignal(MSTLLogicControl& tlcontrol,
                            const std::string& id, const std::string& subid,
                            const std::map<std::string, std::string>& parameters) :
     MSTrafficLightLogic(tlcontrol, id, subid, DELTA_T, parameters),
-    myCurrentPhase(DELTA_T, std::string(SUMO_MAX_CONNECTIONS, 'X')) // dummy phase
-{
+    myCurrentPhase(DELTA_T, std::string(SUMO_MAX_CONNECTIONS, 'X')) { // dummy phase
     myDefaultCycleTime = DELTA_T;
 }
 
@@ -73,7 +72,7 @@ MSRailSignal::init(NLDetectorBuilder&) {
             MSLink* link = (*i);
             MSLane* toLane = link->getLane();   //the lane this link is leading to
             myLinksToLane[toLane].push_back(link);
-            myLinkIndices[link] = (unsigned int)std::distance(myLinks.begin(), i2); //assign the index of link to link
+            myLinkIndices[link] = (int)std::distance(myLinks.begin(), i2); //assign the index of link to link
 
             //find all lanes leading from a previous signal to link (we presume that there exists only one path from a previous signal to link)
             std::vector<MSLane*> afferentBlock; //the vector of lanes leading from a previous signal to link
@@ -266,11 +265,11 @@ MSRailSignal::getPhaseIndexAtTime(SUMOTime) const {
 }
 
 SUMOTime
-MSRailSignal::getOffsetFromIndex(unsigned int) const {
+MSRailSignal::getOffsetFromIndex(int) const {
     return 0;
 }
 
-unsigned int
+int
 MSRailSignal::getIndexFromOffset(SUMOTime) const {
     return 0;
 }

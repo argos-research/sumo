@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: RORouteDef.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: RORouteDef.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // Base class for a vehicle's route definition
 /****************************************************************************/
@@ -60,7 +60,7 @@ bool RORouteDef::myUsingJTRR(false);
 // ===========================================================================
 // method definitions
 // ===========================================================================
-RORouteDef::RORouteDef(const std::string& id, const unsigned int lastUsed,
+RORouteDef::RORouteDef(const std::string& id, const int lastUsed,
                        const bool tryRepair, const bool mayBeDisconnected) :
     Named(StringUtils::convertUmlaute(id)),
     myPrecomputed(0), myLastUsed(lastUsed), myTryRepair(tryRepair), myMayBeDisconnected(mayBeDisconnected) {
@@ -152,7 +152,7 @@ RORouteDef::preComputeCurrentRoute(SUMOAbstractRouter<ROEdge, ROVehicle>& router
         repairCurrentRoute(router, begin, veh, oldEdges, edges);
         // check whether the same route was already used
         int cheapest = -1;
-        for (unsigned int i = 0; i < myAlternatives.size(); i++) {
+        for (int i = 0; i < (int)myAlternatives.size(); i++) {
             if (edges == myAlternatives[i]->getEdgeVector()) {
                 cheapest = i;
                 break;
@@ -176,7 +176,7 @@ RORouteDef::repairCurrentRoute(SUMOAbstractRouter<ROEdge, ROVehicle>& router,
     MsgHandler* mh = (OptionsCont::getOptions().getBool("ignore-errors") ?
                       MsgHandler::getWarningInstance() : MsgHandler::getErrorInstance());
     ConstROEdgeVector mandatory;
-    const size_t initialSize = oldEdges.size();
+    const int initialSize = (int)oldEdges.size();
     if (initialSize == 1) {
         if (myUsingJTRR) {
             /// only ROJTRRouter is supposed to handle this type of input
@@ -213,16 +213,12 @@ RORouteDef::repairCurrentRoute(SUMOAbstractRouter<ROEdge, ROVehicle>& router,
         if (oldEdges.back()->prohibits(&veh)) {
             // option repair.to is in effect
             const std::string& backID = oldEdges.back()->getID();
-            for (ConstROEdgeVector::reverse_iterator i = oldEdges.rbegin(); i != oldEdges.rend();) {
-                if ((*i)->prohibits(&veh)) {
-                    ++i;
-                    oldEdges.erase(i.base());
-                } else {
-                    WRITE_MESSAGE("Changing invalid destination edge '" + backID
-                                  + "' to edge '" + (*i)->getID() + "' for vehicle '" + veh.getID() + "'.");
-                    break;
-                }
+            // oldEdges cannot get empty here, otherwise we would have left the stage when checking "from"
+            while (oldEdges.back()->prohibits(&veh)) {
+                oldEdges.pop_back();
             }
+            WRITE_MESSAGE("Changing invalid destination edge '" + backID
+                          + "' to edge '" + oldEdges.back()->getID() + "' for vehicle '" + veh.getID() + "'.");
         }
         if (mandatory.size() < 2 || oldEdges.back() != mandatory.back()) {
             mandatory.push_back(oldEdges.back());
@@ -244,7 +240,7 @@ RORouteDef::repairCurrentRoute(SUMOAbstractRouter<ROEdge, ROVehicle>& router,
         const ConstROEdgeVector& targets = mandatory.size() > oldEdges.size() ? mandatory : oldEdges;
         newEdges.push_back(*(targets.begin()));
         ConstROEdgeVector::iterator nextMandatory = mandatory.begin() + 1;
-        size_t lastMandatory = 0;
+        int lastMandatory = 0;
         for (ConstROEdgeVector::const_iterator i = targets.begin() + 1;
                 i != targets.end() && nextMandatory != mandatory.end(); ++i) {
             if ((*(i - 1))->isConnectedTo(*i, &veh)) {
@@ -263,7 +259,7 @@ RORouteDef::repairCurrentRoute(SUMOAbstractRouter<ROEdge, ROVehicle>& router,
                     // we would then need to decide whether we have found a good
                     // tradeoff between faithfulness to the input data and detour-length
                     ConstROEdgeVector edges;
-                    if (last == newEdges[lastMandatory] || !router.compute(newEdges[lastMandatory], *nextMandatory, &veh, begin, edges)) {
+                    if (lastMandatory >= (int)newEdges.size() || last == newEdges[lastMandatory] || !router.compute(newEdges[lastMandatory], *nextMandatory, &veh, begin, edges)) {
                         mh->inform("Mandatory edge '" + (*i)->getID() + "' not reachable by vehicle '" + veh.getID() + "'.");
                         return false;
                     }
@@ -276,7 +272,7 @@ RORouteDef::repairCurrentRoute(SUMOAbstractRouter<ROEdge, ROVehicle>& router,
             }
             if (*i == *nextMandatory) {
                 nextMandatory++;
-                lastMandatory = newEdges.size() - 1;
+                lastMandatory = (int)newEdges.size() - 1;
             }
         }
     }
@@ -338,7 +334,7 @@ RORouteDef::addAlternative(SUMOAbstractRouter<ROEdge, ROVehicle>& router,
             }
         }
     }
-    if (myAlternatives.size() > RouteCostCalculator<RORoute, ROEdge, ROVehicle>::getCalculator().getMaxRouteNumber()) {
+    if ((int)myAlternatives.size() > RouteCostCalculator<RORoute, ROEdge, ROVehicle>::getCalculator().getMaxRouteNumber()) {
         // only keep the routes with highest probability
         sort(myAlternatives.begin(), myAlternatives.end(), ComparatorProbability());
         for (std::vector<RORoute*>::iterator i = myAlternatives.begin() + RouteCostCalculator<RORoute, ROEdge, ROVehicle>::getCalculator().getMaxRouteNumber(); i != myAlternatives.end(); i++) {
@@ -382,7 +378,7 @@ RORouteDef::writeXMLDefinition(OutputDevice& dev, const ROVehicle* const veh,
                                bool asAlternatives, bool withExitTimes) const {
     if (asAlternatives) {
         dev.openTag(SUMO_TAG_ROUTE_DISTRIBUTION).writeAttr(SUMO_ATTR_LAST, myLastUsed);
-        for (size_t i = 0; i != myAlternatives.size(); i++) {
+        for (int i = 0; i != (int)myAlternatives.size(); i++) {
             myAlternatives[i]->writeXMLDefinition(dev, veh, true, withExitTimes);
         }
         dev.closeTag();

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, May 2005
-/// @version $Id: MSCalibrator.cpp 20550 2016-04-26 10:57:45Z namdre $
+/// @version $Id: MSCalibrator.cpp 21217 2016-07-22 10:57:44Z behrisch $
 ///
 // Calibrates the flow on an edge by removing an inserting vehicles
 /****************************************************************************/
@@ -93,7 +93,7 @@ MSCalibrator::MSCalibrator(const std::string& id,
         }
     }
     if (addLaneMeanData) {
-        for (size_t i = 0; i < myEdge->getLanes().size(); ++i) {
+        for (int i = 0; i < (int)myEdge->getLanes().size(); ++i) {
             MSLane* lane = myEdge->getLanes()[i];
             MSMeanData_Net::MSLaneMeanDataValues* laneData = new MSMeanData_Net::MSLaneMeanDataValues(lane, myEdge->getLength(), true);
             laneData->setDescription("meandata_calibrator_" + lane->getID());
@@ -126,7 +126,7 @@ MSCalibrator::init() {
 
 
 MSCalibrator::~MSCalibrator() {
-    if (myCurrentStateInterval != myIntervals.end()) {
+    if (myIntervals.size() > 0 && myCurrentStateInterval != myIntervals.end()) {
         writeXMLOutput();
     }
     for (std::vector<VehicleRemover*>::iterator it = myVehicleRemovers.begin(); it != myVehicleRemovers.end(); ++it) {
@@ -356,7 +356,7 @@ MSCalibrator::execute(SUMOTime currentTime) {
                 WRITE_WARNING("Route '" + route->getID() + "' in calibrator '" + myID + "' does not contain edge '" + myEdge->getID() + "'.");
                 break;
             }
-            const unsigned int routeIndex = (unsigned int)std::distance(route->begin(),
+            const int routeIndex = (int)std::distance(route->begin(),
                                             std::find(route->begin(), route->end(), myEdge));
             MSVehicleType* vtype = MSNet::getInstance()->getVehicleControl().getVType(pars->vtypeid);
             assert(route != 0 && vtype != 0);

@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: MSRoute.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSRoute.cpp 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // A vehicle route
 /****************************************************************************/
@@ -86,9 +86,9 @@ MSRoute::end() const {
 }
 
 
-unsigned
+int
 MSRoute::size() const {
-    return (unsigned) myEdges.size();
+    return (int)myEdges.size();
 }
 
 
@@ -256,7 +256,7 @@ MSRoute::containsAnyOf(const MSEdgeVector& edgelist) const {
 
 
 const MSEdge*
-MSRoute::operator[](unsigned index) const {
+MSRoute::operator[](int index) const {
     return myEdges[index];
 }
 

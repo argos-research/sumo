@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILane.cpp 20992 2016-06-17 08:45:07Z namdre $
+/// @version $Id: GUILane.cpp 21232 2016-07-25 13:06:55Z namdre $
 ///
 // Representation of a lane in the micro simulation (gui-version)
 /****************************************************************************/
@@ -49,6 +49,7 @@
 #include <microsim/MSGlobals.h>
 #include <microsim/MSLane.h>
 #include <microsim/MSVehicleControl.h>
+#include <microsim/MSInsertionControl.h>
 #include <microsim/MSVehicleTransfer.h>
 #include <microsim/MSNet.h>
 #include <microsim/MSEdgeWeightsStorage.h>
@@ -69,14 +70,15 @@
 #endif // CHECK_MEMORY_LEAKS
 
 //#define GUILane_DEBUG_DRAW_WALKING_AREA_VERTICES
+//#define GUILane_DEBUG_DRAW_VERTICES
 
 // ===========================================================================
 // method definitions
 // ===========================================================================
 GUILane::GUILane(const std::string& id, SUMOReal maxSpeed, SUMOReal length,
-                 MSEdge* const edge, unsigned int numericalID,
+                 MSEdge* const edge, int numericalID,
                  const PositionVector& shape, SUMOReal width,
-                 SVCPermissions permissions, unsigned int index) :
+                 SVCPermissions permissions, int index) :
     MSLane(id, maxSpeed, length, edge, numericalID, shape, width, permissions, index),
     GUIGlObject(GLO_LANE, id),
     myAmClosed(false) {
@@ -192,7 +194,7 @@ GUILane::resetPartialOccupation(MSVehicle* v) {
 // ------ Drawing methods ------
 void
 GUILane::drawLinkNo(const GUIVisualizationSettings& s) const {
-    unsigned int noLinks = (unsigned int)myLinks.size();
+    int noLinks = (int)myLinks.size();
     if (noLinks == 0) {
         return;
     }
@@ -220,7 +222,7 @@ GUILane::drawLinkNo(const GUIVisualizationSettings& s) const {
 
 void
 GUILane::drawTLSLinkNo(const GUIVisualizationSettings& s, const GUINet& net) const {
-    unsigned int noLinks = (unsigned int)myLinks.size();
+    int noLinks = (int)myLinks.size();
     if (noLinks == 0) {
         return;
     }
@@ -267,7 +269,7 @@ GUILane::drawTextAtEnd(const std::string& text, const PositionVector& shape, SUM
 
 void
 GUILane::drawLinkRules(const GUIVisualizationSettings& s, const GUINet& net) const {
-    unsigned int noLinks = (unsigned int)myLinks.size();
+    int noLinks = (int)myLinks.size();
     if (noLinks == 0) {
         drawLinkRule(s, net, 0, getShape(), 0, 0);
         return;
@@ -285,7 +287,7 @@ GUILane::drawLinkRules(const GUIVisualizationSettings& s, const GUINet& net) con
     SUMOReal w = myWidth / (SUMOReal) noLinks;
     SUMOReal x1 = 0;
     const bool lefthand = MSNet::getInstance()->lefthand();
-    for (unsigned int i = 0; i < noLinks; ++i) {
+    for (int i = 0; i < noLinks; ++i) {
         SUMOReal x2 = x1 + w;
         drawLinkRule(s, net, myLinks[lefthand ? noLinks - 1 - i : i], getShape(), x1, x2);
         x1 = x2;
@@ -477,7 +479,7 @@ GUILane::drawGL(const GUIVisualizationSettings& s) const {
     // recognize full transparency and simply don't draw
     GLfloat color[4];
     glGetFloatv(GL_CURRENT_COLOR, color);
-    if (color[3] != 0) {
+    if (color[3] != 0 && s.scale * exaggeration > s.laneMinSize) {
         // draw lane
         // check whether it is not too small
         if (s.scale * exaggeration < 1.) {
@@ -541,15 +543,17 @@ GUILane::drawGL(const GUIVisualizationSettings& s) const {
                     GLHelper::drawBoxLines(myShape, myShapeRotations, myShapeLengths, halfWidth * exaggeration, cornerDetail, offset);
                 }
             }
+#ifdef GUILane_DEBUG_DRAW_VERTICES
+            GLHelper::debugVertices(myShape, 80 / s.scale);
+#endif
             glPopMatrix();
             // draw ROWs (not for inner lanes)
             if ((!isInternal || isCrossing) && drawDetails) {
                 glPushMatrix();
                 glTranslated(0, 0, GLO_JUNCTION); // must draw on top of junction shape
                 glTranslated(0, 0, .5);
-                if (MSGlobals::gLateralResolution > 0) {
+                if (MSGlobals::gLateralResolution > 0 && s.showSublanes) {
                     // draw sublane-borders
-                    // XXX make configurable
                     GLHelper::setColor(GLHelper::getColor().changedBrightness(51));
                     for (SUMOReal offset = -myHalfLaneWidth; offset < myHalfLaneWidth; offset += MSGlobals::gLateralResolution) {
                         GLHelper::drawBoxLines(myShape, myShapeRotations, myShapeLengths, 0.01, 0, offset);
@@ -563,6 +567,9 @@ GUILane::drawGL(const GUIVisualizationSettings& s) const {
                     // this should be independent to the geometry:
                     //  draw from end of first to the begin of second
                     drawLane2LaneConnections();
+                }
+                if (s.showLaneDirection) {
+                    drawDirectionIndicators();
                 }
                 glTranslated(0, 0, .1);
                 if (s.drawLinkJunctionIndex.show) {
@@ -689,6 +696,32 @@ GUILane::drawCrossties(SUMOReal length, SUMOReal spacing, SUMOReal halfWidth) co
     }
     glPopMatrix();
 }
+
+
+void
+GUILane::drawDirectionIndicators() const {
+    glColor3d(0.3, 0.3, 0.3);
+    glPushMatrix();
+    glTranslated(0, 0, GLO_EDGE);
+    int e = (int) getShape().size() - 1;
+    for (int i = 0; i < e; ++i) {
+        glPushMatrix();
+        glTranslated(getShape()[i].x(), getShape()[i].y(), 0.1);
+        glRotated(myShapeRotations[i], 0, 0, 1);
+        for (SUMOReal t = 0; t < myShapeLengths[i]; t += myWidth) {
+            const SUMOReal length = MIN2((SUMOReal)myHalfLaneWidth, myShapeLengths[i] - t);
+            glBegin(GL_TRIANGLES);
+            glVertex2d(0, -t - length);
+            glVertex2d(-myQuarterLaneWidth, -t);
+            glVertex2d(+myQuarterLaneWidth, -t);
+            glEnd();
+        }
+        glPopMatrix();
+    }
+    glPopMatrix();
+}
+
+
 
 // ------ inherited from GUIGlObject
 GUIGLObjectPopupMenu*
@@ -829,7 +862,7 @@ GUILane::setColor(const GUIVisualizationSettings& s) const {
 
 
 bool
-GUILane::setFunctionalColor(size_t activeScheme) const {
+GUILane::setFunctionalColor(int activeScheme) const {
     switch (activeScheme) {
         case 18: {
             SUMOReal hue = GeomHelper::naviDegree(myShape.beginEndAngle()); // [0-360]
@@ -844,7 +877,7 @@ GUILane::setFunctionalColor(size_t activeScheme) const {
 
 bool
 GUILane::setMultiColor(const GUIColorer& c) const {
-    const size_t activeScheme = c.getActive();
+    const int activeScheme = c.getActive();
     myShapeColors.clear();
     switch (activeScheme) {
         case 22: // color by height at segment start
@@ -865,7 +898,7 @@ GUILane::setMultiColor(const GUIColorer& c) const {
 
 
 SUMOReal
-GUILane::getColorValue(size_t activeScheme) const {
+GUILane::getColorValue(int activeScheme) const {
     switch (activeScheme) {
         case 0:
             switch (myPermissions) {
@@ -960,13 +993,15 @@ GUILane::getColorValue(size_t activeScheme) const {
         }
         case 28:
             return getElectricityConsumption() / myLength;
+        case 29:
+            return MSNet::getInstance()->getInsertionControl().getPendingEmits(this);
     }
     return 0;
 }
 
 
 SUMOReal
-GUILane::getScaleValue(size_t activeScheme) const {
+GUILane::getScaleValue(int activeScheme) const {
     switch (activeScheme) {
         case 0:
             return 0;
@@ -1029,6 +1064,8 @@ GUILane::getScaleValue(size_t activeScheme) const {
         }
         case 21:
             return getElectricityConsumption() / myLength;
+        case 22:
+            return MSNet::getInstance()->getInsertionControl().getPendingEmits(this);
     }
     return 0;
 }
@@ -1092,7 +1129,7 @@ GUILane::splitAtSegments(const PositionVector& shape) {
         }
         //std::cout << "splitAtSegments " << getID() << " no=" << no << " i=" << i << " offset=" << offset << " index=" << index << " segs=" << toString(myShapeSegments) << " resultSize=" << result.size() << " result=" << toString(result) << "\n";
     }
-    while ((int)myShapeSegments.size() < result.size()) {
+    while (myShapeSegments.size() < result.size()) {
         myShapeSegments.push_back(no - 1);
     }
     return result;

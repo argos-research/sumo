@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Yun-Pang Floetteroed
 /// @date    Thu, 16.03.2006
-/// @version $Id: RODFEdge.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: RODFEdge.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // An edge within the DFROUTER
 /****************************************************************************/
@@ -61,7 +61,7 @@ public:
      * @param[in] to The node the edge ends at
      * @param[in] index The numeric id of the edge
      */
-    RODFEdge(const std::string& id, RONode* from, RONode* to, unsigned int index, const int priority);
+    RODFEdge(const std::string& id, RONode* from, RONode* to, int index, const int priority);
 
 
     /// @brief Destructor

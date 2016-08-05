@@ -2,7 +2,7 @@
 /// @file    GUIOSGView.h
 /// @author  Daniel Krajzewicz
 /// @date    19.01.2012
-/// @version $Id: GUIOSGView.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIOSGView.h 21202 2016-07-19 13:40:35Z behrisch $
 ///
 // An OSG-based 3D view on the simulation
 /****************************************************************************/
@@ -152,7 +152,10 @@ public:
     void showViewportEditor();
 
     /// applies the given viewport settings
-    void setViewport(const Position& lookFrom, const Position& lookAt);
+    void setViewportFromTo(const Position& lookFrom, const Position& lookAt);
+
+    ///@brief copy the viewport to the given view
+    void copyViewportTo(GUISUMOAbstractView* view);
 
     /** @brief Starts vehicle tracking
      * @param[in] id The glID of the vehicle to track
@@ -168,7 +171,7 @@ public:
     /** @brief Returns the id of the tracked vehicle (-1 if none)
      * @return The glID of the vehicle to track
      */
-    int getTrackedID() const;
+    GUIGlID getTrackedID() const;
 
     bool setColorScheme(const std::string& name);
 

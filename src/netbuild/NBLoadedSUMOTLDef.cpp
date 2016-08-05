@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: NBLoadedSUMOTLDef.cpp 20551 2016-04-26 11:19:47Z namdre $
+/// @version $Id: NBLoadedSUMOTLDef.cpp 21210 2016-07-21 10:02:38Z behrisch $
 ///
 // A complete traffic light logic loaded from a sumo-net. (opted to reimplement
 // since NBLoadedTLDef is quite vissim specific)
@@ -77,7 +77,7 @@ NBLoadedSUMOTLDef::~NBLoadedSUMOTLDef() {
 
 
 NBTrafficLightLogic*
-NBLoadedSUMOTLDef::myCompute(unsigned int brakingTimeSeconds) {
+NBLoadedSUMOTLDef::myCompute(int brakingTimeSeconds) {
     // @todo what to do with those parameters?
     UNUSED_PARAMETER(brakingTimeSeconds);
     myTLLogic->closeBuilding();
@@ -301,12 +301,12 @@ NBLoadedSUMOTLDef::shiftTLConnectionLaneIndex(NBEdge* edge, int offset) {
 void
 NBLoadedSUMOTLDef::patchIfCrossingsAdded() {
     // XXX what to do if crossings are removed during network building?
-    const unsigned int size = myTLLogic->getNumLinks();
-    unsigned int noLinksAll = 0;
+    const int size = myTLLogic->getNumLinks();
+    int noLinksAll = 0;
     for (NBConnectionVector::const_iterator it = myControlledLinks.begin(); it != myControlledLinks.end(); it++) {
         const NBConnection& c = *it;
         if (c.getTLIndex() != NBConnection::InvalidTlIndex) {
-            noLinksAll = MAX2(noLinksAll, (unsigned int)c.getTLIndex() + 1);
+            noLinksAll = MAX2(noLinksAll, (int)c.getTLIndex() + 1);
         }
     }
     int oldCrossings = 0;
@@ -317,19 +317,19 @@ NBLoadedSUMOTLDef::patchIfCrossingsAdded() {
         // set tl indices for crossings
         (*i)->setCrossingTLIndices(noLinksAll);
         copy(c.begin(), c.end(), std::back_inserter(crossings));
-        noLinksAll += (unsigned int)c.size();
+        noLinksAll += (int)c.size();
         oldCrossings += (*i)->numCrossingsFromSumoNet();
     }
     const int newCrossings = (int)crossings.size() - oldCrossings;
     if (newCrossings > 0) {
         const std::vector<NBTrafficLightLogic::PhaseDefinition> phases = myTLLogic->getPhases();
         if (phases.size() > 0) {
-            if (phases.front().state.size() == noLinksAll - newCrossings) {
+            if ((int)phases.front().state.size() == noLinksAll - newCrossings) {
                 // patch states for the newly added crossings
 
                 // collect edges
-                EdgeVector fromEdges(size, 0);
-                EdgeVector toEdges(size, 0);
+                EdgeVector fromEdges(size, (NBEdge*)0);
+                EdgeVector toEdges(size, (NBEdge*)0);
                 std::vector<int> fromLanes(size, 0);
                 collectEdgeVectors(fromEdges, toEdges, fromLanes);
                 const std::string crossingDefaultState(newCrossings, 'r');
@@ -349,7 +349,7 @@ NBLoadedSUMOTLDef::patchIfCrossingsAdded() {
 
                 delete myTLLogic;
                 myTLLogic = newLogic;
-            } else if (phases.front().state.size() != noLinksAll) {
+            } else if ((int)phases.front().state.size() != noLinksAll) {
                 WRITE_WARNING("Could not patch tlLogic " + getID() + "for new crossings");
             }
         }

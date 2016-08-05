@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 19.08.2013
-/// @version $Id: PollutantsInterface.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: PollutantsInterface.cpp 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // Interface to capsulate different emission models
 /****************************************************************************/
@@ -56,7 +56,7 @@ PollutantsInterface::Helper* PollutantsInterface::myHelpers[] = {&PollutantsInte
 // ===========================================================================
 SUMOEmissionClass
 PollutantsInterface::getClassByName(const std::string& eClass, const SUMOVehicleClass vc) {
-    size_t sep = eClass.find("/");
+    const std::string::size_type sep = eClass.find("/");
     if (sep != std::string::npos) {
         const std::string model = eClass.substr(0, sep);
         const std::string subClass = eClass.substr(sep + 1);

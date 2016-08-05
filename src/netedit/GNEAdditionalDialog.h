@@ -2,7 +2,7 @@
 /// @file    GNEAdditionalDialog.h
 /// @author  Pablo Alvarez Lopez
 /// @date    April 2016
-/// @version $Id: GNEAdditionalDialog.h 20472 2016-04-15 15:36:45Z palcraft $
+/// @version $Id: GNEAdditionalDialog.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 /// A abstract class for editing additional elements
 /****************************************************************************/
@@ -47,11 +47,13 @@ class GNEAdditional;
  * @class GNEAdditionalDialog
  * @brief Dialog to edit sequences, parameters, etc.. of Additionals
  */
-
 class GNEAdditionalDialog : public FXDialogBox {
+    /// @brief FOX-declaration abstract
+    FXDECLARE_ABSTRACT(GNEAdditionalDialog)
+
 public:
     // Constructor
-    GNEAdditionalDialog(GNEAdditional *parent, int width, int height);
+    GNEAdditionalDialog(GNEAdditional* parent, int width, int height);
 
     // destructor
     ~GNEAdditionalDialog();
@@ -85,15 +87,19 @@ protected:
     FXVerticalFrame* myContentFrame;
 
     /// @brief accept button
-    FXButton *myAcceptButton;
+    FXButton* myAcceptButton;
 
     /// @brief cancel button
-    FXButton *myCancelButton;
+    FXButton* myCancelButton;
 
     /// @brief cancel button
-    FXButton *myResetButton;
+    FXButton* myResetButton;
 
 private:
+    /// @brief update data table
+    /// @note must be implemented in all childs
+    virtual void updateTable() = 0;
+
     /// @brief frame for buttons (Not accesible for childs)
     FXHorizontalFrame* myButtonFrame;
 

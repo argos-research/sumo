@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 1 Jul 2002
-/// @version $Id: XMLSubSys.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: XMLSubSys.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Utility methods for initialising, closing and using the XML-subsystem
 /****************************************************************************/
@@ -153,7 +153,7 @@ private:
     static std::vector<SUMOSAXReader*> myReaders;
 
     /// @brief Information whether the reader is parsing
-    static unsigned int myNextFreeReader;
+    static int myNextFreeReader;
 
     /// @brief Information whether built reader/parser shall validate XML-documents against schemata
     static XERCES_CPP_NAMESPACE::SAX2XMLReader::ValSchemes myValidationScheme;

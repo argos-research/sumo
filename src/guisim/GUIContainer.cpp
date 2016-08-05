@@ -3,7 +3,7 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Wed, 01.08.2014
-/// @version $Id: GUIContainer.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GUIContainer.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A MSContainer extended by some values for usage within the gui
 /****************************************************************************/
@@ -266,7 +266,7 @@ GUIContainer::setColor(const GUIVisualizationSettings& s) const {
 
 
 bool
-GUIContainer::setFunctionalColor(size_t activeScheme) const {
+GUIContainer::setFunctionalColor(int activeScheme) const {
     switch (activeScheme) {
         case 0: {
             if (getParameter().wasSet(VEHPARS_COLOR_SET)) {
@@ -305,7 +305,7 @@ GUIContainer::setFunctionalColor(size_t activeScheme) const {
 
 
 SUMOReal
-GUIContainer::getColorValue(size_t activeScheme) const {
+GUIContainer::getColorValue(int activeScheme) const {
     switch (activeScheme) {
         case 4:
             return getSpeed();

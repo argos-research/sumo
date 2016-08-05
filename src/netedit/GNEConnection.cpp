@@ -1,8 +1,8 @@
 /****************************************************************************/
 /// @file    GNEConnection.cpp
-/// @author  Pablo Álvarez López
+/// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNEConnection.cpp 20472 2016-04-15 15:36:45Z palcraft $
+/// @version $Id: GNEConnection.cpp 21166 2016-07-14 12:59:19Z palcraft $
 ///
 // A class for visualizing connections between lanes
 /****************************************************************************/
@@ -35,6 +35,7 @@
 #include <foreign/polyfonts/polyfonts.h>
 #include <utils/foxtools/MFXUtils.h>
 #include <utils/geom/PositionVector.h>
+#include <utils/gui/windows/GUIMainWindow.h>
 #include <utils/gui/windows/GUISUMOAbstractView.h>
 #include <utils/common/ToString.h>
 #include <utils/gui/windows/GUIAppEnum.h>
@@ -45,6 +46,7 @@
 #include <utils/gui/globjects/GLIncludes.h>
 
 #include "GNEConnection.h"
+#include "GNEJunction.h"
 #include "GNEEdge.h"
 #include "GNELane.h"
 
@@ -57,18 +59,19 @@
 // ===========================================================================
 // static member definitions
 // ===========================================================================
-
+int NUM_POINTS = 5;
 
 // ===========================================================================
 // method definitions
 // ===========================================================================
 
-GNEConnection::GNEConnection(GNEEdge *edgeFrom, GNEEdge *edgeTo, GNELane *fromLane, GNELane *toLane, bool pass, bool keepClear, SUMOReal contPos, bool uncontrolled) :
-    GNENetElement(NULL, "CHANGE", GLO_CONNECTION, SUMO_TAG_CONNECTION), 
-    myEdgeFrom(edgeFrom),	
-    myEdgeTo(edgeTo),
-    myFromLane(fromLane),
-    myToLane(toLane),
+GNEConnection::GNEConnection(GNEEdge &from, int fromLane, GNEEdge &to, int toLane, bool pass, bool keepClear, SUMOReal contPos, bool uncontrolled, int tlIndex) :
+    GNENetElement(from.getNet(), from.getID() + "_" + toString(fromLane) + "_" + to.getID() + "_" + toString(toLane) , GLO_JUNCTION, SUMO_TAG_CONNECTION),
+    myNBConnection(from.getNBEdge(), fromLane, to.getNBEdge(), toLane, tlIndex), 
+    myConnection(fromLane, to.getNBEdge(), toLane),
+    myFromEdge(from),
+    myToEdge(to),
+    myJunction(from.getNBEdge()->getToNode()),
     myPass(pass),
     myKeepClear(keepClear),
     myContPos(contPos),
@@ -80,137 +83,198 @@ GNEConnection::GNEConnection(GNEEdge *edgeFrom, GNEEdge *edgeTo, GNELane *fromLa
 GNEConnection::~GNEConnection() {}
 
 
-void 
+void
 GNEConnection::updateGeometry() {
+    // Get shape of connection
+    myShape = myJunction->computeInternalLaneShape(myFromEdge.getNBEdge(), myConnection, NUM_POINTS);
+    int segments = (int) myShape.size() - 1;
+    if (segments >= 0) {
+        myShapeRotations.reserve(segments);
+        myShapeLengths.reserve(segments);
+        for (int i = 0; i < segments; ++i) {
+            const Position& f = myShape[i];
+            const Position& s = myShape[i + 1];
+            myShapeLengths.push_back(f.distanceTo2D(s));
+            myShapeRotations.push_back((SUMOReal) atan2((s.x() - f.x()), (f.y() - s.y())) * (SUMOReal) 180.0 / (SUMOReal) PI);
+        }
+    }
 }
 
 
-GNEEdge *
-GNEConnection::getEdgeFrom() {
-    return myEdgeFrom;
+Boundary 
+GNEConnection::getBoundary() const {
+    return Boundary();
 }
 
 
-GNEEdge *
-GNEConnection::getEdgeTo() {
-    return myEdgeTo;
+GNEEdge&
+GNEConnection::getEdgeFrom() const {
+    return myFromEdge;
 }
 
 
-GNELane *
-GNEConnection::getFromLane() {
-    return myFromLane;
+GNEEdge&
+GNEConnection::getEdgeTo() const {
+    return myToEdge;
 }
 
 
-GNELane *
-GNEConnection::getToLane() {
-    return myToLane;
+GNELane* 
+GNEConnection::getFromLane() const {
+    return myFromEdge.getLanes().at(myConnection.fromLane);
 }
 
 
-int 
-GNEConnection::getFromLaneIndex() {
-    return myFromLane->getIndex();
+GNELane* 
+GNEConnection::getToLane() const {
+    return myToEdge.getLanes().at(myConnection.toLane);
 }
 
 
-int 
-GNEConnection::getToLaneIndex() {
-    return myToLane->getIndex();
+int
+GNEConnection::getFromLaneIndex() const {
+    return myConnection.fromLane;
 }
 
 
-bool 
+int
+GNEConnection::getToLaneIndex() const {
+    return myConnection.toLane;
+}
+
+
+bool
 GNEConnection::getPass() {
     return myPass;
 }
 
 
-bool 
+bool
 GNEConnection::getKeepClear() {
     return myKeepClear;
 }
 
 
-SUMOReal 
+SUMOReal
 GNEConnection::getContPos() {
     return myContPos;
 }
 
 
-bool 
+bool
 GNEConnection::getUncontrolled() {
     return myUncontrolled;
 }
 
 
-void 
+const NBConnection& 
+GNEConnection::getNBConnection() const {
+    return myNBConnection;
+}
+
+
+const NBEdge::Connection&
+GNEConnection::getNBEdgeConnection() const {
+    return myConnection;
+}
+
+void
 GNEConnection::setPass(bool pass) {
     myPass = pass;
 }
 
 
-void 
+void
 GNEConnection::setKeepClear(bool keepClear) {
     myKeepClear = keepClear;
 }
 
 
-void 
+void
 GNEConnection::setContPos(SUMOReal contPos) {
     myContPos = contPos;
 }
 
 
-void 
+void
 GNEConnection::setUncontrolled(bool uncontrolled) {
     myUncontrolled = uncontrolled ;
 }
 
 
-GUIGLObjectPopupMenu* 
+GUIGLObjectPopupMenu*
 GNEConnection::getPopUpMenu(GUIMainWindow& app, GUISUMOAbstractView& parent) {
+    // Currently ignored before implementation to avoid warnings
+    UNUSED_PARAMETER(app);
+    UNUSED_PARAMETER(parent);
     return NULL;
 }
 
 
-GUIParameterTableWindow* 
+GUIParameterTableWindow*
 GNEConnection::getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent) {
+    // Currently ignored before implementation to avoid warnings
+    UNUSED_PARAMETER(app);
+    UNUSED_PARAMETER(parent);
     return NULL;
 }
 
 
-Boundary 
-GNEConnection::getCenteringBoundary() const{
+Boundary
+GNEConnection::getCenteringBoundary() const {
     return Boundary();
 }
 
 
-void 
+void
 GNEConnection::drawGL(const GUIVisualizationSettings& s) const {
+    glPushMatrix();
+    glPushName(getGlID());
+    glTranslated(0, 0, GLO_JUNCTION + 0.1); // must draw on top of junction
+//    GLHelper::setColor(colorForLinksState(myState));
+    // draw lane
+    // check whether it is not too small
+    if (s.scale < 1.) {
+        GLHelper::drawLine(myShape);
+    } else {
+        GLHelper::drawBoxLines(myShape, myShapeRotations, myShapeLengths, 0.2);
+    }
+    glPopName();
+    glPopMatrix();
 }
 
 
-std::string 
+std::string
 GNEConnection::getAttribute(SumoXMLAttr key) const {
+    // Currently ignored before implementation to avoid warnings
+    UNUSED_PARAMETER(key);
     return "";
 }
 
 
-void 
+void
 GNEConnection::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoList* undoList) {
+    // Currently ignored before implementation to avoid warnings
+    UNUSED_PARAMETER(key);
+    UNUSED_PARAMETER(value);
+    UNUSED_PARAMETER(undoList);
 }
 
 
-bool 
+bool
 GNEConnection::isValid(SumoXMLAttr key, const std::string& value) {
+    // Currently ignored before implementation to avoid warnings
+    UNUSED_PARAMETER(key);
+    UNUSED_PARAMETER(value);
     return false;
 }
 
 
-void 
+void
 GNEConnection::setAttribute(SumoXMLAttr key, const std::string& value) {
+    // Currently ignored before implementation to avoid warnings
+    UNUSED_PARAMETER(key);
+    UNUSED_PARAMETER(value);
 }
 
 

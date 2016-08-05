@@ -3,7 +3,7 @@
 /// @author  Riccardo Belletti
 /// @author  Anna Chiara Bellini
 /// @date    2013-10-26
-/// @version $Id: MSSOTLWaveTrafficLightLogic.h 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSSOTLWaveTrafficLightLogic.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // The class for SOTL Platoon logics
 /****************************************************************************/
@@ -44,7 +44,7 @@ public:
      */
     MSSOTLWaveTrafficLightLogic(MSTLLogicControl& tlcontrol,
                                 const std::string& id, const std::string& subid,
-                                const Phases& phases, unsigned int step, SUMOTime delay,
+                                const Phases& phases, int step, SUMOTime delay,
                                 const std::map<std::string, std::string>& parameters) throw();
 
     /**
@@ -58,7 +58,7 @@ public:
      */
     MSSOTLWaveTrafficLightLogic(MSTLLogicControl& tlcontrol,
                                 const std::string& id, const std::string& subid,
-                                const Phases& phases, unsigned int step, SUMOTime delay,
+                                const Phases& phases, int step, SUMOTime delay,
                                 const std::map<std::string, std::string>& parameters,
                                 MSSOTLSensors* sensors) throw();
 

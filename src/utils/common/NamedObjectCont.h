@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: NamedObjectCont.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NamedObjectCont.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A map of named object pointers
 /****************************************************************************/
@@ -134,8 +134,8 @@ public:
      *
      * @return The number of stored items
      */
-    unsigned int size() const {
-        return (unsigned int) myMap.size();
+    int size() const {
+        return (int) myMap.size();
     }
 
 

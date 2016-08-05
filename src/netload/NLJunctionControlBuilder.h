@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLJunctionControlBuilder.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NLJunctionControlBuilder.h 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // Builder of microsim-junctions and tls
 /****************************************************************************/
@@ -291,8 +291,8 @@ public:
     MSJunction* retrieve(const std::string id);
 
     /// @brief return the number of phases loaded so far (for error reporting)
-    size_t getNumberOfLoadedPhases() const {
-        return myActivePhases.size();
+    int getNumberOfLoadedPhases() const {
+        return (int)myActivePhases.size();
     }
 
 

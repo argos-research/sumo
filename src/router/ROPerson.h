@@ -3,7 +3,7 @@
 /// @author  Robert Hilbrich
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: ROPerson.h 20698 2016-05-11 08:25:47Z behrisch $
+/// @version $Id: ROPerson.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 // A person as used by router
 /****************************************************************************/
@@ -225,7 +225,7 @@ public:
                 delete *it;
             }
             for (std::vector<ROVehicle*>::const_iterator it = myVehicles.begin(); it != myVehicles.end(); ++it) {
-                delete (*it)->getRouteDefinition();
+                delete(*it)->getRouteDefinition();
                 delete *it;
             }
         }

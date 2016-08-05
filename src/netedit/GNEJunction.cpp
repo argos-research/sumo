@@ -2,7 +2,7 @@
 /// @file    GNEJunction.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEJunction.cpp 20994 2016-06-17 12:34:46Z palcraft $
+/// @version $Id: GNEJunction.cpp 21194 2016-07-19 10:29:54Z namdre $
 ///
 // A class for visualizing and editing junctions in netedit (adapted from
 // GUIJunctionWrapper)
@@ -42,13 +42,12 @@
 #include <utils/gui/div/GUIParameterTableWindow.h>
 #include <utils/gui/div/GLHelper.h>
 #include <utils/gui/images/GUITexturesHelper.h>
-#include <utils/gui/images/GUIIconSubSys.h>
+#include <utils/gui/images/GUITextureSubSys.h>
 #include <utils/gui/globjects/GUIGlObjectStorage.h>
 #include <utils/gui/globjects/GUIGLObjectPopupMenu.h>
 #include <netbuild/NBOwnTLDef.h>
 #include <netbuild/NBLoadedSUMOTLDef.h>
 #include <netbuild/NBAlgorithms.h>
-#include "GNELogo_TLS.cpp"
 #include "GNENet.h"
 #include "GNEEdge.h"
 #include "GNECrossing.h"
@@ -62,13 +61,6 @@
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
 #endif // CHECK_MEMORY_LEAKS
-
-
-// ===========================================================================
-// static members
-// ===========================================================================
-int GNEJunction::TLSDecalGlID = 0;
-bool GNEJunction::TLSDecalInitialized = false;
 
 // ===========================================================================
 // method definitions
@@ -178,8 +170,9 @@ GNEJunction::getCenteringBoundary() const {
 void
 GNEJunction::drawGL(const GUIVisualizationSettings& s) const {
     glPushName(getGlID());
-    SUMOReal selectionScale = gSelected.isSelected(getType(), getGlID()) ? s.selectionScale : 1;
-    if (s.scale * selectionScale * myMaxSize < 1.) {
+    SUMOReal exaggeration = gSelected.isSelected(getType(), getGlID()) ? s.selectionScale : 1;
+    exaggeration *= s.junctionSize.getExaggeration(s);
+    if (s.scale * exaggeration * myMaxSize < 1.) {
         // draw something simple so that selection still works
         GLHelper::drawBoxLine(myNBNode.getPosition(), 0, 1, 1);
     } else {
@@ -188,45 +181,48 @@ GNEJunction::drawGL(const GUIVisualizationSettings& s) const {
         const bool drawBubble = (!drawShape || myNBNode.getShape().area() < 4) && s.drawJunctionShape; // magic threshold
 
         if (drawShape) {
-            glPushMatrix();
             setColor(s, false);
-            glTranslated(0, 0, getType());
-            PositionVector shape = myNBNode.getShape();
-            shape.closePolygon();
-            if (selectionScale > 1) {
-                shape.scaleRelative(selectionScale);
+            // recognize full transparency and simply don't draw
+            GLfloat color[4];
+            glGetFloatv(GL_CURRENT_COLOR, color);
+            if (color[3] != 0) {
+                glPushMatrix();
+                glTranslated(0, 0, getType());
+                PositionVector shape = myNBNode.getShape();
+                shape.closePolygon();
+                if (exaggeration > 1) {
+                    shape.scaleRelative(exaggeration);
+                }
+                if (s.scale * exaggeration * myMaxSize < 40.) {
+                    GLHelper::drawFilledPoly(shape, true);
+                } else {
+                    GLHelper::drawFilledPolyTesselated(shape, true);
+                }
+                glPopMatrix();
             }
-            if (s.scale * selectionScale * myMaxSize < 40.) {
-                GLHelper::drawFilledPoly(shape, true);
-            } else {
-                GLHelper::drawFilledPolyTesselated(shape, true);
-            }
-            glPopMatrix();
         }
         if (drawBubble) {
-            glPushMatrix();
             setColor(s, true);
-            Position pos = myNBNode.getPosition();
-            glTranslated(pos.x(), pos.y(), getType() - 0.05);
-            GLHelper::drawFilledCircle(4 * selectionScale, 32);
-            glPopMatrix();
+            // recognize full transparency and simply don't draw
+            GLfloat color[4];
+            glGetFloatv(GL_CURRENT_COLOR, color);
+            if (color[3] != 0) {
+                glPushMatrix();
+                Position pos = myNBNode.getPosition();
+                glTranslated(pos.x(), pos.y(), getType() - 0.05);
+                GLHelper::drawFilledCircle(4 * exaggeration, 32);
+                glPopMatrix();
+            }
         }
 
         if (s.editMode == GNE_MODE_TLS && myNBNode.isTLControlled() && !myAmTLSSelected) {
-            // decorate in tls mode
-            if (!TLSDecalInitialized) {
-                FXImage* i = new FXGIFImage(myNet->getApp(), GNELogo_TLS, IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP);
-                TLSDecalGlID = GUITexturesHelper::add(i);
-                TLSDecalInitialized = true;
-                delete i;
-            }
             glPushMatrix();
             Position pos = myNBNode.getPosition();
             glTranslated(pos.x(), pos.y(), getType() + 0.1);
             glColor3d(1, 1, 1);
             const SUMOReal halfWidth = 32 / s.scale;
             const SUMOReal halfHeight = 64 / s.scale;
-            GUITexturesHelper::drawTexturedBox(TLSDecalGlID, -halfWidth, -halfHeight, halfWidth, halfHeight);
+            GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_TLS), -halfWidth, -halfHeight, halfWidth, halfHeight);
             glPopMatrix();
         }
         // draw crossings
@@ -247,7 +243,7 @@ GNEJunction::getBoundary() const {
 }
 
 
-NBNode* 
+NBNode*
 GNEJunction::getNBNode() const {
     return &myNBNode;
 }
@@ -310,15 +306,20 @@ GNEJunction::setLogicValid(bool valid, GNEUndoList* undoList, const std::string&
     myHasValidLogic = valid;
     // If new logic isn't valid
     if (!valid) {
+
         // Check preconditions
         assert(undoList != 0);
         assert(undoList->hasCommandGroup());
+
         // Registre a modification of status
         undoList->add(new GNEChange_Attribute(this, GNE_ATTR_MODIFICATION_STATUS, status));
+
         // allow edges to recompute their connections
         NBTurningDirectionsComputer::computeTurnDirectionsForNode(&myNBNode, false);
+
         // Obtain a copy of incoming edges
         EdgeVector incoming = myNBNode.getIncomingEdges();
+
         // Iterate over incoming edges
         for (EdgeVector::iterator it = incoming.begin(); it != incoming.end(); it++) {
             NBEdge* srcNBE = *it;
@@ -342,8 +343,9 @@ GNEJunction::setLogicValid(bool valid, GNEUndoList* undoList, const std::string&
         }
         // Invalidate traffic light
         invalidateTLS(undoList);
-    } else
+    } else {
         rebuildCrossings(false);
+    }
 }
 
 
@@ -364,6 +366,7 @@ GNEJunction::invalidateTLS(GNEUndoList* undoList, const NBConnection& deletedCon
                 replacementDef = repl;
             } else {
                 replacementDef = new NBOwnTLDef(newID, tlDef->getOffset(), tlDef->getType());
+                replacementDef->setProgramID(tlDef->getProgramID());
             }
             undoList->add(new GNEChange_TLS(this, tlDef, false), true);
             undoList->add(new GNEChange_TLS(this, replacementDef, true, false, newID), true);
@@ -396,12 +399,6 @@ GNEJunction::removeFromCrossings(GNEEdge* edge, GNEUndoList* undoList) {
 bool
 GNEJunction::isLogicValid() {
     return myHasValidLogic;
-}
-
-
-void
-GNEJunction::resetDecal() {
-    TLSDecalInitialized = false;
 }
 
 
@@ -616,8 +613,8 @@ GNEJunction::getColorValue(const GUIVisualizationSettings& s, bool bubble) const
 void
 GNEJunction::setColor(const GUIVisualizationSettings& s, bool bubble) const {
     GLHelper::setColor(s.junctionColorer.getScheme().getColor(getColorValue(s, bubble)));
-    // override with special colors
-    if (gSelected.isSelected(getType(), getGlID())) {
+    // override with special colors (unless the color scheme is based on selection)
+    if (gSelected.isSelected(getType(), getGlID()) && s.junctionColorer.getActive() != 1) {
         GLHelper::setColor(GNENet::selectionColor);
     }
     if (myAmCreateEdgeSource) {

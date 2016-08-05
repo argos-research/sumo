@@ -3,7 +3,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mar 2011
-/// @version $Id: NBLoadedSUMOTLDef.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBLoadedSUMOTLDef.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A complete traffic light logic loaded from a sumo-net. (opted to reimplement
 // since NBLoadedTLDef is quite vissim specific)
@@ -147,7 +147,7 @@ protected:
      * @param[in] brakingTime Duration a vehicle needs for braking in front of the tls in seconds
      * @return The computed logic
      */
-    NBTrafficLightLogic* myCompute(unsigned int brakingTimeSeconds);
+    NBTrafficLightLogic* myCompute(int brakingTimeSeconds);
 
     bool amInvalid() const;
 

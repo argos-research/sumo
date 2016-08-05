@@ -6,7 +6,7 @@
 /// @author  Walter Bamberger
 /// @author  Jakob Erdmann
 /// @date    July 2010
-/// @version $Id: AGCity.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: AGCity.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // City class that contains all other objects of the city: in particular
 // streets, households, bus lines, work positions and school
@@ -170,7 +170,7 @@ AGCity::generatePopulation() {
     std::vector<AGStreet*>::iterator it;
     SUMOReal people = 0;
     nbrCars = 0;
-    unsigned int idHouseholds = 0;
+    int idHouseholds = 0;
     std::vector<int> numAdults(statData.households);
     std::vector<int> numChilds(statData.households);
     int totalChildrenLeft = statData.inhabitants - statData.getPeopleOlderThan(statData.limitAgeChildren);
@@ -188,7 +188,7 @@ AGCity::generatePopulation() {
     //compensate with adults for too many / missing children
     const int numSecondPers = statData.getPeopleOlderThan(statData.limitAgeChildren) - statData.households + totalChildrenLeft;
     for (int i = 0; i < numSecondPers; i++) {
-        unsigned int index = i % numAdults.size();
+        int index = i % numAdults.size();
         if (numAdults[index] >= 0) {
             numAdults[index] += 1;
         } else {
@@ -197,8 +197,8 @@ AGCity::generatePopulation() {
     }
     for (it = streets.begin(); it != streets.end(); ++it) {
         people += (*it)->getPopulation();
-        while (people > 0 && idHouseholds < (unsigned int)numAdults.size()) {
-            size_t i = RandHelper::rand(numAdults.size() - idHouseholds);
+        while (people > 0 && idHouseholds < (int)numAdults.size()) {
+            int i = RandHelper::rand((int)numAdults.size() - idHouseholds);
             ++idHouseholds;
             households.push_back(AGHousehold(*it, this, idHouseholds));
             households.back().generatePeople(abs(numAdults[i]), numChilds[i], numAdults[i] < 0); //&statData
@@ -420,7 +420,7 @@ AGCity::getRandomStreet() {
     if (streets.empty()) {
         throw (std::runtime_error("No street found in this city"));
     }
-    return *streets[RandHelper::rand(streets.size())];
+    return *RandHelper::getRandomFrom(streets);
 }
 
 /****************************************************************************/

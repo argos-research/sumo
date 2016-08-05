@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVisualizationSettings.cpp 20865 2016-06-03 10:22:53Z namdre $
+/// @version $Id: GUIVisualizationSettings.cpp 21232 2016-07-25 13:06:55Z namdre $
 ///
 // Stores the information about how to visualize structures
 /****************************************************************************/
@@ -56,7 +56,11 @@ GUIVisualizationSettings::GUIVisualizationSettings()
       internalEdgeName(false, 40, RGBColor(128, 64, 0, 255)),
       cwaEdgeName(false, 50, RGBColor::MAGENTA),
       streetName(false, 55, RGBColor::YELLOW),
-      hideConnectors(false), laneWidthExaggeration(1),
+      hideConnectors(false), 
+      laneWidthExaggeration(1),
+      laneMinSize(0),
+      showLaneDirection(false),
+      showSublanes(true),
       vehicleQuality(0), showBlinker(true),
       drawLaneChangePreference(false), drawMinGap(false),
       showBTRange(false), vehicleSize(1),
@@ -74,6 +78,7 @@ GUIVisualizationSettings::GUIVisualizationSettings()
       showLane2Lane(false),
       drawJunctionShape(true),
       drawCrossingsAndWalkingareas(true),
+      junctionSize(1),
       addMode(0),
       addSize(1),
       addName(false, 50, RGBColor(255, 0, 128, 255)),
@@ -233,6 +238,11 @@ GUIVisualizationSettings::GUIVisualizationSettings()
     laneColorer.addScheme(scheme);
     scheme = GUIColorScheme("by electricity consumption", RGBColor::GREEN);
     scheme.addColor(RGBColor::RED, (SUMOReal)(1 / 7.5 / 5.));
+    laneColorer.addScheme(scheme);
+    scheme = GUIColorScheme("by insertion-backlog (streetwise)", RGBColor::GREY);
+    scheme.addColor(RGBColor::GREEN, (SUMOReal)1);
+    scheme.addColor(RGBColor::YELLOW, (SUMOReal)10);
+    scheme.addColor(RGBColor::RED, (SUMOReal)100);
     laneColorer.addScheme(scheme);
 
 
@@ -494,6 +504,11 @@ GUIVisualizationSettings::GUIVisualizationSettings()
         scheme = GUIScaleScheme("by electricity consumption", 0);
         scheme.addColor(10, (SUMOReal)(1 / 7.5 / 5.));
         laneScaler.addScheme(scheme);
+        scheme = GUIScaleScheme("by insertion-backlog (streetwise)", 0);
+        scheme.addColor(1, (SUMOReal)1);
+        scheme.addColor(10, (SUMOReal)10);
+        scheme.addColor(50, (SUMOReal)100);
+        laneScaler.addScheme(scheme);
     }
 
 
@@ -567,6 +582,11 @@ GUIVisualizationSettings::GUIVisualizationSettings()
     scheme.addColor(RGBColor::BLUE, (SUMOReal)(1));
     scheme.addColor(RGBColor::MAGENTA, (SUMOReal)(1.25));
     edgeColorer.addScheme(scheme);
+    scheme = GUIColorScheme("by insertion-backlog (streetwise)", RGBColor::GREY);
+    scheme.addColor(RGBColor::GREEN, (SUMOReal)1);
+    scheme.addColor(RGBColor::YELLOW, (SUMOReal)10);
+    scheme.addColor(RGBColor::RED, (SUMOReal)100);
+    edgeColorer.addScheme(scheme);
 
 
     /// add edge scaling schemes
@@ -590,12 +610,17 @@ GUIVisualizationSettings::GUIVisualizationSettings()
         scheme = GUIScaleScheme("by relative speed (streetwise)", 0);
         scheme.addColor(20, (SUMOReal)1);
         edgeScaler.addScheme(scheme);
+        scheme = GUIScaleScheme("by insertion-backlog (streetwise)", 0);
+        scheme.addColor(1, (SUMOReal)1);
+        scheme.addColor(10, (SUMOReal)10);
+        scheme.addColor(50, (SUMOReal)100);
+        edgeScaler.addScheme(scheme);
     }
 
 }
 
 
-size_t
+int
 GUIVisualizationSettings::getLaneEdgeMode() const {
     if (UseMesoSim) {
         return edgeColorer.getActive();
@@ -604,7 +629,7 @@ GUIVisualizationSettings::getLaneEdgeMode() const {
 }
 
 
-size_t
+int
 GUIVisualizationSettings::getLaneEdgeScaleMode() const {
     if (UseMesoSim) {
         return edgeScaler.getActive();
@@ -653,6 +678,9 @@ GUIVisualizationSettings::save(OutputDevice& dev) const {
     dev.writeAttr("showRails", showRails);
     dev.writeAttr("hideConnectors", hideConnectors);
     dev.writeAttr("widthExaggeration", laneWidthExaggeration);
+    dev.writeAttr("minSize", laneMinSize);
+    dev.writeAttr("showDirection", showLaneDirection);
+    dev.writeAttr("showSublanes", showSublanes);
     dev.lf();
     dev << "               ";
     edgeName.print(dev, "edgeName");
@@ -709,7 +737,7 @@ GUIVisualizationSettings::save(OutputDevice& dev) const {
     drawLinkTLIndex.print(dev, "drawLinkTLIndex");
     dev.lf();
     dev << "                  ";
-    drawLinkTLIndex.print(dev, "drawLinkJunctionIndex");
+    drawLinkJunctionIndex.print(dev, "drawLinkJunctionIndex");
     dev.lf();
     dev << "                  ";
     junctionName.print(dev, "junctionName");
@@ -721,6 +749,7 @@ GUIVisualizationSettings::save(OutputDevice& dev) const {
     dev.writeAttr("showLane2Lane", showLane2Lane);
     dev.writeAttr("drawShape", drawJunctionShape);
     dev.writeAttr("drawCrossingsAndWalkingareas", drawCrossingsAndWalkingareas);
+    junctionSize.print(dev, "junction");
     junctionColorer.save(dev);
     dev.closeTag();
     // additionals
@@ -810,6 +839,15 @@ GUIVisualizationSettings::operator==(const GUIVisualizationSettings& v2) {
     if (laneWidthExaggeration != v2.laneWidthExaggeration) {
         return false;
     }
+    if (laneMinSize != v2.laneMinSize) {
+        return false;
+    }
+    if (showLaneDirection != v2.showLaneDirection) {
+        return false;
+    }
+    if (showSublanes != v2.showSublanes) {
+        return false;
+    }
     if (!(vehicleColorer == v2.vehicleColorer)) {
         return false;
     }
@@ -883,6 +921,9 @@ GUIVisualizationSettings::operator==(const GUIVisualizationSettings& v2) {
     }
 
     if (drawCrossingsAndWalkingareas != v2.drawCrossingsAndWalkingareas) {
+        return false;
+    }
+    if (junctionSize != v2.junctionSize) {
         return false;
     }
 

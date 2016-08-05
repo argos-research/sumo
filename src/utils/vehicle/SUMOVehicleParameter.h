@@ -5,7 +5,7 @@
 /// @author  Axel Wegener
 /// @author  Michael Behrisch
 /// @date    2006-01-24
-/// @version $Id: SUMOVehicleParameter.h 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: SUMOVehicleParameter.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Structure representing possible vehicle parameter
 /****************************************************************************/
@@ -544,10 +544,10 @@ public:
     std::vector<std::string> via;
 
     /// @brief The static number of persons in the vehicle when it departs (not including boarding persons)
-    unsigned int personNumber;
+    int personNumber;
 
     /// @brief The static number of containers in the vehicle when it departs
-    unsigned int containerNumber;
+    int containerNumber;
 
     /// @brief Information for the router which parameter were set
     mutable int setParameter;

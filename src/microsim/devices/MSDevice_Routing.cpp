@@ -6,7 +6,7 @@
 /// @author  Christoph Sommer
 /// @author  Jakob Erdmann
 /// @date    Tue, 04 Dec 2007
-/// @version $Id: MSDevice_Routing.cpp 20890 2016-06-06 12:29:01Z namdre $
+/// @version $Id: MSDevice_Routing.cpp 21131 2016-07-08 07:59:22Z behrisch $
 ///
 // A device that performs vehicle rerouting based on current edge speeds
 /****************************************************************************/
@@ -220,8 +220,8 @@ MSDevice_Routing::MSDevice_Routing(SUMOVehicle& holder, const std::string& id,
         // if we don't update the edge weights, we might as well reroute now and hopefully use our threads better
         const SUMOTime execTime = myEdgeWeightSettingCommand == 0 ? 0 : holder.getParameter().depart;
         MSNet::getInstance()->getInsertionEvents()->addEvent(
-                myRerouteCommand, execTime,
-                MSEventControl::ADAPT_AFTER_EXECUTION);
+            myRerouteCommand, execTime,
+            MSEventControl::ADAPT_AFTER_EXECUTION);
     }
 }
 

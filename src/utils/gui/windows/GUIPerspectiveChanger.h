@@ -4,7 +4,7 @@
 /// @brief @author  Jakob Erdmann
 /// @brief @author  Michael Behrisch
 /// @brief @date    Sept 2002
-/// @brief @version $Id: GUIPerspectiveChanger.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @brief @version $Id: GUIPerspectiveChanger.h 21186 2016-07-18 12:04:16Z namdre $
 /// @brief
 // A virtual class that allows to steer the visual output in dependence to
 /****************************************************************************/
@@ -77,7 +77,7 @@ public:
     //@{
     /// @brief called when user press left button
     virtual void onLeftBtnPress(void* data);
-    
+
     /// @brief called when user releases left button
     virtual bool onLeftBtnRelease(void* data);
 
@@ -115,11 +115,23 @@ public:
     /// @brief Returns the zoom factor computed stored in this changer
     virtual SUMOReal getZoom() const = 0;
 
+    /// @brief Returns the camera height corresponding to the current zoom factor
+    virtual SUMOReal getZPos() const = 0;
+
+    /// @brief Returns the camera height at which the given zoom level is reached
+    virtual SUMOReal zoom2ZPos(SUMOReal zoom) const = 0;
+
+    /// @brief Returns the zoom level that is achieved at a given camera height
+    virtual SUMOReal zPos2Zoom(SUMOReal zPos) const = 0;
+
     /// @brief Centers the view to the given position, setting it to a size that covers the radius. Used for: Centering of vehicles and junctions */
     virtual void centerTo(const Position& pos, SUMOReal radius, bool applyZoom = true) = 0;
 
     /// @brief Sets the viewport Used for: Adapting a new viewport
     virtual void setViewport(SUMOReal zoom, SUMOReal xPos, SUMOReal yPos) = 0;
+
+    /// @brief Alternative method for setting the viewport
+    virtual void setViewportFrom(SUMOReal xPos, SUMOReal yPos, SUMOReal zPos) = 0;
 
     /// @brief Returns the last mouse x-position an event occured at
     FXint getMouseXPosition() const;

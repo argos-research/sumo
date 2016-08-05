@@ -1,4 +1,0 @@
-<trips>
-    <trip id="early" depart="0" from="src" to="dest"/>
-    <trip id="later" depart="3600" from="src" to="dest"/>
-</trips>

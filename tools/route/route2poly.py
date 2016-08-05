@@ -4,7 +4,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2012-11-15
-@version $Id: route2poly.py 20699 2016-05-11 08:53:38Z namdre $
+@version $Id: route2poly.py 21131 2016-07-08 07:59:22Z behrisch $
 
 From a sumo network and a route file, this script generates a polygon (polyline) for every route
 which can be loaded with sumo-gui for visualization
@@ -57,8 +57,10 @@ def parse_args(args):
         options.outfile = options.routefile + ".poly.xml"
     return options
 
+
 def randomize_pos(pos, blur):
     return tuple([val + random.uniform(-blur, blur) for val in pos])
+
 
 def generate_poly(net, id, color, layer, geo, edges, blur, outf):
     shape = list(itertools.chain(*list(net.getEdge(e).getLane(0).getShape()

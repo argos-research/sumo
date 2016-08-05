@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: OptionsCont.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: OptionsCont.cpp 21217 2016-07-22 10:57:44Z behrisch $
 ///
 // A storage for options (typed value containers)
 /****************************************************************************/
@@ -532,10 +532,10 @@ OptionsCont::addOptionSubTopic(const std::string& topic) {
 
 void
 OptionsCont::splitLines(std::ostream& os, std::string what,
-                        size_t offset, size_t nextOffset) {
+                        int offset, int nextOffset) {
     while (what.length() > 0) {
-        if (what.length() > 79 - offset) {
-            size_t splitPos = what.rfind(';', 79 - offset);
+        if ((int)what.length() > 79 - offset) {
+            std::string::size_type splitPos = what.rfind(';', 79 - offset);
             if (splitPos == std::string::npos) {
                 splitPos = what.rfind(' ', 79 - offset);
             } else {
@@ -544,7 +544,7 @@ OptionsCont::splitLines(std::ostream& os, std::string what,
             if (splitPos != std::string::npos) {
                 os << what.substr(0, splitPos) << std::endl;
                 what = what.substr(splitPos);
-                for (size_t r = 0; r < nextOffset + 1; ++r) {
+                for (int r = 0; r < nextOffset + 1; ++r) {
                     os << ' ';
                 }
             } else {
@@ -680,14 +680,14 @@ OptionsCont::printHelp(std::ostream& os) {
     // print the options
     // check their sizes first
     //  we want to know how large the largest not-too-large-entry will be
-    size_t tooLarge = 40;
-    size_t maxSize = 0;
+    int tooLarge = 40;
+    int maxSize = 0;
     for (i = mySubTopics.begin(); i != mySubTopics.end(); ++i) {
         const std::vector<std::string>& entries = mySubTopicEntries[*i];
         for (j = entries.begin(); j != entries.end(); ++j) {
             Option* o = getSecure(*j);
             // name, two leading spaces and "--"
-            size_t csize = (*j).length() + 2 + 4;
+            int csize = (int)j->length() + 2 + 4;
             // abbreviation length ("-X, "->4chars) if any
             std::vector<std::string> synonymes = getSynonymes(*j);
             if (find_if(synonymes.begin(), synonymes.end(), abbreviation_finder()) != synonymes.end()) {
@@ -695,7 +695,7 @@ OptionsCont::printHelp(std::ostream& os) {
             }
             // the type name
             if (!o->isBool()) {
-                csize += 1 + o->getTypeName().length();
+                csize += 1 + (int)o->getTypeName().length();
             }
             // divider
             csize += 2;
@@ -710,7 +710,7 @@ OptionsCont::printHelp(std::ostream& os) {
         const std::vector<std::string>& entries = mySubTopicEntries[*i];
         for (j = entries.begin(); j != entries.end(); ++j) {
             // start length computation
-            size_t csize = (*j).length() + 2;
+            int csize = (int)j->length() + 2;
             Option* o = getSecure(*j);
             os << "  ";
             // write abbreviation if given
@@ -728,15 +728,15 @@ OptionsCont::printHelp(std::ostream& os) {
             // write the type if not a bool option
             if (!o->isBool()) {
                 os << ' ' << o->getTypeName();
-                csize += 1 + o->getTypeName().length();
+                csize += 1 + (int)o->getTypeName().length();
             }
             csize += 2;
             // write the description formatting it
             os << "  ";
-            for (size_t r = maxSize; r > csize; --r) {
+            for (int r = maxSize; r > csize; --r) {
                 os << ' ';
             }
-            size_t offset = csize > tooLarge ? csize : maxSize;
+            int offset = csize > tooLarge ? csize : maxSize;
             splitLines(os, o->getDescription(), offset, maxSize);
         }
         os << std::endl;

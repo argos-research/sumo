@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2011-10-05
-/// @version $Id: NIXMLTrafficLightsHandler.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NIXMLTrafficLightsHandler.cpp 21130 2016-07-08 05:50:46Z namdre $
 ///
 // Importer for traffic lights stored in XML
 /****************************************************************************/
@@ -320,7 +320,7 @@ int
 NIXMLTrafficLightsHandler::retrieveLaneIndex(
     const SUMOSAXAttributes& attrs, SumoXMLAttr attr, NBEdge* edge, bool& ok) {
     int laneIndex = attrs.get<int>(attr, 0, ok);
-    if (edge->getNumLanes() <= (size_t) laneIndex) {
+    if (edge->getNumLanes() <= laneIndex) {
         WRITE_ERROR("Invalid lane index '" + toString(laneIndex) + "' for edge '" + edge->getID() + "'.");
         ok = false;
     }

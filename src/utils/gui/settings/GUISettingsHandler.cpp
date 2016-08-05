@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Laura Bieker
 /// @date    Fri, 24. Apr 2009
-/// @version $Id: GUISettingsHandler.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUISettingsHandler.cpp 21228 2016-07-25 09:21:08Z namdre $
 ///
 // The dialog to change the view (gui) settings.
 /****************************************************************************/
@@ -39,6 +39,7 @@
 #include <utils/common/FileHelpers.h>
 #include <utils/gui/settings/GUIVisualizationSettings.h>
 #include <utils/gui/settings/GUICompleteSchemeStorage.h>
+#include <utils/gui/windows/GUIPerspectiveChanger.h>
 #include <utils/foxtools/MFXImageHelper.h>
 #include <utils/xml/SUMOSAXReader.h>
 #include <utils/xml/XMLSubSys.h>
@@ -139,6 +140,9 @@ GUISettingsHandler::myStartElement(int element,
             mySettings.streetName = parseTextSettings("streetName", attrs, mySettings.streetName);
             mySettings.hideConnectors = TplConvert::_2bool(attrs.getStringSecure("hideConnectors", toString(mySettings.hideConnectors)).c_str());
             mySettings.laneWidthExaggeration = TplConvert::_2SUMOReal(attrs.getStringSecure("widthExaggeration", toString(mySettings.laneWidthExaggeration)).c_str());
+            mySettings.laneMinSize = TplConvert::_2SUMOReal(attrs.getStringSecure("minSize", toString(mySettings.laneWidthExaggeration)).c_str());
+            mySettings.showLaneDirection = TplConvert::_2bool(attrs.getStringSecure("showDirection", toString(mySettings.showLaneDirection)).c_str());
+            mySettings.showSublanes = TplConvert::_2bool(attrs.getStringSecure("showSublanes", toString(mySettings.showSublanes)).c_str());
             myCurrentColorer = element;
             mySettings.edgeColorer.setActive(laneEdgeMode);
             mySettings.edgeScaler.setActive(laneEdgeScaleMode);
@@ -237,6 +241,7 @@ GUISettingsHandler::myStartElement(int element,
             mySettings.drawJunctionShape = TplConvert::_2bool(attrs.getStringSecure("drawShape", toString(mySettings.drawJunctionShape)).c_str());
             mySettings.drawCrossingsAndWalkingareas = TplConvert::_2bool(attrs.getStringSecure(
                         "drawCrossingsAndWalkingareas", toString(mySettings.drawCrossingsAndWalkingareas)).c_str());
+            mySettings.junctionSize = parseSizeSettings("junction", attrs, mySettings.junctionSize);
             myCurrentColorer = element;
             break;
         case SUMO_TAG_VIEWSETTINGS_ADDITIONALS:
@@ -346,17 +351,12 @@ GUISettingsHandler::addSettings(GUISUMOAbstractView* view) const {
 
 
 void
-GUISettingsHandler::setViewport(GUISUMOAbstractView* view) const {
+GUISettingsHandler::applyViewport(GUISUMOAbstractView* view) const {
     if (myLookFrom.z() > 0) {
-        view->setViewport(myLookFrom, myLookAt);
+        // z value stores zoom so we must convert first
+        Position lookFrom(myLookFrom.x(), myLookFrom.y(), view->getChanger().zoom2ZPos(myLookFrom.z()));
+        view->setViewportFromTo(lookFrom, myLookAt);
     }
-}
-
-
-void
-GUISettingsHandler::setViewport(Position& lookFrom, Position& lookAt) const {
-    lookFrom = myLookFrom;
-    lookAt = myLookAt;
 }
 
 

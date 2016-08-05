@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: TrackerValueDesc.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: TrackerValueDesc.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Representation of a timeline of floats with their names and moments
 /****************************************************************************/
@@ -130,7 +130,7 @@ private:
     SUMOReal myInvalidValue;
 
     /// Counter for valid numbers within the current aggregation interval
-    size_t myValidNo;
+    int myValidNo;
 
     /// The time step the values are added from
     SUMOTime myRecordingBegin;

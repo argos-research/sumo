@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Yun-Pang Floetteroed
 /// @date    Tue, 20 Jan 2004
-/// @version $Id: ROJTREdge.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ROJTREdge.cpp 21217 2016-07-22 10:57:44Z behrisch $
 ///
 // An edge the jtr-router may route through
 /****************************************************************************/
@@ -46,7 +46,7 @@
 // ===========================================================================
 // method definitions
 // ===========================================================================
-ROJTREdge::ROJTREdge(const std::string& id, RONode* from, RONode* to, unsigned int index, const int priority)
+ROJTREdge::ROJTREdge(const std::string& id, RONode* from, RONode* to, int index, const int priority)
     : ROEdge(id, from, to, index, priority) {}
 
 
@@ -98,7 +98,7 @@ ROJTREdge::chooseNext(const ROVehicle* const veh, SUMOReal time, const std::set<
     }
     // if no loaded definitions are valid for this time, try to use the defaults
     if (dist.getOverallProb() == 0) {
-        for (size_t i = 0; i < myParsedTurnings.size(); ++i) {
+        for (int i = 0; i < (int)myParsedTurnings.size(); ++i) {
             if (avoid.count(myFollowingEdges[i]) == 0) {
                 if (veh == 0 || !myFollowingEdges[i]->prohibits(veh)) {
                     dist.add(myParsedTurnings[i], static_cast<ROJTREdge*>(myFollowingEdges[i]));
@@ -120,16 +120,15 @@ ROJTREdge::setTurnDefaults(const std::vector<SUMOReal>& defs) {
     // I hope, we'll find a less ridiculous solution for this
     std::vector<SUMOReal> tmp(defs.size()*myFollowingEdges.size(), 0);
     // store in less common multiple
-    size_t i;
-    for (i = 0; i < defs.size(); ++i) {
-        for (size_t j = 0; j < myFollowingEdges.size(); ++j) {
+    for (int i = 0; i < (int)defs.size(); ++i) {
+        for (int j = 0; j < (int)myFollowingEdges.size(); ++j) {
             tmp[i * myFollowingEdges.size() + j] = (SUMOReal)(defs[i] / 100.0 / (myFollowingEdges.size()));
         }
     }
     // parse from less common multiple
-    for (i = 0; i < myFollowingEdges.size(); ++i) {
+    for (int i = 0; i < (int)myFollowingEdges.size(); ++i) {
         SUMOReal value = 0;
-        for (size_t j = 0; j < defs.size(); ++j) {
+        for (int j = 0; j < (int)defs.size(); ++j) {
             value += tmp[i * defs.size() + j];
         }
         myParsedTurnings.push_back((SUMOReal) value);

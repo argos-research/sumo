@@ -2,7 +2,7 @@
 /// @file    GNERerouterDialog.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    April 2016
-/// @version $Id: GNERerouterDialog.cpp 20472 2016-04-15 15:36:45Z palcraft $
+/// @version $Id: GNERerouterDialog.cpp 21131 2016-07-08 07:59:22Z behrisch $
 ///
 /// Dialog for edit rerouters
 /****************************************************************************/
@@ -50,19 +50,14 @@ FXDEFMAP(GNERerouterDialog) GNERerouterDialogMap[] = {
 FXIMPLEMENT(GNERerouterDialog, FXDialogBox, GNERerouterDialogMap, ARRAYNUMBER(GNERerouterDialogMap))
 
 // ===========================================================================
-// static member definitions
-// ===========================================================================
-
-
-// ===========================================================================
 // member method definitions
 // ===========================================================================
 
-GNERerouterDialog::GNERerouterDialog(GNERerouter *rerouterParent) : 
+GNERerouterDialog::GNERerouterDialog(GNERerouter* rerouterParent) :
     GNEAdditionalDialog(rerouterParent, 320, 240),
     myRerouterParent(rerouterParent) {
     // Execute additional dialog (To make it modal)
-    execute(); 
+    execute();
 }
 
 
@@ -70,18 +65,18 @@ GNERerouterDialog::~GNERerouterDialog() {
 }
 
 
-long 
+long
 GNERerouterDialog::onCmdAccept(FXObject*, FXSelector, void*) {
     // Stop Modal
-    getApp()->stopModal(this,TRUE);
+    getApp()->stopModal(this, TRUE);
     return 1;
 }
 
 
-long 
+long
 GNERerouterDialog::onCmdCancel(FXObject*, FXSelector, void*) {
     // Stop Modal
-    getApp()->stopModal(this,TRUE);
+    getApp()->stopModal(this, TRUE);
     return 1;
 }
 
@@ -89,6 +84,12 @@ GNERerouterDialog::onCmdCancel(FXObject*, FXSelector, void*) {
 long
 GNERerouterDialog::onCmdReset(FXObject*, FXSelector, void*) {
     return 1;
+}
+
+
+void
+GNERerouterDialog::updateTable() {
+
 }
 
 /****************************************************************************/

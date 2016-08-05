@@ -2,7 +2,7 @@
 /// @file    GNEInternalLane.cpp
 /// @author  Jakob Erdmann
 /// @date    June 2011
-/// @version $Id: GNEInternalLane.cpp 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEInternalLane.cpp 21131 2016-07-08 07:59:22Z behrisch $
 ///
 // A class for visualizing Inner Lanes (used when editing traffic lights)
 /****************************************************************************/
@@ -172,7 +172,7 @@ GNEInternalLane::setLinkState(LinkState state) {
 
 
 LinkState
-GNEInternalLane::getLinkState() const{
+GNEInternalLane::getLinkState() const {
     return (LinkState)myState;
 }
 

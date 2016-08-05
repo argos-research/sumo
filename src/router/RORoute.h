@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Yun-Pang Floetteroed
 /// @date    Sept 2002
-/// @version $Id: RORoute.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: RORoute.h 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A complete router's route
 /****************************************************************************/
@@ -150,8 +150,8 @@ public:
      *
      * @return The number of edges the route is made of
      */
-    unsigned int size() const {
-        return (unsigned int) myRoute.size();
+    int size() const {
+        return (int) myRoute.size();
     }
 
 

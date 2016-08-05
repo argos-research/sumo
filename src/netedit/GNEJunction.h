@@ -2,7 +2,7 @@
 /// @file    GNEJunction.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEJunction.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEJunction.h 21150 2016-07-12 12:28:35Z behrisch $
 ///
 // A class for visualizing and editing junctions in netedit (adapted from
 // GUIJunctionWrapper)
@@ -180,9 +180,6 @@ public:
     /// @brief whether this junction has a valid logic
     bool isLogicValid();
 
-    /// @brief reset decals
-    static void resetDecal();
-
     /// @brief modify the specified crossing (using friend privileges)
     void updateCrossingAttributes(NBNode::Crossing crossing);
 
@@ -217,12 +214,6 @@ private:
 
     /// @brief the built crossing objects
     std::vector<GNECrossing*> myCrossings;
-
-    /// @brief gl-id of the tls-decal (drawn in tls-mode)
-    static int TLSDecalGlID;
-
-    /// @brief whether the tls-decal has been initialized
-    static bool TLSDecalInitialized;
 
 private:
     /// @brief Invalidated copy constructor.

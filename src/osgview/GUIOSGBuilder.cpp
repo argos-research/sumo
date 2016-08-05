@@ -1,8 +1,9 @@
 /****************************************************************************/
 /// @file    GUIOSGBuilder.cpp
 /// @author  Daniel Krajzewicz
+/// @author  Michael Behrisch
 /// @date    19.01.2012
-/// @version $Id: GUIOSGBuilder.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GUIOSGBuilder.cpp 21206 2016-07-20 08:08:35Z behrisch $
 ///
 // Builds OSG nodes from microsim objects
 /****************************************************************************/
@@ -94,7 +95,7 @@ GUIOSGBuilder::buildOSGScene(osg::Node* const tlg, osg::Node* const tly, osg::No
         }
     }
     // build junctions
-    for (unsigned int index = 0; index < net->myJunctionWrapper.size(); ++index) {
+    for (int index = 0; index < (int)net->myJunctionWrapper.size(); ++index) {
         buildOSGJunctionGeometry(*net->myJunctionWrapper[index], *root, tesselator);
     }
     // build traffic lights
@@ -172,7 +173,7 @@ GUIOSGBuilder::buildOSGEdgeGeometry(const MSEdge& edge,
         PositionVector rshape = shape;
         rshape.move2side(SUMO_const_halfLaneWidth);
         int index = 0;
-        for (unsigned int k = 0; k < rshape.size(); ++k, ++index) {
+        for (int k = 0; k < (int)rshape.size(); ++k, ++index) {
             (*osg_coords)[index].set(rshape[k].x(), rshape[k].y(), rshape[k].z());
         }
         PositionVector lshape = shape;
@@ -221,7 +222,7 @@ GUIOSGBuilder::buildOSGJunctionGeometry(GUIJunctionWrapper& junction,
     addTo.addChild(geode);
     osg::Vec3Array* osg_coords = new osg::Vec3Array(shape.size());
     geom->setVertexArray(osg_coords);
-    for (unsigned int k = 0; k < shape.size(); ++k) {
+    for (int k = 0; k < (int)shape.size(); ++k) {
         (*osg_coords)[k].set(shape[k].x(), shape[k].y(), shape[k].z());
     }
     osg::Vec3Array* osg_normals = new osg::Vec3Array(1);

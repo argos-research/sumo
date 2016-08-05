@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Felix Brack
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: UtilExceptions.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: UtilExceptions.h 21131 2016-07-08 07:59:22Z behrisch $
 ///
 // Exceptions for used by some utility classes
 /****************************************************************************/
@@ -52,7 +52,7 @@ public:
     ProcessError()
         : std::runtime_error("Process Error") {}
 
-   /// @brief constructor
+    /// @brief constructor
     ProcessError(const std::string& msg)
         : std::runtime_error(msg) {}
 };

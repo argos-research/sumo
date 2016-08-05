@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2006-03-08
-/// @version $Id: FXLinkLabel.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: FXLinkLabel.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 //
 /****************************************************************************/
@@ -46,7 +46,7 @@ FXint
 FXLinkLabel::fxexecute(FXString link) {
 #ifdef WIN32
     FXString quoted = FXPath::enquote(link);
-    return (size_t)ShellExecute(NULL, "open", quoted.text(), NULL, NULL, SW_SHOW) > 32;
+    return (int)ShellExecute(NULL, "open", quoted.text(), NULL, NULL, SW_SHOW) > 32;
 #else
     FXString ext = FXPath::extension(link);
     FXString list;

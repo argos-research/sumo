@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    2004
-/// @version $Id: OutputDevice.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: OutputDevice.cpp 21201 2016-07-19 11:57:22Z behrisch $
 ///
 // Static storage of an output device and its base (abstract) implementation
 /****************************************************************************/
@@ -85,11 +85,11 @@ OutputDevice::getDevice(const std::string& name) {
             throw IOError("No port number given.");
         }
     } else {
-        const size_t len = name.length();
+        const int len = (int)name.length();
         std::string name2 = name;
         if (OptionsCont::getOptions().isSet("output-prefix") && name != "/dev/null") {
             std::string prefix = OptionsCont::getOptions().getString("output-prefix");
-            size_t metaTimeIndex = prefix.find("TIME");
+            const std::string::size_type metaTimeIndex = prefix.find("TIME");
             if (metaTimeIndex != std::string::npos) {
                 time_t rawtime;
                 char buffer [80];
@@ -188,7 +188,7 @@ OutputDevice::realString(const SUMOReal v, const int precision) {
 // ===========================================================================
 // member method definitions
 // ===========================================================================
-OutputDevice::OutputDevice(const bool binary, const unsigned int defaultIndentation)
+OutputDevice::OutputDevice(const bool binary, const int defaultIndentation)
     : myAmBinary(binary) {
     if (binary) {
         myFormatter = new BinaryFormatter();
@@ -223,7 +223,7 @@ OutputDevice::close() {
 
 
 void
-OutputDevice::setPrecision(unsigned int precision) {
+OutputDevice::setPrecision(int precision) {
     getOStream() << std::setprecision(precision);
 }
 

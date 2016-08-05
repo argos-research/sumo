@@ -2,7 +2,7 @@
 /// @file    GNEChange_Additional.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEChange_Additional.cpp 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEChange_Additional.cpp 21150 2016-07-12 12:28:35Z behrisch $
 ///
 /// A network change in which a busStop is created or deleted
 /****************************************************************************/
@@ -57,8 +57,9 @@ GNEChange_Additional::GNEChange_Additional(GNENet* net, GNEAdditional* additiona
 GNEChange_Additional::~GNEChange_Additional() {
     assert(myAdditional);
     myAdditional->decRef("GNEChange_Additional");
-    if (myAdditional->unreferenced())
+    if (myAdditional->unreferenced()) {
         delete myAdditional;
+    }
 }
 
 
@@ -81,16 +82,18 @@ void GNEChange_Additional::redo() {
 
 
 FXString GNEChange_Additional::undoName() const {
-    if (myForward)
+    if (myForward) {
         return ("Undo create additional");
-    else
+    } else {
         return ("Undo delete additional");
+    }
 }
 
 
 FXString GNEChange_Additional::redoName() const {
-    if (myForward)
+    if (myForward) {
         return ("Redo create additional");
-    else
+    } else {
         return ("Redo delete additional");
+    }
 }

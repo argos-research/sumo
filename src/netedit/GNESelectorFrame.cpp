@@ -2,7 +2,7 @@
 /// @file    GNESelectorFrame.cpp
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNESelectorFrame.cpp 20474 2016-04-16 09:10:57Z palcraft $
+/// @version $Id: GNESelectorFrame.cpp 21217 2016-07-22 10:57:44Z behrisch $
 ///
 // The Widget for modifying selections of network-elements
 // (some elements adapted from GUIDialog_GLChosenEditor)
@@ -266,7 +266,7 @@ GNESelectorFrame::onCmdSelMBString(FXObject*, FXSelector, void*) {
         SUMOReal val;
         std::istringstream buf(expr);
         buf >> val;
-        if (!buf.fail() && (size_t)buf.tellg() == expr.size()) {
+        if (!buf.fail() && (int)buf.tellg() == (int)expr.size()) {
             handleIDs(getMatches(tag, attr, compOp, val, expr), false);
         } else {
             valid = false;

@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: MSTransportableControl.cpp 20773 2016-05-20 13:43:03Z behrisch $
+/// @version $Id: MSTransportableControl.cpp 21217 2016-07-22 10:57:44Z behrisch $
 ///
 // Stores all persons in the net and handles their waiting for cars.
 /****************************************************************************/
@@ -122,7 +122,7 @@ MSTransportableControl::checkWaiting(MSNet* net, const SUMOTime time) {
     while (myWaiting4Departure.find(time) != myWaiting4Departure.end()) {
         const TransportableVector& transportables = myWaiting4Departure[time];
         // we cannot use an iterator here because there might be additions to the vector while proceeding
-        for (size_t i = 0; i < transportables.size(); ++i) {
+        for (int i = 0; i < (int)transportables.size(); ++i) {
             if (transportables[i]->proceed(net, time)) {
                 myRunningNumber++;
             } else {
@@ -134,7 +134,7 @@ MSTransportableControl::checkWaiting(MSNet* net, const SUMOTime time) {
     while (myWaitingUntil.find(time) != myWaitingUntil.end()) {
         const TransportableVector& transportables = myWaitingUntil[time];
         // we cannot use an iterator here because there might be additions to the vector while proceeding
-        for (size_t i = 0; i < transportables.size(); ++i) {
+        for (int i = 0; i < (int)transportables.size(); ++i) {
             if (!transportables[i]->proceed(net, time)) {
                 erase(transportables[i]);
             }
@@ -201,8 +201,8 @@ MSTransportableControl::loadAnyWaiting(MSEdge* edge, MSVehicle* vehicle, MSVehic
             const std::string& line = vehicle->getParameter().line == "" ? vehicle->getParameter().id : vehicle->getParameter().line;
             SUMOTime currentTime = MSNet::getInstance()->getCurrentTimeStep();
             if ((*i)->isWaitingFor(line) && vehicle->getVehicleType().getContainerCapacity() > vehicle->getContainerNumber()
-                && stop->timeToLoadNextContainer <= currentTime
-                && stop->startPos <= (*i)->getEdgePos() && (*i)->getEdgePos() <= stop->endPos) {
+                    && stop->timeToLoadNextContainer <= currentTime
+                    && stop->startPos <= (*i)->getEdgePos() && (*i)->getEdgePos() <= stop->endPos) {
                 edge->removeContainer(*i);
                 vehicle->addContainer(*i);
                 //if the time a container needs to get loaded on the vehicle extends the duration of the stop of the vehicle extend

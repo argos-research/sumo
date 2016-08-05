@@ -7,7 +7,7 @@
 @author  Daniel Krajzewicz
 @author  Jakob Erdmann
 @date    2008-10-09
-@version $Id: __init__.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: __init__.py 21131 2016-07-08 07:59:22Z behrisch $
 
 Python implementation of the TraCI interface.
 
@@ -24,10 +24,12 @@ from __future__ import print_function
 from __future__ import absolute_import
 import socket
 import time
+import subprocess
 
+import sumolib
 from .domain import _defaultDomains
 from .connection import Connection, _embedded
-from .exceptions import TraCIException
+from .exceptions import FatalTraCIError, TraCIException
 from . import _inductionloop, _multientryexit, _trafficlights
 from . import _lane, _vehicle, _vehicletype, _person, _route, _areal
 from . import _poi, _polygon, _junction, _edge, _simulation, _gui
@@ -50,8 +52,13 @@ def connect(port=8813, numRetries=10, host="localhost"):
     for wait in range(1, numRetries + 2):
         try:
             return Connection(host, port)
-        except socket.error:
-            time.sleep(wait)
+        except socket.error as e:
+            print("Could not connect to TraCI server at %s:%s" %
+                  (host, port), e)
+            if wait < numRetries + 1:
+                print(" Retrying in %s seconds" % wait)
+                time.sleep(wait)
+    raise FatalTraCIError(str(e))
 
 
 def init(port=8813, numRetries=10, host="localhost", label="default"):
@@ -60,7 +67,20 @@ def init(port=8813, numRetries=10, host="localhost", label="default"):
     label. This method is not thread-safe. It accesses the connection
     pool concurrently.
     """
-    _connections[label] = connect(port, numRetries, host)
+    _connections[label] = (connect(port, numRetries, host), None)
+    switch(label)
+    return getVersion()
+
+
+def start(cmd, port=None, numRetries=10, label="default"):
+    """
+    Start a sumo server using cmd, establish a connection to it and
+    store it under the given label. This method is not thread-safe.
+    """
+    if port is None:
+        port = sumolib.miscutils.getFreeSocketPort()
+    sumoProcess = subprocess.Popen(cmd + ["--remote-port", str(port)])
+    _connections[label] = (connect(port, numRetries, "localhost"), sumoProcess)
     switch(label)
     return getVersion()
 
@@ -75,18 +95,20 @@ def simulationStep(step=0):
     If the given value is 0 or absent, exactly one step is performed.
     Values smaller than or equal to the current sim time result in no action.
     """
-    return _connections[""].simulationStep(step)
+    return _connections[""][0].simulationStep(step)
 
 
 def getVersion():
-    return _connections[""].getVersion()
+    return _connections[""][0].getVersion()
 
 
-def close():
-    _connections[""].close()
+def close(wait=True):
+    _connections[""][0].close()
+    if wait and _connections[""][1] is not None:
+        _connections[""][1].wait()
 
 
 def switch(label):
     _connections[""] = _connections[label]
     for domain in _defaultDomains:
-        domain._setConnection(_connections[""])
+        domain._setConnection(_connections[""][0])

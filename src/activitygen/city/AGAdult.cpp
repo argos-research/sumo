@@ -5,7 +5,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    July 2010
-/// @version $Id: AGAdult.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: AGAdult.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // Person in working age: can be linked to a work position.
 /****************************************************************************/
@@ -44,29 +44,28 @@
 // ===========================================================================
 AGWorkPosition*
 AGAdult::randomFreeWorkPosition(std::vector<AGWorkPosition>* wps) {
-    size_t wpsIndex = 0;
-
-    // TODO: Could end up in an endless loop
-    do {
-        wpsIndex = RandHelper::rand(wps->size());
-    } while (wps->at(wpsIndex).isTaken());
-
-    return &wps->at(wpsIndex);
+    std::vector<AGWorkPosition*> freePos;
+    for (std::vector<AGWorkPosition>::iterator i = wps->begin(); i!= wps->end(); ++i) {
+        if (!i->isTaken()) {
+            freePos.push_back(&*i);
+        }
+    }
+    if (freePos.empty()) {
+        return 0;
+    }
+    return RandHelper::getRandomFrom(freePos);
 }
 
-/****************************************************************************/
 
 AGAdult::AGAdult(int age)
     : AGPerson(age), work(0) {}
 
-/****************************************************************************/
 
 void
 AGAdult::print() const {
     std::cout << "- AGAdult: Age=" << age << " Work=" << work << std::endl;
 }
 
-/****************************************************************************/
 
 void
 AGAdult::tryToWork(SUMOReal rate, std::vector<AGWorkPosition>* wps) {
@@ -88,21 +87,18 @@ AGAdult::tryToWork(SUMOReal rate, std::vector<AGWorkPosition>* wps) {
     }
 }
 
-/****************************************************************************/
 
 bool
 AGAdult::isWorking() const {
     return (work != 0);
 }
 
-/****************************************************************************/
 
 void
 AGAdult::lostWorkPosition() {
     work = 0;
 }
 
-/****************************************************************************/
 
 void
 AGAdult::resignFromWorkPosition() {
@@ -111,17 +107,13 @@ AGAdult::resignFromWorkPosition() {
     }
 }
 
-/****************************************************************************/
 
 const AGWorkPosition&
 AGAdult::getWorkPosition() const {
     if (work != 0) {
         return *work;
     }
-
-    else {
-        throw (std::runtime_error("AGAdult::getWorkPosition: Adult is unemployed."));
-    }
+    throw std::runtime_error("AGAdult::getWorkPosition: Adult is unemployed.");
 }
 
 /****************************************************************************/

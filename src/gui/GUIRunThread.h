@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIRunThread.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIRunThread.h 21068 2016-06-30 09:05:52Z behrisch $
 ///
 // The thread that runs the simulation
 /****************************************************************************/
@@ -116,7 +116,7 @@ public:
         return myBreakpoints;
     }
 
-    MFXMutex& getBreakpointLock() {
+    FXMutex& getBreakpointLock() {
         return myBreakpointLock;
     }
 
@@ -163,7 +163,7 @@ protected:
     std::vector<SUMOTime> myBreakpoints;
 
     /// @brief Lock for modifying the list of breakpoints
-    MFXMutex myBreakpointLock;
+    FXMutex myBreakpointLock;
 
 };
 

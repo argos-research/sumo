@@ -2,7 +2,7 @@
 /// @file    GNEVariableSpeedSignal.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEVariableSpeedSignal.cpp 19861 2016-02-01 09:08:47Z palcraft $
+/// @version $Id: GNEVariableSpeedSignal.cpp 21150 2016-07-12 12:28:35Z behrisch $
 ///
 ///
 /****************************************************************************/
@@ -39,7 +39,7 @@
 #include <utils/geom/GeomHelper.h>
 #include <utils/gui/windows/GUISUMOAbstractView.h>
 #include <utils/gui/windows/GUIAppEnum.h>
-#include <utils/gui/images/GUIIconSubSys.h>
+#include <utils/gui/images/GUITextureSubSys.h>
 #include <utils/gui/div/GUIParameterTableWindow.h>
 #include <utils/gui/globjects/GUIGLObjectPopupMenu.h>
 #include <utils/gui/div/GUIGlobalSelection.h>
@@ -54,8 +54,6 @@
 #include "GNEUndoList.h"
 #include "GNENet.h"
 #include "GNEChange_Attribute.h"
-#include "GNELogo_VariableSpeedSignal.cpp"
-#include "GNELogo_VariableSpeedSignalSelected.cpp"
 #include "GNEVariableSpeedSignalDialog.h"
 
 #ifdef CHECK_MEMORY_LEAKS
@@ -63,40 +61,19 @@
 #endif
 
 // ===========================================================================
-// static member definitions
-// ===========================================================================
-GUIGlID GNEVariableSpeedSignal::variableSpeedSignalGlID = 0;
-GUIGlID GNEVariableSpeedSignal::variableSpeedSignalSelectedGlID = 0;
-bool GNEVariableSpeedSignal::variableSpeedSignalInitialized = false;
-bool GNEVariableSpeedSignal::variableSpeedSignalSelectedInitialized = false;
-
-// ===========================================================================
 // member method definitions
 // ===========================================================================
 
-GNEVariableSpeedSignal::GNEVariableSpeedSignal(const std::string& id, GNEViewNet* viewNet, Position pos, std::vector<GNELane*> lanes, const std::string& filename, bool blocked) :
-    GNEAdditionalSet(id, viewNet, pos, SUMO_TAG_VSS, blocked, std::vector<GNEAdditional*>(), std::vector<GNEEdge*>(), lanes),
-    myFilename(filename) {
+GNEVariableSpeedSignal::GNEVariableSpeedSignal(const std::string& id, GNEViewNet* viewNet, Position pos, std::vector<GNELane*> lanes, const std::string& filename, const std::map<SUMOTime, SUMOReal>& VSSValues, bool blocked) :
+    GNEAdditionalSet(id, viewNet, pos, SUMO_TAG_VSS, blocked, std::vector<GNEAdditional * >(), std::vector<GNEEdge * >(), lanes),
+    myFilename(filename),
+    myVSSValues(VSSValues),
+    mySaveInFilename(false) {
     // Update geometry;
     updateGeometry();
     // Set colors
     myBaseColor = RGBColor(76, 170, 50, 255);
     myBaseColorSelected = RGBColor(161, 255, 135, 255);
-    // load rerouter logo, if wasn't inicializated
-    if (!variableSpeedSignalInitialized) {
-        FXImage* i = new FXGIFImage(getViewNet()->getNet()->getApp(), GNELogo_VariableSpeedSignal, IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP);
-        variableSpeedSignalGlID = GUITexturesHelper::add(i);
-        variableSpeedSignalInitialized = true;
-        delete i;
-    }
-
-    // load rerouter selected logo, if wasn't inicializated
-    if (!variableSpeedSignalSelectedInitialized) {
-        FXImage* i = new FXGIFImage(getViewNet()->getNet()->getApp(), GNELogo_VariableSpeedSignalSelected, IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP);
-        variableSpeedSignalSelectedGlID = GUITexturesHelper::add(i);
-        variableSpeedSignalSelectedInitialized = true;
-        delete i;
-    }
 }
 
 
@@ -109,8 +86,8 @@ GNEVariableSpeedSignal::updateGeometry() {
     // Clear shape
     myShape.clear();
 
-    // Set position
-    myShape.push_back(myPosition);
+    // Set block icon position
+    myBlockIconPosition = myPosition;
 
     // Set block icon offset
     myBlockIconOffset = Position(-0.5, -0.5);
@@ -118,21 +95,35 @@ GNEVariableSpeedSignal::updateGeometry() {
     // Set block icon rotation, and using their rotation for draw logo
     setBlockIconRotation();
 
+    // Set position
+    myShape.push_back(myPosition);
+
+    // Add shape of childs (To avoid graphics errors)
+    for (childLanes::iterator i = myChildLanes.begin(); i != myChildLanes.end(); i++) {
+        myShape.append(i->lane->getShape());
+    }
+
     // Update connections
     updateConnections();
 }
 
 
-void 
+Position
+GNEVariableSpeedSignal::getPositionInView() const {
+    return myPosition;
+}
+
+
+void
 GNEVariableSpeedSignal::openAdditionalDialog() {
     GNEVariableSpeedSignalDialog variableSpeedSignalDialog(this);
 }
 
 
 void
-GNEVariableSpeedSignal::moveAdditional(SUMOReal posx, SUMOReal posy, GNEUndoList *undoList) {
+GNEVariableSpeedSignal::moveAdditional(SUMOReal posx, SUMOReal posy, GNEUndoList* undoList) {
     // if item isn't blocked
-    if(myBlocked == false) {
+    if (myBlocked == false) {
         // change Position
         undoList->p_add(new GNEChange_Attribute(this, SUMO_ATTR_POSITION, toString(Position(posx, posy, 0))));
     }
@@ -140,35 +131,86 @@ GNEVariableSpeedSignal::moveAdditional(SUMOReal posx, SUMOReal posy, GNEUndoList
 
 
 void
-GNEVariableSpeedSignal::writeAdditional(OutputDevice& device) {
-
+GNEVariableSpeedSignal::writeAdditional(OutputDevice& device, const std::string& currentDirectory) {
+    // Write parameters
+    device.openTag(getTag());
+    device.writeAttr(SUMO_ATTR_ID, getID());
+    device.writeAttr(SUMO_ATTR_LANES, joinToString(getLaneChildIds(), " ").c_str());
+    device.writeAttr(SUMO_ATTR_X, myPosition.x());
+    device.writeAttr(SUMO_ATTR_Y, myPosition.y());
+    // If filenam isn't empty and save in filename is enabled, save in a different file. In other case, save in the same additional XML
+    if (!myFilename.empty() && mySaveInFilename == true) {
+        // Write filename attribute
+        device.writeAttr(SUMO_ATTR_FILE, myFilename);
+        // Save values in a different file
+        OutputDevice& deviceVSS = OutputDevice::getDevice(currentDirectory + myFilename);
+        deviceVSS.openTag("VSS");
+        for (std::map<SUMOTime, SUMOReal>::const_iterator i = myVSSValues.begin(); i != myVSSValues.end(); ++i) {
+            // Open VSS tag
+            deviceVSS.openTag(SUMO_TAG_STEP);
+            // Write TimeSTep
+            deviceVSS.writeAttr(SUMO_ATTR_TIME, i->first);
+            // Write speed
+            deviceVSS.writeAttr(SUMO_ATTR_SPEED, i->second);
+            // Close VSS tag
+            deviceVSS.closeTag();
+        }
+        deviceVSS.close();
+    } else {
+        for (std::map<SUMOTime, SUMOReal>::const_iterator i = myVSSValues.begin(); i != myVSSValues.end(); ++i) {
+            // Open VSS tag
+            device.openTag(SUMO_TAG_STEP);
+            // Write TimeSTep
+            device.writeAttr(SUMO_ATTR_TIME, i->first);
+            // Write speed
+            device.writeAttr(SUMO_ATTR_SPEED, i->second);
+            // Close VSS tag
+            device.closeTag();
+        }
+    }
+    // Close tag
+    device.closeTag();
 }
 
 
-std::string 
+std::string
 GNEVariableSpeedSignal::getFilename() const {
     return myFilename;
 }
 
 
-void 
+std::map<SUMOTime, SUMOReal>
+GNEVariableSpeedSignal::getVariableSpeedSignalSteps() const {
+    return myVSSValues;
+}
+
+
+void
 GNEVariableSpeedSignal::setFilename(std::string filename) {
     myFilename = filename;
 }
 
 
-GUIParameterTableWindow*
-GNEVariableSpeedSignal::getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& parent) {
-    /** NOT YET SUPPORTED **/
-    // Ignore Warning
-    UNUSED_PARAMETER(parent);
-    GUIParameterTableWindow* ret = new GUIParameterTableWindow(app, *this, 2);
-    // add items
-    ret->mkItem("id", false, getID());
-    /** @TODO complet with the rest of parameters **/
-    // close building
-    ret->closeBuilding();
-    return ret;
+void
+GNEVariableSpeedSignal::setVariableSpeedSignalSteps(const std::map<SUMOTime, SUMOReal>& vssValues) {
+    myVSSValues = vssValues;
+}
+
+
+bool
+GNEVariableSpeedSignal::insertStep(const SUMOTime time, const SUMOReal speed) {
+    if (myVSSValues.find(time) == myVSSValues.end()) {
+        myVSSValues[time] = speed;
+        return true;
+    } else {
+        return false;
+    }
+}
+
+
+const std::string&
+GNEVariableSpeedSignal::getParentName() const {
+    return myViewNet->getNet()->getMicrosimID();
 }
 
 
@@ -184,13 +226,17 @@ GNEVariableSpeedSignal::drawGL(const GUIVisualizationSettings& s) const {
     glRotated(180, 0, 0, 1);
 
     // Draw icon depending of rerouter is or isn't selected
-    if(isAdditionalSelected()) 
-        GUITexturesHelper::drawTexturedBox(variableSpeedSignalSelectedGlID, 1);
-    else
-        GUITexturesHelper::drawTexturedBox(variableSpeedSignalGlID, 1);
+    if (isAdditionalSelected()) {
+        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_VARIABLESPEEDSIGNALSELECTED), 1);
+    } else {
+        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_VARIABLESPEEDSIGNAL), 1);
+    }
 
     // Pop draw icon matrix
     glPopMatrix();
+
+    // Show Lock icon depending of the Edit mode
+    drawLockIcon(0.4);
 
     // Push matrix to draw every symbol over lane
     glPushMatrix();
@@ -227,8 +273,9 @@ GNEVariableSpeedSignal::drawGL(const GUIVisualizationSettings& s) const {
             SUMOReal speed = i->lane->getSpeed();
             // Show as Km/h
             speed *= 3.6f;
-            if (((int) speed + 1) % 10 == 0)
+            if (((int) speed + 1) % 10 == 0) {
                 speed = (SUMOReal)(((int) speed + 1) / 10 * 10);
+            }
             // draw the speed string
             std::string speedToDraw = toString<SUMOReal>(speed);
             glColor3d(1, 1, 0);
@@ -244,11 +291,8 @@ GNEVariableSpeedSignal::drawGL(const GUIVisualizationSettings& s) const {
         glPopMatrix();
     }
 
+    // Pop symbol matrix
     glPopMatrix();
-
-    // Show Lock icon depending of the Edit mode
-    //if(dynamic_cast<GNEViewNet*>(parent)->showLockIcon())
-        drawLockIcon(0.4);
 
     // Draw connections
     drawConnections();
@@ -265,10 +309,9 @@ std::string
 GNEVariableSpeedSignal::getAttribute(SumoXMLAttr key) const {
     switch (key) {
         case SUMO_ATTR_ID:
-            return getMicrosimID();
+            return getAdditionalID();
         case SUMO_ATTR_LANES:
-            /** completar **/
-            return "";
+            return joinToString(getLaneChildIds(), " ");
         case SUMO_ATTR_POSITION:
             return toString(myPosition);
         case SUMO_ATTR_FILE:
@@ -286,7 +329,6 @@ GNEVariableSpeedSignal::setAttribute(SumoXMLAttr key, const std::string& value, 
     }
     switch (key) {
         case SUMO_ATTR_ID:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
         case SUMO_ATTR_LANES:
         case SUMO_ATTR_POSITION:
         case SUMO_ATTR_FILE:
@@ -303,12 +345,29 @@ bool
 GNEVariableSpeedSignal::isValid(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            if (myViewNet->getNet()->getAdditional(getTag(), value) == NULL) {
+                return true;
+            } else {
+                return false;
+            }
         case SUMO_ATTR_POSITION:
             bool ok;
             return GeomConvHelper::parseShapeReporting(value, "user-supplied position", 0, ok, false).size() == 1;
-        case SUMO_ATTR_LANES:
-            /** completar **/
+        case SUMO_ATTR_LANES: {
+            std::vector<std::string> laneIds;
+            SUMOSAXAttributes::parseStringVector(value, laneIds);
+            // Empty Lanes aren't valid
+            if (laneIds.empty()) {
+                return false;
+            }
+            // Iterate over parsed lanes
+            for (int i = 0; i < (int)laneIds.size(); i++) {
+                if (myViewNet->getNet()->retrieveLane(laneIds.at(i), false) == NULL) {
+                    return false;
+                }
+            }
+            return true;
+        }
         case SUMO_ATTR_FILE:
             return isValidFileValue(value);
         default:
@@ -321,11 +380,25 @@ void
 GNEVariableSpeedSignal::setAttribute(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
-        case SUMO_ATTR_LANE:
-            throw InvalidArgument("modifying " + toString(getType()) + " attribute '" + toString(key) + "' not allowed");
-        case SUMO_ATTR_LANES:
-            /** completar **/
+            setAdditionalID(value);
             break;
+        case SUMO_ATTR_LANES: {
+            // Declare variables
+            std::vector<std::string> laneIds;
+            std::vector<GNELane*> lanes;
+            GNELane* lane;
+            SUMOSAXAttributes::parseStringVector(value, laneIds);
+            // Iterate over parsed lanes and obtain pointer to lanes
+            for (int i = 0; i < (int)laneIds.size(); i++) {
+                lane = myViewNet->getNet()->retrieveLane(laneIds.at(i), false);
+                if (lane) {
+                    lanes.push_back(lane);
+                }
+            }
+            // Set new childs
+            setLaneChilds(lanes);
+            break;
+        }
         case SUMO_ATTR_POSITION:
             bool ok;
             myPosition = GeomConvHelper::parseShapeReporting(value, "user-supplied position", 0, ok, false)[0];

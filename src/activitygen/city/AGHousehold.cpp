@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    July 2010
-/// @version $Id: AGHousehold.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: AGHousehold.cpp 21182 2016-07-18 06:46:01Z behrisch $
 ///
 // A household contains the people and cars of the city: roughly represents
 // families with their address, cars, adults and possibly children
@@ -90,14 +90,14 @@ AGHousehold::getCarNbr() {
     return static_cast<int>(myCars.size());
 }
 
-unsigned int
+int
 AGHousehold::getPeopleNbr() {
-    return static_cast<unsigned int>(myAdults.size() + myChildren.size());
+    return static_cast<int>(myAdults.size() + myChildren.size());
 }
 
-unsigned int
+int
 AGHousehold::getAdultNbr() {
-    return static_cast<unsigned int>(myAdults.size());
+    return static_cast<int>(myAdults.size());
 }
 
 const std::list<AGAdult>&
