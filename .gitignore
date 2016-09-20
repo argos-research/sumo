@@ -24,3 +24,5 @@ src/sumo-gui
 src/tools/emissionsDrivingCycle
 src/tools/emissionsMap
 src/traci_testclient/TraCITestClient
+
+__pycache__
