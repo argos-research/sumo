@@ -2,7 +2,7 @@
 /// @file    GNEAdditional.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Dec 2015
-/// @version $Id: GNEAdditional.cpp 21202 2016-07-19 13:40:35Z behrisch $
+/// @version $Id: GNEAdditional.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 /// A abstract class for representation of additional elements
 /****************************************************************************/
@@ -68,13 +68,15 @@ GNEAdditional::GNEAdditional(const std::string& id, GNEViewNet* viewNet, Positio
     GUIGlObject(GLO_ADDITIONAL, id),
     GNEAttributeCarrier(tag),
     myViewNet(viewNet),
+    myEdge(NULL),
+    myLane(NULL),
     myPosition(pos),
     myAdditionalSetParent(additionalSetParent),
+    myBlockIconRotation(0),
     myBlocked(blocked),
     myInspectionable(true),
     mySelectable(true),
     myMovable(true),
-    myBlockIconRotation(0),
     myBaseColor(RGBColor::GREEN),
     myBaseColorSelected(RGBColor::BLUE),
     myAdditionalDialog(NULL) {
@@ -90,8 +92,22 @@ GNEAdditional::GNEAdditional(const std::string& id, GNEViewNet* viewNet, Positio
 GNEAdditional::~GNEAdditional() {
     // If this additional belongs to a set, remove it.
     if (myAdditionalSetParent) {
-        myAdditionalSetParent->removeAdditionalChild(this);
+        myAdditionalSetParent->removeAdditionalGeometryChild(this);
     }
+}
+
+
+void
+GNEAdditional::moveAdditionalGeometry(const Position& offset) {
+    moveAdditionalGeometry(offset.x(), offset.y());
+}
+
+
+void
+GNEAdditional::commmitAdditionalGeometryMoved(const Position& oldPos, GNEUndoList* undoList) {
+    commmitAdditionalGeometryMoved(oldPos.x(), oldPos.y(), undoList);
+    // Refresh element
+    myViewNet->getNet()->refreshAdditional(this);
 }
 
 
@@ -163,13 +179,6 @@ GNEAdditional::setAdditionalID(const std::string& id) {
     myViewNet->getNet()->updateAdditionalID(oldID, this);
 }
 
-
-void
-GNEAdditional::setBlocked(bool value) {
-    myBlocked = value;
-}
-
-
 void
 GNEAdditional::setPositionInView(const Position& pos) {
     myPosition = pos;
@@ -178,27 +187,14 @@ GNEAdditional::setPositionInView(const Position& pos) {
 
 GNEEdge*
 GNEAdditional::getEdge() const {
-    return NULL;
+    return myEdge;
 }
 
 
 GNELane*
 GNEAdditional::getLane() const {
-    return NULL;
+    return myLane;
 }
-
-
-void
-GNEAdditional::removeEdgeReference() {
-    throw InvalidArgument("Calling virtual function removeEdgeReference() of class GNEAdditional. Implement removeEdgeReference() in additional child to avoid this exception");
-}
-
-
-void
-GNEAdditional::removeLaneReference() {
-    throw InvalidArgument("Calling virtual function removeLaneReference() of class GNEAdditional. Implement removeLaneReference() in additional child to avoid this exception");
-}
-
 
 const std::string&
 GNEAdditional::getParentName() const {
@@ -325,45 +321,74 @@ GNEAdditional::setBlockIconRotation(GNELane* lane) {
 
 void
 GNEAdditional::drawLockIcon(SUMOReal size) const {
-    // Start pushing matrix
-    glPushMatrix();
-    // Traslate to middle of shape
-    glTranslated(myBlockIconPosition.x(), myBlockIconPosition.y(), getType() + 0.1);
-    // Set draw color
-    glColor3d(1, 1, 1);
-    // Rotate depending of myBlockIconRotation
-    glRotated(myBlockIconRotation, 0, 0, -1);
-    // Rotate 180º
-    glRotated(180, 0, 0, 1);
-    // Traslate depending of the offset
-    glTranslated(myBlockIconOffset.x(), myBlockIconOffset.y(), 0);
-    // Draw icon depending of the state of additional
-    if (isAdditionalSelected()) {
-        if (myMovable == false) {
-            // Draw not movable texture if additional isn't movable and is selected
-            GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_NOTMOVINGSELECTED), size);
-        } else if (myBlocked) {
-            // Draw lock texture if additional is movable, is blocked and is selected
-            GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_LOCKSELECTED), size);
+    if (myViewNet->showLockIcon()) {
+        // Start pushing matrix
+        glPushMatrix();
+        // Traslate to middle of shape
+        glTranslated(myBlockIconPosition.x(), myBlockIconPosition.y(), getType() + 0.1);
+        // Set draw color
+        glColor3d(1, 1, 1);
+        // Rotate depending of myBlockIconRotation
+        glRotated(myBlockIconRotation, 0, 0, -1);
+        // Rotate 180º
+        glRotated(180, 0, 0, 1);
+        // Traslate depending of the offset
+        glTranslated(myBlockIconOffset.x(), myBlockIconOffset.y(), 0);
+        // Draw icon depending of the state of additional
+        if (isAdditionalSelected()) {
+            if (myMovable == false) {
+                // Draw not movable texture if additional isn't movable and is selected
+                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_NOTMOVINGSELECTED), size);
+            } else if (myBlocked) {
+                // Draw lock texture if additional is movable, is blocked and is selected
+                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_LOCKSELECTED), size);
+            } else {
+                // Draw empty texture if additional is movable, isn't blocked and is selected
+                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_EMPTYSELECTED), size);
+            }
         } else {
-            // Draw empty texture if additional is movable, isn't blocked and is selected
-            GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_EMPTYSELECTED), size);
+            if (myMovable == false) {
+                // Draw not movable texture if additional isn't movable
+                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_NOTMOVING), size);
+            } else if (myBlocked) {
+                // Draw lock texture if additional is movable and is blocked
+                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_LOCK), size);
+            } else {
+                // Draw empty texture if additional is movable and isn't blocked
+                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_EMPTY), size);
+            }
         }
-    } else {
-        if (myMovable == false) {
-            // Draw not movable texture if additional isn't movable
-            GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_NOTMOVING), size);
-        } else if (myBlocked) {
-            // Draw lock texture if additional is movable and is blocked
-            GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_LOCK), size);
-        } else {
-            // Draw empty texture if additional is movable and isn't blocked
-            GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_EMPTY), size);
-        }
+        // Pop matrix
+        glPopMatrix();
     }
-    // Pop matrix
-    glPopMatrix();
 }
 
+
+void
+GNEAdditional::changeEdge(const std::string& edgeID) {
+    if (myEdge == NULL) {
+        throw InvalidArgument("Additional with id = '" + getMicrosimID() + "' doesn't belong to a edge");
+    } else {
+        myEdge->removeAdditionalChild(this);
+        myEdge = getViewNet()->getNet()->retrieveEdge(edgeID);
+        myEdge->addAdditionalChild(this);
+        updateGeometry();
+        getViewNet()->update();
+    }
+}
+
+
+void
+GNEAdditional::changeLane(const std::string& laneID) {
+    if (myLane == NULL) {
+        throw InvalidArgument("Additional with id = '" + getMicrosimID() + "' doesn't belong to a lane");
+    } else {
+        myLane->removeAdditionalChild(this);
+        myLane = getViewNet()->getNet()->retrieveLane(laneID);
+        myLane->addAdditionalChild(this);
+        updateGeometry();
+        getViewNet()->update();
+    }
+}
 
 /****************************************************************************/

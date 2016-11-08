@@ -9,10 +9,10 @@ function setRoute(vehID, edgeList)
 % 
 %   changes the route for vehicle id 1 to edges 1-2-4-6-7.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: setRoute.m 20 2015-03-02 16:52:32Z afacostag $
+%   $Id: setRoute.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 global message

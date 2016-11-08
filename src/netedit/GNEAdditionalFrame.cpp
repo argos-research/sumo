@@ -2,7 +2,7 @@
 /// @file    GNEAdditionalFrame.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Dec 2015
-/// @version $Id: GNEAdditionalFrame.cpp 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNEAdditionalFrame.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 /// The Widget for add additional elements
 /****************************************************************************/
@@ -239,8 +239,22 @@ GNEAdditionalFrame::addAdditional(GNENetElement* netElement, GUISUMOAbstractView
         SUMOReal positionOfTheMouseOverEdge = pointed_edge->getLanes().at(0)->getShape().nearest_offset_to_point2D(parent->getPositionInformation());
         // If element has a StartPosition and EndPosition over edge, extract attributes
         if (GNEAttributeCarrier::hasAttribute(myActualAdditionalType, SUMO_ATTR_STARTPOS) && GNEAttributeCarrier::hasAttribute(myActualAdditionalType, SUMO_ATTR_ENDPOS)) {
-            valuesOfElement[SUMO_ATTR_STARTPOS] = toString(setStartPosition(positionOfTheMouseOverEdge, myEditorParameters->getLenght()));
-            valuesOfElement[SUMO_ATTR_ENDPOS] = toString(setEndPosition(pointed_edge->getLanes().at(0)->getLaneShapeLenght(), positionOfTheMouseOverEdge, myEditorParameters->getLenght()));
+            SUMOReal startPos = setStartPosition(positionOfTheMouseOverEdge, myEditorParameters->getLenght());
+            SUMOReal endPos = setEndPosition(pointed_edge->getLanes().at(0)->getLaneShapeLenght(), positionOfTheMouseOverEdge, myEditorParameters->getLenght());
+            // Only set start position if are valid (!= -1)
+            if (startPos != -1) {
+                valuesOfElement[SUMO_ATTR_STARTPOS] = toString(startPos);
+            } else {
+                WRITE_WARNING("Additonal '" + toString(myActualAdditionalType) + "' cannot be placed over edge. Attribute '" + toString(SUMO_ATTR_STARTPOS) + "' isn't valid");
+                return false;
+            }
+            // Only set end position if are valid (!= -1)
+            if (endPos != -1) {
+                valuesOfElement[SUMO_ATTR_ENDPOS] = toString(endPos);
+            } else {
+                WRITE_WARNING("Additonal '" + toString(myActualAdditionalType) + "' cannot be placed over edge. Attribute '" + toString(SUMO_ATTR_ENDPOS) + "' isn't valid");
+                return false;
+            }
         }
         // Extract position of lane
         valuesOfElement[SUMO_ATTR_POSITION] = toString(positionOfTheMouseOverEdge);
@@ -249,8 +263,22 @@ GNEAdditionalFrame::addAdditional(GNENetElement* netElement, GUISUMOAbstractView
         SUMOReal positionOfTheMouseOverLane = pointed_lane->getShape().nearest_offset_to_point2D(parent->getPositionInformation());
         // If element has a StartPosition and EndPosition over lane, extract attributes
         if (GNEAttributeCarrier::hasAttribute(myActualAdditionalType, SUMO_ATTR_STARTPOS) && GNEAttributeCarrier::hasAttribute(myActualAdditionalType, SUMO_ATTR_ENDPOS)) {
-            valuesOfElement[SUMO_ATTR_STARTPOS] = toString(setStartPosition(positionOfTheMouseOverLane, myEditorParameters->getLenght()));
-            valuesOfElement[SUMO_ATTR_ENDPOS] = toString(setEndPosition(pointed_lane->getLaneShapeLenght(), positionOfTheMouseOverLane, myEditorParameters->getLenght()));
+            SUMOReal startPos = setStartPosition(positionOfTheMouseOverLane, myEditorParameters->getLenght());
+            SUMOReal endPos = setEndPosition(pointed_lane->getLaneShapeLenght(), positionOfTheMouseOverLane, myEditorParameters->getLenght());
+            // Only set start position if are valid (!= -1)
+            if (startPos != -1) {
+                valuesOfElement[SUMO_ATTR_STARTPOS] = toString(startPos);
+            } else {
+                WRITE_WARNING("Additonal '" + toString(myActualAdditionalType) + "' cannot be placed over lane. Attribute '" + toString(SUMO_ATTR_STARTPOS) + "' isn't valid");
+                return false;
+            }
+            // Only set end position if are valid (!= -1)
+            if (endPos != -1) {
+                valuesOfElement[SUMO_ATTR_ENDPOS] = toString(endPos);
+            } else {
+                WRITE_WARNING("Additonal '" + toString(myActualAdditionalType) + "' cannot be placed over lane. Attribute '" + toString(SUMO_ATTR_ENDPOS) + "' isn't valid");
+                return false;
+            }
         }
         // Extract position of lane
         valuesOfElement[SUMO_ATTR_POSITION] = toString(positionOfTheMouseOverLane);
@@ -594,9 +622,9 @@ GNEAdditionalFrame::additionalParameter::getValue() const {
 
 GNEAdditionalFrame::additionalParameterList::additionalParameterList(FXComposite* parent, FXObject* tgt) :
     FXMatrix(parent, 2, MATRIX_BY_COLUMNS | LAYOUT_FILL_X),
+    myAttr(SUMO_ATTR_NOTHING),
     numberOfVisibleTextfields(1),
-    myMaxNumberOfValuesInParameterList(20),
-    myAttr(SUMO_ATTR_NOTHING) {
+    myMaxNumberOfValuesInParameterList(20) {
     // Create elements
     for (int i = 0; i < myMaxNumberOfValuesInParameterList; i++) {
         myLabels.push_back(new FXLabel(this, "name", 0, JUSTIFY_RIGHT | LAYOUT_FIX_WIDTH, 0, 0, 60, 0));
@@ -622,19 +650,19 @@ GNEAdditionalFrame::additionalParameterList::~additionalParameterList() {}
 
 
 void
-GNEAdditionalFrame::additionalParameterList::showListParameter(SumoXMLAttr attr, std::vector<int> value) {
+GNEAdditionalFrame::additionalParameterList::showListParameter(SumoXMLAttr attr, std::vector<int> /* value */) {
     myAttr = attr;
     std::cout << "FINISH" << std::endl;
 }
 
 void
-GNEAdditionalFrame::additionalParameterList::showListParameter(SumoXMLAttr attr, std::vector<SUMOReal> value) {
+GNEAdditionalFrame::additionalParameterList::showListParameter(SumoXMLAttr attr, std::vector<SUMOReal> /* value */) {
     myAttr = attr;
     std::cout << "FINISH" << std::endl;
 }
 
 void
-GNEAdditionalFrame::additionalParameterList::showListParameter(SumoXMLAttr attr, std::vector<bool> value) {
+GNEAdditionalFrame::additionalParameterList::showListParameter(SumoXMLAttr attr, std::vector<bool> /* value */) {
     myAttr = attr;
     std::cout << "FINISH" << std::endl;
 }
@@ -1088,8 +1116,8 @@ GNEAdditionalFrame::getIdsSelected(const FXList* list) {
 
 GNEAdditionalFrame::additionalSet::additionalSet(FXComposite* parent, FXObject* tgt, GNEViewNet* viewNet) :
     FXGroupBox(parent, "Additional Set", GROUPBOX_TITLE_CENTER | FRAME_GROOVE | LAYOUT_FILL_X),
-    myViewNet(viewNet),
-    myType(SUMO_TAG_NOTHING) {
+    myType(SUMO_TAG_NOTHING),
+    myViewNet(viewNet) {
 
     // Create label with the type of additionalSet
     mySetLabel = new FXLabel(this, "Set Type:", 0, JUSTIFY_LEFT | LAYOUT_FILL_X);

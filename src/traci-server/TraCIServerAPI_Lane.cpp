@@ -6,7 +6,7 @@
 /// @author  Laura Bieker
 /// @author  Mario Krumnow
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_Lane.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: TraCIServerAPI_Lane.cpp 21514 2016-09-22 13:00:49Z namdre $
 ///
 // APIs for getting/setting lane values via TraCI
 /****************************************************************************/
@@ -344,7 +344,7 @@ TraCIServerAPI_Lane::processSet(TraCIServer& server, tcpip::Storage& inputStorag
             if (!server.readTypeCheckingStringList(inputStorage, classes)) {
                 return server.writeErrorStatusCmd(CMD_SET_LANE_VARIABLE, "Allowed classes must be given as a list of strings.", outputStorage);
             }
-            l->setPermissions(parseVehicleClasses(classes));
+            l->setPermissions(parseVehicleClasses(classes), MSLane::CHANGE_PERMISSIONS_PERMANENT);
             l->getEdge().rebuildAllowedLanes();
         }
         break;
@@ -353,7 +353,7 @@ TraCIServerAPI_Lane::processSet(TraCIServer& server, tcpip::Storage& inputStorag
             if (!server.readTypeCheckingStringList(inputStorage, classes)) {
                 return server.writeErrorStatusCmd(CMD_SET_LANE_VARIABLE, "Not allowed classes must be given as a list of strings.", outputStorage);
             }
-            l->setPermissions(~parseVehicleClasses(classes)); // negation yields allowed
+            l->setPermissions(~parseVehicleClasses(classes), MSLane::CHANGE_PERMISSIONS_PERMANENT); // negation yields allowed
             l->getEdge().rebuildAllowedLanes();
         }
         break;

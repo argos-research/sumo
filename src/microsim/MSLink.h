@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSLink.h 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: MSLink.h 21706 2016-10-17 08:19:38Z luecken $
 ///
 // A connnection between lanes
 /****************************************************************************/
@@ -152,7 +152,7 @@ public:
      * @param[in] length The length of this link
      * @param[in] keepClear Whether the junction after this link must be kept clear
      */
-    MSLink(MSLane* predLane, MSLane* succLane, LinkDirection dir, LinkState state, SUMOReal length, bool keepClear, MSTrafficLightLogic* logic, int tlLinkIdx);
+    MSLink(MSLane* predLane, MSLane* succLane, LinkDirection dir, LinkState state, SUMOReal length, SUMOReal foeVisibilityDistance, bool keepClear, MSTrafficLightLogic* logic, int tlLinkIdx);
 #else
     /** @brief Constructor for simulation which uses internal lanes
      *
@@ -162,7 +162,7 @@ public:
      * @param[in] state The state of this link
      * @param[in] length The length of this link
      */
-    MSLink(MSLane* predLane, MSLane* succLane, MSLane* via, LinkDirection dir, LinkState state, SUMOReal length, bool keepClear, MSTrafficLightLogic* logic, int tlLinkIdx);
+    MSLink(MSLane* predLane, MSLane* succLane, MSLane* via, LinkDirection dir, LinkState state, SUMOReal length, SUMOReal foeVisibilityDistance, bool keepClear, MSTrafficLightLogic* logic, int tlLinkIdx);
 #endif
 
 
@@ -349,6 +349,18 @@ public:
         return myLength;
     }
 
+
+    /** @brief Returns the distance on the approaching lane from which an
+     *         approaching vehicle is able to see all relevant foes and
+     *         may accelerate if the link is minor and no foe is approaching.
+     *
+     * @return The foe-visibility-distance
+     */
+    SUMOReal getFoeVisibilityDistance() const {
+        return myFoeVisibilityDistance;
+    }
+
+
     /** @brief Returns whether this link belongs to a junction where more than one edge is incoming
      *
      * @return Whether any foe links exist
@@ -357,7 +369,7 @@ public:
         return myHasFoes;
     }
 
-
+    // @todo documentation
     bool isCont() const {
         return myAmCont;
     }
@@ -371,6 +383,10 @@ public:
     /// @brief whether this is a link past an internal junction which currently has priority
     bool lastWasContMajor() const;
 
+    /** @brief Returns the cumulative length of all internal lanes after this link
+     *  @return sum of the lengths of all internal lanes following this link
+     */
+    SUMOReal getInternalLengthsAfter() const;
 
 #ifdef HAVE_INTERNAL_LANES
     /** @brief Returns the following inner lane
@@ -378,7 +394,6 @@ public:
      * @return The inner lane to use to cross the junction
      */
     MSLane* getViaLane() const;
-
 
     /** @brief Returns all potential link leaders (vehicles on foeLanes)
      * Valid during the planMove() phase
@@ -497,9 +512,15 @@ private:
     /// @brief Whether any foe links exist
     bool myHasFoes;
 
+    // @todo documentation
     bool myAmCont;
 
     bool myKeepClear;
+
+    /// @brief distance from which an approaching vehicle is able to
+    ///        see all relevant foes and may accelerate if the link is minor
+    ///        and no foe is approaching. Defaults to 4.5m.
+    SUMOReal myFoeVisibilityDistance;
 
     /// @brief penalty time for mesoscopic simulation
     SUMOTime myMesoTLSPenalty;

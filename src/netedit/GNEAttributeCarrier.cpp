@@ -2,7 +2,7 @@
 /// @file    GNEAttributeCarrier.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEAttributeCarrier.cpp 21142 2016-07-11 08:02:07Z palcraft $
+/// @version $Id: GNEAttributeCarrier.cpp 21721 2016-10-17 13:47:02Z namdre $
 ///
 // Abstract Base class for gui objects which carry attributes
 /****************************************************************************/
@@ -215,6 +215,8 @@ GNEAttributeCarrier::allowedAttributes(SumoXMLTag tag) {
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_SHAPE, ""));
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_RADIUS, ""));
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_KEEP_CLEAR, ""));
+                attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_TLTYPE, ""));
+                attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_TLID, ""));
                 break;
             case SUMO_TAG_LANE:
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_ID, ""));
@@ -248,6 +250,7 @@ GNEAttributeCarrier::allowedAttributes(SumoXMLTag tag) {
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_KEEP_CLEAR, "false"));
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_CONTPOS, "0"));
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_UNCONTROLLED, "false"));
+                attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_VISIBILITY_DISTANCE, "4.5"));
                 break;
             case SUMO_TAG_BUS_STOP:
                 attrs.push_back(std::pair<SumoXMLAttr, std::string>(SUMO_ATTR_ID, ""));
@@ -451,6 +454,7 @@ GNEAttributeCarrier::isFloat(SumoXMLAttr attr) {
         myNumericalFloatAttrs.insert(SUMO_ATTR_JAM_DIST_THRESHOLD);
         myNumericalFloatAttrs.insert(SUMO_ATTR_PROB);
         myNumericalFloatAttrs.insert(SUMO_ATTR_CONTPOS);
+        myNumericalFloatAttrs.insert(SUMO_ATTR_VISIBILITY_DISTANCE);
     }
     return myNumericalFloatAttrs.count(attr) == 1;
 }
@@ -556,6 +560,13 @@ GNEAttributeCarrier::discreteChoices(SumoXMLTag tag, SumoXMLAttr attr) {
             }
         }
 
+        choices = SUMOXMLDefinitions::TrafficLightTypes.getStrings();
+        for (std::vector<std::string>::const_iterator it = choices.begin(); it != choices.end(); ++it) {
+            if (*it != toString(TLTYPE_INVALID)) {
+                myDiscreteChoices[SUMO_TAG_JUNCTION][SUMO_ATTR_TLTYPE].push_back(*it);
+            }
+        }
+
         myDiscreteChoices[SUMO_TAG_JUNCTION][SUMO_ATTR_KEEP_CLEAR].push_back("true");
         myDiscreteChoices[SUMO_TAG_JUNCTION][SUMO_ATTR_KEEP_CLEAR].push_back("false");
 
@@ -592,6 +603,9 @@ GNEAttributeCarrier::discreteChoices(SumoXMLTag tag, SumoXMLAttr attr) {
 
         myDiscreteChoices[SUMO_TAG_CONNECTION][SUMO_ATTR_UNCONTROLLED].push_back("true");
         myDiscreteChoices[SUMO_TAG_CONNECTION][SUMO_ATTR_UNCONTROLLED].push_back("false");
+
+        myDiscreteChoices[SUMO_TAG_CONNECTION][SUMO_ATTR_PASS].push_back("true");
+        myDiscreteChoices[SUMO_TAG_CONNECTION][SUMO_ATTR_PASS].push_back("false");
     }
 
     return myDiscreteChoices[tag][attr];
@@ -632,6 +646,8 @@ GNEAttributeCarrier::getDefinition(SumoXMLTag tag, SumoXMLAttr attr) {
         myAttrDefinitions[SUMO_TAG_JUNCTION][SUMO_ATTR_SHAPE] = "";
         myAttrDefinitions[SUMO_TAG_JUNCTION][SUMO_ATTR_RADIUS] = "";
         myAttrDefinitions[SUMO_TAG_JUNCTION][SUMO_ATTR_KEEP_CLEAR] = "";
+        myAttrDefinitions[SUMO_TAG_JUNCTION][SUMO_ATTR_TLTYPE] = "";
+        myAttrDefinitions[SUMO_TAG_JUNCTION][SUMO_ATTR_TLID] = "";
         // Lane
         myAttrDefinitions[SUMO_TAG_LANE][SUMO_ATTR_ID] = "ID (Must be unique)";
         myAttrDefinitions[SUMO_TAG_LANE][SUMO_ATTR_SPEED] = "";
@@ -659,6 +675,7 @@ GNEAttributeCarrier::getDefinition(SumoXMLTag tag, SumoXMLAttr attr) {
         myAttrDefinitions[SUMO_TAG_CONNECTION][SUMO_ATTR_KEEP_CLEAR] = "if set to false, vehicles which pass this (lane-2-lane) connection) will not worry about blocking the intersection.";
         myAttrDefinitions[SUMO_TAG_CONNECTION][SUMO_ATTR_CONTPOS] = "If set to a more than 0 value, an internal junction will be built at this position (in m) from the start of the internal lane for this connection.";
         myAttrDefinitions[SUMO_TAG_CONNECTION][SUMO_ATTR_UNCONTROLLED] = "if set to true, This connection will not be TLS-controlled despite its node being controlled.";
+        myAttrDefinitions[SUMO_TAG_CONNECTION][SUMO_ATTR_VISIBILITY_DISTANCE] = "sets the distance to the connection at which all relevant foes are visible.";
         // Bus Stop
         myAttrDefinitions[SUMO_TAG_BUS_STOP][SUMO_ATTR_ID] = "ID (Must be unique)";
         myAttrDefinitions[SUMO_TAG_BUS_STOP][SUMO_ATTR_LANE] = "The name of the lane the bus stop shall be located at";

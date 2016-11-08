@@ -2,10 +2,10 @@ function [activeRequest, numPeds] = checkWaitingPersons(WALKINGAREAS, CROSSINGS)
 % Function used by the TraCI4Matlab pedestrian test to check whether a
 %   person has requested to cross the street.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: checkWaitingPersons.m 25 2015-06-25 22:38:10Z afacostag $
+%   $Id: checkWaitingPersons.m 31 2016-09-28 15:16:56Z afacostag $
 
 % check both sides of the crossing
 for i = 1:length(WALKINGAREAS)

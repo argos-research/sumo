@@ -2,7 +2,7 @@
 /// @file    MSLaneChangerSublane.cpp
 /// @author  Jakob Erdmann
 /// @date    Oct 2015
-/// @version $Id: MSLaneChangerSublane.h 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: MSLaneChangerSublane.h 21734 2016-10-18 10:59:35Z namdre $
 ///
 // Performs sub-lane changing of vehicles
 /****************************************************************************/
@@ -49,7 +49,7 @@
 class MSLaneChangerSublane : public MSLaneChanger {
 public:
     /// Constructor
-    MSLaneChangerSublane(const std::vector<MSLane*>* lanes, bool allowChanging, bool allowSwap);
+    MSLaneChangerSublane(const std::vector<MSLane*>* lanes, bool allowChanging);
 
     /// Destructor.
     ~MSLaneChangerSublane();

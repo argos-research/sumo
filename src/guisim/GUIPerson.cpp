@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIPerson.cpp 21202 2016-07-19 13:40:35Z behrisch $
+/// @version $Id: GUIPerson.cpp 21313 2016-08-22 10:26:46Z namdre $
 ///
 // A MSPerson extended by some values for usage within the gui
 /****************************************************************************/
@@ -187,8 +187,7 @@ GUIPerson::getPopUpMenu(GUIMainWindow& app,
         new FXMenuCommand(ret, "Show Walkingarea Path", 0, ret, MID_SHOW_WALKINGAREA_PATH);
     }
     new FXMenuSeparator(ret);
-    GUIGlID trackedID = parent.getTrackedID();
-    if (trackedID != getGlID()) {
+    if (parent.getTrackedID() != getGlID()) {
         new FXMenuCommand(ret, "Start Tracking", 0, ret, MID_START_TRACK);
     } else {
         new FXMenuCommand(ret, "Stop Tracking", 0, ret, MID_STOP_TRACK);

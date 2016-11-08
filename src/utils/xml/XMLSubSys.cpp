@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 1 Jul 2002
-/// @version $Id: XMLSubSys.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: XMLSubSys.cpp 21316 2016-08-22 13:08:50Z behrisch $
 ///
 // Utility methods for initialising, closing and using the XML-subsystem
 /****************************************************************************/
@@ -115,7 +115,7 @@ XMLSubSys::runParser(GenericSAXHandler& handler,
                      const std::string& file, const bool isNet) {
     try {
         XERCES_CPP_NAMESPACE::SAX2XMLReader::ValSchemes validationScheme = isNet ? myNetValidationScheme : myValidationScheme;
-        if (myNextFreeReader == myReaders.size()) {
+        if (myNextFreeReader == (int)myReaders.size()) {
             myReaders.push_back(new SUMOSAXReader(handler, validationScheme));
         } else {
             myReaders[myNextFreeReader]->setValidation(validationScheme);

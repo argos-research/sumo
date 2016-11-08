@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Laura Bieker
 @date    2008
-@version $Id: dailyBuildMSVC.py 21162 2016-07-14 10:34:35Z behrisch $
+@version $Id: dailyBuildMSVC.py 21687 2016-10-14 10:09:57Z behrisch $
 
 Does the nightly svn update on the windows server and the visual
 studio build. The script is also used for the meso build.
@@ -105,6 +105,8 @@ def runTests(options, env, svnrev, debugSuffix=""):
         subprocess.call([ttBin] + fullOpt, env=env,
                         stdout=log, stderr=subprocess.STDOUT, shell=True)
         subprocess.call([ttBin, "-a", "sumo.gui"] + fullOpt, env=env,
+                        stdout=log, stderr=subprocess.STDOUT, shell=True)
+        subprocess.call([ttBin, "-a", "netedit.gui"] + fullOpt, env=env,
                         stdout=log, stderr=subprocess.STDOUT, shell=True)
     subprocess.call([ttBin, "-b", env["FILEPREFIX"], "-coll"], env=env,
                     stdout=log, stderr=subprocess.STDOUT, shell=True)

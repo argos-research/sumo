@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GLHelper.cpp 21202 2016-07-19 13:40:35Z behrisch $
+/// @version $Id: GLHelper.cpp 21316 2016-08-22 13:08:50Z behrisch $
 ///
 // Some methods which help to draw certain geometrical objects in openGL
 /****************************************************************************/
@@ -106,9 +106,9 @@ GLHelper::drawFilledPolyTesselated(const PositionVector& v, bool close) {
     gluTessBeginContour(tobj);
     double* points = new double[(v.size() + int(close)) * 3];
 
-    for (int i = 0; i != v.size(); ++i) {
-        points[3 * i] = v[(int)i].x();
-        points[3 * i + 1] = v[(int)i].y();
+    for (int i = 0; i != (int)v.size(); ++i) {
+        points[3 * i] = v[i].x();
+        points[3 * i + 1] = v[i].y();
         points[3 * i + 2] = 0;
         gluTessVertex(tobj, points + 3 * i, points + 3 * i);
     }

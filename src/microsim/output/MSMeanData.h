@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Tue, 17.11.2009
-/// @version $Id: MSMeanData.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSMeanData.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Data collector for edges/lanes
 /****************************************************************************/
@@ -70,13 +70,13 @@ public:
      * @class MeanDataValues
      * @brief Data structure for mean (aggregated) edge/lane values
      *
-     * Structure holding values that describe the emissions aggregated
+     * Structure holding values that describe the emissions (XXX: emissions?) aggregated, refs. #2579
      *  over some seconds.
      */
     class MeanDataValues : public MSMoveReminder {
     public:
         /** @brief Constructor */
-        MeanDataValues(MSLane* const lane, const SUMOReal length, const bool doAdd, const std::set<std::string>* const vTypes = 0);
+        MeanDataValues(MSLane* const lane, const SUMOReal length, const bool doAdd, const MSMeanData* const parent);
 
         /** @brief Destructor */
         virtual ~MeanDataValues();
@@ -133,14 +133,6 @@ public:
                                  MSMoveReminder::Notification reason);
 
 
-        /** @brief Tests whether the vehicles type is to be regarded
-         *
-         * @param[in] veh The regarded vehicle
-         * @return whether the type of the vehicle is in the set of regarded types
-         */
-        bool vehicleApplies(const SUMOVehicle& veh) const;
-
-
         /** @brief Returns whether any data was collected.
          *
          * @return whether no data was collected
@@ -164,11 +156,21 @@ public:
                            const int numVehicles = -1) const = 0;
 
         /** @brief Returns the number of collected sample seconds.
-         * @return the number of collected sample seconds
-         */
+        * @return the number of collected sample seconds
+        */
         virtual SUMOReal getSamples() const;
 
+        /** @brief Returns the total travelled distance.
+        * @return the total travelled distance
+        */
+        SUMOReal getTravelledDistance() const {
+            return travelledDistance;
+        }
+
     protected:
+        /// @brief The meandata parent
+        const MSMeanData* const myParent;
+
         /// @brief The length of the lane / edge the data collector is on
         const SUMOReal myLaneLength;
 
@@ -176,14 +178,10 @@ public:
         /// @{
         /// @brief The number of sampled vehicle movements (in s)
         SUMOReal sampleSeconds;
-    public:
+
         /// @brief The sum of the distances the vehicles travelled
         SUMOReal travelledDistance;
         //@}
-
-    protected:
-        /// @brief The vehicle types to look for (0 or empty means all)
-        const std::set<std::string>* const myVehicleTypes;
 
     };
 
@@ -196,8 +194,7 @@ public:
     public:
         /** @brief Constructor */
         MeanDataValueTracker(MSLane* const lane, const SUMOReal length,
-                             const std::set<std::string>* const vTypes = 0,
-                             const MSMeanData* const parent = 0);
+                             const MSMeanData* const parent);
 
         /** @brief Destructor */
         virtual ~MeanDataValueTracker();
@@ -216,16 +213,9 @@ public:
         /// @{
 
         /** @brief Internal notification about the vehicle moves
-         *
-         * Indicator if the reminders is still active for the passed
-         * vehicle/parameters. If false, the vehicle will erase this reminder
-         * from it's reminder-container.
-         *
-         * @param[in] veh Vehicle that asks this reminder.
-         * @param[in] timeOnLane time the vehicle spent on the lane.
-         * @param[in] speed Moving speed.
+         *  @see MSMoveReminder::notifyMoveInternal().
          */
-        void notifyMoveInternal(SUMOVehicle& veh, SUMOReal timeOnLane, SUMOReal speed);
+        void notifyMoveInternal(const SUMOVehicle& veh, const SUMOReal frontOnLane, const SUMOReal timeOnLane, const SUMOReal meanSpeedFrontOnLane, const SUMOReal meanSpeedVehicleOnLane, const SUMOReal travelledDistanceFrontOnLane, const SUMOReal travelledDistanceVehicleOnLane);
 
 
         /** @brief Called if the vehicle leaves the reminder's lane
@@ -296,13 +286,10 @@ public:
         };
 
         /// @brief The map of vehicles to data entries
-        std::map<SUMOVehicle*, TrackerEntry*> myTrackedData;
+        std::map<const SUMOVehicle*, TrackerEntry*> myTrackedData;
 
         /// @brief The currently active meandata "intervals"
         std::list<TrackerEntry*> myCurrentData;
-
-        /// @brief The meandata parent
-        const MSMeanData* myParent;
 
     };
 
@@ -328,7 +315,7 @@ public:
                const bool printDefaults, const bool withInternal,
                const bool trackVehicles, const SUMOReal minSamples,
                const SUMOReal maxTravelTime,
-               const std::set<std::string> vTypes);
+               const std::string& vTypes);
 
 
     /// @brief Destructor
@@ -369,6 +356,14 @@ public:
     /** @brief Updates the detector
      */
     virtual void detectorUpdate(const SUMOTime step);
+
+    SUMOReal getMinSamples() const {
+        return myMinSamples;
+    }
+
+    SUMOReal getMaxTravelTime() const {
+        return myMaxTravelTime;
+    }
 
 
 protected:
@@ -435,9 +430,6 @@ protected:
 
     /// @brief the maximum travel time to write
     const SUMOReal myMaxTravelTime;
-
-    /// @brief The vehicle types to look for (empty means all)
-    const std::set<std::string> myVehicleTypes;
 
     /// @brief Value collectors; sorted by edge, then by lane
     std::vector<std::vector<MeanDataValues*> > myMeasures;

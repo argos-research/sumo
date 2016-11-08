@@ -5,7 +5,7 @@ function [vehicleID, dist] = getLeader(vehID,dist)
 % The DIST parameter defines the maximum lookahead, 0 calculates a 
 % lookahead from the brake gap.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
 %   $Id$

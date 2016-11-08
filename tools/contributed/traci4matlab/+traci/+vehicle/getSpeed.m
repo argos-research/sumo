@@ -3,10 +3,10 @@ function speed = getSpeed(vehID)
 %   speed = getSpeed(VEHID) Returns the speed in m/s of the named vehicle 
 %   within the last step.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: getSpeed.m 20 2015-03-02 16:52:32Z afacostag $
+%   $Id: getSpeed.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 speed = traci.vehicle.getUniversal(constants.VAR_SPEED, vehID);

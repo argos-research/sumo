@@ -4,7 +4,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSMeanData_Amitran.h 21201 2016-07-19 11:57:22Z behrisch $
+/// @version $Id: MSMeanData_Amitran.h 21652 2016-10-10 13:30:25Z luecken $
 ///
 // Network state mean data collector for edges/lanes
 /****************************************************************************/
@@ -76,8 +76,7 @@ public:
          * @param[in] length The length of the object for which the data gets collected
          */
         MSLaneMeanDataValues(MSLane* const lane, const SUMOReal length, const bool doAdd,
-                             const std::set<std::string>* const vTypes = 0,
-                             const MSMeanData_Amitran* parent = 0);
+                             const MSMeanData_Amitran* parent);
 
         /** @brief Destructor */
         virtual ~MSLaneMeanDataValues();
@@ -126,17 +125,9 @@ public:
 
     protected:
         /** @brief Internal notification about the vehicle moves
-         *
-         * Indicator if the reminders is still active for the passed
-         * vehicle/parameters. If false, the vehicle will erase this reminder
-         * from it's reminder-container.
-         *
-         * @param[in] veh Vehicle that asks this reminder.
-         * @param[in] timeOnLane time the vehicle spent on the lane.
-         * @param[in] speed Moving speed.
+         *  @see MSMoveReminder::notifyMoveInternal()
          */
-        void notifyMoveInternal(SUMOVehicle& veh, SUMOReal timeOnLane,
-                                SUMOReal speed);
+        void notifyMoveInternal(const SUMOVehicle& veh, const SUMOReal /* frontOnLane */, const SUMOReal timeOnLane, const SUMOReal /*meanSpeedFrontOnLane*/, const SUMOReal meanSpeedVehicleOnLane, const SUMOReal travelledDistanceFrontOnLane, const SUMOReal travelledDistanceVehicleOnLane);
 
     private:
         /// @name Collected values
@@ -178,7 +169,7 @@ public:
                        const bool useLanes, const bool withEmpty, const bool printDefaults,
                        const bool withInternal, const bool trackVehicles,
                        const SUMOReal maxTravelTime, const SUMOReal minSamples,
-                       const SUMOReal haltSpeed, const std::set<std::string> vTypes);
+                       const SUMOReal haltSpeed, const std::string& vTypes);
 
 
     /// @brief Destructor

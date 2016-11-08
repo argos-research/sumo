@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 13.12.2005
-/// @version $Id: MSStoppingPlace.h 21184 2016-07-18 07:12:20Z behrisch $
+/// @version $Id: MSStoppingPlace.h 21648 2016-10-10 13:20:00Z luecken $
 ///
 // A lane area vehicles can halt at
 /****************************************************************************/
@@ -143,6 +143,12 @@ public:
     Position getWaitPosition() const;
 
 
+    /** @brief For vehicles at the stop this gives the the actual stopping
+     *         position of the vehicle. For all others the last free stopping position
+     *
+     */
+    SUMOReal getStoppingPosition(const SUMOVehicle* veh) const;
+
     /** @brief Returns the number of transportables waiting on this stop
     */
     int getTransportableNumber() const {
@@ -178,7 +184,7 @@ protected:
     std::vector<std::string> myLines;
 
     /// @brief A map from objects (vehicles) to the areas they acquire after entering the stop
-    std::map<SUMOVehicle*, std::pair<SUMOReal, SUMOReal> > myEndPositions;
+    std::map<const SUMOVehicle*, std::pair<SUMOReal, SUMOReal> > myEndPositions;
 
     /// @brief The lane this bus stop is located at
     const MSLane& myLane;

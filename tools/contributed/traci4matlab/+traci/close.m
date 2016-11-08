@@ -4,10 +4,10 @@ function close()
 %   connections have to be closed, they must be enabled through the
 %   traci.switch() command, and closed with CLOSE().
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: close.m 29 2015-10-13 13:21:27Z afacostag $
+%   $Id: close.m 31 2016-09-28 15:16:56Z afacostag $
 
 global connections message
 import traci.constants

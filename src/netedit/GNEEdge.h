@@ -2,7 +2,7 @@
 /// @file    GNEEdge.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEEdge.h 21205 2016-07-20 08:04:48Z palcraft $
+/// @version $Id: GNEEdge.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // A road/street connecting two junctions (netedit-version, adapted from GUIEdge)
 // Basically a container for an NBEdge with drawing and editing capabilities
@@ -39,6 +39,7 @@
 class GNENet;
 class GNEJunction;
 class GNELane;
+class GNEConnection;
 class GNEAdditional;
 class GNEAdditionalSet;
 
@@ -58,8 +59,11 @@ class GNEEdge : public GNENetElement {
     friend class GNEChange_Connection;
 
 public:
-    /// @brief Definition of the lane's positions vector
+    /// @brief Definition of the lane's vector
     typedef std::vector<GNELane*> LaneVector;
+
+    /// @brief Definition of the connection's vector
+    typedef std::vector<GNEConnection*> ConnectionVector;
 
     /// @brief Definition of the additionals vector
     typedef std::vector<GNEAdditional*> AdditionalVector;
@@ -78,6 +82,7 @@ public:
     ~GNEEdge();
 
     /// @brief update pre-computed geometry information
+    /// @note if current editing mode is Move, connection's geometry will not be updated
     void updateGeometry();
 
     /// Returns the street's geometry
@@ -117,17 +122,17 @@ public:
     void drawGL(const GUIVisualizationSettings& s) const;
     /// @}
 
-    /**@brief update edge geometry after junction move */
+    /// @brief update edge geometry after junction move
     void updateJunctionPosition(GNEJunction* junction, const Position& origPos);
 
     /// @brief returns the internal NBEdge
     NBEdge* getNBEdge();
 
     /// @brief returns the source-junction
-    GNEJunction* getSource() const;
+    GNEJunction* getGNEJunctionSource() const;
 
     /// @brief returns the destination-junction
-    GNEJunction* getDest() const;
+    GNEJunction* getGNEJunctionDest() const;
 
     /**@brief change the edge geometry
      * It is up to the Edge to decide whether an new geometry node should be
@@ -190,11 +195,11 @@ public:
      */
     void setGeometry(PositionVector geom, bool inner);
 
-    /**@brief update edge geometry and inform the lanes
-     * let the lanes recompute their precomputed geometry information
-     * (needed after computing junction shapes)
-     */
-    void updateLaneGeometries();
+    /// @brief remake connections
+    void remakeGNEConnections();
+
+    /// @brief remake connections of all incoming edges
+    void remakeIncomingGNEConnections();
 
     /// @brief copy edge attributes from tpl
     void copyTemplate(GNEEdge* tpl, GNEUndoList* undolist);
@@ -204,6 +209,13 @@ public:
 
     /// @brief returns a reference to the lane vector
     const std::vector<GNELane*>& getLanes();
+
+    /// @brief returns a reference to the GNEConnection vector
+    const std::vector<GNEConnection*>& getGNEConnections();
+
+    /**@brief get connection
+    */
+    GNEConnection* retrieveConnection(int fromLane, NBEdge* to, int toLane);
 
     /// @brief whether this edge was created from a split
     bool wasSplit();
@@ -215,27 +227,32 @@ public:
     /// @brief override to also set lane ids
     void setMicrosimID(const std::string& newID);
 
-    /// @brief add additional to this edge
-    bool addAdditional(GNEAdditional* additional);
+    /// @brief add additional child to this edge
+    void addAdditionalChild(GNEAdditional* additional);
 
-    /// @brief remove additional from this edge
-    bool removeAdditional(GNEAdditional* additional);
+    /// @brief remove additional child from this edge
+    void removeAdditionalChild(GNEAdditional* additional);
 
     /// @brief return list of additionals associated with this edge
-    const std::vector<GNEAdditional*>& getAdditionals() const;
+    const std::vector<GNEAdditional*>& getAdditionalChilds() const;
 
     /// @brief add GNEAdditionalSet to this edge
     bool addAdditionalSet(GNEAdditionalSet* additionalSet);
 
     /// @brief remove GNEAdditionalSet from this edge
-    bool removeAdditionalSet(GNEAdditionalSet* additionalSet);
+    bool removeAdditionalGeometrySet(GNEAdditionalSet* additionalSet);
 
     /// @brief return list of additionalSets associated with this edge
     const std::vector<GNEAdditionalSet*>& getAdditionalSets();
 
+    /// @brief check if edge has a restricted lane
+    bool hasRestrictedLane(SUMOVehicleClass vclass) const;
+
     // the radius in which to register clicks for geometry nodes
     static const SUMOReal SNAP_RADIUS;
 
+    /// @brief clear current connections
+    void clearGNEConnections();
 protected:
     /// @brief the underlying NBEdge
     NBEdge& myNBEdge;
@@ -243,8 +260,11 @@ protected:
     /// @brief restore point for undo
     PositionVector myOrigShape;
 
-    /// @brief List of this edges lanes
+    /// @brief vectgor with the lanes of this edge
     LaneVector myLanes;
+
+    /// @brief vector with the connections of this edge
+    ConnectionVector myGNEConnections;
 
     /// @brief whether we are responsible for deleting myNBNode
     bool myAmResponsible;
@@ -255,10 +275,10 @@ protected:
     /// @brief modification status of the connections
     std::string myConnectionStatus;
 
-    /// @brief vector with the additonals vinculated with this edge
+    /// @brief list with the additonals vinculated with this edge
     AdditionalVector myAdditionals;
 
-    /// @brief vector with the additonalSets vinculated with this edge
+    /// @brief list with the additonalSets vinculated with this edge
     AdditionalSetVector myAdditionalSets;
 
 private:
@@ -286,10 +306,11 @@ private:
     void removeLane(GNELane* lane);
 
     /// @brief adds a connection
-    void addConnection(int fromLane, const std::string& toEdgeID, int toLane, bool mayPass);
+    void addConnection(NBEdge::Connection nbCon, GNEConnection* con);
 
     /// @brief removes a connection
-    void removeConnection(int fromLane, const std::string& toEdgeID, int toLane);
+    void removeConnection(NBEdge::Connection nbCon);
+
 };
 
 

@@ -2,7 +2,7 @@
 /// @file    GNEViewNet.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEViewNet.cpp 21196 2016-07-19 10:54:43Z namdre $
+/// @version $Id: GNEViewNet.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // A view on the network being edited (adapted from GUIViewTraffic)
 /****************************************************************************/
@@ -49,6 +49,7 @@
 #include <utils/gui/globjects/GUIGlObjectStorage.h>
 #include <utils/gui/div/GLHelper.h>
 #include <utils/gui/div/GUIGlobalSelection.h>
+#include <utils/xml/XMLSubSys.h>
 
 #include "GNEViewNet.h"
 #include "GNEEdge.h"
@@ -71,7 +72,7 @@
 #include "GNEAdditionalSet.h"
 #include "GNEAdditionalDialog.h"
 #include "GNERerouter.h"
-#include "GNEChange_Attribute.h"
+#include "GNEConnection.h"
 
 
 #ifdef CHECK_MEMORY_LEAKS
@@ -82,19 +83,31 @@
 // FOX callback mapping
 // ===========================================================================
 FXDEFMAP(GNEViewNet) GNEViewNetMap[] = {
-    FXMAPFUNC(SEL_COMMAND,  MID_GNE_MODE_CHANGE, GNEViewNet::onCmdChangeMode),
-    FXMAPFUNC(SEL_COMMAND,  MID_GNE_SPLIT_EDGE, GNEViewNet::onCmdSplitEdge),
-    FXMAPFUNC(SEL_COMMAND,  MID_GNE_SPLIT_EDGE_BIDI, GNEViewNet::onCmdSplitEdgeBidi),
-    FXMAPFUNC(SEL_COMMAND,  MID_GNE_REVERSE_EDGE, GNEViewNet::onCmdReverseEdge),
-    FXMAPFUNC(SEL_COMMAND,  MID_GNE_ADD_REVERSE_EDGE, GNEViewNet::onCmdAddReversedEdge),
-    FXMAPFUNC(SEL_COMMAND,  MID_GNE_SET_EDGE_ENDPOINT, GNEViewNet::onCmdSetEdgeEndpoint),
-    FXMAPFUNC(SEL_COMMAND,  MID_GNE_RESET_EDGE_ENDPOINT, GNEViewNet::onCmdResetEdgeEndpoint),
-    FXMAPFUNC(SEL_COMMAND,  MID_GNE_STRAIGHTEN, GNEViewNet::onCmdStraightenEdges),
-    FXMAPFUNC(SEL_COMMAND,  MID_GNE_SIMPLIFY_SHAPE, GNEViewNet::onCmdSimplifyShape),
-    FXMAPFUNC(SEL_COMMAND,  MID_GNE_DELETE_GEOMETRY, GNEViewNet::onCmdDeleteGeometry),
-    FXMAPFUNC(SEL_COMMAND,  MID_GNE_DUPLICATE_LANE, GNEViewNet::onCmdDuplicateLane),
-    FXMAPFUNC(SEL_COMMAND,  MID_GNE_NODE_SHAPE, GNEViewNet::onCmdNodeShape),
-    FXMAPFUNC(SEL_COMMAND,  MID_GNE_NODE_REPLACE, GNEViewNet::onCmdNodeReplace)
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_MODE_CHANGE,             GNEViewNet::onCmdChangeMode),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_SPLIT_EDGE,              GNEViewNet::onCmdSplitEdge),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_SPLIT_EDGE_BIDI,         GNEViewNet::onCmdSplitEdgeBidi),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_REVERSE_EDGE,            GNEViewNet::onCmdReverseEdge),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_ADD_REVERSE_EDGE,        GNEViewNet::onCmdAddReversedEdge),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_SET_EDGE_ENDPOINT,       GNEViewNet::onCmdSetEdgeEndpoint),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_RESET_EDGE_ENDPOINT,     GNEViewNet::onCmdResetEdgeEndpoint),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_STRAIGHTEN,              GNEViewNet::onCmdStraightenEdges),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_SIMPLIFY_SHAPE,          GNEViewNet::onCmdSimplifyShape),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_DELETE_GEOMETRY,         GNEViewNet::onCmdDeleteGeometry),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_DUPLICATE_LANE,          GNEViewNet::onCmdDuplicateLane),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_TRANSFORM_LANE_SIDEWALK, GNEViewNet::onCmdRestrictLaneSidewalk),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_TRANSFORM_LANE_BIKE,     GNEViewNet::onCmdRestrictLaneBikelane),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_TRANSFORM_LANE_BUS,      GNEViewNet::onCmdRestrictLaneBuslane),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_REVERT_TRANSFORMATION,   GNEViewNet::onCmdRevertRestriction),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_ADD_LANE_SIDEWALK,       GNEViewNet::onCmdAddRestrictedLaneSidewalk),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_ADD_LANE_BIKE,           GNEViewNet::onCmdAddRestrictedLaneBikelane),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_ADD_LANE_BUS,            GNEViewNet::onCmdAddRestrictedLaneBuslane),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_REMOVE_LANE_SIDEWALK,    GNEViewNet::onCmdRemoveRestrictedLaneSidewalk),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_REMOVE_LANE_BIKE,        GNEViewNet::onCmdRemoveRestrictedLaneBikelane),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_REMOVE_LANE_BUS,         GNEViewNet::onCmdRemoveRestrictedLaneBuslane),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_NODE_SHAPE,              GNEViewNet::onCmdNodeShape),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_NODE_REPLACE,            GNEViewNet::onCmdNodeReplace),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_SHOW_CONNECTIONS,        GNEViewNet::onCmdToogleShowConnection),
+    FXMAPFUNC(SEL_COMMAND, MID_GNE_SHOW_BUBBLES,            GNEViewNet::onCmdToogleShowBubbles)
 };
 
 // Object implementation
@@ -111,6 +124,7 @@ GNEViewNet::GNEViewNet(FXComposite* tmpParent, FXComposite* actualParent, GUIMai
     myNet(net),
     myEditMode(GNE_MODE_MOVE),
     myPreviousEditMode(GNE_MODE_MOVE),
+    myShowConnectionActivated(false),
     myCreateEdgeSource(0),
     myJunctionToMove(0),
     myEdgeToMove(0),
@@ -128,13 +142,14 @@ GNEViewNet::GNEViewNet(FXComposite* tmpParent, FXComposite* actualParent, GUIMai
 
     buildEditModeControls();
     myUndoList->mark();
-    myNet->setUpdateTarget(this);
+    myNet->setViewNet(this);
+
     ((GUIDanielPerspectiveChanger*)myChanger)->setDragDelay(100000000); // 100 milliseconds
 
     // init color schemes
     GUIColorer laneColorer;
     GUIColorScheme scheme = GUIColorScheme("uniform", RGBColor::BLACK, "road", true);
-    scheme.addColor(RGBColor::GREY, 1, "sidewalk");
+    scheme.addColor(RGBColor::GREY, 1, "Sidewalk");
     scheme.addColor(RGBColor(192, 66, 44), 2, "bike lane");
     scheme.addColor(RGBColor(200, 255, 200), 3, "green verge");
     scheme.addColor(RGBColor(150, 200, 200), 4, "waterway");
@@ -310,6 +325,18 @@ GNEViewNet::selectEdges() {
 
 
 bool
+GNEViewNet::showConnections() {
+    if (myEditMode == GNE_MODE_CONNECT) {
+        return true;
+    } else if (myShowConnections->shown() == false) {
+        return false;
+    } else {
+        return (myShowConnections->getCheck() == 1);
+    }
+}
+
+
+bool
 GNEViewNet::autoSelectNodes() {
     return myExtendToEdgeNodes->getCheck() != 0;
 }
@@ -324,6 +351,12 @@ GNEViewNet::setSelectionScaling(SUMOReal selectionScale) {
 bool
 GNEViewNet::changeAllPhases() const {
     return myChangeAllPhases->getCheck() != FALSE;
+}
+
+
+bool
+GNEViewNet::showJunctionAsBubbles() const {
+    return (myEditMode == GNE_MODE_MOVE) && (myShowJunctionAsBubble->getCheck());
 }
 
 
@@ -365,12 +398,8 @@ GNEViewNet::doPaintGL(int mode, const Boundary& bound) {
     }
     glLineWidth(1);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-    float minB[2];
-    float maxB[2];
-    minB[0] = bound.xmin();
-    minB[1] = bound.ymin();
-    maxB[0] = bound.xmax();
-    maxB[1] = bound.ymax();
+    const float minB[2] = { (float)bound.xmin(), (float)bound.ymin() };
+    const float maxB[2] = { (float)bound.xmax(), (float)bound.ymax() };
     myVisualizationSettings->scale = lw;
     glEnable(GL_POLYGON_OFFSET_FILL);
     glEnable(GL_POLYGON_OFFSET_LINE);
@@ -402,6 +431,7 @@ GNEViewNet::onLeftBtnPress(FXObject* obj, FXSelector sel, void* data) {
         GNEPoly* pointed_poly = 0;
         GNECrossing* pointed_crossing = 0;
         GNEAdditional* pointed_additional = 0;
+        GNEConnection* pointed_connection = 0;
         if (pointed) {
             switch (pointed->getType()) {
                 case GLO_JUNCTION:
@@ -425,6 +455,9 @@ GNEViewNet::onLeftBtnPress(FXObject* obj, FXSelector sel, void* data) {
                     break;
                 case GLO_ADDITIONAL:
                     pointed_additional = (GNEAdditional*)pointed;
+                    break;
+                case GLO_CONNECTION:
+                    pointed_connection = (GNEConnection*)pointed;
                     break;
                 default:
                     pointed = 0;
@@ -504,13 +537,35 @@ GNEViewNet::onLeftBtnPress(FXObject* obj, FXSelector sel, void* data) {
                     if (gSelected.isSelected(GLO_ADDITIONAL, pointed_additional->getGlID())) {
                         myMoveSelection = true;
                     } else {
-                        myAdditionalToMove = pointed_additional;
-                        if (myAdditionalToMove->getLane()) {
-                            myAdditionalFirstPosition.set(pointed_additional->getLane()->getShape().nearest_offset_to_point2D(getPositionInformation(), false), 0, 0);
-                            myUndoList->p_begin("position of " + toString(pointed_additional->getTag()));
-                        } else {
-                            myAdditionalFirstPosition = pointed_additional->getPositionInView();
-                            myUndoList->p_begin("position of " + toString(pointed_additional->getTag()));
+                        // Only move additional if can be moved
+                        if (pointed_additional->isAdditionalBlocked() == false) {
+                            myAdditionalToMove = pointed_additional;
+                            if (myAdditionalToMove->getLane()) {
+                                if (GNEAttributeCarrier::hasAttribute(myAdditionalToMove->getTag(), SUMO_ATTR_STARTPOS)) {
+                                    // Obtain start position
+                                    SUMOReal startPos = GNEAttributeCarrier::parse<SUMOReal>(myAdditionalToMove->getAttribute(SUMO_ATTR_STARTPOS));
+                                    if (GNEAttributeCarrier::hasAttribute(myAdditionalToMove->getTag(), SUMO_ATTR_ENDPOS)) {
+                                        // Obtain end position
+                                        SUMOReal endPos = GNEAttributeCarrier::parse<SUMOReal>(myAdditionalToMove->getAttribute(SUMO_ATTR_ENDPOS));
+                                        // Save both values in myOldAdditionalPosition
+                                        myOldAdditionalPosition.set(startPos, endPos);
+                                    } else if (GNEAttributeCarrier::hasAttribute(myAdditionalToMove->getTag(), SUMO_ATTR_LENGTH)) {
+                                        // Obtain length attribute
+                                        SUMOReal length = GNEAttributeCarrier::parse<SUMOReal>(myAdditionalToMove->getAttribute(SUMO_ATTR_LENGTH));
+                                        // Save both values in myOldAdditionalPosition
+                                        myOldAdditionalPosition.set(startPos, length);
+                                    } else {
+                                        // Save only startpos in myOldAdditionalPosition
+                                        myOldAdditionalPosition.set(startPos, 0);
+                                    }
+                                }
+                                // Set myAdditionalMovingReference
+                                myAdditionalMovingReference.set(pointed_additional->getLane()->getShape().nearest_offset_to_point2D(getPositionInformation(), false), 0, 0);
+                            } else {
+                                // Set myOldAdditionalPosition and myAdditionalMovingReference
+                                myOldAdditionalPosition = getPositionInformation();
+                                myAdditionalMovingReference = pointed_additional->getPositionInView() - getPositionInformation();
+                            }
                         }
                     }
                 } else {
@@ -543,6 +598,9 @@ GNEViewNet::onLeftBtnPress(FXObject* obj, FXSelector sel, void* data) {
                 } else if (pointed_additional) {
                     myViewParent->getAdditionalFrame()->removeAdditional(pointed_additional);
                     update();
+                } else if (pointed_connection) {
+                    myNet->deleteConnection(pointed_connection, myUndoList);
+                    update();
                 } else {
                     GUISUMOAbstractView::onLeftBtnPress(obj, sel, data);
                 }
@@ -571,6 +629,9 @@ GNEViewNet::onLeftBtnPress(FXObject* obj, FXSelector sel, void* data) {
                 } else if (pointed_additional) {
                     pointedAC = pointed_additional;
                     pointedO = pointed_additional;
+                } else if (pointed_connection) {
+                    pointedAC = pointed_connection;
+                    pointedO = pointed_connection;
                 }
 
                 std::vector<GNEAttributeCarrier*> selected;
@@ -657,8 +718,13 @@ GNEViewNet::onLeftBtnRelease(FXObject* obj, FXSelector sel, void* data) {
         myEdgeToMove->setAttribute(SUMO_ATTR_SHAPE, newShape, myUndoList);
         myEdgeToMove = 0;
     } else if (myAdditionalToMove) {
-        myUndoList->p_end();
-        myAdditionalToMove = 0;
+        if (myAdditionalToMove->getLane()) {
+            myAdditionalToMove->commmitAdditionalGeometryMoved(myOldAdditionalPosition, myUndoList);
+            myAdditionalToMove = 0;
+        } else {
+            myAdditionalToMove->commmitAdditionalGeometryMoved(myOldAdditionalPosition + myAdditionalMovingReference, myUndoList);
+            myAdditionalToMove = 0;
+        }
     } else if (myMoveSelection) {
         // positions and shapes are already up to date but we must register with myUndoList
         myNet->finishMoveSelection(myUndoList);
@@ -717,11 +783,12 @@ GNEViewNet::onMouseMove(FXObject* obj, FXSelector sel, void* data) {
         // If additional is placed over lane, move it across it
         if (myAdditionalToMove->getLane()) {
             SUMOReal posOfMouseOverLane = myAdditionalToMove->getLane()->getShape().nearest_offset_to_point2D(getPositionInformation(), false);
-            myAdditionalToMove->moveAdditional(posOfMouseOverLane - myAdditionalFirstPosition.x(), 0, myUndoList);
-            myAdditionalFirstPosition.set(posOfMouseOverLane, 0, 0);
+            myAdditionalToMove->moveAdditionalGeometry(posOfMouseOverLane - myAdditionalMovingReference.x(), 0);
+            myAdditionalMovingReference.set(posOfMouseOverLane, 0, 0);
         } else {
-            myAdditionalToMove->moveAdditional(getPositionInformation().x(), getPositionInformation().y(), myUndoList);
-            myAdditionalFirstPosition = getPositionInformation();
+            // Calculate offset movement
+            Position offsetPosition = getPositionInformation() - myOldAdditionalPosition;
+            myAdditionalToMove->moveAdditionalGeometry(myOldAdditionalPosition + offsetPosition + myAdditionalMovingReference);
         }
         update();
     } else if (myMoveSelection) {
@@ -844,7 +911,7 @@ GNEViewNet::getViewParent() const {
 GNENet*
 GNEViewNet::getNet() const {
     return myNet;
-};
+}
 
 
 GNEUndoList*
@@ -1078,6 +1145,325 @@ GNEViewNet::onCmdDuplicateLane(FXObject*, FXSelector, void*) {
 
 
 long
+GNEViewNet::onCmdRestrictLaneSidewalk(FXObject*, FXSelector, void*) {
+    return restrictLane(SVC_PEDESTRIAN);
+}
+
+
+long
+GNEViewNet::onCmdRestrictLaneBikelane(FXObject*, FXSelector, void*) {
+    return restrictLane(SVC_BICYCLE);
+}
+
+
+long
+GNEViewNet::onCmdRestrictLaneBuslane(FXObject*, FXSelector, void*) {
+    return restrictLane(SVC_BUS);
+}
+
+
+long
+GNEViewNet::onCmdAddRestrictedLaneSidewalk(FXObject*, FXSelector, void*) {
+    return addRestrictedLane(SVC_PEDESTRIAN);
+}
+
+
+long
+GNEViewNet::onCmdAddRestrictedLaneBikelane(FXObject*, FXSelector, void*) {
+    return addRestrictedLane(SVC_BICYCLE);
+}
+
+
+long
+GNEViewNet::onCmdAddRestrictedLaneBuslane(FXObject*, FXSelector, void*) {
+    return addRestrictedLane(SVC_BUS);
+}
+
+
+long
+GNEViewNet::onCmdRemoveRestrictedLaneSidewalk(FXObject*, FXSelector, void*) {
+    return removeRestrictedLane(SVC_PEDESTRIAN);
+}
+
+
+long
+GNEViewNet::onCmdRemoveRestrictedLaneBikelane(FXObject*, FXSelector, void*) {
+    return removeRestrictedLane(SVC_BICYCLE);
+}
+
+
+long
+GNEViewNet::onCmdRemoveRestrictedLaneBuslane(FXObject*, FXSelector, void*) {
+    return removeRestrictedLane(SVC_BUS);
+}
+
+
+bool
+GNEViewNet::restrictLane(SUMOVehicleClass vclass) {
+    GNELane* lane = getLaneAtCurserPosition(myPopupSpot);
+    if (lane != 0) {
+        // Get selected lanes
+        std::vector<GNELane*> lanes = myNet->retrieveLanes(true); ;
+        // Declare map of edges and lanes
+        std::map<GNEEdge*, GNELane*> mapOfEdgesAndLanes;
+        // Iterate over selected lanes
+        for (std::vector<GNELane*>::iterator i = lanes.begin(); i != lanes.end(); i++) {
+            mapOfEdgesAndLanes[myNet->retrieveEdge((*i)->getParentEdge().getID())] = (*i);
+        }
+        // Throw warning dialog if there hare multiple lanes selected in the same edge
+        if (mapOfEdgesAndLanes.size() != lanes.size()) {
+            FXMessageBox::information(getApp(), MBOX_OK,
+                                      ("Multiple lane in the same edge selected"),
+                                      ("There are selected lanes that belong to the same edge.\n Only  one lane pro edge will be restricted for " + toString(vclass) + ".").c_str());
+        }
+        // If we handeln a set of lanes
+        if (mapOfEdgesAndLanes.size() > 0) {
+            // declare counter for number of Sidewalks
+            int counter = 0;
+            // iterate over selected lanes
+            for (std::map<GNEEdge*, GNELane*>::iterator i = mapOfEdgesAndLanes.begin(); i != mapOfEdgesAndLanes.end(); i++) {
+                if (i->first->hasRestrictedLane(vclass)) {
+                    counter++;
+                }
+            }
+            // if all edges parent own a Sidewalk, stop function
+            if (counter == (int)mapOfEdgesAndLanes.size()) {
+                FXMessageBox::information(getApp(), MBOX_OK,
+                                          ("Set vclass for " + toString(vclass) + " to selected lanes").c_str(),
+                                          ("All lanes own already another lane in the same edge with a restriction for " + toString(vclass)).c_str());
+                return 0;
+            } else {
+                // Ask confirmation to user
+                FXuint answer = FXMessageBox::question(getApp(), MBOX_YES_NO,
+                                                       ("Set vclass for " + toString(vclass) + " to selected lanes").c_str(), "%s",
+                                                       (toString(mapOfEdgesAndLanes.size() - counter) + " lanes will be restricted for " + toString(vclass) + ". continue?").c_str());
+                if (answer != 1) { //1:yes, 2:no, 4:esc
+                    return 0;
+                }
+            }
+            // begin undo operation
+            myUndoList->p_begin("restrict lanes to " + toString(vclass));
+            // iterate over selected lanes
+            for (std::map<GNEEdge*, GNELane*>::iterator i = mapOfEdgesAndLanes.begin(); i != mapOfEdgesAndLanes.end(); i++) {
+                // Transform lane to Sidewalk
+                myNet->restrictLane(vclass, i->second, myUndoList);
+            }
+            // end undo operation
+            myUndoList->p_end();
+        } else {
+            // If only have a single lane, start undo/redo operation
+            myUndoList->p_begin("restrict lane to " + toString(vclass));
+            // Transform lane to Sidewalk
+            myNet->restrictLane(vclass, lane, myUndoList);
+            // end undo operation
+            myUndoList->p_end();
+        }
+    }
+    return 1;
+}
+
+
+bool
+GNEViewNet::addRestrictedLane(SUMOVehicleClass vclass) {
+    GNELane* lane = getLaneAtCurserPosition(myPopupSpot);
+    if (lane != 0) {
+        // Get selected edges
+        std::vector<GNEEdge*> edges = myNet->retrieveEdges(true);
+        // get selected lanes
+        std::vector<GNELane*> lanes = myNet->retrieveLanes(true);
+        // Declare set of edges
+        std::set<GNEEdge*> setOfEdges;
+        // Fill set of edges with vector of edges
+        for (std::vector<GNEEdge*>::iterator i = edges.begin(); i != edges.end(); i++) {
+            setOfEdges.insert(*i);
+        }
+        // iterate over selected lanes
+        for (std::vector<GNELane*>::iterator it = lanes.begin(); it != lanes.end(); it++) {
+            // Insert pointer to edge into set of edges (To avoid duplicates)
+            setOfEdges.insert(myNet->retrieveEdge((*it)->getParentEdge().getID()));
+        }
+        // If we handeln a set of edges
+        if (setOfEdges.size() > 0) {
+            // declare counter for number of restrictions
+            int counter = 0;
+            // iterate over set of edges
+            for (std::set<GNEEdge*>::iterator it = setOfEdges.begin(); it != setOfEdges.end(); it++) {
+                // update counter if edge has already a restricted lane of type "vclass"
+                if ((*it)->hasRestrictedLane(vclass) == true) {
+                    counter++;
+                }
+            }
+            // if all lanes own a Sidewalk, stop function
+            if (counter == (int)setOfEdges.size()) {
+                FXMessageBox::information(getApp(), MBOX_OK,
+                                          ("Add vclass for" + toString(vclass) + " to selected lanes").c_str(),
+                                          ("All lanes own already another lane in the same edge with a restriction for " + toString(vclass)).c_str());
+                return 0;
+            } else {
+                // Ask confirmation to user
+                FXuint answer = FXMessageBox::question(getApp(), MBOX_YES_NO,
+                                                       ("Add vclass for " + toString(vclass) + " to selected lanes").c_str(), "%s",
+                                                       (toString(setOfEdges.size() - counter) + " restrictions for " + toString(vclass) + " will be added. continue?").c_str());
+                if (answer != 1) { //1:yes, 2:no, 4:esc
+                    return 0;
+                }
+            }
+            // begin undo operation
+            myUndoList->p_begin("Add restrictions for " + toString(vclass));
+            // iterate over set of edges
+            for (std::set<GNEEdge*>::iterator it = setOfEdges.begin(); it != setOfEdges.end(); it++) {
+                // add Sidewalk
+                myNet->addSRestrictedLane(vclass, *(*it), myUndoList);
+            }
+            // end undo operation
+            myUndoList->p_end();
+        } else {
+            // If only have a single lane, start undo/redo operation
+            myUndoList->p_begin("Add vclass for " + toString(vclass));
+            // Add Sidewalk
+            myNet->addSRestrictedLane(vclass, lane->getParentEdge(), myUndoList);
+            // end undo/redo operation
+            myUndoList->p_end();
+        }
+    }
+    return 1;
+}
+
+
+bool
+GNEViewNet::removeRestrictedLane(SUMOVehicleClass vclass) {
+    GNELane* lane = getLaneAtCurserPosition(myPopupSpot);
+    if (lane != 0) {
+        // Get selected edges
+        std::vector<GNEEdge*> edges = myNet->retrieveEdges(true);
+        // get selected lanes
+        std::vector<GNELane*> lanes = myNet->retrieveLanes(true);
+        // Declare set of edges
+        std::set<GNEEdge*> setOfEdges;
+        // Fill set of edges with vector of edges
+        for (std::vector<GNEEdge*>::iterator i = edges.begin(); i != edges.end(); i++) {
+            setOfEdges.insert(*i);
+        }
+        // iterate over selected lanes
+        for (std::vector<GNELane*>::iterator it = lanes.begin(); it != lanes.end(); it++) {
+            // Insert pointer to edge into set of edges (To avoid duplicates)
+            setOfEdges.insert(myNet->retrieveEdge((*it)->getParentEdge().getID()));
+        }
+        // If we handeln a set of edges
+        if (setOfEdges.size() > 0) {
+            // declare counter for number of restrictions
+            int counter = 0;
+            // iterate over set of edges
+            for (std::set<GNEEdge*>::iterator it = setOfEdges.begin(); it != setOfEdges.end(); it++) {
+                // update counter if edge has already a restricted lane of type "vclass"
+                if ((*it)->hasRestrictedLane(vclass) == true) {
+                    counter++;
+                }
+            }
+            // if all lanes don't own a Sidewalk, stop function
+            if (counter == 0) {
+                FXMessageBox::information(getApp(), MBOX_OK,
+                                          ("Remove vclass for " + toString(vclass) + " to selected lanes").c_str(),
+                                          ("Selected lanes and edges haven't a restriction for " + toString(vclass)).c_str());
+                return 0;
+            } else {
+                // Ask confirmation to user
+                FXuint answer = FXMessageBox::question(getApp(), MBOX_YES_NO,
+                                                       ("Remove vclass for " + toString(vclass) + " to selected lanes").c_str(), "%s",
+                                                       (toString(counter) + " restrictions for " + toString(vclass) + " will be removed. continue?").c_str());
+                if (answer != 1) { //1:yes, 2:no, 4:esc
+                    return 0;
+                }
+            }
+            // begin undo operation
+            myUndoList->p_begin("Remove restrictions for " + toString(vclass));
+            // iterate over set of edges
+            for (std::set<GNEEdge*>::iterator it = setOfEdges.begin(); it != setOfEdges.end(); it++) {
+                // add Sidewalk
+                myNet->removeRestrictedLane(vclass, *(*it), myUndoList);
+            }
+            // end undo operation
+            myUndoList->p_end();
+        } else {
+            // If only have a single lane, start undo/redo operation
+            myUndoList->p_begin("Remove vclass for " + toString(vclass));
+            // Remove Sidewalk
+            myNet->removeRestrictedLane(vclass, lane->getParentEdge(), myUndoList);
+            // end undo/redo operation
+            myUndoList->p_end();
+        }
+    }
+    return 1;
+}
+
+
+long
+GNEViewNet::onCmdRevertRestriction(FXObject*, FXSelector, void*) {
+    GNELane* lane = getLaneAtCurserPosition(myPopupSpot);
+    if (lane != 0) {
+        // Declare vector of lanes
+        std::vector<GNELane*> lanes;
+        // Check if we have a set of selected edges or lanes
+        if (gSelected.isSelected(GLO_EDGE, lane->getParentEdge().getGlID())) {
+            // Get selected edgeds
+            std::vector<GNEEdge*> edges = myNet->retrieveEdges(true);
+            // fill vector of lanes with the lanes of selected edges
+            for (std::vector<GNEEdge*>::iterator i = edges.begin(); i != edges.end(); i++) {
+                for (std::vector<GNELane*>::const_iterator j = (*i)->getLanes().begin(); j != (*i)->getLanes().end(); j++) {
+                    lanes.push_back(*j);
+                }
+            }
+        } else if (gSelected.isSelected(GLO_LANE, lane->getGlID())) {
+            // get selected lanes
+            lanes = myNet->retrieveLanes(true);
+        }
+        // If we handeln a set of lanes
+        if (lanes.size() > 0) {
+            // declare counter for number of Sidewalks
+            int counter = 0;
+            // iterate over selected lanes
+            for (std::vector<GNELane*>::iterator it = lanes.begin(); it != lanes.end(); it++) {
+                if (((*it)->isRestricted(SVC_PEDESTRIAN)) || ((*it)->isRestricted(SVC_BICYCLE)) || ((*it)->isRestricted(SVC_BUS))) {
+                    counter++;
+                }
+            }
+            // if none of selected lanes has a transformation, stop
+            if (counter == 0) {
+                FXMessageBox::information(getApp(), MBOX_OK,
+                                          "Revert restriction", "None of selected lanes has a previous restriction");
+                return 0;
+            } else {
+                // Ask confirmation to user
+                FXuint answer = FXMessageBox::question(getApp(), MBOX_YES_NO,
+                                                       "Revert restriction", "%s",
+                                                       (toString(counter) + " restrictions of lanes lanes will be reverted. continue?").c_str());
+                if (answer != 1) { //1:yes, 2:no, 4:esc
+                    return 0;
+                }
+            }
+            // begin undo operation
+            myUndoList->p_begin("revert restrictions");
+            // iterate over selected lanes
+            for (std::vector<GNELane*>::iterator it = lanes.begin(); it != lanes.end(); it++) {
+                // revert transformation
+                myNet->revertLaneRestriction(*it, myUndoList);
+            }
+            // end undo operation
+            myUndoList->p_end();
+        } else {
+            // If only have a single lane, start undo/redo operation
+            myUndoList->p_begin("revert restriction");
+            // revert transformation
+            myNet->revertLaneRestriction(lane, myUndoList);
+            // end undo operation
+            myUndoList->p_end();
+        }
+    }
+    return 1;
+}
+
+
+long
 GNEViewNet::onCmdNodeShape(FXObject*, FXSelector, void*) {
     GNEJunction* junction = getJunctionAtCursorPosition(myPopupSpot);
     if (junction != 0) {
@@ -1130,6 +1516,29 @@ GNEViewNet::onCmdNodeReplace(FXObject*, FXSelector, void*) {
     return 1;
 }
 
+
+long
+GNEViewNet::onCmdToogleShowConnection(FXObject*, FXSelector, void*) {
+    if (!myShowConnectionActivated) {
+        getNet()->initGNEConnections();
+        myShowConnectionActivated = true;
+    }
+    // Update viewnNet to show/hide conections
+    update();
+    // Hide/show connections requiere recompute
+    getNet()->requireRecompute();
+    return 1;
+}
+
+
+long
+GNEViewNet::onCmdToogleShowBubbles(FXObject*, FXSelector, void*) {
+    // Update Junction Shapes
+    getNet()->updateJunctionShapes();
+    return 1;
+}
+
+
 // ===========================================================================
 // private
 // ===========================================================================
@@ -1143,6 +1552,12 @@ GNEViewNet::setEditMode(EditMode mode) {
     } else {
         myPreviousEditMode = myEditMode;
         myEditMode = mode;
+        // First check if previous mode was MOVE
+        if (myPreviousEditMode == GNE_MODE_MOVE) {
+            // Update junctions again to calculate connections and disable bubbles
+            myNet->updateJunctionShapes();
+            myShowJunctionAsBubble->setCheck(false);
+        }
         switch (mode) {
             case GNE_MODE_CONNECT:
             case GNE_MODE_TLS:
@@ -1186,10 +1601,17 @@ GNEViewNet::buildEditModeControls() {
             "two-way\t\tAutomatically create an edge in the opposite direction", this, 0);
     mySelectEdges = new FXMenuCheck(myToolbar, "select edges\t\tToggle whether clicking should select edges or lanes", this, 0);
     mySelectEdges->setCheck();
+
+    myShowConnections = new FXMenuCheck(myToolbar, "show connections\t\tToggle show connections over junctions", this, MID_GNE_SHOW_CONNECTIONS);
+    myShowConnections->setCheck(false);
+
     myExtendToEdgeNodes = new FXMenuCheck(myToolbar, "auto-select nodes\t\tToggle whether selecting multiple edges should automatically select their nodes", this, 0);
 
     myWarnAboutMerge = new FXMenuCheck(myToolbar, "ask for merge\t\tAsk for confirmation before merging junctions.", this, 0);
-    myWarnAboutMerge->setCheck();
+    myWarnAboutMerge->setCheck(true);
+
+    myShowJunctionAsBubble = new FXMenuCheck(myToolbar, "Show junction as bubbles\t\tShow juntion's shape as a bubble.", this, MID_GNE_SHOW_BUBBLES);
+    myShowJunctionAsBubble->setCheck(false);
 
     myChangeAllPhases = new FXMenuCheck(myToolbar, "apply change to all phases\t\tToggle whether clicking should apply state changes to all phases of the current traffic light plan", this, 0);
     myChangeAllPhases->setCheck(false);
@@ -1206,9 +1628,11 @@ GNEViewNet::updateModeSpecificControls() {
     myChainCreateEdge->hide();
     myAutoCreateOppositeEdge->hide();
     mySelectEdges->hide();
+    myShowConnections->hide();
     myExtendToEdgeNodes->hide();
     myChangeAllPhases->hide();
     myWarnAboutMerge->hide();
+    myShowJunctionAsBubble->hide();
     int widthChange = 0;
     // Close all Frames
     if (myViewParent->getInspectorFrame()->shown()) {
@@ -1239,20 +1663,24 @@ GNEViewNet::updateModeSpecificControls() {
             break;
         case GNE_MODE_DELETE:
             mySelectEdges->show();
+            myShowConnections->show();
             break;
         case GNE_MODE_INSPECT:
             widthChange -= myViewParent->getInspectorFrame()->getWidth() + addChange;
             myViewParent->getInspectorFrame()->show();
             mySelectEdges->show();
+            myShowConnections->show();
             break;
         case GNE_MODE_SELECT:
             widthChange -= myViewParent->getSelectorFrame()->getWidth() + addChange;
             myViewParent->getSelectorFrame()->show();
             mySelectEdges->show();
+            myShowConnections->show();
             myExtendToEdgeNodes->show();
             break;
         case GNE_MODE_MOVE:
             myWarnAboutMerge->show();
+            myShowJunctionAsBubble->show();
             break;
         case GNE_MODE_CONNECT:
             widthChange -= myViewParent->getConnectorFrame()->getWidth() + addChange;

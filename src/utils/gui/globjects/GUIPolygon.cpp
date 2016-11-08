@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    June 2006
-/// @version $Id: GUIPolygon.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: GUIPolygon.cpp 21316 2016-08-22 13:08:50Z behrisch $
 ///
 // The GUI-version of a polygon
 /****************************************************************************/
@@ -241,7 +241,7 @@ GUIPolygon::performTesselation(SUMOReal lineWidth) const {
         gluTessProperty(tobj, GLU_TESS_WINDING_RULE, GLU_TESS_WINDING_ODD);
         gluTessBeginPolygon(tobj, NULL);
         gluTessBeginContour(tobj);
-        for (int i = 0; i != myShape.size(); ++i) {
+        for (int i = 0; i != (int)myShape.size(); ++i) {
             points[3 * i]  = myShape[(int) i].x();
             points[3 * i + 1]  = myShape[(int) i].y();
             points[3 * i + 2]  = 0;

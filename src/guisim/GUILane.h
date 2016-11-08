@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILane.h 21226 2016-07-25 08:44:02Z namdre $
+/// @version $Id: GUILane.h 21514 2016-09-22 13:00:49Z namdre $
 ///
 // Representation of a lane in the micro simulation (gui-version)
 /****************************************************************************/
@@ -333,7 +333,6 @@ private:
 
     /// @brief state for dynamic lane closings
     bool myAmClosed;
-    SVCPermissions myOriginalPermissions;
 
 private:
     /// The mutex used to avoid concurrent updates of the vehicle buffer

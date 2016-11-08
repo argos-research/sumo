@@ -9,7 +9,7 @@
 @author  Laura Bieker
 @author  Daniel Krajzewicz
 @date    2011-03-09
-@version $Id: _vehicle.py 21131 2016-07-08 07:59:22Z behrisch $
+@version $Id: _vehicle.py 21846 2016-10-31 07:42:35Z namdre $
 
 Python implementation of the TraCI interface.
 
@@ -106,6 +106,7 @@ _RETURN_VALUE_FUNC = {tc.VAR_SPEED:           Storage.readDouble,
                       tc.VAR_SPEEDSETMODE:    Storage.readInt,
                       tc.VAR_SLOPE:           Storage.readDouble,
                       tc.VAR_WIDTH:           Storage.readDouble,
+                      tc.VAR_HEIGHT:          Storage.readDouble,
                       tc.VAR_MINGAP:          Storage.readDouble,
                       tc.VAR_SHAPECLASS:      Storage.readString,
                       tc.VAR_ACCEL:           Storage.readDouble,
@@ -413,6 +414,13 @@ class VehicleDomain(Domain):
         """
         return self._getUniversal(tc.VAR_WIDTH, vehID)
 
+    def getHeight(self, vehID):
+        """getHeight(string) -> double
+
+        Returns the height in m of this vehicle.
+        """
+        return self._getUniversal(tc.VAR_HEIGHT, vehID)
+
     def getMinGap(self, vehID):
         """getMinGap(string) -> double
 
@@ -716,6 +724,13 @@ class VehicleDomain(Domain):
         edges is loaded and used for rerouting. If currentTravelTimes is False,
         travel times loaded from a weight file are used. In the absence of loaded
         weights, the minimum travel time is used (speed limit). 
+
+        When rerouteTravelTime has been called once with option
+        currentTravelTimes=True, all edge weights are set to the current travel
+        times at the time of that call (even for subsequent simulation steps). 
+        To speed up rerouting of many vehicles with currentTravelTimes=True,
+        only the first vehicle should set this option to True in each simulation
+        step (setting the edge weights is expensive for large networks).
         """
         if currentTravelTimes:
             for edge in self._connection.edge.getIDList():
@@ -815,6 +830,14 @@ class VehicleDomain(Domain):
         """
         self._connection._sendDoubleCmd(
             tc.CMD_SET_VEHICLE_VARIABLE, tc.VAR_WIDTH, vehID, width)
+
+    def setHeight(self, vehID, height):
+        """setHeight(string, double) -> None
+
+        Sets the height in m for this vehicle.
+        """
+        self._connection._sendDoubleCmd(
+            tc.CMD_SET_VEHICLE_VARIABLE, tc.VAR_HEIGHT, vehID, height)
 
     def setMinGap(self, vehID, minGap):
         """setMinGap(string, double) -> None

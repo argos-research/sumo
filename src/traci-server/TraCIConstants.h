@@ -12,7 +12,7 @@
 /// @author  Jakob Erdmann
 /// @author  Laura Bieker
 /// @date    2007/10/24
-/// @version $Id: TraCIConstants.h 21106 2016-07-04 12:52:52Z behrisch $
+/// @version $Id: TraCIConstants.h 21794 2016-10-26 08:24:54Z namdre $
 ///
 /// holds codes used for TraCI
 /****************************************************************************/
@@ -34,7 +34,7 @@
 // ****************************************
 // VERSION
 // ****************************************
-#define TRACI_VERSION 12
+#define TRACI_VERSION 13
 
 
 // ****************************************
@@ -642,6 +642,9 @@
 
 // get/set minimum lateral gap (vehicle, vtypes)
 #define VAR_MINGAP_LAT 0xbb
+
+// get/set vehicle height (vehicle, vtypes)
+#define VAR_HEIGHT 0xbc
 
 // current CO2 emission of a node (get: vehicle, lane, edge)
 #define VAR_CO2EMISSION 0x60

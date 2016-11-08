@@ -5,10 +5,10 @@ function completeRedYellowGreenDefinition = getCompleteRedYellowGreenDefinition(
 %   traci.trafficlights.Logic object that describes the atributes of the 
 %   traffic light definition including all the phase definitions.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: getCompleteRedYellowGreenDefinition.m 20 2015-03-02 16:52:32Z afacostag $
+%   $Id: getCompleteRedYellowGreenDefinition.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 completeRedYellowGreenDefinition = traci.trafficlights.getUniversal(constants.TL_COMPLETE_DEFINITION_RYG, tlsID);

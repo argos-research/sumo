@@ -2,10 +2,10 @@ function result = sendExact()
 %sendExact An internal function to send a message to the SUMO server and
 %parse the result.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: sendExact.m 20 2015-03-02 16:52:32Z afacostag $
+%   $Id: sendExact.m 31 2016-09-28 15:16:56Z afacostag $
 
 global message connections
 import traci.constants

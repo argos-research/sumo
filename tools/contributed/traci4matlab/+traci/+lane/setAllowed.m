@@ -4,10 +4,10 @@ function setAllowed(laneID, allowedClasses)
 %   classes contained in a cell array of strings. Setting an empty list 
 %   means all vehicles are allowed.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: setAllowed.m 29 2015-10-13 13:21:27Z afacostag $
+%   $Id: setAllowed.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 global message

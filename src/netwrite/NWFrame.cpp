@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NWFrame.cpp 20550 2016-04-26 10:57:45Z namdre $
+/// @version $Id: NWFrame.cpp 21569 2016-09-29 07:09:35Z namdre $
 ///
 // Sets and checks options for netwrite
 /****************************************************************************/
@@ -128,6 +128,12 @@ NWFrame::checkOptions() {
     if (oc.isSet("opendrive-output") && oc.getBool("no-internal-links")) {
         WRITE_ERROR("OpenDRIVE export needs internal links computation.");
         ok = false;
+    }
+    if (oc.isSet("opendrive-output") && oc.isDefault("rectangular-lane-cut")) {
+        oc.set("rectangular-lane-cut", "true");
+    }
+    if (oc.isSet("opendrive-output") && !oc.getBool("rectangular-lane-cut")) {
+        WRITE_WARNING("OpenDRIVE cannot represent oblique lane cuts and should use option 'rectangular-lane-cut'.");
     }
     return ok;
 }

@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    January 2012
-/// @version $Id: AStarRouter.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: AStarRouter.h 21808 2016-10-26 13:13:07Z behrisch $
 ///
 // A* Algorithm using euclidean distance heuristic.
 // Based on DijkstraRouterTT. For routing by effort a novel heuristic would be needed.
@@ -186,11 +186,11 @@ public:
         assert(from != 0 && to != 0);
         // check whether from and to can be used
         if (PF::operator()(from, vehicle)) {
-            myErrorMsgHandler->inform("Vehicle  '" + vehicle->getID() + "' is not allowed on from edge '" + from->getID() + "'.");
+            myErrorMsgHandler->inform("Vehicle '" + vehicle->getID() + "' is not allowed on source edge '" + from->getID() + "'.");
             return false;
         }
         if (PF::operator()(to, vehicle)) {
-            myErrorMsgHandler->inform("Vehicle  '" + vehicle->getID() + "' is not allowed on to edge '" + to->getID() + "'.");
+            myErrorMsgHandler->inform("Vehicle '" + vehicle->getID() + "' is not allowed on destination edge '" + to->getID() + "'.");
             return false;
         }
         this->startQuery();

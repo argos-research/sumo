@@ -2,7 +2,7 @@
 /// @file    GNESelectorFrame.h
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNESelectorFrame.h 21014 2016-06-21 09:02:22Z behrisch $
+/// @version $Id: GNESelectorFrame.h 21640 2016-10-09 20:28:52Z palcraft $
 ///
 // The Widget for modifying selections of network-elements
 // (some elements adapted from GUIDialog_GLChosenEditor)
@@ -75,6 +75,9 @@ public:
 
     /// @name FOX-callbacks
     /// @{
+    /// @brief Called when the user change the type of element to search (netElement or Additional)
+    long onCmdSubset(FXObject*, FXSelector, void*);
+
     /// @brief Called when the user presses the Load-button
     /// @note Opens a file dialog and forces the parent to load the list of selected
     /// objects when a file was chosen. Rebuilds the list, then, and redraws itself.
@@ -126,6 +129,9 @@ private:
 
     /// @brief target of modify selection
     FXDataTarget mySetOperationTarget;
+
+    /// @brief tag of the sets of elements
+    FXListBox* mySetBox;
 
     /// @brief tag of the match box
     FXListBox* myMatchTagBox;

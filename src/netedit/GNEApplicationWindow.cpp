@@ -2,7 +2,7 @@
 /// @file    GNEApplicationWindow.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEApplicationWindow.cpp 21217 2016-07-22 10:57:44Z behrisch $
+/// @version $Id: GNEApplicationWindow.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // The main window of Netedit (adapted from GUIApplicationWindow)
 /****************************************************************************/
@@ -37,6 +37,7 @@
 #include <algorithm>
 
 #include <utils/common/TplConvert.h>
+#include <utils/common/TplCheck.h>
 #include <utils/common/ToString.h>
 #include <utils/foxtools/MFXUtils.h>
 #include <utils/foxtools/FXLinkLabel.h>
@@ -143,6 +144,8 @@ FXDEFMAP(GNEApplicationWindow) GNEApplicationWindowMap[] = {
     FXMAPFUNC(SEL_UPDATE,   MID_GNE_SAVE_POIS,             GNEApplicationWindow::onUpdNeedsNetwork), // same condition
     FXMAPFUNC(SEL_COMMAND,  MID_GNE_SAVE_ADDITIONALS,      GNEApplicationWindow::onCmdSaveAdditionals),
     FXMAPFUNC(SEL_UPDATE,   MID_GNE_SAVE_ADDITIONALS,      GNEApplicationWindow::onUpdNeedsNetwork), // same condition
+    FXMAPFUNC(SEL_COMMAND,  MID_GNE_SAVE_ADDITIONALS_AS,   GNEApplicationWindow::onCmdSaveAdditionalsAs),
+    FXMAPFUNC(SEL_UPDATE,   MID_GNE_SAVE_ADDITIONALS_AS,   GNEApplicationWindow::onUpdNeedsNetwork), // same condition
 
     FXMAPFUNC(SEL_COMMAND,  MID_GNE_ABORT,                 GNEApplicationWindow::onCmdAbort),
     FXMAPFUNC(SEL_COMMAND,  MID_GNE_HOTKEY_DEL,            GNEApplicationWindow::onCmdDel),
@@ -265,11 +268,25 @@ GNEApplicationWindow::dependentBuild() {
 
 void
 GNEApplicationWindow::create() {
-    if (getApp()->reg().readIntEntry("SETTINGS", "maximized", 0) == 0) {
+    int windowWidth = getApp()->reg().readIntEntry("SETTINGS", "width", 600);
+    int windowHeight = getApp()->reg().readIntEntry("SETTINGS", "height", 400);
+    const OptionsCont& oc = OptionsCont::getOptions();
+    if (oc.isSet("window-size")) {
+        std::vector<std::string> windowSize = oc.getStringVector("window-size");
+        if (windowSize.size() != 2
+                || !TplCheck::_str2int(windowSize[0])
+                || !TplCheck::_str2int(windowSize[1])) {
+            WRITE_ERROR("option window-size requires INT,INT");
+        } else {
+            windowWidth = TplConvert::_str2int(windowSize[0]);
+            windowHeight = TplConvert::_str2int(windowSize[1]);
+        }
+    }
+    if (oc.isSet("window-size") || getApp()->reg().readIntEntry("SETTINGS", "maximized", 0) == 0) {
         setX(getApp()->reg().readIntEntry("SETTINGS", "x", 150));
         setY(getApp()->reg().readIntEntry("SETTINGS", "y", 150));
-        setWidth(getApp()->reg().readIntEntry("SETTINGS", "width", 600));
-        setHeight(getApp()->reg().readIntEntry("SETTINGS", "height", 400));
+        setWidth(windowWidth);
+        setHeight(windowHeight);
     }
     gCurrentFolder = getApp()->reg().readStringEntry("SETTINGS", "basedir", "");
     FXMainWindow::create();
@@ -285,8 +302,10 @@ GNEApplicationWindow::create() {
     myGeoFrame->setWidth(width);
 
     show(PLACEMENT_SCREEN);
-    if (getApp()->reg().readIntEntry("SETTINGS", "maximized", 0) == 1) {
-        maximize();
+    if (!OptionsCont::getOptions().isSet("window-size")) {
+        if (getApp()->reg().readIntEntry("SETTINGS", "maximized", 0) == 1) {
+            maximize();
+        }
     }
 }
 
@@ -334,19 +353,19 @@ GNEApplicationWindow::fillMenuBar() {
                       "&New Network...\tCtrl+A\tCreate a new network.",
                       GUIIconSubSys::getIcon(ICON_OPEN_NET), this, MID_GNE_NEW_NETWORK);
     new FXMenuCommand(myFileMenu,
-                      "Open &Network...\tCtrl+N\tOpen a SUMO network.",
+                      "&Open Network...\tCtrl+N\tOpen a SUMO network.",
                       GUIIconSubSys::getIcon(ICON_OPEN_NET), this, MID_OPEN_NETWORK);
     new FXMenuCommand(myFileMenu,
-                      "&Open Configuration...\tCtrl+O\tOpen a NETCONVERT configuration file.",
+                      "Open &Configuration...\tCtrl+O\tOpen a NETCONVERT configuration file.",
                       GUIIconSubSys::getIcon(ICON_OPEN_CONFIG), this, MID_OPEN_CONFIG);
     new FXMenuCommand(myFileMenu,
                       "Import &Foreign Network...\t\tImport a foreign network such as OSM.",
                       GUIIconSubSys::getIcon(ICON_OPEN_NET), this, MID_GNE_OPEN_FOREIGN);
     new FXMenuCommand(myFileMenu,
-                      "Load &Shapes...\tCtrl+P\tLoad shapes into the network view.",
+                      "Load S&hapes...\tCtrl+P\tLoad shapes into the network view.",
                       GUIIconSubSys::getIcon(ICON_OPEN_SHAPES), this, MID_OPEN_SHAPES);
     new FXMenuCommand(myFileMenu,
-                      "Load &Additionals...\tCtrl+D\tLoad additional elements.",
+                      "&Load Additionals...\tCtrl+D\tLoad additional elements.",
                       GUIIconSubSys::getIcon(ICON_OPEN_ADDITIONALS), this, MID_OPEN_ADDITIONALS);
     new FXMenuCommand(myFileMenu,
                       "&Reload\tCtrl+R\tReloads the network.",
@@ -355,23 +374,26 @@ GNEApplicationWindow::fillMenuBar() {
                       "&Save Network...\tCtrl+S\tSave the network.",
                       GUIIconSubSys::getIcon(ICON_SAVE), this, MID_GNE_SAVE_NETWORK);
     new FXMenuCommand(myFileMenu,
-                      "&Save Network As...\tCtrl+Shift-S\tSave the network.",
+                      "Save Net&work As...\tCtrl+Shift-S\tSave the network.",
                       GUIIconSubSys::getIcon(ICON_SAVE), this, MID_GNE_SAVE_AS_NETWORK);
     new FXMenuCommand(myFileMenu,
-                      "&Save plain xml...\t\tSave plain xml representation the network.",
+                      "Save plain &xml...\t\tSave plain xml representation the network.",
                       GUIIconSubSys::getIcon(ICON_SAVE), this, MID_GNE_SAVE_PLAIN_XML);
     new FXMenuCommand(myFileMenu,
-                      "&Save joined junctions...\t\tSave log of joined junctions (allows reproduction of joins).",
+                      "Save &joined junctions...\t\tSave log of joined junctions (allows reproduction of joins).",
                       GUIIconSubSys::getIcon(ICON_SAVE), this, MID_GNE_SAVE_JOINED);
     new FXMenuCommand(myFileMenu,
-                      "&Save POIs As ...\t\tSave the POIs.",
+                      "Save &POIs As ...\t\tSave the POIs.",
                       GUIIconSubSys::getIcon(ICON_SAVE), this, MID_GNE_SAVE_POIS);
     new FXMenuCommand(myFileMenu,
-                      "&Save additionals As...\t\tSave additional elements.",
+                      "Save &additionals\t\tSave additional elements.",
                       GUIIconSubSys::getIcon(ICON_SAVE), this, MID_GNE_SAVE_ADDITIONALS);
+    new FXMenuCommand(myFileMenu,
+                      "Save a&dditionals As...\t\tSave additional elements.",
+                      GUIIconSubSys::getIcon(ICON_SAVE), this, MID_GNE_SAVE_ADDITIONALS_AS);
     new FXMenuSeparator(myFileMenu);
     new FXMenuCommand(myFileMenu,
-                      "Close\tCtrl+W\tClose the network.",
+                      "Close\tCtrl+W\tClose &the network.",
                       GUIIconSubSys::getIcon(ICON_CLOSE), this, MID_CLOSE);
     // Recent files
     FXMenuSeparator* sep1 = new FXMenuSeparator(myFileMenu);
@@ -387,7 +409,7 @@ GNEApplicationWindow::fillMenuBar() {
     new FXMenuCommand(myFileMenu, "", 0, &myRecentConfigs, FXRecentFiles::ID_FILE_8);
     new FXMenuCommand(myFileMenu, "", 0, &myRecentConfigs, FXRecentFiles::ID_FILE_9);
     new FXMenuCommand(myFileMenu, "", 0, &myRecentConfigs, FXRecentFiles::ID_FILE_10);
-    new FXMenuCommand(myFileMenu, "C&lear Recent Configurations", 0, &myRecentConfigs, FXRecentFiles::ID_CLEAR);
+    new FXMenuCommand(myFileMenu, "Clear Recent Configurat&ions", 0, &myRecentConfigs, FXRecentFiles::ID_CLEAR);
     myRecentConfigs.setTarget(this);
     myRecentConfigs.setSelector(MID_RECENTFILE);
     FXMenuSeparator* sep2 = new FXMenuSeparator(myFileMenu);
@@ -415,10 +437,10 @@ GNEApplicationWindow::fillMenuBar() {
     myEditMenu = new FXMenuPane(this);
     new FXMenuTitle(myMenuBar, "&Edit", 0, myEditMenu);
     new FXMenuCommand(myEditMenu,
-                      "Undo\tCtrl+Z\tUndo the last change.",
+                      "&Undo\tCtrl+Z\tUndo the last change.",
                       GUIIconSubSys::getIcon(ICON_UNDO), myUndoList, FXUndoList::ID_UNDO);
     new FXMenuCommand(myEditMenu,
-                      "Redo\tCtrl+Y\tRedo the last change.",
+                      "&Redo\tCtrl+Y\tRedo the last change.",
                       GUIIconSubSys::getIcon(ICON_REDO), myUndoList, FXUndoList::ID_REDO);
 
 
@@ -431,18 +453,18 @@ GNEApplicationWindow::fillMenuBar() {
 
     // processing menu (trigger netbuild computations)
     myProcessingMenu = new FXMenuPane(this);
-    new FXMenuTitle(myMenuBar, "Processing", 0, myProcessingMenu);
+    new FXMenuTitle(myMenuBar, "&Processing", 0, myProcessingMenu);
     new FXMenuCommand(myProcessingMenu,
-                      "Compute Junctions\tF5\tComputes junction shape and logic.",
+                      "&Compute Junctions\tF5\tComputes junction shape and logic.",
                       0, this, MID_GNE_COMPUTE_JUNCTIONS);
     new FXMenuCommand(myProcessingMenu,
-                      "Clean Junctions\tF6\tRemoves solitary junctions.",
+                      "Clean &Junctions\tF6\tRemoves solitary junctions.",
                       0, this, MID_GNE_CLEAN_JUNCTIONS);
     new FXMenuCommand(myProcessingMenu,
-                      "Join Selected Junctions\tF7\tJoins selected junctions into a single junction.",
+                      "Join &Selected Junctions\tF7\tJoins selected junctions into a single junction.",
                       0, this, MID_GNE_JOIN_JUNCTIONS);
     new FXMenuCommand(myProcessingMenu,
-                      "Options\t\tConfigure Processing Options.",
+                      "&Options\t\tConfigure Processing Options.",
                       0, this, MID_GNE_OPTIONS);
 
     // build settings menu
@@ -470,10 +492,10 @@ GNEApplicationWindow::fillMenuBar() {
     myWindowsMenu = new FXMenuPane(this);
     new FXMenuTitle(myMenuBar, "&Windows", 0, myWindowsMenu);
     new FXMenuCheck(myWindowsMenu,
-                    "Show Status Line\t\tToggle this Status Bar on/off.",
+                    "&Show Status Line\t\tToggle this Status Bar on/off.",
                     myStatusbar, FXWindow::ID_TOGGLESHOWN);
     new FXMenuCheck(myWindowsMenu,
-                    "Show Message Window\t\tToggle the Message Window on/off.",
+                    "Show &Message Window\t\tToggle the Message Window on/off.",
                     myMessageWindow, FXWindow::ID_TOGGLESHOWN);
     /*
     new FXMenuSeparator(myWindowsMenu);
@@ -499,7 +521,7 @@ GNEApplicationWindow::fillMenuBar() {
     new FXMenuSeparator(myWindowsMenu);
     */
     new FXMenuCommand(myWindowsMenu,
-                      "Clear Message Window\t\tClear the message window.",
+                      "&Clear Message Window\t\tClear the message window.",
                       0, this, MID_CLEARMESSAGEWINDOW);
 
     // build help menu
@@ -627,7 +649,7 @@ GNEApplicationWindow::onCmdOpenForeign(FXObject*, FXSelector, void*) {
 
         if (wizard->execute()) {
             NIFrame::checkOptions(); // needed to set projection parameters
-            loadConfigOrNet(file, false, false, true);
+            loadConfigOrNet(file, false, false, false);
         }
     }
     return 1;
@@ -703,6 +725,7 @@ GNEApplicationWindow::onCmdOpenRecent(FXObject* sender, FXSelector, void* data) 
 
 long
 GNEApplicationWindow::onCmdReload(FXObject*, FXSelector, void*) {
+    // @note. If another network has been load during this session, it might not be desirable to set useStartupOptions
     loadConfigOrNet(OptionsCont::getOptions().getString("sumo-net-file"), true, true);
     return 1;
 }
@@ -819,12 +842,21 @@ GNEApplicationWindow::handleEvent_NetworkLoaded(GUIEvent* e) {
         gSchemeStorage.setViewport(getView()); // refit the network to accomodate mode specific panel
         if (ec->myViewportFromRegistry) {
             Position off, p;
-            off.set(getApp()->reg().readIntEntry("viewport", "x"), getApp()->reg().readIntEntry("viewport", "y"), getApp()->reg().readIntEntry("viewport", "z"));
+            off.set(getApp()->reg().readRealEntry("viewport", "x"), getApp()->reg().readRealEntry("viewport", "y"), getApp()->reg().readRealEntry("viewport", "z"));
             getView()->setViewportFromTo(off, p);
         }
     }
     getApp()->endWaitCursor();
     myMessageWindow->registerMsgHandlers();
+    if (OptionsCont::getOptions().isSet("sumo-additionals-file")) {
+        std::string additionalFile = OptionsCont::getOptions().getString("sumo-additionals-file");
+        WRITE_MESSAGE("Loading additionals from '" + additionalFile + "'");
+        GNEAdditionalHandler additionalHandler(additionalFile, myNet->getViewNet());
+        // Run parser
+        if (!XMLSubSys::runParser(additionalHandler, additionalFile, false)) {
+            WRITE_ERROR("Loading of " + additionalFile + " failed.");
+        }
+    }
     update();
 }
 
@@ -837,7 +869,7 @@ GNEApplicationWindow::handleEvent_Message(GUIEvent* e) {
 
 
 void
-GNEApplicationWindow::loadConfigOrNet(const std::string file, bool isNet, bool isReload, bool optionsReady, bool newNet) {
+GNEApplicationWindow::loadConfigOrNet(const std::string file, bool isNet, bool isReload, bool useStartupOptions, bool newNet) {
     if (!continueWithUnsavedChanges()) {
         return;
     }
@@ -849,7 +881,7 @@ GNEApplicationWindow::loadConfigOrNet(const std::string file, bool isNet, bool i
         setStatusBarText("Reloading.");
     } else {
         gSchemeStorage.saveViewport(0, 0, -1); // recenter view
-        myLoadThread->loadConfigOrNet(file, isNet, optionsReady, newNet);
+        myLoadThread->loadConfigOrNet(file, isNet, useStartupOptions, newNet);
         setStatusBarText("Loading '" + file + "'.");
     }
     update();
@@ -936,7 +968,7 @@ GNEApplicationWindow::closeAllWindows() {
         GeoConvHelper::resetLoaded();
     }
     myMessageWindow->unregisterMsgHandlers();
-    // Load Gifs (Textures)
+    // Reset textures
     GUITextureSubSys::reset();
 }
 
@@ -948,8 +980,9 @@ GNEApplicationWindow::getDefaultCursor() {
 
 
 void
-GNEApplicationWindow::loadOnStartup() {
-    loadConfigOrNet("", false, false, true);
+GNEApplicationWindow::loadOptionOnStartup() {
+    const OptionsCont& oc = OptionsCont::getOptions();
+    loadConfigOrNet("", true, false, true, oc.getBool("new"));
 }
 
 
@@ -1182,17 +1215,24 @@ GNEApplicationWindow::onCmdSaveNetwork(FXObject*, FXSelector, void*) {
 }
 
 
-
 long
 GNEApplicationWindow::onCmdSaveAdditionals(FXObject*, FXSelector, void*) {
-    FXString file = MFXUtils::getFilename2Write(this,
-                    "Select name of the additional file", ".xml",
-                    GUIIconSubSys::getIcon(ICON_EMPTY),
-                    gCurrentFolder);
-    if (file == "") {
-        return 1;
+    OptionsCont& oc = OptionsCont::getOptions();
+    std::string filename;
+    if (!oc.isSet("additionals-output")) {
+        FXString file = MFXUtils::getFilename2Write(this,
+                        "Select name of the additional file", ".xml",
+                        GUIIconSubSys::getIcon(ICON_EMPTY),
+                        gCurrentFolder);
+        if (file == "") {
+            return 1;
+        } else {
+            oc.set("additionals-output", file.text());
+            filename = file.text();
+        }
+    } else {
+        filename = oc.getString("additionals-output");
     }
-    std::string filename = file.text();
     getApp()->beginWaitCursor();
     try {
         myNet->saveAdditionals(filename);
@@ -1202,6 +1242,30 @@ GNEApplicationWindow::onCmdSaveAdditionals(FXObject*, FXSelector, void*) {
     }
     myMessageWindow->addSeparator();
     getApp()->endWaitCursor();
+    return 1;
+}
+
+
+long
+GNEApplicationWindow::onCmdSaveAdditionalsAs(FXObject*, FXSelector, void*) {
+    FXString file = MFXUtils::getFilename2Write(this,
+                    "Select name of the additional file", ".xml",
+                    GUIIconSubSys::getIcon(ICON_EMPTY),
+                    gCurrentFolder);
+    if (file != "") {
+        OptionsCont& oc = OptionsCont::getOptions();
+        oc.set("additionals-output", file.text());
+        std::string filename = file.text();
+        getApp()->beginWaitCursor();
+        try {
+            myNet->saveAdditionals(filename);
+            myMessageWindow->appendMsg(EVENT_MESSAGE_OCCURED, "Additionals saved.\n");
+        } catch (IOError& e) {
+            FXMessageBox::error(this, MBOX_OK, "Saving additionals failed!", "%s", e.what());
+        }
+        myMessageWindow->addSeparator();
+        getApp()->endWaitCursor();
+    }
     return 1;
 }
 

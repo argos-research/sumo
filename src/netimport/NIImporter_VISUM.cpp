@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Fri, 19 Jul 2002
-/// @version $Id: NIImporter_VISUM.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: NIImporter_VISUM.cpp 21472 2016-09-14 08:50:06Z behrisch $
 ///
 // A VISUM network importer
 /****************************************************************************/
@@ -565,27 +565,14 @@ NIImporter_VISUM::parse_Turns() {
         NBEdge* dest = via->getConnectionTo(to);
         // check both
         if (src == 0) {
-            // maybe it was removed due to something
-            if (OptionsCont::getOptions().isSet("keep-edges.min-speed")
-                    ||
-                    OptionsCont::getOptions().isSet("keep-edges.explicit")) {
-                WRITE_WARNING("Could not set connection from node '" + from->getID() + "' to node '" + via->getID() + "'.");
-            } else {
-                if (OptionsCont::getOptions().getBool("visum.verbose-warnings")) {
-                    WRITE_WARNING("There is no edge from node '" + from->getID() + "' to node '" + via->getID() + "'.");
-                }
+            if (OptionsCont::getOptions().getBool("visum.verbose-warnings")) {
+                WRITE_WARNING("There is no edge from node '" + from->getID() + "' to node '" + via->getID() + "'.");
             }
             return;
         }
         if (dest == 0) {
-            if (OptionsCont::getOptions().isSet("keep-edges.min-speed")
-                    ||
-                    OptionsCont::getOptions().isSet("keep-edges.explicit")) {
-                WRITE_WARNING("Could not set connection from node '" + via->getID() + "' to node '" + to->getID() + "'.");
-            } else {
-                if (OptionsCont::getOptions().getBool("visum.verbose-warnings")) {
-                    WRITE_WARNING("There is no edge from node '" + via->getID() + "' to node '" + to->getID() + "'.");
-                }
+            if (OptionsCont::getOptions().getBool("visum.verbose-warnings")) {
+                WRITE_WARNING("There is no edge from node '" + via->getID() + "' to node '" + to->getID() + "'.");
             }
             return;
         }
@@ -633,15 +620,8 @@ NIImporter_VISUM::parse_EdgePolys() {
     }
     // check whether the operation has failed
     if (failed) {
-        // we should report this to the warning instance only if we have removed
-        //  some nodes or edges...
-        if (OptionsCont::getOptions().isSet("keep-edges.min-speed") || OptionsCont::getOptions().isSet("keep-edges.explicit")) {
-            WRITE_WARNING("Could not set geometry between node '" + from->getID() + "' and node '" + to->getID() + "'.");
-        } else {
-            // ... in the other case we report this to the error instance
-            if (OptionsCont::getOptions().getBool("visum.verbose-warnings")) {
-                WRITE_WARNING("There is no edge from node '" + from->getID() + "' to node '" + to->getID() + "'.");
-            }
+        if (OptionsCont::getOptions().getBool("visum.verbose-warnings")) {
+            WRITE_WARNING("There is no edge from node '" + from->getID() + "' to node '" + to->getID() + "'.");
         }
     }
 }

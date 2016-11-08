@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_DlrNavteq.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIImporter_DlrNavteq.h 21492 2016-09-19 07:21:24Z behrisch $
 ///
 // Importer for networks stored in Elmar's format
 /****************************************************************************/
@@ -147,11 +147,12 @@ protected:
         /** @brief Constructor
          * @param[in] nc The node control to retrieve nodes from
          * @param[in, filled] ec The edge control to insert loaded edges into
+         * @param[in] tc The type control to retrieve types from
          * @param[in] file The name of the parsed file
          * @param[in] geoms The previously read edge geometries
          * @param[in] streetNames The previously read street names
          */
-        EdgesHandler(NBNodeCont& nc, NBEdgeCont& ec,
+        EdgesHandler(NBNodeCont& nc, NBEdgeCont& ec, NBTypeCont& tc,
                      const std::string& file,
                      std::map<std::string, PositionVector>& geoms,
                      std::map<std::string, std::string>& streetNames);
@@ -179,6 +180,9 @@ protected:
 
         /// @brief The edge container to store loaded edges into
         NBEdgeCont& myEdgeCont;
+
+        /// @brief The type container to retrieve type info from
+        NBTypeCont& myTypeCont;
 
         /// @brief Previously read edge geometries (manipulated during use)
         std::map<std::string, PositionVector>& myGeoms;

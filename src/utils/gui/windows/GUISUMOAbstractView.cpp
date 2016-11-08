@@ -6,7 +6,7 @@
 /// @author  Laura Bieker
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUISUMOAbstractView.cpp 21217 2016-07-22 10:57:44Z behrisch $
+/// @version $Id: GUISUMOAbstractView.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // The base class for a view
 /****************************************************************************/
@@ -173,11 +173,17 @@ GUISUMOAbstractView::updateToolTip() {
 
 Position
 GUISUMOAbstractView::getPositionInformation() const {
+    return screenPos2NetPos(myWindowCursorPositionX, myWindowCursorPositionY);
+}
+
+
+Position
+GUISUMOAbstractView::screenPos2NetPos(int x, int y) const {
     Boundary bound = myChanger->getViewport();
-    SUMOReal x = bound.xmin() + bound.getWidth()  * myWindowCursorPositionX / getWidth();
+    SUMOReal xNet = bound.xmin() + bound.getWidth() * x / getWidth();
     // cursor origin is in the top-left corner
-    SUMOReal y = bound.ymin() + bound.getHeight() * (getHeight() - myWindowCursorPositionY) / getHeight();
-    return Position(x, y);
+    SUMOReal yNet = bound.ymin() + bound.getHeight() * (getHeight() - y) / getHeight();
+    return Position(xNet, yNet);
 }
 
 
@@ -242,10 +248,10 @@ GUISUMOAbstractView::paintGL() {
 
     // draw
     glClearColor(
-        myVisualizationSettings->backgroundColor.red() / 255.,
-        myVisualizationSettings->backgroundColor.green() / 255.,
-        myVisualizationSettings->backgroundColor.blue() / 255.,
-        myVisualizationSettings->backgroundColor.alpha() / 255.);
+        myVisualizationSettings->backgroundColor.red() / 255.f,
+        myVisualizationSettings->backgroundColor.green() / 255.f,
+        myVisualizationSettings->backgroundColor.blue() / 255.f,
+        myVisualizationSettings->backgroundColor.alpha() / 255.f);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -457,8 +463,7 @@ GUISUMOAbstractView::displayLegend() {
         }
         pixelSize = (int) m2p((SUMOReal) length);
     }
-    SUMOReal lineWidth = 1.0;
-    glLineWidth((SUMOReal) lineWidth);
+    glLineWidth(1.0);
 
     glMatrixMode(GL_PROJECTION);
     glPushMatrix();
@@ -579,10 +584,10 @@ GUISUMOAbstractView::onConfigure(FXObject*, FXSelector, void*) {
     if (makeCurrent()) {
         glViewport(0, 0, getWidth() - 1, getHeight() - 1);
         glClearColor(
-            myVisualizationSettings->backgroundColor.red() / 255.,
-            myVisualizationSettings->backgroundColor.green() / 255.,
-            myVisualizationSettings->backgroundColor.blue() / 255.,
-            myVisualizationSettings->backgroundColor.alpha() / 255.);
+            myVisualizationSettings->backgroundColor.red() / 255.f,
+            myVisualizationSettings->backgroundColor.green() / 255.f,
+            myVisualizationSettings->backgroundColor.blue() / 255.f,
+            myVisualizationSettings->backgroundColor.alpha() / 255.f);
         doInit();
         myAmInitialised = true;
         makeNonCurrent();
@@ -789,10 +794,10 @@ GUISUMOAbstractView::makeSnapshot(const std::string& destFile) {
     }
     // draw
     glClearColor(
-        myVisualizationSettings->backgroundColor.red() / 255.,
-        myVisualizationSettings->backgroundColor.green() / 255.,
-        myVisualizationSettings->backgroundColor.blue() / 255.,
-        myVisualizationSettings->backgroundColor.alpha() / 255.);
+        myVisualizationSettings->backgroundColor.red() / 255.f,
+        myVisualizationSettings->backgroundColor.green() / 255.f,
+        myVisualizationSettings->backgroundColor.blue() / 255.f,
+        myVisualizationSettings->backgroundColor.alpha() / 255.f);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
@@ -859,12 +864,8 @@ GUISUMOAbstractView::makeSnapshot(const std::string& destFile) {
             glLineWidth(1);
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
             Boundary viewPort = myChanger->getViewport();
-            float minB[2];
-            float maxB[2];
-            minB[0] = viewPort.xmin();
-            minB[1] = viewPort.ymin();
-            maxB[0] = viewPort.xmax();
-            maxB[1] = viewPort.ymax();
+            const float minB[2] = { (float)viewPort.xmin(), (float)viewPort.ymin() };
+            const float maxB[2] = { (float)viewPort.xmax(), (float)viewPort.ymax() };
             myVisualizationSettings->scale = m2p(SUMO_const_laneWidth);
             glEnable(GL_POLYGON_OFFSET_FILL);
             glEnable(GL_POLYGON_OFFSET_LINE);
@@ -999,11 +1000,11 @@ GUISUMOAbstractView::setViewportFromTo(const Position& lookFrom, const Position&
 }
 
 
-void 
+void
 GUISUMOAbstractView::copyViewportTo(GUISUMOAbstractView* view) {
     // look straight down
-    view->setViewportFromTo(Position(myChanger->getXPos(), myChanger->getYPos(), myChanger->getZPos()), 
-            Position(myChanger->getXPos(), myChanger->getYPos(), 0));
+    view->setViewportFromTo(Position(myChanger->getXPos(), myChanger->getYPos(), myChanger->getZPos()),
+                            Position(myChanger->getXPos(), myChanger->getYPos(), 0));
 }
 
 
@@ -1180,11 +1181,20 @@ GUISUMOAbstractView::drawDecals() {
             }
         }
         glPushMatrix();
-        glTranslated(d.centerX, d.centerY, d.layer);
+        if (d.screenRelative) {
+            Position center = screenPos2NetPos((int)d.centerX, (int)d.centerY);
+            glTranslated(center.x(), center.y(), d.layer);
+        } else {
+            glTranslated(d.centerX, d.centerY, d.layer);
+        }
         glRotated(d.rot, 0, 0, 1);
         glColor3d(1, 1, 1);
-        const SUMOReal halfWidth = d.width / 2.;
-        const SUMOReal halfHeight = d.height / 2.;
+        SUMOReal halfWidth = d.width / 2.;
+        SUMOReal halfHeight = d.height / 2.;
+        if (d.screenRelative) {
+            halfWidth = p2m(halfWidth);
+            halfHeight = p2m(halfHeight);
+        }
         GUITexturesHelper::drawTexturedBox(d.glID, -halfWidth, -halfHeight, halfWidth, halfHeight);
         glPopMatrix();
     }
@@ -1279,6 +1289,7 @@ GUISUMOAbstractView::Decal::Decal() :
     layer(0),
     initialised(false),
     skip2D(false),
+    screenRelative(false),
     glID(-1),
     image(0) {
 }

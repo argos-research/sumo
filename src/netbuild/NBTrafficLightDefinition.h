@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBTrafficLightDefinition.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: NBTrafficLightDefinition.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // The base class for traffic light logic definitions
 /****************************************************************************/
@@ -164,6 +164,14 @@ public:
      */
     virtual void removeNode(NBNode* node);
 
+    /** @brief removes the given connection from the traffic light
+     * if recontruct=true, reconstructs the logic and informs the edges for immediate use in NETEDIT
+     * @note: tlIndex is not necessarily unique. we need the whole connection data here
+     */
+    virtual void removeConnection(const NBConnection& conn, bool reconstruct = true) {
+        UNUSED_PARAMETER(conn);
+        UNUSED_PARAMETER(reconstruct);
+    }
 
     /** @brief Returns the list of controlled nodes
      * @return Controlled nodes
@@ -321,6 +329,11 @@ public:
     /// @brief get the algorithm type (static etc..)
     TrafficLightType getType() const {
         return myType;
+    }
+
+    /// @brief set the algorithm type (static etc..)
+    virtual void setType(TrafficLightType type) {
+        myType = type;
     }
 
     /* @brief computes whether the given stream may have green minor while the

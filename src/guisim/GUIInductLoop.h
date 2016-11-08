@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Aug 2003
-/// @version $Id: GUIInductLoop.h 21148 2016-07-12 08:47:10Z behrisch $
+/// @version $Id: GUIInductLoop.h 21496 2016-09-19 10:39:08Z behrisch $
 ///
 // The gui-version of the MSInductLoop, together with the according
 /****************************************************************************/
@@ -61,7 +61,7 @@ public:
      * @param[in] position Position of the detector within the lane
      * @param[in] splitByType Whether additional information split by vehicle classes shall be generated
      */
-    GUIInductLoop(const std::string& id, MSLane* const lane, SUMOReal position, bool splitByType);
+    GUIInductLoop(const std::string& id, MSLane* const lane, SUMOReal position, const std::string& vTypes);
 
 
     /// @brief Destructor

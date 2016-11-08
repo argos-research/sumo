@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIDanielPerspectiveChanger.cpp 21186 2016-07-18 12:04:16Z namdre $
+/// @version $Id: GUIDanielPerspectiveChanger.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // A class that allows to steer the visual output in dependence to
 /****************************************************************************/
@@ -262,7 +262,7 @@ GUIDanielPerspectiveChanger::setViewport(SUMOReal zoom,
 }
 
 
-void 
+void
 GUIDanielPerspectiveChanger::setViewportFrom(SUMOReal xPos, SUMOReal yPos, SUMOReal zPos) {
     setViewport(zPos2Zoom(zPos), xPos, yPos);
 }

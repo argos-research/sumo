@@ -4,7 +4,7 @@ function setLaneChangeMode(vehID, lcm)
 %   bitset. For further details, see 'lane change mode' in 
 %   http://sumo.dlr.de/wiki/TraCI/Change_Vehicle_State
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
 %   $Id$

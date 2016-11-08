@@ -2,7 +2,7 @@
 /// @file    GNEInternalLane.cpp
 /// @author  Jakob Erdmann
 /// @date    June 2011
-/// @version $Id: GNEInternalLane.cpp 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNEInternalLane.cpp 21640 2016-10-09 20:28:52Z palcraft $
 ///
 // A class for visualizing Inner Lanes (used when editing traffic lights)
 /****************************************************************************/
@@ -202,8 +202,7 @@ GNEInternalLane::getPopUpMenu(GUIMainWindow& app, GUISUMOAbstractView& parent) {
 
 
 GUIParameterTableWindow*
-GNEInternalLane::getParameterWindow(GUIMainWindow& app,
-                                    GUISUMOAbstractView&) {
+GNEInternalLane::getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView&) {
     GUIParameterTableWindow* ret =
         new GUIParameterTableWindow(app, *this, 2);
     // add items

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIDanielPerspectiveChanger.h 21186 2016-07-18 12:04:16Z namdre $
+/// @version $Id: GUIDanielPerspectiveChanger.h 21824 2016-10-27 13:03:52Z behrisch $
 ///
 // A class that allows to steer the visual output in dependence to
 /****************************************************************************/
@@ -150,7 +150,7 @@ private:
 
     /// avoid flicker
     FXTime myDragDelay;
-    FXTime myMouseDownTime;
+    FXlong myMouseDownTime;
 
 
 private:

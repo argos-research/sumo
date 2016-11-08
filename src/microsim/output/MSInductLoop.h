@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2004-11-23
-/// @version $Id: MSInductLoop.h 21201 2016-07-19 11:57:22Z behrisch $
+/// @version $Id: MSInductLoop.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // An unextended detector measuring at a fixed position on a fixed lane.
 /****************************************************************************/
@@ -82,7 +82,8 @@ public:
      * @param[in] splitByType Whether additional information split by vehicle classes shall be generated
      */
     MSInductLoop(const std::string& id, MSLane* const lane,
-                 SUMOReal positionInMeters, bool splitByType);
+                 SUMOReal positionInMeters,
+                 const std::string& vTypes);
 
 
     /// @brief Destructor
@@ -340,17 +341,14 @@ protected:
     /// @brief Detector's position on lane [m]
     const SUMOReal myPosition;
 
-    /// @brief Whether additional information split by vehicle classes shall be generated
-    bool mySplitByType;
-
     /// @brief Leave-time of the last vehicle detected [s]
     SUMOReal myLastLeaveTime;
 
     /// @brief Occupancy by the last vehicle detected.
     SUMOReal myLastOccupancy;
 
-    /// @brief The number of dismissed vehicles
-    int myDismissedVehicleNumber;
+    /// @brief The number of entered vehicles
+    int myEnteredVehicleNumber;
 
 
     /// @brief Type of myVehicleDataCont.
@@ -368,9 +366,6 @@ protected:
 
     /// @brief Data for vehicles that have entered the detector (vehicle -> enter time)
     VehicleMap myVehiclesOnDet;
-
-    void writeTypedXMLOutput(OutputDevice& dev, SUMOTime startTime, SUMOTime stopTime,
-                             const std::string& type, const VehicleDataCont& vdc, const VehicleMap& vm);
 
 private:
     /// @brief Invalidated copy constructor.

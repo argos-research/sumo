@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSVehicleType.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSVehicleType.h 21657 2016-10-10 14:50:05Z namdre $
 ///
 // The car-following model and parameter
 /****************************************************************************/
@@ -335,6 +335,16 @@ public:
      * @param[in] length The new length of this type
      */
     void setLength(const SUMOReal& length);
+
+
+    /** @brief Set a new value for this type's height
+     *
+     * If the given value<0 then the one from the original type will
+     *  be used.
+     *
+     * @param[in] height The new height of this type
+     */
+    void setHeight(const SUMOReal& height);
 
 
     /** @brief Set a new value for this type's minimum gap

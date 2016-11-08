@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_OpenStreetMap.cpp 21202 2016-07-19 13:40:35Z behrisch $
+/// @version $Id: NIImporter_OpenStreetMap.cpp 21738 2016-10-18 11:39:37Z namdre $
 ///
 // Importer for networks stored in OpenStreetMap format
 /****************************************************************************/
@@ -199,7 +199,7 @@ NIImporter_OpenStreetMap::load(const OptionsCont& oc, NBNetBuilder& nb) {
     }
     // Mark which nodes are used by traffic lights
     for (std::map<long long int, NIOSMNode*>::const_iterator nodesIt = myOSMNodes.begin(); nodesIt != myOSMNodes.end(); ++nodesIt) {
-        if (nodesIt->second->tlsControlled) {
+        if (nodesIt->second->tlsControlled /* || nodesIt->second->railwayCrossing*/) {
             // If the key is not found in the map, the value is automatically
             // initialized with 0.
             nodeUsage[nodesIt->first] += 1;
@@ -276,7 +276,9 @@ NIImporter_OpenStreetMap::insertNodeChecking(long long int id, NBNodeCont& nc, N
             return 0;
         }
         n->node = node;
-        if (n->tlsControlled) {
+        if (n->railwayCrossing) {
+            node->reinit(pos, NODETYPE_RAIL_CROSSING);
+        } else if (n->tlsControlled) {
             // ok, this node is a traffic light node where no other nodes
             //  participate
             // @note: The OSM-community has not settled on a schema for differentiating between fixed and actuated lights
@@ -639,12 +641,14 @@ NIImporter_OpenStreetMap::NodesHandler::myStartElement(int element, const SUMOSA
         bool ok = true;
         std::string key = attrs.get<std::string>(SUMO_ATTR_K, toString(myLastNodeID).c_str(), ok, false);
         // we check whether the key is relevant (and we really need to transcode the value) to avoid hitting #1636
-        if (key == "highway" || key == "ele" || key == "crossing") {
+        if (key == "highway" || key == "ele" || key == "crossing" || key == "railway") {
             std::string value = attrs.get<std::string>(SUMO_ATTR_V, toString(myLastNodeID).c_str(), ok, false);
             if (key == "highway" && value.find("traffic_signal") != std::string::npos) {
                 myToFill[myLastNodeID]->tlsControlled = true;
             } else if (key == "crossing" && value.find("traffic_signals") != std::string::npos) {
                 myToFill[myLastNodeID]->tlsControlled = true;
+            } else if (key == "railway" && value.find("crossing") != std::string::npos) {
+                myToFill[myLastNodeID]->railwayCrossing = true;
             } else if (myImportElevation && key == "ele") {
                 try {
                     myToFill[myLastNodeID]->ele = TplConvert::_2SUMOReal(value.c_str());
@@ -769,12 +773,12 @@ NIImporter_OpenStreetMap::EdgesHandler::myStartElement(int element,
         }
 
         // we check whether the key is relevant (and we really need to transcode the value) to avoid hitting #1636
-        if (!StringUtils::endsWith(key, "way") && !StringUtils::startsWith(key, "lanes") && key != "maxspeed" && key != "junction" && key != "name" && key != "tracks" && key != "layer") {
+        if (!StringUtils::endsWith(key, "way") && !StringUtils::startsWith(key, "lanes") && key != "maxspeed" && key != "junction" && key != "name" && key != "tracks" && key != "layer" && key != "route") {
             return;
         }
         std::string value = attrs.get<std::string>(SUMO_ATTR_V, toString(myCurrentEdge->id).c_str(), ok, false);
 
-        if (key == "highway" || key == "railway" || key == "waterway" || key == "cycleway" || key == "busway") {
+        if (key == "highway" || key == "railway" || key == "waterway" || key == "cycleway" || key == "busway" || key == "route") {
             myCurrentEdge->myCurrentIsRoad = true;
             // special cycleway stuff
             if (key == "cycleway") {

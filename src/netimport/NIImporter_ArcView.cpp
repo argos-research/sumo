@@ -6,7 +6,7 @@
 /// @author  Thimor Bohn
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NIImporter_ArcView.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: NIImporter_ArcView.cpp 21440 2016-09-07 11:06:14Z behrisch $
 ///
 // Importer for networks stored in ArcView-shape format
 /****************************************************************************/
@@ -130,7 +130,7 @@ NIImporter_ArcView::load() {
     OGRDataSource* poDS = OGRSFDriverRegistrar::Open(mySHPName.c_str(), FALSE);
 #else
     GDALAllRegister();
-    GDALDataset* poDS = (GDALDataset*) GDALOpen(mySHPName.c_str(), GA_ReadOnly);
+    GDALDataset* poDS = (GDALDataset*)GDALOpenEx(mySHPName.c_str(), GDAL_OF_VECTOR | GA_ReadOnly, NULL, NULL, NULL);
 #endif
     if (poDS == NULL) {
         WRITE_ERROR("Could not open shape description '" + mySHPName + "'.");
@@ -292,6 +292,11 @@ NIImporter_ArcView::load() {
         //
         OGRFeature::DestroyFeature(poFeature);
     }
+#if GDAL_VERSION_MAJOR < 2
+    OGRDataSource::DestroyDataSource(poDS);
+#else
+    GDALClose(poDS);
+#endif
     PROGRESS_DONE_MESSAGE();
 #else
     WRITE_ERROR("SUMO was compiled without GDAL support.");

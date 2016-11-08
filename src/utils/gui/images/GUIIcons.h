@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Andreas Gaubatz
 /// @date    2004
-/// @version $Id: GUIIcons.h 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GUIIcons.h 21640 2016-10-09 20:28:52Z palcraft $
 ///
 // An enumeration of icons used by the gui applications
 /****************************************************************************/
@@ -140,6 +140,11 @@ enum GUIIcon {
     ICON_LOCK,
     ICON_ADD,
     ICON_REMOVE,
+    ICON_NETEDITARROW,
+
+    ICON_LANEPEDESTRIAN,
+    ICON_LANEBUS,
+    ICON_LANEBIKE,
 
     ICON_MAX
 };

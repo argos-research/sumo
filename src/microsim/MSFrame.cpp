@@ -8,7 +8,7 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSFrame.cpp 21198 2016-07-19 11:34:56Z namdre $
+/// @version $Id: MSFrame.cpp 21734 2016-10-18 10:59:35Z namdre $
 ///
 // Sets and checks options for microsim; inits global outputs and settings
 /****************************************************************************/
@@ -232,6 +232,9 @@ MSFrame::fillOptions() {
     oc.doRegister("step-length", new Option_String("1", "TIME"));
     oc.addDescription("step-length", "Time", "Defines the step duration in seconds");
 
+    oc.doRegister("step-method.ballistic", new Option_Bool(false));
+    oc.addDescription("step-method.ballistic", "Processing", "Whether to use ballistic method for the positional update of vehicles (default is a semi-implicit Euler method).");
+
     oc.doRegister("lateral-resolution", new Option_Float(-1));
     oc.addDescription("lateral-resolution", "Processing", "Defines the resolution in m when handling lateral positioning within a lane (with -1 all vehicles drive at the center of their lane");
 
@@ -262,7 +265,7 @@ MSFrame::fillOptions() {
     oc.doRegister("max-num-vehicles", new Option_Integer(-1));
     oc.addDescription("max-num-vehicles", "Processing", "Delay vehicle insertion to stay within the given maximum number");
 
-    oc.doRegister("scale", new Option_Float());
+    oc.doRegister("scale", new Option_Float(1.));
     oc.addDescription("scale", "Processing", "Scale demand by the given factor (by discarding or duplicating vehicles)");
 
     oc.doRegister("time-to-teleport", new Option_String("300", "TIME"));
@@ -285,9 +288,6 @@ MSFrame::fillOptions() {
 
     oc.doRegister("random-depart-offset", new Option_String("0", "TIME"));
     oc.addDescription("random-depart-offset", "Processing", "Each vehicle receives a random offset to its depart value drawn uniformly from [0, TIME]");
-
-    oc.doRegister("lanechange.allow-swap", new Option_Bool(false));
-    oc.addDescription("lanechange.allow-swap", "Processing", "Whether blocking vehicles trying to change lanes may be swapped");
 
     oc.doRegister("lanechange.duration", new Option_String("0", "TIME"));
     oc.addDescription("lanechange.duration", "Processing", "Duration of a lane change maneuver (default 0)");
@@ -405,6 +405,9 @@ MSFrame::fillOptions() {
     oc.doRegister("disable-textures", 'T', new Option_Bool(false));
     oc.addDescription("disable-textures", "GUI Only", "Do not load background pictures");
 
+    oc.doRegister("window-size", new Option_String());
+    oc.addDescription("window-size", "GUI Only", "Create initial window with the given x,y size");
+
 #ifdef HAVE_OSG
     oc.doRegister("osg-view", new Option_Bool(false));
     oc.addDescription("osg-view", "GUI Only", "Start with an OpenSceneGraph view instead of the regular 2D view");
@@ -449,11 +452,9 @@ MSFrame::checkOptions() {
         WRITE_ERROR("No network file (-n) specified.");
         ok = false;
     }
-    if (!oc.isDefault("scale")) {
-        if (oc.getFloat("scale") < 0.) {
-            WRITE_ERROR("Invalid scaling factor.");
-            ok = false;
-        }
+    if (oc.getFloat("scale") < 0.) {
+        WRITE_ERROR("Invalid scaling factor.");
+        ok = false;
     }
     if (oc.getBool("vehroute-output.exit-times") && !oc.isSet("vehroute-output")) {
         WRITE_ERROR("A vehroute-output file is needed for exit times.");
@@ -502,9 +503,6 @@ MSFrame::checkOptions() {
     if (string2time(oc.getString("lanechange.duration")) > 0 && oc.getFloat("lateral-resolution") > 0) {
         WRITE_ERROR("Only one of the options 'lanechange.duration' or 'lateral-resolution' may be given.");
     }
-    if (oc.getBool("lanechange.allow-swap")) {
-        WRITE_WARNING("The option 'lanechange.allow-swap' is deprecated, and will not be supported in future versions of SUMO.");
-    }
     if (oc.getBool("ignore-accidents")) {
         WRITE_WARNING("The option 'ignore-accidents' is deprecated. Use 'collision.action none' instead.");
     }
@@ -542,13 +540,13 @@ MSFrame::setMSGlobals(OptionsCont& oc) {
     MSGlobals::gMesoLimitedJunctionControl = oc.getBool("meso-junction-control.limited");
     MSGlobals::gMesoOvertaking = oc.getBool("meso-overtaking");
     MSGlobals::gMesoTLSPenalty = oc.getFloat("meso-tls-penalty");
+    MSGlobals::gSemiImplicitEulerUpdate = !oc.getBool("step-method.ballistic");
     if (MSGlobals::gUseMesoSim) {
         MSGlobals::gUsingInternalLanes = false;
     }
     MSGlobals::gWaitingTimeMemory = string2time(oc.getString("waiting-time-memory"));
     MSAbstractLaneChangeModel::initGlobalOptions(oc);
     MSLane::initCollisionOptions(oc);
-
 
     DELTA_T = string2time(oc.getString("step-length"));
 #ifdef _DEBUG

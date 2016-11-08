@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Jan 2004
-/// @version $Id: ROJTRRouter.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ROJTRRouter.h 21813 2016-10-26 20:30:04Z behrisch $
 ///
 // Computes routes using junction turning percentages
 /****************************************************************************/
@@ -90,10 +90,10 @@ public:
     /** @brief Recomputes the costs of a route
      * @param[in] edges The route
      * @param[in] v The vehicle that belongs to the route
-     * @param[in] time The departure time of the vehicle
+     * @param[in] msTime The departure time of the vehicle
      * @return The route costs
      */
-    SUMOReal recomputeCosts(const ConstROEdgeVector& edges, const ROVehicle* const v, SUMOTime time) const;
+    SUMOReal recomputeCosts(const ConstROEdgeVector& edges, const ROVehicle* const v, SUMOTime msTime) const;
     /// @}
 
 

@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2008/04/07
-/// @version $Id: TraCITestClient.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: TraCITestClient.cpp 21671 2016-10-12 11:12:57Z namdre $
 ///
 /// A test execution class
 /****************************************************************************/
@@ -678,17 +678,37 @@ TraCITestClient::testAPI() {
     answerLog << "  edge:\n";
     answerLog << "    getIDList: " << joinToString(edge.getIDList(), " ") << "\n";
     answerLog << "    getIDCount: " << edge.getIDCount() << "\n";
+    const std::string edgeID = "e_m0";
+    edge.adaptTraveltime(edgeID, 42, 0, 10);
+    edge.setEffort(edgeID, 420, 0, 10);
+    answerLog << "    currentTraveltime: " << edge.getTraveltime(edgeID) << "\n";
+    answerLog << "    adaptedTravelTime: " << edge.getAdaptedTraveltime(edgeID, 0) << "\n";
+    answerLog << "    effort: " << edge.getEffort(edgeID, 0) << "\n";
     answerLog << "  route:\n";
     answerLog << "    add:\n";
     std::vector<std::string> edges;
     edges.push_back("e_u1");
     route.add("e_u1", edges);
     answerLog << "    getIDList: " << joinToString(route.getIDList(), " ") << "\n";
+    answerLog << "  vehicleType:\n";
+    answerLog << "    getIDList: " << joinToString(vehicletype.getIDList(), " ") << "\n";
+    vehicletype.setWidth("t1", 1.9);
+    answerLog << "    getWidth: " << vehicletype.getWidth("t1") << "\n";
+    vehicletype.setHeight("t1", 1.8);
+    answerLog << "    getHeight: " << vehicletype.getHeight("t1") << "\n";
     answerLog << "  vehicle:\n";
     answerLog << "    getRoadID: " << vehicle.getRoadID("0") << "\n";
     answerLog << "    getLaneID: " << vehicle.getLaneID("0") << "\n";
     answerLog << "    getSpeedMode: " << vehicle.getSpeedMode("0") << "\n";
     answerLog << "    getSlope: " << vehicle.getSlope("0") << "\n";
+    TraCIColor col1;
+    col1.r = 255;
+    col1.g = 255;
+    col1.b = 0;
+    col1.a = 128;
+    vehicle.setColor("0", col1);
+    TraCIColor col2 = vehicle.getColor("0");
+    answerLog << "    getColor: " << col2.r << "r=" << col2.r << " g=" << col2.g << " b=" << col2.b << " a=" << col2.a << "\n";
     answerLog << "    getNextTLS:\n";
     std::vector<VehicleScope::NextTLSData> result = vehicle.getNextTLS("0");
     for (int i = 0; i < (int)result.size(); ++i) {

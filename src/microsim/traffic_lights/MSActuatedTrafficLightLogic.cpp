@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: MSActuatedTrafficLightLogic.cpp 21206 2016-07-20 08:08:35Z behrisch $
+/// @version $Id: MSActuatedTrafficLightLogic.cpp 21496 2016-09-19 10:39:08Z behrisch $
 ///
 // An actuated (adaptive) traffic light logic
 /****************************************************************************/
@@ -77,7 +77,7 @@ MSActuatedTrafficLightLogic::MSActuatedTrafficLightLogic(MSTLLogicControl& tlcon
     myShowDetectors = TplConvert::_2bool(getParameter("show-detectors", "false").c_str());
     myFile = FileHelpers::checkForRelativity(getParameter("file", "NUL"), basePath);
     myFreq = TIME2STEPS(TplConvert::_2SUMOReal(getParameter("freq", "300").c_str()));
-    mySplitByType = TplConvert::_2bool(getParameter("splitByType", "false").c_str());
+    myVehicleTypes = getParameter("vTypes", "");
 }
 
 
@@ -105,7 +105,7 @@ MSActuatedTrafficLightLogic::init(NLDetectorBuilder& nb) {
             // Build the induct loop and set it into the container
             std::string id = "TLS" + myID + "_" + myProgramID + "_InductLoopOn_" + lane->getID();
             if (myInductLoops.find(lane) == myInductLoops.end()) {
-                myInductLoops[lane] = nb.createInductLoop(id, lane, ilpos, mySplitByType);
+                myInductLoops[lane] = nb.createInductLoop(id, lane, ilpos, myVehicleTypes);
                 MSNet::getInstance()->getDetectorControl().add(SUMO_TAG_INDUCTION_LOOP, myInductLoops[lane], myFile, myFreq, myShowDetectors);
             }
         }

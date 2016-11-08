@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLJunctionControlBuilder.cpp 21206 2016-07-20 08:08:35Z behrisch $
+/// @version $Id: NLJunctionControlBuilder.cpp 21480 2016-09-15 08:49:36Z namdre $
 ///
 // Builder of microsim-junctions and tls
 /****************************************************************************/
@@ -309,6 +309,7 @@ NLJunctionControlBuilder::closeTrafficLightLogic(const std::string& basePath) {
                     myActivePhases, step, (*i)->minDuration + myNet.getCurrentTimeStep(),
                     myAdditionalParameter, basePath);
             break;
+        case TLTYPE_DELAYBASED: // placeholder for future development
         case TLTYPE_STATIC:
             tlLogic =
                 new MSSimpleTrafficLightLogic(getTLLogicControlToUse(),

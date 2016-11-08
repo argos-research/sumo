@@ -1,5 +1,5 @@
 /*   
-    Copyright (C) 2015 Mario Krumnow, Dresden University of Technology
+    Copyright (C) 2016 Mario Krumnow, Dresden University of Technology
 
     This file is part of TraaS.
 
@@ -33,7 +33,7 @@ import de.tudresden.sumo.cmd.Poi;
 import de.tudresden.sumo.cmd.Polygon;
 import de.tudresden.sumo.cmd.Route;
 import de.tudresden.sumo.cmd.Simulation;
-import de.tudresden.sumo.cmd.Trafficlights;
+import de.tudresden.sumo.cmd.Trafficlight;
 import de.tudresden.sumo.cmd.Vehicle;
 import de.tudresden.sumo.cmd.Vehicletype;
 import de.tudresden.ws.container.SumoBoundingBox;
@@ -44,7 +44,8 @@ import de.tudresden.ws.container.SumoPosition2D;
 import de.tudresden.ws.container.SumoPosition3D;
 import de.tudresden.ws.container.SumoStopFlags;
 import de.tudresden.ws.container.SumoStringList;
-import de.tudresden.ws.container.SumoTLSLogic;
+import de.tudresden.ws.container.SumoTLSProgram;
+import de.tudresden.ws.container.SumoTLSController;
 import de.tudresden.ws.container.SumoVehicleData;
 import de.tudresden.ws.log.Log;
 import de.tudresden.sumo.util.ConvertHelper;
@@ -105,11 +106,6 @@ public class Traci{
 	@WebMethod(action="Vehicle: moveTo")
 	public void Vehicle_moveTo(@WebParam(name = "vehID") String vehID, @WebParam(name = "laneID") String laneID, @WebParam(name = "pos") double pos){
 		this.sumo.set_cmd(Vehicle.moveTo(vehID, laneID, pos));
-	}
-
-	@WebMethod(action="Vehicle: moveToVTD")
-	public void Vehicle_moveToVTD(@WebParam(name = "vehID") String vehID, @WebParam(name = "edgeID") String edgeID, @WebParam(name = "lane") int lane, @WebParam(name = "x") double x, @WebParam(name = "y") double y){
-		this.sumo.set_cmd(Vehicle.moveToVTD(vehID, edgeID, lane, x, y));
 	}
 
 	@WebMethod(action="Vehicle: Remove vehicle with the given ID for the give reason.  Reasons are defined in module constants and start with REMOVE_")
@@ -191,7 +187,7 @@ public class Traci{
 	public void Vehicle_setSignals(@WebParam(name = "vehID") String vehID, @WebParam(name = "signals") int signals){
 		this.sumo.set_cmd(Vehicle.setSignals(vehID, signals));
 	}
-
+	
 	@WebMethod(action="Vehicle: setSpeed")
 	public void Vehicle_setSpeed(@WebParam(name = "vehID") String vehID, @WebParam(name = "speed") double speed){
 		this.sumo.set_cmd(Vehicle.setSpeed(vehID, speed));
@@ -206,7 +202,7 @@ public class Traci{
 	public void Vehicle_setSpeedFactor(@WebParam(name = "vehID") String vehID, @WebParam(name = "factor") double factor){
 		this.sumo.set_cmd(Vehicle.setSpeedFactor(vehID, factor));
 	}
-
+	
 	@WebMethod(action="Vehicle: setStop")
 	public void Vehicle_setStop(@WebParam(name = "vehID") String vehID, @WebParam(name = "edgeID") String edgeID, @WebParam(name = "pos") double pos, @WebParam(name = "laneIndex") byte laneIndex, @WebParam(name = "duration") int duration, @WebParam(name = "stopType") SumoStopFlags stopType){
 		this.sumo.set_cmd(Vehicle.setStop(vehID, edgeID, pos, laneIndex, duration, stopType));
@@ -233,28 +229,28 @@ public class Traci{
 	}
 
 	@WebMethod(action="Trafficlights: setCompleteRedYellowGreenDefinition")
-	public void Trafficlights_setCompleteRedYellowGreenDefinition(@WebParam(name = "tlsID") String tlsID, @WebParam(name = "tls") SumoTLSLogic tls){
-		this.sumo.set_cmd(Trafficlights.setCompleteRedYellowGreenDefinition(tlsID, tls));
+	public void Trafficlights_setCompleteRedYellowGreenDefinition(@WebParam(name = "tlsID") String tlsID, @WebParam(name = "tls") SumoTLSProgram tls){
+		this.sumo.set_cmd(Trafficlight.setCompleteRedYellowGreenDefinition(tlsID, tls));
 	}
 
 	@WebMethod(action="Trafficlights: setPhase")
 	public void Trafficlights_setPhase(@WebParam(name = "tlsID") String tlsID, @WebParam(name = "index") int index){
-		this.sumo.set_cmd(Trafficlights.setPhase(tlsID, index));
+		this.sumo.set_cmd(Trafficlight.setPhase(tlsID, index));
 	}
 
 	@WebMethod(action="Trafficlights: setPhaseDuration")
 	public void Trafficlights_setPhaseDuration(@WebParam(name = "tlsID") String tlsID, @WebParam(name = "phaseDuration") int phaseDuration){
-		this.sumo.set_cmd(Trafficlights.setPhaseDuration(tlsID, phaseDuration));
+		this.sumo.set_cmd(Trafficlight.setPhaseDuration(tlsID, phaseDuration));
 	}
 
 	@WebMethod(action="Trafficlights: setProgram")
 	public void Trafficlights_setProgram(@WebParam(name = "tlsID") String tlsID, @WebParam(name = "programID") String programID){
-		this.sumo.set_cmd(Trafficlights.setProgram(tlsID, programID));
+		this.sumo.set_cmd(Trafficlight.setProgram(tlsID, programID));
 	}
 
 	@WebMethod(action="Trafficlights: setRedYellowGreenState")
 	public void Trafficlights_setRedYellowGreenState(@WebParam(name = "tlsID") String tlsID, @WebParam(name = "state") String state){
-		this.sumo.set_cmd(Trafficlights.setRedYellowGreenState(tlsID, state));
+		this.sumo.set_cmd(Trafficlight.setRedYellowGreenState(tlsID, state));
 	}
 
 	@WebMethod(action="Vehicletype: setAccel")
@@ -481,6 +477,11 @@ public class Traci{
 		return this.helper.getDouble(this.sumo.get_cmd(Edge.getEffort(edgeID, time)));
 	}
 
+	@WebMethod(action="Edge: getElectricityConsumption")
+	public double Edge_getElectricityConsumption(@WebParam(name = "edgeID") String edgeID){
+		return this.helper.getDouble(this.sumo.get_cmd(Edge.getElectricityConsumption(edgeID)));
+	}
+	
 	@WebMethod(action="Edge: Returns the fuel consumption in ml for the last time step on the given edge.")
 	public double Edge_getFuelConsumption(@WebParam(name = "edgeID") String edgeID){
 		return this.helper.getDouble(this.sumo.get_cmd(Edge.getFuelConsumption(edgeID)));
@@ -657,11 +658,6 @@ public class Traci{
 		return this.helper.getDouble(this.sumo.get_cmd(Person.getWaitingTime(personID)));
 	}
 	
-	@WebMethod(action="Person: getWidth")
-	public double Person_getWidth(@WebParam(name = "personID") String personID){
-		return this.helper.getDouble(this.sumo.get_cmd(Person.getWidth(personID)));
-	}
-	
 	@WebMethod(action="Person: getMinGap")
 	public double Person_getMinGap(@WebParam(name = "personID") String personID){
 		return this.helper.getDouble(this.sumo.get_cmd(Person.getMinGap(personID)));
@@ -767,6 +763,10 @@ public class Traci{
 		return this.helper.getDouble(this.sumo.get_cmd(Vehicle.getDistance(vehID)));
 	}
 	
+	@WebMethod(action="Vehicle: getElectricityConsumption")
+	public double Vehicle_getElectricityConsumption(@WebParam(name = "vehID") String vehID){
+		return this.helper.getDouble(this.sumo.get_cmd(Vehicle.getElectricityConsumption(vehID)));
+	}
 	@WebMethod(action="Vehicle: getWaitingTime")
 	public double Vehicle_getWaitingTime(@WebParam(name = "vehID") String vehID){
 		return this.helper.getDouble(this.sumo.get_cmd(Vehicle.getWaitingTime(vehID)));
@@ -857,6 +857,11 @@ public class Traci{
 		return this.helper.getInt(this.sumo.get_cmd(Vehicle.getSignals(vehID)));
 	}
 
+	@WebMethod(action="Vehicle: getSlope")
+	public double Vehicle_getSlope(@WebParam(name = "vehID") String vehID){
+		return this.helper.getDouble(this.sumo.get_cmd(Vehicle.getSlope(vehID)));
+	}
+	
 	@WebMethod(action="Vehicle: getSpeed")
 	public double Vehicle_getSpeed(@WebParam(name = "vehID") String vehID){
 		return this.helper.getDouble(this.sumo.get_cmd(Vehicle.getSpeed(vehID)));
@@ -870,6 +875,11 @@ public class Traci{
 	@WebMethod(action="Vehicle: getSpeedFactor")
 	public double Vehicle_getSpeedFactor(@WebParam(name = "vehID") String vehID){
 		return this.helper.getDouble(this.sumo.get_cmd(Vehicle.getSpeedFactor(vehID)));
+	}
+	
+	@WebMethod(action="Vehicle: getSpeedMode")
+	public double Vehicle_getSpeedMode(@WebParam(name = "vehID") String vehID){
+		return this.helper.getInt(this.sumo.get_cmd(Vehicle.getSpeedMode(vehID)));
 	}
 
 	@WebMethod(action="Vehicle: getSpeedWithoutTraCI")
@@ -1076,53 +1086,53 @@ public class Traci{
 	}
 
 	@WebMethod(action="Trafficlights: getCompleteRedYellowGreenDefinition")
-	public SumoTLSLogic Trafficlights_getCompleteRedYellowGreenDefinition(@WebParam(name = "tlsID") String tlsID){
-		return this.helper.getTLSLogic(this.sumo.get_cmd(Trafficlights.getCompleteRedYellowGreenDefinition(tlsID)));
+	public SumoTLSController Trafficlights_getCompleteRedYellowGreenDefinition(@WebParam(name = "tlsID") String tlsID){
+		return this.helper.getTLSProgram(this.sumo.get_cmd(Trafficlight.getCompleteRedYellowGreenDefinition(tlsID)));
 	}
 
 	@WebMethod(action="Trafficlights: getControlledLanes")
 	public SumoStringList Trafficlights_getControlledLanes(@WebParam(name = "tlsID") String tlsID){
-		return this.helper.getStringList(this.sumo.get_cmd(Trafficlights.getControlledLanes(tlsID)));
+		return this.helper.getStringList(this.sumo.get_cmd(Trafficlight.getControlledLanes(tlsID)));
 	}
 
 	@WebMethod(action="Trafficlights: getControlledLinks")
 	public SumoStringList Trafficlights_getControlledLinks(@WebParam(name = "tlsID") String tlsID){
-		return this.helper.getStringList(this.sumo.get_cmd(Trafficlights.getControlledLinks(tlsID)));
+		return this.helper.getStringList(this.sumo.get_cmd(Trafficlight.getControlledLinks(tlsID)));
 	}
 
 	@WebMethod(action="Trafficlights: Returns a list of all traffic lights in the network.")
 	public SumoStringList Trafficlights_getIDList(){
-		return this.helper.getStringList(this.sumo.get_cmd(Trafficlights.getIDList()));
+		return this.helper.getStringList(this.sumo.get_cmd(Trafficlight.getIDList()));
 	}
 
 	@WebMethod(action="Trafficlights: Returns the number of all traffic lights in the network.")
 	public int Trafficlights_getIDCount(){
-		return this.helper.getInt(this.sumo.get_cmd(Trafficlights.getIDCount()));
+		return this.helper.getInt(this.sumo.get_cmd(Trafficlight.getIDCount()));
 	}
 	
 	@WebMethod(action="Trafficlights: Returns the next switch")
 	public int Trafficlights_getNextSwitch(@WebParam(name = "tlsID") String tlsID){
-		return this.helper.getInt(this.sumo.get_cmd(Trafficlights.getNextSwitch(tlsID)));
+		return this.helper.getInt(this.sumo.get_cmd(Trafficlight.getNextSwitch(tlsID)));
 	}
 	
 	@WebMethod(action="Trafficlights: Returns the phase duration")
 	public int Trafficlights_getPhaseDuration(@WebParam(name = "tlsID") String tlsID){
-		return this.helper.getInt(this.sumo.get_cmd(Trafficlights.getPhaseDuration(tlsID)));
+		return this.helper.getInt(this.sumo.get_cmd(Trafficlight.getPhaseDuration(tlsID)));
 	}
 
 	@WebMethod(action="Trafficlights: getPhase")
 	public int Trafficlights_getPhase(@WebParam(name = "tlsID") String tlsID){
-		return this.helper.getInt(this.sumo.get_cmd(Trafficlights.getPhase(tlsID)));
+		return this.helper.getInt(this.sumo.get_cmd(Trafficlight.getPhase(tlsID)));
 	}
 
 	@WebMethod(action="Trafficlights: getProgram")
 	public String Trafficlights_getProgram(@WebParam(name = "tlsID") String tlsID){
-		return this.helper.getString(this.sumo.get_cmd(Trafficlights.getProgram(tlsID)));
+		return this.helper.getString(this.sumo.get_cmd(Trafficlight.getProgram(tlsID)));
 	}
 
 	@WebMethod(action="Trafficlights: getRedYellowGreenState")
 	public String Trafficlights_getRedYellowGreenState(@WebParam(name = "tlsID") String tlsID){
-		return this.helper.getString(this.sumo.get_cmd(Trafficlights.getRedYellowGreenState(tlsID)));
+		return this.helper.getString(this.sumo.get_cmd(Trafficlight.getRedYellowGreenState(tlsID)));
 	}
 
 	@WebMethod(action="Vehicletype: getAccel")
@@ -1229,7 +1239,12 @@ public class Traci{
 	public String Lane_getEdgeID(@WebParam(name = "laneID") String laneID){
 		return this.helper.getString(this.sumo.get_cmd(Lane.getEdgeID(laneID)));
 	}
-
+	
+	@WebMethod(action="Lane: getElectricityConsumption")
+	public String Lane_getElectricityConsumption(@WebParam(name = "laneID") String laneID){
+		return this.helper.getString(this.sumo.get_cmd(Lane.getElectricityConsumption(laneID)));
+	}
+	
 	@WebMethod(action="Lane: Returns the fuel consumption in ml for the last time step on the given lane.")
 	public double Lane_getFuelConsumption(@WebParam(name = "laneID") String laneID){
 		return this.helper.getDouble(this.sumo.get_cmd(Lane.getFuelConsumption(laneID)));

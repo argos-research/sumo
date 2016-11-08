@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: Option.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: Option.h 21474 2016-09-14 09:05:31Z behrisch $
 ///
 // Classes representing a single program option (with different types)
 /****************************************************************************/
@@ -312,13 +312,6 @@ private:
  */
 class Option_Integer : public Option {
 public:
-    /** @brief Constructor for an option with no default value
-     *
-     * Calls Option(false)
-     */
-    Option_Integer();
-
-
     /** @brief Constructor for an option with a default value
      *
      * Calls Option(true)
@@ -458,13 +451,6 @@ protected:
  * ----------------------------------------------------------------------- */
 class Option_Float : public Option {
 public:
-    /** @brief Constructor for an option with no default value
-     *
-     * Calls Option(false)
-     */
-    Option_Float();
-
-
     /** @brief Constructor for an option with a default value
      *
      * Calls Option(true)
@@ -533,13 +519,6 @@ private:
  * ----------------------------------------------------------------------- */
 class Option_Bool : public Option {
 public:
-    /** @brief Constructor for an option with no default value
-     *
-     * Calls Option(false)
-     */
-    Option_Bool();
-
-
     /** @brief Constructor for an option with a default value
      *
      * Calls Option(true)

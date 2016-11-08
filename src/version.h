@@ -1,1 +1,1 @@
-#define VERSION_STRING "dev-SVN-r21244"
+#define VERSION_STRING "dev-SVN-r21853"

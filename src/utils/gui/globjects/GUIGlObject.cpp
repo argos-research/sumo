@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: GUIGlObject.cpp 21202 2016-07-19 13:40:35Z behrisch $
+/// @version $Id: GUIGlObject.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Base class for all objects that may be displayed within the openGL-gui
 /****************************************************************************/
@@ -61,6 +61,8 @@ StringBijection<GUIGlObjectType>::Entry GUIGlObject::GUIGlObjectTypeNamesInitial
     {"lane",          GLO_LANE},
     {"junction",      GLO_JUNCTION},
     {"crossing",      GLO_CROSSING},
+    {"connection",    GLO_CONNECTION},
+    {"prohibition",   GLO_PROHIBITION},
     {"tlLogic",       GLO_TLLOGIC},
     {"detector",      GLO_DETECTOR},
     {"trigger",       GLO_TRIGGER},

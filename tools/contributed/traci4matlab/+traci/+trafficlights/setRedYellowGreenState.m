@@ -4,10 +4,10 @@ function setRedYellowGreenState(tlsID, state)
 %   string of light definitions from rRgGyYoO, for red, green, yellow, off, 
 %   where lower case letters mean that the stream has to decelerate. 
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: setRedYellowGreenState.m 20 2015-03-02 16:52:32Z afacostag $
+%   $Id: setRedYellowGreenState.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 traci.sendStringCmd(constants.CMD_SET_TL_VARIABLE,...

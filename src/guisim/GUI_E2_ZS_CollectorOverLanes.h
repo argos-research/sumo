@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Okt 2003
-/// @version $Id: GUI_E2_ZS_CollectorOverLanes.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: GUI_E2_ZS_CollectorOverLanes.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // The gui-version of a MS_E2_ZS_CollectorOverLanes.
 /****************************************************************************/
@@ -63,7 +63,7 @@ public:
                                  MSLane* lane, SUMOReal startPos,
                                  SUMOTime haltingTimeThreshold,
                                  SUMOReal haltingSpeedThreshold,
-                                 SUMOReal jamDistThreshold);
+                                 SUMOReal jamDistThreshold, const std::string& vTypes);
 
     /// Destructor
     ~GUI_E2_ZS_CollectorOverLanes();
@@ -74,7 +74,8 @@ public:
 
 protected:
     MSE2Collector* buildCollector(int c, int r,
-                                  MSLane* l, SUMOReal start, SUMOReal end);
+                                  MSLane* l, SUMOReal start, SUMOReal end,
+                                  const std::set<std::string>& vTypes);
 
 
 public:

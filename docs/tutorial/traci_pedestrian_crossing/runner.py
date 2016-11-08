@@ -6,7 +6,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2009-03-26
-@version $Id: runner.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: runner.py 21753 2016-10-22 12:32:00Z behrisch $
 
 Tutorial for traffic light control via the TraCI interface.
 This scenario models a pedestrian crossing which switches on demand.
@@ -50,9 +50,6 @@ except ImportError:
     sys.exit(
         "please declare environment variable 'SUMO_HOME' as the root directory of your sumo installation (it should contain folders 'bin', 'tools' and 'docs')")
 
-# the port used for communicating with your sumo instance
-PORT = 8874
-
 # minimum green time for the vehicles
 MIN_GREEN_TIME = 15
 # the first phase in tls plan. see 'pedcrossing.tll.xml'
@@ -68,8 +65,6 @@ CROSSINGS = [':C_c0']
 
 def run():
     """execute the TraCI control loop"""
-    traci.init(PORT)
-
     # track the duration for which the green phase of the vehicles has been
     # active
     greenTimeSoFar = 0
@@ -163,9 +158,5 @@ if __name__ == "__main__":
 
     # this is the normal way of using traci. sumo is started as a
     # subprocess and then the python script connects and runs
-    sumoProcess = subprocess.Popen([sumoBinary,
-                                    '-c', os.path.join('data', 'run.sumocfg'),
-                                    '--remote-port', str(PORT)],
-                                   stdout=sys.stdout, stderr=sys.stderr)
+    traci.start([sumoBinary, '-c', os.path.join('data', 'run.sumocfg')])
     run()
-    sumoProcess.wait()

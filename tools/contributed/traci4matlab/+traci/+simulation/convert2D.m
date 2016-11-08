@@ -6,10 +6,10 @@ function [x y] = convert2D(edgeID, pos, laneIndex, toGeo)
 %   [X,Y] = convert2D(...,TOGEO) Specify if the conversion is made to
 %   geo-coordinates, in this case, X is the longitude and Y is the latitude.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: convert2D.m 20 2015-03-02 16:52:32Z afacostag $
+%   $Id: convert2D.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 global message

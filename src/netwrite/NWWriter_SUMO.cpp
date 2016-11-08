@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 04.05.2011
-/// @version $Id: NWWriter_SUMO.cpp 21217 2016-07-22 10:57:44Z behrisch $
+/// @version $Id: NWWriter_SUMO.cpp 21714 2016-10-17 11:21:44Z namdre $
 ///
 // Exporter writing networks using the SUMO format
 /****************************************************************************/
@@ -495,7 +495,7 @@ NWWriter_SUMO::writeJunction(OutputDevice& into, const NBNode& n, const bool che
     }
     into.writeAttr(SUMO_ATTR_INTLANES, intLanes);
     // close writing
-    into.writeAttr(SUMO_ATTR_SHAPE, n.getShape());
+    into.writeAttr(SUMO_ATTR_SHAPE, n.getShape().simplified());
     // write optional radius
     if (n.getRadius() != NBNode::UNSPECIFIED_RADIUS) {
         into.writeAttr(SUMO_ATTR_RADIUS, n.getRadius());
@@ -579,6 +579,9 @@ NWWriter_SUMO::writeConnection(OutputDevice& into, const NBEdge& from, const NBE
     }
     if (c.contPos != NBEdge::UNSPECIFIED_CONTPOS && style != TLL) {
         into.writeAttr(SUMO_ATTR_CONTPOS, c.contPos);
+    }
+    if (c.visibility != NBEdge::UNSPECIFIED_VISIBILITY_DISTANCE && style != TLL) {
+        into.writeAttr(SUMO_ATTR_VISIBILITY_DISTANCE, c.visibility);
     }
     if (style != PLAIN) {
         if (includeInternal) {

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Jul 2006
-/// @version $Id: NINavTeqHelper.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: NINavTeqHelper.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Some parser methods shared around several formats containing NavTeq-Nets
 /****************************************************************************/
@@ -81,7 +81,7 @@ public:
      * @exception ProcessError If the given lane number definition is not a number or if it is not known
      */
     static int getLaneNumber(const std::string& id,
-                                      const std::string& laneNoS, SUMOReal speed);
+                             const std::string& laneNoS, SUMOReal speed);
 
 
     /** @brief Adds vehicle classes parsing the given list of allowed vehicles

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_DlrNavteq.cpp 21201 2016-07-19 11:57:22Z behrisch $
+/// @version $Id: NIImporter_DlrNavteq.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Importer for networks stored in Elmar's format
 /****************************************************************************/
@@ -107,7 +107,7 @@ NIImporter_DlrNavteq::loadNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
     PROGRESS_BEGIN_MESSAGE("Loading edges");
     file = oc.getString("dlr-navteq-prefix") + "_links_unsplitted.txt";
     // parse the file
-    EdgesHandler handler2(nb.getNodeCont(), nb.getEdgeCont(), file, myGeoms, streetNames);
+    EdgesHandler handler2(nb.getNodeCont(), nb.getEdgeCont(), nb.getTypeCont(), file, myGeoms, streetNames);
     if (!lr.setFile(file)) {
         throw ProcessError("The file '" + file + "' could not be opened.");
     }
@@ -203,11 +203,12 @@ NIImporter_DlrNavteq::NodesHandler::report(const std::string& result) {
 // definitions of NIImporter_DlrNavteq::EdgesHandler-methods
 // ---------------------------------------------------------------------------
 NIImporter_DlrNavteq::EdgesHandler::EdgesHandler(NBNodeCont& nc, NBEdgeCont& ec,
-        const std::string& file,
+        NBTypeCont& tc, const std::string& file,
         std::map<std::string, PositionVector>& geoms,
         std::map<std::string, std::string>& streetNames):
     myNodeCont(nc),
     myEdgeCont(ec),
+    myTypeCont(tc),
     myGeoms(geoms),
     myStreetNames(streetNames),
     myVersion(0),
@@ -333,17 +334,29 @@ NIImporter_DlrNavteq::EdgesHandler::report(const std::string& result) {
         e = new NBEdge(id, from, to, "", speed, numLanes, priority,
                        NBEdge::UNSPECIFIED_WIDTH, NBEdge::UNSPECIFIED_OFFSET, geoms, streetName, id, LANESPREAD_CENTER);
     }
-    // add vehicle type information to the edge
-    if (myVersion < 6.0) {
-        NINavTeqHelper::addVehicleClasses(*e, getColumn(st, VEHICLE_TYPE));
+
+    // NavTeq imports can be done with a typemap (if supplied), if not, the old defaults are used
+    const std::string navTeqTypeId = getColumn(st, VEHICLE_TYPE) + "_" + getColumn(st, FORM_OF_WAY);
+
+    if (myTypeCont.knows(navTeqTypeId)) {
+        e->setPermissions(myTypeCont.getPermissions(navTeqTypeId));
     } else {
-        NINavTeqHelper::addVehicleClassesV6(*e, getColumn(st, VEHICLE_TYPE));
+        // add vehicle type information to the edge
+        if (myVersion < 6.0) {
+            NINavTeqHelper::addVehicleClasses(*e, getColumn(st, VEHICLE_TYPE));
+        } else {
+            NINavTeqHelper::addVehicleClassesV6(*e, getColumn(st, VEHICLE_TYPE));
+        }
+        if (e->getPermissions() == SVCAll) {
+            e->setPermissions(myTypeCont.getPermissions(""));
+        }
+        // permission modifications based on form_of_way
+        if (form_of_way == 14) { // pedestrian area (fussgaengerzone)
+            // unfortunately, the veh_type string is misleading in this case
+            e->disallowVehicleClass(-1, SVC_PASSENGER);
+        }
     }
-    // permission modifications based on form_of_way
-    if (form_of_way == 14) { // pedestrian area (fussgaengerzone)
-        // unfortunately, the veh_type string is misleading in this case
-        e->disallowVehicleClass(-1, SVC_PASSENGER);
-    }
+
     // insert the edge to the network
     if (!myEdgeCont.insert(e)) {
         delete e;

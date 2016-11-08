@@ -2,7 +2,7 @@
 /// @file    MEInductLoop.h
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MEInductLoop.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MEInductLoop.h 21496 2016-09-19 10:39:08Z behrisch $
 ///
 // An induction loop for mesoscopic simulation
 /****************************************************************************/
@@ -56,7 +56,8 @@ class MEInductLoop : public MSDetectorFileOutput {
 public:
     MEInductLoop(const std::string& id,
                  MESegment* s,
-                 SUMOReal positionInMeters);
+                 SUMOReal positionInMeters,
+                 const std::string& vTypes);
 
 
     ~MEInductLoop();

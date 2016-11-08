@@ -2,7 +2,7 @@
 /// @file    netedit_main.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: netedit_main.cpp 21172 2016-07-15 08:34:36Z behrisch $
+/// @version $Id: netedit_main.cpp 21640 2016-10-09 20:28:52Z palcraft $
 ///
 // Main for NETEDIT (adapted from guisim_main)
 /****************************************************************************/
@@ -106,8 +106,10 @@ main(int argc, char** argv) {
         application.create();
         // Load configuration given on command line
         if (argc > 1) {
+            // Set default options
             OptionsIO::setArgs(argc, argv);
-            window->loadOnStartup();
+            // load options
+            window->loadOptionOnStartup();
         }
         // Run
         ret = application.run();

@@ -2,7 +2,7 @@
 /// @file    GNEConnection.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNEConnection.h 21166 2016-07-14 12:59:19Z palcraft $
+/// @version $Id: GNEConnection.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // A class for represent connections between Lanes
 /****************************************************************************/
@@ -44,19 +44,12 @@ class GNEEdge;
 
 class GNEConnection : public GNENetElement {
 public:
-    /**@brief Constructor.
-     * @param[in] junction junction in which this connection is placed
+    /** Constructor
      * @param[in] from The edge the vehicles leave
-     * @param[in] fromLane index of the incoming lane
-     * @param[in] to The edge the vehicles may reach when leaving "from"
-     * @param[in] toLane index of the outgoing lane
-     * @param[in] pass if set, vehicles which pass this (lane-2-lane) connection) will not wait
-     * @param[in] keepClear if set to false, vehicles which pass this (lane-2-lane) connection) will not worry about blocking the intersection.
-     * @param[in] contPos If set to a positive value, an internal junction will be built at this position (in m) from the start of the internal lane for this connection.
+     * @param[in] connection NBEdge::Connection in which the rest of parameters are defined
      * @param[in] uncontrolled if set to true, This connection will not be TLS-controlled despite its node being controlled.
-     * @param[in[ tlIndex tlIndex of connection (By default is invalid)
-     */
-    GNEConnection(GNEEdge &from, int fromLane, GNEEdge &to, int toLane, bool pass, bool keepClear, SUMOReal contPos, bool uncontrolled, int tlIndex = NBConnection::InvalidTlIndex);
+    **/
+    GNEConnection(GNELane* from, GNELane* to);
 
     /// @brief Destructor
     ~GNEConnection();
@@ -69,16 +62,16 @@ public:
     Boundary getBoundary() const;
 
     /// @brief get the name of the edge the vehicles leave
-    GNEEdge  &getEdgeFrom() const;
+    GNEEdge* getEdgeFrom() const;
 
     /// @brief get the name of the edge the vehicles may reach when leaving "from"
-    GNEEdge &getEdgeTo() const;
+    GNEEdge* getEdgeTo() const;
 
     /// @briefthe get lane of the incoming lane
-    GNELane* getFromLane() const;
+    GNELane* getLaneFrom() const;
 
     /// @briefthe get lane of the outgoing lane
-    GNELane* getToLane() const;
+    GNELane* getLaneTo() const;
 
     /// @briefthe get lane index of the incoming lane
     int getFromLaneIndex() const;
@@ -86,35 +79,23 @@ public:
     /// @briefthe get lane index of the outgoing lane
     int getToLaneIndex() const;
 
-    /// @brief get parameter pass
-    bool getPass();
-
-    /// @brief get parameter keepClear
-    bool getKeepClear();
-
-    /// @brief get parameter ContPos
-    SUMOReal getContPos();
-
-    /// @briefif get parameter uncontrolled
-    bool getUncontrolled();
+    /// @brief get Edge::Connection
+    NBEdge::Connection& getNBEdgeConnection() const;
 
     /// @brief get NBConnection
-    const NBConnection &getNBConnection() const;
+    NBConnection getNBConnection() const;
 
-    /// @brief get Edge::NBConnection
-    const NBEdge::Connection &getNBEdgeConnection() const;
+    /// @brief get Draw connection
+    bool getDrawConnection() const;
 
-    /// @brief set parameter pass
-    void setPass(bool pass);
+    /// @brief get LinkState
+    LinkState getLinkState() const;
 
-    /// @brief set parameter keepClear
-    void setKeepClear(bool keepClear);
+    /// @brief recompute cached myLinkState
+    void updateLinkState();
 
-    /// @brief set parameter ContPos
-    void setContPos(SUMOReal contPos);
-
-    /// @briefif set parameter uncontrolled
-    void setUncontrolled(bool uncontrolled);
+    /// @brief enable or disable draw connection
+    void setDrawConnection(bool drawConnection);
 
     /// @name inherited from GUIGlObject
     /// @{
@@ -173,44 +154,30 @@ public:
     /// @}
 
 protected:
-    /// @brief NBConnection associated with this connection
-    NBConnection myNBConnection;
+    /// @brief incoming lane of this connection
+    GNELane* myFromLane;
 
-    /// @brief NBEdge::Connection associated with this connection
-    NBEdge::Connection myConnection;
+    /// @brief outgoing lane of this connection
+    GNELane* myToLane;
 
-    /// @brief incoming edge of this connection
-    GNEEdge &myFromEdge;
-
-    /// @brief outcoming edge of this connection
-    GNEEdge &myToEdge;
-
-    /// @brief junction in which this connection is placed
-    NBNode *myJunction;
-
-    /// @brief if set, vehicles which pass this (lane-2-lane) connection) will not wait
-    bool myPass;
-
-    /// @brief if set to false, vehicles which pass this (lane-2-lane) connection) will not worry about blocking the intersection.
-    bool myKeepClear;
-
-    /// @brief if set to 0, no internal junction will be built for this connection. If set to a positive value, an internal junction will be built at this position (in m) from the start of the internal lane for this connection.
-    SUMOReal myContPos;
-
-    /// @brief if set to true, This connection will not be TLS-controlled despite its node being controlled.
-    bool myUncontrolled;
-
-    /// @brief the shape of the edge
+    /// @brief the shape of the connection
     PositionVector myShape;
 
     /// @name computed only once (for performance) in updateGeometry()
     /// @{
-    /// The rotations of the shape parts
+    /// @brief The rotations of the shape parts
     std::vector<SUMOReal> myShapeRotations;
 
-    /// The lengths of the shape parts
+    /// @brief The lengths of the shape parts
     std::vector<SUMOReal> myShapeLengths;
     /// @}
+
+    /// @brief Enable or disable draw connection
+    /// @note by default is enabled
+    bool myDrawConnection;
+
+    /// @brief Linkstate. @note cached because after 'undo' the connection needs to be drawn while the node logic (NBRequest) has not been recomputed
+    LinkState myLinkState;
 
 private:
     /// @brief set attribute after validation

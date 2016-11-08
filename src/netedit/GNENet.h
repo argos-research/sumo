@@ -2,7 +2,7 @@
 /// @file    GNENet.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNENet.h 21205 2016-07-20 08:04:48Z palcraft $
+/// @version $Id: GNENet.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // The lop level container for GNE-network-components such as GNEEdge and
 // GNEJunction.  Contains an internal instances of NBNetBuilder GNE components
@@ -75,6 +75,7 @@ class GNEDetectorE1;
 class GNEDetectorE2;
 class GNEDetectorE3;
 class GNEDetectorE3EntryExit;
+class GNEConnection;
 
 // ===========================================================================
 // class definitions
@@ -96,6 +97,9 @@ public:
 
     /// @brief color of selected lane
     static const RGBColor selectedLaneColor;
+
+    /// @brief color of selected connection
+    static const RGBColor selectedConnectionColor;
 
     /**@brief Constructor
      * @param[in] netbuilder the netbuilder which may already have been filled
@@ -193,11 +197,44 @@ public:
      */
     void deleteLane(GNELane* lane, GNEUndoList* undoList);
 
+    /**@brief remove connectino
+     * @param[in] connection The connection to be removed
+     * @param[in] undoList The undolist in which to mark changes
+     */
+    void deleteConnection(GNEConnection* connection, GNEUndoList* undoList);
+
     /**@brief duplicates lane
      * @param[in] lane The lane to be duplicated
      * @param[in] undoList The undolist in which to mark changes
      */
     void duplicateLane(GNELane* lane, GNEUndoList* undoList);
+
+    /**@brief transform lane to restricted lane
+     * @param[in] vclass vehicle class to restrict
+     * @param[in] lane The lane to be trasformed
+     * @param[in] undoList The undolist in which to mark changes
+     */
+    bool restrictLane(SUMOVehicleClass vclass, GNELane* lane, GNEUndoList* undoList);
+
+    /**@brief revert prevously restricted lane
+     * @param[in] lane The lane to be unrestricted
+     * @param[in] undoList The undolist in which to mark changes
+     */
+    bool revertLaneRestriction(GNELane* lane, GNEUndoList* undoList);
+
+    /**@brief add restricted lane to edge
+     * @param[in] vclass vehicle class to restrict
+     * @param[in] edge The edge in which insert restricted lane
+     * @param[in] undoList The undolist in which to mark changes
+     */
+    bool addSRestrictedLane(SUMOVehicleClass vclass, GNEEdge& edge, GNEUndoList* undoList);
+
+    /**@brief remove restricted lane
+     * @param[in] vclass vehicle class to restrict
+     * @param[in] edge the edge in which remove sidewalk
+     * @param[in] undoList The undolist in which to mark changes
+     */
+    bool removeRestrictedLane(SUMOVehicleClass vclass, GNEEdge& edge, GNEUndoList* undoList);
 
     /**@brief removes geometry when pos is close to a geometry node, deletes
      * the whole edge otherwise
@@ -302,11 +339,15 @@ public:
      */
     void saveJoined(OptionsCont& oc);
 
-    /// @brief Set the target to be notified of network changes
-    void setUpdateTarget(FXWindow* updateTarget);
+    /// @brief Set the viewNet to be notified of network changes
+    void setViewNet(GNEViewNet* viewNet);
 
     /// @brief refreshes boundary information for o and update
     void refreshElement(GUIGlObject* o);
+
+    /// @brief refreshes boundary information of an additional after a geometry update
+    /// @note only non removed additional will be refresh
+    void refreshAdditional(GNEAdditional* additional);
 
     /// @brief updates the map and reserves new id
     void renameEdge(GNEEdge* edge, const std::string& newID);
@@ -317,6 +358,9 @@ public:
     /// @brief modifies endpoins of the given edge
     void changeEdgeEndpoints(GNEEdge* edge, const std::string& newSourceID, const std::string& newDestID);
 
+    /// @brief get view net
+    GNEViewNet* getViewNet() const;
+
     /// @brief returns the tllcont of the underlying netbuilder
     NBTrafficLightLogicCont& getTLLogicCont();
 
@@ -324,6 +368,9 @@ public:
      * param[in] type If type != GLO_MAX, get active ids of that type, otherwise get all active ids
      */
     std::set<GUIGlID> getGlIDs(GUIGlObjectType type = GLO_MAX);
+
+    /// @brief initialize GNEConnections
+    void initGNEConnections();
 
     /// @brief recompute the network and update lane geometries
     void computeAndUpdate(OptionsCont& oc);
@@ -356,6 +403,9 @@ public:
      */
     void computeJunction(GNEJunction* junction);
 
+    /// @brief update junction shapes
+    void updateJunctionShapes();
+
     /// @brief inform the net about the need for recomputation
     void requireRecompute();
 
@@ -377,6 +427,14 @@ public:
 
     /// @brief get shape container
     ShapeContainer& getShapeContainer();
+
+    /// @brief set additionals File
+    /// @note used to load additionals throught command line
+    void setAdditionalsFile(const std::string& additionalFile);
+
+    /// @brief set additionals File
+    /// @note used to set additionals output file throught command line
+    void setAdditionalsOutputFile(const std::string& additionalOutputFile);
 
     /**@brief Insert a additional element previously created in GNEAdditionalHandler
      * @param[in] additional pointer to the additional element to add
@@ -424,8 +482,8 @@ protected:
     /// @brief the rtree which contains all GUIGlObjects (so named for historical reasons)
     SUMORTree myGrid;
 
-    /// @brief The window to be notofied of about changes
-    FXWindow* myUpdateTarget;
+    /// @brief The viewNet to be notofied of about changes
+    GNEViewNet* myViewNet;
 
     /// @brief The internal netbuilder
     NBNetBuilder* myNetBuilder;
@@ -488,7 +546,7 @@ private:
     /// @brief deletes a single edge
     void deleteSingleEdge(GNEEdge* edge);
 
-    /// @brief notify myUpdateTarget
+    /// @brief notify myViewNet
     void update();
 
     /// @brief reserve edge ID (To avoid duplicates)

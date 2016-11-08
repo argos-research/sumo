@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVehicle.cpp 21217 2016-07-22 10:57:44Z behrisch $
+/// @version $Id: GUIVehicle.cpp 21790 2016-10-25 12:37:24Z behrisch $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -505,7 +505,7 @@ GUIVehicle::drawAction_drawRailCarriages(const GUIVisualizationSettings& s, SUMO
     const SUMOReal xCornerCut = 0.3 * exaggeration;
     const SUMOReal yCornerCut = 0.4 * exaggeration;
     // round to closest integer
-    const int numCarriages = floor(length / (defaultLength + carriageGap) + 0.5);
+    const int numCarriages = (int)(length / (defaultLength + carriageGap) + 0.5);
     assert(numCarriages > 0);
     const SUMOReal carriageLengthWithGap = length / numCarriages;
     const SUMOReal carriageLength = carriageLengthWithGap - carriageGap;
@@ -693,15 +693,18 @@ GUIVehicle::selectBlockingFoes() const {
 
 
 void
-GUIVehicle::drawOutsideNetwork(bool add) const {
+GUIVehicle::drawOutsideNetwork(bool add) {
     GUIMainWindow* mw = GUIMainWindow::getInstance();
     GUISUMOAbstractView* view = mw->getActiveView();
     if (view != 0) {
-        std::cout << SIMTIME << " drawOutsideNetwork veh=" << getID() << " add=" << add << "\n";
         if (add) {
-            view->addAdditionalGLVisualisation(this);
+            if ((myAdditionalVisualizations[view] & VO_DRAW_OUTSIDE_NETWORK) == 0) {
+                myAdditionalVisualizations[view] |= VO_DRAW_OUTSIDE_NETWORK;
+                view->addAdditionalGLVisualisation(this);
+            }
         } else {
             view->removeAdditionalGLVisualisation(this);
+            myAdditionalVisualizations[view] &= ~VO_DRAW_OUTSIDE_NETWORK;
         }
     }
 }

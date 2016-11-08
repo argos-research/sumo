@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 30.01.2009
-/// @version $Id: MSDevice_Tripinfo.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSDevice_Tripinfo.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // A device which collects info on the vehicle trip
 /****************************************************************************/
@@ -153,14 +153,16 @@ private:
     void computeLengthAndDuration(SUMOReal& routeLength, SUMOTime& duration) const;
 
 protected:
-    /** @brief Internal notification about the vehicle moves
+    /** @brief Internal notification about the vehicle moves, see MSMoveReminder::notifyMoveInternal()
      *
-     * @param[in] veh Vehicle that asks this reminder.
-     * @param[in] timeOnLane time the vehicle spent on the lane.
-     * @param[in] speed Moving speed.
      */
-    void notifyMoveInternal(SUMOVehicle& veh, SUMOReal timeOnLane,
-                            SUMOReal speed);
+    void notifyMoveInternal(const SUMOVehicle& veh,
+                            const SUMOReal frontOnLane,
+                            const SUMOReal timeOnLane,
+                            const SUMOReal meanSpeedFrontOnLane,
+                            const SUMOReal meanSpeedVehicleOnLane,
+                            const SUMOReal travelledDistanceFrontOnLane,
+                            const SUMOReal travelledDistanceVehicleOnLane);
 
 private:
     /// @brief The lane the vehicle departed at
@@ -169,8 +171,11 @@ private:
     /// @brief The speed on departure
     SUMOReal myDepartSpeed;
 
-    /// @brief The overall number of waiting steps
-    int myWaitingSteps;
+    /// @brief The lateral depart position
+    SUMOReal myDepartPosLat;
+
+    /// @brief The overall waiting time
+    SUMOTime myWaitingTime;
 
     /// @brief The vehicle's arrival time
     SUMOTime myArrivalTime;
@@ -180,6 +185,9 @@ private:
 
     /// @brief The position on the lane the vehicle arrived at
     SUMOReal myArrivalPos;
+
+    /// @brief The lateral position on the lane the vehicle arrived at
+    SUMOReal myArrivalPosLat;
 
     /// @brief The speed when arriving
     SUMOReal myArrivalSpeed;

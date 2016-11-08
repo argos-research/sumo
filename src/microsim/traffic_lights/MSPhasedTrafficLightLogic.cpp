@@ -2,7 +2,7 @@
 /// @file    MSPhasedTrafficLightLogic.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Sept 2002
-/// @version $Id: MSPhasedTrafficLightLogic.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSPhasedTrafficLightLogic.cpp 21316 2016-08-22 13:08:50Z behrisch $
 ///
 // The base class for traffic light logic with phases
 /****************************************************************************/
@@ -53,7 +53,7 @@ MSPhasedTrafficLightLogic::MSPhasedTrafficLightLogic(MSTLLogicControl& tlcontrol
                                                     )
     : MSTrafficLightLogic(tlcontrol, id, subid, delay, parameters), myPhases(phases),
       myStep(step) {
-    for (int i = 0; i < myPhases.size(); i++) {
+    for (int i = 0; i < (int)myPhases.size(); i++) {
         myDefaultCycleTime += myPhases[i]->duration;
     }
 }
@@ -81,11 +81,11 @@ MSPhasedTrafficLightLogic::trySwitch(bool) {
     // increment the index
     myStep++;
     // if the last phase was reached ...
-    if (myStep==myPhases.size()) {
+    if (myStep==(int)myPhases.size()) {
         // ... set the index to the first phase
         myStep = 0;
     }
-    assert(myPhases.size()>myStep);
+    assert((int)myPhases.size()>myStep);
     //stores the time the phase started
     myPhases[myStep]->myLastSwitch = MSNet::getInstance()->getCurrentTimeStep();
     // check whether the next duration was overridden
@@ -159,7 +159,7 @@ MSPhasedTrafficLightLogic::getPhaseIndexAtTime(SUMOTime simStep) const {
 
 SUMOTime
 MSPhasedTrafficLightLogic::getOffsetFromIndex(int index) const {
-    assert(index < myPhases.size());
+    assert(index < (int)myPhases.size());
     SUMOTime pos = 0;
     for (int i = 0; i < index; i++) {
         pos += getPhase(i).duration;
@@ -176,13 +176,13 @@ MSPhasedTrafficLightLogic::getIndexFromOffset(SUMOTime offset) const {
     }
     SUMOTime pos = offset;
     SUMOTime testPos = 0;
-    for (int i = 0; i < myPhases.size(); i++)	{
+    for (int i = 0; i < (int)myPhases.size(); i++)	{
         testPos += getPhase(i).duration;
         if (testPos > pos) {
             return i;
         }
         if (testPos == pos) {
-            assert(myPhases.size() > (i + 1));
+            assert((int)myPhases.size() > (i + 1));
             return i + 1;
         }
     }
@@ -216,7 +216,7 @@ MSPhasedTrafficLightLogic::setPhases(const Phases& phases, int step) {
 
 void
 MSPhasedTrafficLightLogic::deletePhases() {
-    for (int i = 0; i < myPhases.size(); i++) {
+    for (int i = 0; i < (int)myPhases.size(); i++) {
         delete myPhases[i];
     }
 }

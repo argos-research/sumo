@@ -1,10 +1,10 @@
 function moveToVTD(vehID, edgeID, lane, x, y, angle)
 %moveToVTD Commands the vehicle to move to the specified position.
 %   moveToVTD(VEHID,EDGEID,LANE,X,Y) 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: moveToVTD.m 29 2015-10-13 13:21:27Z afacostag $
+%   $Id: moveToVTD.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 global message

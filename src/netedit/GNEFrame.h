@@ -2,7 +2,7 @@
 /// @file    GNEFrame.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNEFrame.h 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNEFrame.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 /// Abstract class for lateral frames in NetEdit
 /****************************************************************************/
@@ -92,6 +92,15 @@ protected:
 
     /// @brief the panel to hold all member widgets
     FXVerticalFrame* myContentFrame;
+
+    /// @brief fame for header elements
+    FXHorizontalFrame* myHeaderFrame;
+
+    /// @brief fame for left header elements
+    FXHorizontalFrame* myHeaderLeftFrame;
+
+    /// @brief fame for right header elements
+    FXHorizontalFrame* myHeaderRightFrame;
 
 private:
     /// @brief Invalidated copy constructor.

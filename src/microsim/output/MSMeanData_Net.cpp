@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSMeanData_Net.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSMeanData_Net.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Network state mean data collector for edges/lanes
 /****************************************************************************/
@@ -58,12 +58,12 @@
 MSMeanData_Net::MSLaneMeanDataValues::MSLaneMeanDataValues(MSLane* const lane,
         const SUMOReal length,
         const bool doAdd,
-        const std::set<std::string>* const vTypes,
         const MSMeanData_Net* parent)
-    : MSMeanData::MeanDataValues(lane, length, doAdd, vTypes),
+    : MSMeanData::MeanDataValues(lane, length, doAdd, parent),
       nVehDeparted(0), nVehArrived(0), nVehEntered(0), nVehLeft(0),
       nVehVaporized(0), waitSeconds(0),
       nVehLaneChangeFrom(0), nVehLaneChangeTo(0),
+      frontSampleSeconds(0), frontTravelledDistance(0),
       vehLengthSum(0), myParent(parent) {}
 
 
@@ -83,6 +83,8 @@ MSMeanData_Net::MSLaneMeanDataValues::reset(bool) {
     sampleSeconds = 0.;
     travelledDistance = 0;
     waitSeconds = 0;
+    frontSampleSeconds = 0;
+    frontTravelledDistance = 0;
     vehLengthSum = 0;
 }
 
@@ -100,24 +102,29 @@ MSMeanData_Net::MSLaneMeanDataValues::addTo(MSMeanData::MeanDataValues& val) con
     v.sampleSeconds += sampleSeconds;
     v.travelledDistance += travelledDistance;
     v.waitSeconds += waitSeconds;
+    v.frontSampleSeconds += frontSampleSeconds;
+    v.frontTravelledDistance += frontTravelledDistance;
     v.vehLengthSum += vehLengthSum;
 }
 
 
 void
-MSMeanData_Net::MSLaneMeanDataValues::notifyMoveInternal(SUMOVehicle& veh, SUMOReal timeOnLane, SUMOReal speed) {
+MSMeanData_Net::MSLaneMeanDataValues::notifyMoveInternal(const SUMOVehicle& veh, const SUMOReal frontOnLane, const SUMOReal timeOnLane, const SUMOReal /*meanSpeedFrontOnLane*/, const SUMOReal meanSpeedVehicleOnLane, const SUMOReal travelledDistanceFrontOnLane, const SUMOReal travelledDistanceVehicleOnLane) {
     sampleSeconds += timeOnLane;
-    travelledDistance += speed * timeOnLane;
+    travelledDistance += travelledDistanceVehicleOnLane;
     vehLengthSum += veh.getVehicleType().getLength() * timeOnLane;
-    if (myParent != 0 && speed < myParent->myHaltSpeed) {
+    // XXX: recheck, which value to use here for the speed. (Leo) Refs. #2579
+    if (myParent != 0 && meanSpeedVehicleOnLane < myParent->myHaltSpeed) {
         waitSeconds += timeOnLane;
     }
+    frontSampleSeconds += frontOnLane;
+    frontTravelledDistance += travelledDistanceFrontOnLane;
 }
 
 
 bool
 MSMeanData_Net::MSLaneMeanDataValues::notifyLeave(SUMOVehicle& veh, SUMOReal /*lastPos*/, MSMoveReminder::Notification reason) {
-    if (vehicleApplies(veh) && (getLane() == 0 || getLane() == static_cast<MSVehicle&>(veh).getLane())) {
+    if ((myParent == 0 || myParent->vehicleApplies(veh)) && (getLane() == 0 || getLane() == static_cast<MSVehicle&>(veh).getLane())) {
         if (MSGlobals::gUseMesoSim) {
             removeFromVehicleUpdateValues(veh);
         }
@@ -141,7 +148,7 @@ MSMeanData_Net::MSLaneMeanDataValues::notifyLeave(SUMOVehicle& veh, SUMOReal /*l
 
 bool
 MSMeanData_Net::MSLaneMeanDataValues::notifyEnter(SUMOVehicle& veh, MSMoveReminder::Notification reason) {
-    if (vehicleApplies(veh)) {
+    if (myParent == 0 || myParent->vehicleApplies(veh)) {
         if (getLane() == 0 || getLane() == static_cast<MSVehicle&>(veh).getLane()) {
             if (reason == MSMoveReminder::NOTIFICATION_DEPARTED) {
                 ++nVehDeparted;
@@ -181,14 +188,23 @@ MSMeanData_Net::MSLaneMeanDataValues::write(OutputDevice& dev, const SUMOTime pe
         return;
     }
     if (sampleSeconds > myParent->myMinSamples) {
-        SUMOReal traveltime = myParent->myMaxTravelTime;
+        SUMOReal overlapTraveltime = myParent->myMaxTravelTime;
         if (travelledDistance > 0.f) {
-            traveltime = MIN2(traveltime, myLaneLength * sampleSeconds / travelledDistance);
+            // one vehicle has to drive lane length + vehicle length before it has left the lane
+            // thus we need to scale with an extended length, approximated by lane length + average vehicle length
+            overlapTraveltime = MIN2(overlapTraveltime, (myLaneLength + vehLengthSum / sampleSeconds) * sampleSeconds / travelledDistance);
         }
         if (numVehicles > 0) {
             dev.writeAttr("traveltime", sampleSeconds / numVehicles).writeAttr("waitingTime", waitSeconds).writeAttr("speed", travelledDistance / sampleSeconds);
         } else {
-            dev.writeAttr("traveltime", traveltime)
+            SUMOReal traveltime = myParent->myMaxTravelTime;
+            if (frontTravelledDistance > 0.f) {
+                traveltime = MIN2(traveltime, myLaneLength * frontSampleSeconds / frontTravelledDistance);
+                dev.writeAttr("traveltime", traveltime);
+            } else if (defaultTravelTime >= 0.) {
+                dev.writeAttr("traveltime", defaultTravelTime);
+            }
+            dev.writeAttr("overlapTraveltime", overlapTraveltime)
             .writeAttr("density", sampleSeconds / STEPS2TIME(period) * (SUMOReal) 1000 / myLaneLength)
             .writeAttr("occupancy", vehLengthSum / STEPS2TIME(period) / myLaneLength / numLanes * (SUMOReal) 100)
             .writeAttr("waitingTime", waitSeconds).writeAttr("speed", travelledDistance / sampleSeconds);
@@ -216,7 +232,7 @@ MSMeanData_Net::MSMeanData_Net(const std::string& id,
                                const SUMOReal maxTravelTime,
                                const SUMOReal minSamples,
                                const SUMOReal haltSpeed,
-                               const std::set<std::string> vTypes)
+                               const std::string& vTypes)
     : MSMeanData(id, dumpBegin, dumpEnd, useLanes, withEmpty, printDefaults,
                  withInternal, trackVehicles, maxTravelTime, minSamples, vTypes),
       myHaltSpeed(haltSpeed) {
@@ -228,7 +244,7 @@ MSMeanData_Net::~MSMeanData_Net() {}
 
 MSMeanData::MeanDataValues*
 MSMeanData_Net::createValues(MSLane* const lane, const SUMOReal length, const bool doAdd) const {
-    return new MSLaneMeanDataValues(lane, length, doAdd, &myVehicleTypes, this);
+    return new MSLaneMeanDataValues(lane, length, doAdd, this);
 }
 
 

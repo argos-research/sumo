@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    June 2011
-/// @version $Id: MSCFModel_Wiedemann.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSCFModel_Wiedemann.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // The psycho-physical model of Wiedemann
 // references:
@@ -168,6 +168,7 @@ MSCFModel_Wiedemann::following(SUMOReal sign) const {
 SUMOReal
 MSCFModel_Wiedemann::approaching(SUMOReal dv, SUMOReal dx, SUMOReal bx) const {
     // there is singularity in the formula. we do the sanity check outside
+    assert(bx < dx);
     return 0.5 * dv * dv / (bx - dx); // + predAccel at t-reaction_time if this is value is above a treshold
 }
 
@@ -193,6 +194,8 @@ MSCFModel_Wiedemann::emergency(SUMOReal /* dv */, SUMOReal /* dx */) const {
 }
 
 
+
+// XXX: This could be replaced by maximumSafeStopSpeed(), refs. #2575
 SUMOReal
 MSCFModel_Wiedemann::krauss_vsafe(SUMOReal gap, SUMOReal predSpeed) const {
     if (predSpeed == 0 && gap < 0.01) {

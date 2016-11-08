@@ -3,7 +3,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2012-05-08
-@version $Id: miscutils.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: miscutils.py 21776 2016-10-25 09:10:31Z behrisch $
 
 Common utility functions
 
@@ -273,12 +273,12 @@ class Colorgen:
         return ','.join(map(str, self.byteTuple()))
 
 
-def getFreeSocketPort(numTries=10, minPort=8000, maxPort=50000):
+def getFreeSocketPort(numTries=10):
     for i in range(numTries):
         try:
-            p = random.randint(minPort, maxPort)
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.bind(("localhost", p))
+            s.bind(('', 0))
+            p = s.getsockname()[1]
             s.close()
             return p
         except socket.error:

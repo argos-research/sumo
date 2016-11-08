@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Jan 2004
-/// @version $Id: ROJTRTurnDefLoader.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ROJTRTurnDefLoader.cpp 21813 2016-10-26 20:30:04Z behrisch $
 ///
 // Loader for the of turning percentages and source/sink definitions
 /****************************************************************************/
@@ -53,7 +53,7 @@
 // ===========================================================================
 ROJTRTurnDefLoader::ROJTRTurnDefLoader(RONet& net)
     : SUMOSAXHandler("turn-ratio-file"), myNet(net),
-      myIntervalBegin(0), myIntervalEnd(SUMOTime_MAX), myEdge(0) {}
+      myIntervalBegin(0), myIntervalEnd(STEPS2TIME(SUMOTime_MAX)), myEdge(0) {}
 
 
 ROJTRTurnDefLoader::~ROJTRTurnDefLoader() {}

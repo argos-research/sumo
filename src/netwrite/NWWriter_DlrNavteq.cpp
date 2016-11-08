@@ -3,7 +3,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    26.10.2012
-/// @version $Id: NWWriter_DlrNavteq.cpp 21217 2016-07-22 10:57:44Z behrisch $
+/// @version $Id: NWWriter_DlrNavteq.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Exporter writing networks using DlrNavteq (Elmar) format
 /****************************************************************************/
@@ -238,9 +238,28 @@ NWWriter_DlrNavteq::getRoadClass(NBEdge* edge) {
     // quoting the navteq manual:
     // As a general rule, Functional Road Class assignments have no direct
     // correlation with other road attributes like speed, controlled access, route type, etc.
-    //
-    // we do a simple speed / lane-count mapping anyway
-    // XXX the resulting functional road class layers probably won't be connected as required
+    // if the network is based on OSM, we can use the highway types for determining FRC
+    std::string type = edge->getTypeID();
+    if (StringUtils::startsWith(type, "highway.")) {
+        type = type.substr(8);
+    }
+    if (StringUtils::startsWith(type, "motorway")) {
+        return 0;
+    } else if (StringUtils::startsWith(type, "trunk")) {
+        return 1;
+    } else if (StringUtils::startsWith(type, "primary")) {
+        return 2;
+    } else if (StringUtils::startsWith(type, "secondary")) {
+        return 2;
+    } else if (StringUtils::startsWith(type, "tertiary")) {
+        return 3;
+    } else if (type == "unclassified" || type == "residential") {
+        return 3;
+    } else if (type == "living_street" || type == "road" || type == "service" || type == "track" || type == "cycleway" || type == "path" || type == "footway") {
+        return 4;
+    }
+    // as a fallback we do a simple speed / lane-count mapping anyway
+    // the resulting functional road class layers probably won't be connected as required
     const int kph = speedInKph(edge->getSpeed());
     if ((kph) > 100) {
         return 0;
@@ -315,7 +334,7 @@ NWWriter_DlrNavteq::getSpeedCategoryUpperBound(int kph) {
 int
 NWWriter_DlrNavteq::getNavteqLaneCode(const int numLanes) {
     const int code = (numLanes == 1 ? 1 :
-                               (numLanes < 4 ?  2 : 3));
+                      (numLanes < 4 ?  2 : 3));
     return numLanes * 10 + code;
 }
 

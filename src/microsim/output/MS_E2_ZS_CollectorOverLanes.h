@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Oct 2003
-/// @version $Id: MS_E2_ZS_CollectorOverLanes.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MS_E2_ZS_CollectorOverLanes.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // A detector which joins E2Collectors over consecutive lanes (backward)
 /****************************************************************************/
@@ -81,7 +81,8 @@ public:
     MS_E2_ZS_CollectorOverLanes(const std::string& id,
                                 DetectorUsage usage, MSLane* lane, SUMOReal startPos,
                                 SUMOTime haltingTimeThreshold, SUMOReal haltingSpeedThreshold,
-                                SUMOReal jamDistThreshold);
+                                SUMOReal jamDistThreshold,
+                                const std::string& vTypes);
 
 
     /** @brief Builds the consecutive E2 detectors
@@ -171,7 +172,8 @@ protected:
      * @todo Describe!
      */
     virtual MSE2Collector* buildCollector(int c, int r,
-                                          MSLane* l, SUMOReal start, SUMOReal end);
+                                          MSLane* l, SUMOReal start, SUMOReal end,
+                                          const std::set<std::string>& vTypes);
 
 
     /** @brief Returns the list of lanes predecessing the given one

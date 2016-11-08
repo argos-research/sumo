@@ -1,10 +1,10 @@
 classdef SubscriptionResults < handle
 %SubscriptionResults A container for the subscription results.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: SubscriptionResults.m 20 2015-03-02 16:52:32Z afacostag $
+%   $Id: SubscriptionResults.m 31 2016-09-28 15:16:56Z afacostag $
 
     properties
         results

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVisualizationSettings.h 21228 2016-07-25 09:21:08Z namdre $
+/// @version $Id: GUIVisualizationSettings.h 21824 2016-10-27 13:03:52Z behrisch $
 ///
 // Stores the information about how to visualize structures
 /****************************************************************************/
@@ -55,11 +55,11 @@ class GUIVisualizationSettings;
 // cannot declare this as inner class because it needs to be used in forward
 // declaration (@todo fix inclusion order by removing references to guisim!)
 struct GUIVisualizationTextSettings {
-    GUIVisualizationTextSettings(bool _show, float _size, RGBColor _color) :
+    GUIVisualizationTextSettings(bool _show, SUMOReal _size, RGBColor _color) :
         show(_show), size(_size), color(_color) {}
 
     bool show;
-    float size;
+    SUMOReal size;
     RGBColor color;
 
     bool operator==(const GUIVisualizationTextSettings& other) {
@@ -80,13 +80,13 @@ struct GUIVisualizationTextSettings {
 
 
 struct GUIVisualizationSizeSettings {
-    GUIVisualizationSizeSettings(float _minSize, float _exaggeration = 1.0, bool _constantSize = false) :
+    GUIVisualizationSizeSettings(SUMOReal _minSize, SUMOReal _exaggeration = 1.0, bool _constantSize = false) :
         minSize(_minSize), exaggeration(_exaggeration), constantSize(_constantSize) {}
 
     /// @brief The minimum size to draw this object
-    float minSize;
+    SUMOReal minSize;
     /// @brief The size exaggeration (upscale)
-    float exaggeration;
+    SUMOReal exaggeration;
     // @brief whether the object shall be drawn with constant size regardless of zoom
     bool constantSize;
 
@@ -158,6 +158,8 @@ public:
     bool laneShowBorders;
     /// @brief Information whether link textures (arrows) shall be drawn
     bool showLinkDecals;
+    /// @brief Information whether link rules (colored bars) shall be drawn
+    bool showLinkRules;
     /// @brief Information whether rails shall be drawn
     bool showRails;
     // Setting bundles for optional drawing names with size and color
@@ -165,9 +167,9 @@ public:
 
     bool hideConnectors;
     /// @brief The lane exaggeration (upscale thickness)
-    float laneWidthExaggeration;
+    SUMOReal laneWidthExaggeration;
     /// @brief The minimum visual lane width for drawing
-    float laneMinSize;
+    SUMOReal laneMinSize;
     /// @brief Whether to show direction indicators for lanes
     bool showLaneDirection;
     /// @brief Whether to show sublane boundaries

@@ -4,10 +4,10 @@ function endingTeleportIDList = getEndingTeleportIDList()
 %   of strings containing the IDs of the vehicles which ended to be 
 %   teleported in this time step. 
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: getEndingTeleportIDList.m 20 2015-03-02 16:52:32Z afacostag $
+%   $Id: getEndingTeleportIDList.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 endingTeleportIDList = traci.simulation.getUniversal(constants.VAR_TELEPORT_ENDING_VEHICLES_IDS);

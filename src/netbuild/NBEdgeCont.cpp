@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdgeCont.cpp 21210 2016-07-21 10:02:38Z behrisch $
+/// @version $Id: NBEdgeCont.cpp 21714 2016-10-17 11:21:44Z namdre $
 ///
 // Storage for edges, including some functionality operating on multiple edges
 /****************************************************************************/
@@ -81,7 +81,7 @@ NBEdgeCont::~NBEdgeCont() {
 void
 NBEdgeCont::applyOptions(OptionsCont& oc) {
     // set edges dismiss/accept options
-    myEdgesMinSpeed = oc.isSet("keep-edges.min-speed") ? oc.getFloat("keep-edges.min-speed") : -1;
+    myEdgesMinSpeed = oc.getFloat("keep-edges.min-speed");
     myRemoveEdgesAfterJoining = oc.exists("keep-edges.postload") && oc.getBool("keep-edges.postload");
     // we possibly have to load the edges to keep/remove
     if (oc.isSet("keep-edges.input-file")) {
@@ -801,8 +801,8 @@ NBEdgeCont::recheckLaneSpread() {
 
 // ----- other
 void
-NBEdgeCont::addPostProcessConnection(const std::string& from, int fromLane, const std::string& to, int toLane, bool mayDefinitelyPass, bool keepClear, SUMOReal contPos) {
-    myConnections.push_back(PostProcessConnection(from, fromLane, to, toLane, mayDefinitelyPass, keepClear, contPos));
+NBEdgeCont::addPostProcessConnection(const std::string& from, int fromLane, const std::string& to, int toLane, bool mayDefinitelyPass, bool keepClear, SUMOReal contPos, SUMOReal visibility) {
+    myConnections.push_back(PostProcessConnection(from, fromLane, to, toLane, mayDefinitelyPass, keepClear, contPos, visibility));
 }
 
 
@@ -1024,7 +1024,8 @@ NBEdgeCont::markRoundabouts() {
                 inEdge->removeFromConnections(inEdge->getTurnDestination(), -1);
             }
             // let the connections to succeeding roundabout edge have a higher priority
-            (*j)->setJunctionPriority(node, 1000);
+            (*j)->setJunctionPriority(node, NBEdge::ROUNDABOUT);
+            (*j)->setJunctionPriority((*j)->getFromNode(), NBEdge::ROUNDABOUT);
             node->setRoundabout();
         }
     }
@@ -1034,11 +1035,13 @@ void
 NBEdgeCont::generateStreetSigns() {
     for (EdgeCont::iterator i = myEdges.begin(); i != myEdges.end(); ++i) {
         NBEdge* e = i->second;
-        // is this a "real" junction?
-        // XXX nyi
-        //continue
         const SUMOReal offset = MAX2((SUMOReal)0, e->getLength() - 3);
-        switch (e->getToNode()->getType()) {
+        if (e->getToNode()->isSimpleContinuation(false)) {
+            // not a "real" junction?
+            continue;
+        }
+        const SumoXMLNodeType nodeType = e->getToNode()->getType();
+        switch (nodeType) {
             case NODETYPE_PRIORITY:
                 // yield or major?
                 if (e->getJunctionPriority(e->getToNode()) > 0) {

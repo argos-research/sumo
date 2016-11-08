@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Oct/Nov 2003
-/// @version $Id: GUITLLogicPhasesTrackerWindow.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: GUITLLogicPhasesTrackerWindow.h 21790 2016-10-25 12:37:24Z behrisch $
 ///
 // A window displaying the phase diagram of a tl-logic
 /****************************************************************************/
@@ -213,7 +213,7 @@ private:
     int myFirstPhase2Show;
 
     /// @brief The offset to draw the first phase (left offset)
-    int myFirstPhaseOffset;
+    SUMOTime myFirstPhaseOffset;
 
     /// @brief The time the diagram begins at
     SUMOTime myFirstTime2Show;

@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUIApplicationWindow.cpp 21206 2016-07-20 08:08:35Z behrisch $
+/// @version $Id: GUIApplicationWindow.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // The main window of the SUMO-gui.
 /****************************************************************************/
@@ -59,6 +59,8 @@
 
 #include <utils/common/ToString.h>
 #include <utils/common/RandHelper.h>
+#include <utils/common/TplCheck.h>
+#include <utils/common/TplConvert.h>
 #include <utils/foxtools/MFXUtils.h>
 #include <utils/foxtools/FXLCDLabel.h>
 #include <utils/foxtools/FXRealSpinDial.h>
@@ -290,11 +292,26 @@ GUIApplicationWindow::dependentBuild() {
 
 void
 GUIApplicationWindow::create() {
-    if (getApp()->reg().readIntEntry("SETTINGS", "maximized", 0) == 0) {
+    int windowWidth = getApp()->reg().readIntEntry("SETTINGS", "width", 600);
+    int windowHeight = getApp()->reg().readIntEntry("SETTINGS", "height", 400);
+    const OptionsCont& oc = OptionsCont::getOptions();
+    if (oc.isSet("window-size")) {
+        std::vector<std::string> windowSize = oc.getStringVector("window-size");
+        if (windowSize.size() != 2
+                || !TplCheck::_str2int(windowSize[0])
+                || !TplCheck::_str2int(windowSize[1])) {
+            WRITE_ERROR("option window-size requires INT,INT");
+        } else {
+            windowWidth = TplConvert::_str2int(windowSize[0]);
+            windowHeight = TplConvert::_str2int(windowSize[1]);
+        }
+    }
+
+    if (oc.isSet("window-size") || getApp()->reg().readIntEntry("SETTINGS", "maximized", 0) == 0) {
         setX(getApp()->reg().readIntEntry("SETTINGS", "x", 150));
         setY(getApp()->reg().readIntEntry("SETTINGS", "y", 150));
-        setWidth(getApp()->reg().readIntEntry("SETTINGS", "width", 600));
-        setHeight(getApp()->reg().readIntEntry("SETTINGS", "height", 400));
+        setWidth(windowWidth);
+        setHeight(windowHeight);
     }
     gCurrentFolder = getApp()->reg().readStringEntry("SETTINGS", "basedir", "");
     FXMainWindow::create();
@@ -320,8 +337,10 @@ GUIApplicationWindow::create() {
     myGeoFrame->setWidth(width);
 
     show(PLACEMENT_SCREEN);
-    if (getApp()->reg().readIntEntry("SETTINGS", "maximized", 0) == 1) {
-        maximize();
+    if (!OptionsCont::getOptions().isSet("window-size")) {
+        if (getApp()->reg().readIntEntry("SETTINGS", "maximized", 0) == 1) {
+            maximize();
+        }
     }
     myShowTimeAsHMS = (getApp()->reg().readIntEntry("gui", "timeasHMS", 0) == 1);
     myAlternateSimDelay = getApp()->reg().readIntEntry("gui", "alternateSimDelay", 100);
@@ -687,7 +706,7 @@ GUIApplicationWindow::onCmdQuit(FXObject*, FXSelector, void*) {
     getApp()->reg().writeStringEntry("SETTINGS", "basedir", gCurrentFolder.text());
     getApp()->reg().writeIntEntry("SETTINGS", "maximized", isMaximized() ? 1 : 0);
     getApp()->reg().writeIntEntry("gui", "timeasHMS", myShowTimeAsHMS ? 1 : 0);
-    getApp()->reg().writeIntEntry("gui", "alternateSimDelay", myAlternateSimDelay);
+    getApp()->reg().writeIntEntry("gui", "alternateSimDelay", (int)myAlternateSimDelay);
     getApp()->exit(0);
     return 1;
 }
@@ -752,9 +771,9 @@ GUIApplicationWindow::onCmdNetedit(FXObject*, FXSelector, void*) {
     FXRegistry reg("Netedit", "DLR");
     reg.read();
     const GUISUMOAbstractView* const v = static_cast<GUIGlChildWindow*>(mySubWindows[0])->getView();
-    reg.writeIntEntry("viewport", "x", v->getChanger().getXPos());
-    reg.writeIntEntry("viewport", "y", v->getChanger().getYPos());
-    reg.writeIntEntry("viewport", "z", v->getChanger().getZPos());
+    reg.writeRealEntry("viewport", "x", v->getChanger().getXPos());
+    reg.writeRealEntry("viewport", "y", v->getChanger().getYPos());
+    reg.writeRealEntry("viewport", "z", v->getChanger().getZPos());
     reg.write();
     std::string netedit = "netedit";
     const char* sumoPath = getenv("SUMO_HOME");
@@ -967,8 +986,8 @@ GUIApplicationWindow::onCmdTimeToggle(FXObject*, FXSelector, void*) {
 long
 GUIApplicationWindow::onCmdDelayToggle(FXObject*, FXSelector, void*) {
     const SUMOTime tmp = myAlternateSimDelay;
-    myAlternateSimDelay = mySimDelayTarget->getValue();
-    mySimDelayTarget->setValue(tmp);
+    myAlternateSimDelay = (SUMOTime)mySimDelayTarget->getValue();
+    mySimDelayTarget->setValue((FXdouble)tmp);
     return 1;
 }
 
@@ -1443,7 +1462,7 @@ GUIApplicationWindow::checkGamingEvents() {
             if (veh->getSpeed() < SUMO_const_haltingSpeed) {
                 myWaitingTime += DELTA_T;
             }
-            myTimeLoss += TS * TIME2STEPS(vmax - veh->getSpeed()) / vmax; // may be negative with speedFactor > 1
+            myTimeLoss += TIME2STEPS(TS * (vmax - veh->getSpeed()) / vmax); // may be negative with speedFactor > 1
         }
     }
     myWaitingTimeLabel->setText(time2string(myWaitingTime).c_str());

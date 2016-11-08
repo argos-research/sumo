@@ -2,7 +2,7 @@
 /// @file    GNEAdditionalDialog.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    April 2016
-/// @version $Id: GNEAdditionalDialog.cpp 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNEAdditionalDialog.cpp 21320 2016-08-23 11:11:18Z behrisch $
 ///
 /// A abstract class for editing additional elements
 /****************************************************************************/
@@ -72,21 +72,5 @@ GNEAdditionalDialog::GNEAdditionalDialog(GNEAdditional* parent, int width, int h
 GNEAdditionalDialog::~GNEAdditionalDialog() {
 }
 
-void
-GNEAdditionalDialog::show() {
-    FXDialogBox::show();
-}
-
-
-void
-GNEAdditionalDialog::hide() {
-    FXDialogBox::hide();
-}
-
-
-void
-GNEAdditionalDialog::execute() {
-    FXDialogBox::execute();
-}
 
 /****************************************************************************/

@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Tino Morenz
 /// @date    Thu, 04.12.2008
-/// @version $Id: MSRouteProbe.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSRouteProbe.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Writes route distributions at a certain edge
 /****************************************************************************/
@@ -75,7 +75,8 @@ public:
      * @param[in] lastID The id of the last completed distribution to use for getRoute
      */
     MSRouteProbe(const std::string& id, const MSEdge* edge,
-                 const std::string& distID, const std::string& lastID);
+                 const std::string& distID, const std::string& lastID,
+                 const std::string& vTypes);
 
 
     /// @brief Destructor

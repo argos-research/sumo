@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Tue Dec 02 2003 22:17 CET
-/// @version $Id: MSE3Collector.cpp 21201 2016-07-19 11:57:22Z behrisch $
+/// @version $Id: MSE3Collector.cpp 21652 2016-10-10 13:30:25Z luecken $
 ///
 // A detector of vehicles passing an area between entry/exit points
 /****************************************************************************/
@@ -59,12 +59,15 @@ MSE3Collector::MSE3EntryReminder::notifyMove(SUMOVehicle& veh, SUMOReal oldPos,
         SUMOReal newPos, SUMOReal newSpeed) {
     if (myCollector.myEnteredContainer.find(&veh) == myCollector.myEnteredContainer.end() && newPos > myPosition) {
         if (oldPos > myPosition) {
-            // was behind the detector
+            // was behind the detector already in the last step
             return false;
         } else {
+            // entered in this step
+            const SUMOReal oldSpeed = veh.getPreviousSpeed();
             const SUMOReal entryTime = STEPS2TIME(MSNet::getInstance()->getCurrentTimeStep());
-            assert(newSpeed != 0); // how could it move across the detector otherwise
-            const SUMOReal fractionTimeOnDet = (newPos - myPosition) / newSpeed;
+            assert(!MSGlobals::gSemiImplicitEulerUpdate || newSpeed != 0); // how could it move across the detector otherwise
+            const SUMOReal timeBeforeEnter = MSCFModel::passingTime(oldPos, myPosition, newPos, oldSpeed, newSpeed);
+            const SUMOReal fractionTimeOnDet = TS - timeBeforeEnter;
             myCollector.enter(veh, entryTime - fractionTimeOnDet, fractionTimeOnDet);
         }
     }
@@ -95,19 +98,29 @@ MSE3Collector::MSE3LeaveReminder::MSE3LeaveReminder(
 bool
 MSE3Collector::MSE3LeaveReminder::notifyMove(SUMOVehicle& veh, SUMOReal oldPos,
         SUMOReal newPos, SUMOReal newSpeed) {
-    if (newPos <= myPosition) {
+    if (newPos < myPosition) {
         // crossSection not yet reached
         return true;
     }
-    if (oldPos > myPosition) {
-        // crossSection was not passed
-        return false;
+    const SUMOReal oldSpeed = veh.getPreviousSpeed();
+    if (oldPos < myPosition) {
+        assert(!MSGlobals::gSemiImplicitEulerUpdate || newSpeed != 0); // how could it move across the detector otherwise
+        const SUMOReal timeBeforeLeave = MSCFModel::passingTime(oldPos, myPosition, newPos, oldSpeed, newSpeed);
+//        const SUMOReal leaveTimeFront = SIMTIME - TS + (myPosition - oldPos) / newSpeed;
+        const SUMOReal leaveTimeFront = SIMTIME - TS + timeBeforeLeave;
+        myCollector.leaveFront(veh, leaveTimeFront);
+    }
+    const SUMOReal backPos = newPos - veh.getVehicleType().getLength();
+    if (backPos < myPosition) {
+        // crossSection not yet left
+        return true;
     }
     // crossSection left
-    const SUMOReal leaveTime = STEPS2TIME(MSNet::getInstance()->getCurrentTimeStep());
-    assert(newSpeed != 0); // how could it move across the detector otherwise
-    const SUMOReal fractionTimeOnDet = (myPosition - oldPos) / newSpeed;
-    myCollector.leave(veh, leaveTime - TS + fractionTimeOnDet, fractionTimeOnDet);
+    const SUMOReal oldBackPos = oldPos - veh.getVehicleType().getLength();
+    const SUMOReal leaveStep = SIMTIME;
+    assert(!MSGlobals::gSemiImplicitEulerUpdate || newSpeed != 0); // how could it move across the detector otherwise
+    const SUMOReal timeBeforeLeave = MSCFModel::passingTime(oldBackPos, myPosition, backPos, oldSpeed, newSpeed);
+    myCollector.leave(veh, leaveStep - TS + timeBeforeLeave, timeBeforeLeave);
     return false;
 }
 
@@ -127,8 +140,9 @@ MSE3Collector::MSE3Collector(const std::string& id,
                              const CrossSectionVector& entries,
                              const CrossSectionVector& exits,
                              SUMOReal haltingSpeedThreshold,
-                             SUMOTime haltingTimeThreshold)
-    : MSDetectorFileOutput(id), myEntries(entries), myExits(exits),
+                             SUMOTime haltingTimeThreshold,
+                             const std::string& vTypes)
+    : MSDetectorFileOutput(id, vTypes), myEntries(entries), myExits(exits),
       myHaltingTimeThreshold(haltingTimeThreshold), myHaltingSpeedThreshold(haltingSpeedThreshold),
       myCurrentMeanSpeed(0), myCurrentHaltingsNumber(0), myLastResetTime(-1) {
     // Set MoveReminders to entries and exits
@@ -168,7 +182,8 @@ MSE3Collector::enter(const SUMOVehicle& veh, const SUMOReal entryTimestep, const
     const SUMOReal speedFraction = veh.getSpeed() * fractionTimeOnDet;
     E3Values v;
     v.entryTime = entryTimestep;
-    v.leaveTime = 0;
+    v.frontLeaveTime = 0;
+    v.backLeaveTime = 0;
     v.speedSum = speedFraction;
     v.haltingBegin = veh.getSpeed() < myHaltingSpeedThreshold ? entryTimestep : -1;
     v.intervalSpeedSum = entryTimestep >= STEPS2TIME(myLastResetTime) ? speedFraction : 0;
@@ -186,12 +201,22 @@ MSE3Collector::enter(const SUMOVehicle& veh, const SUMOReal entryTimestep, const
 
 
 void
+MSE3Collector::leaveFront(const SUMOVehicle& veh, const SUMOReal leaveTimestep) {
+    if (myEnteredContainer.find(&veh) == myEnteredContainer.end()) {
+        WRITE_WARNING("Vehicle '" + veh.getID() + "' left " + toString(SUMO_TAG_E3DETECTOR) + " '" + getID() + "' without entering it.");
+    } else {
+        myEnteredContainer[&veh].frontLeaveTime = leaveTimestep;
+    }
+}
+
+
+void
 MSE3Collector::leave(const SUMOVehicle& veh, const SUMOReal leaveTimestep, const SUMOReal fractionTimeOnDet) {
     if (myEnteredContainer.find(&veh) == myEnteredContainer.end()) {
-        WRITE_WARNING("Vehicle '" + veh.getID() + "' left " + toString(SUMO_TAG_E3DETECTOR) + " '" + getID() + "' before entering it.");
+        WRITE_WARNING("Vehicle '" + veh.getID() + "' left " + toString(SUMO_TAG_E3DETECTOR) + " '" + getID() + "' without entering it.");
     } else {
         E3Values values = myEnteredContainer[&veh];
-        values.leaveTime = leaveTimestep;
+        values.backLeaveTime = leaveTimestep;
         const SUMOReal speedFraction = veh.getSpeed() * (TS - fractionTimeOnDet);
         values.speedSum -= speedFraction;
         values.intervalSpeedSum -= speedFraction;
@@ -208,16 +233,19 @@ MSE3Collector::writeXMLOutput(OutputDevice& dev,
     // collect values about vehicles that have left the area
     int vehicleSum = (int) myLeftContainer.size();
     SUMOReal meanTravelTime = 0.;
+    SUMOReal meanOverlapTravelTime = 0.;
     SUMOReal meanSpeed = 0.;
     SUMOReal meanHaltsPerVehicle = 0.;
     for (std::map<const SUMOVehicle*, E3Values>::iterator i = myLeftContainer.begin(); i != myLeftContainer.end(); ++i) {
         meanHaltsPerVehicle += (SUMOReal)(*i).second.haltings;
-        SUMOReal steps = (*i).second.leaveTime - (*i).second.entryTime;
-        meanTravelTime += steps;
+        meanTravelTime += (*i).second.frontLeaveTime - (*i).second.entryTime;
+        const SUMOReal steps = (*i).second.backLeaveTime - (*i).second.entryTime;
+        meanOverlapTravelTime += steps;
         meanSpeed += ((*i).second.speedSum / steps);
     }
-    meanTravelTime = vehicleSum != 0 ? meanTravelTime / (SUMOReal) vehicleSum : -1;
-    meanSpeed = vehicleSum != 0 ?  meanSpeed / (SUMOReal) vehicleSum : -1;
+    meanTravelTime = vehicleSum != 0 ? meanTravelTime / (SUMOReal)vehicleSum : -1;
+    meanOverlapTravelTime = vehicleSum != 0 ? meanOverlapTravelTime / (SUMOReal)vehicleSum : -1;
+    meanSpeed = vehicleSum != 0 ? meanSpeed / (SUMOReal)vehicleSum : -1;
     meanHaltsPerVehicle = vehicleSum != 0 ? meanHaltsPerVehicle / (SUMOReal) vehicleSum : -1;
     // clear container
     myLeftContainer.clear();
@@ -233,7 +261,7 @@ MSE3Collector::writeXMLOutput(OutputDevice& dev,
     for (std::map<const SUMOVehicle*, E3Values>::iterator i = myEnteredContainer.begin(); i != myEnteredContainer.end(); ++i) {
         meanHaltsPerVehicleWithin += (SUMOReal)(*i).second.haltings;
         meanIntervalHaltsPerVehicleWithin += (SUMOReal)(*i).second.intervalHaltings;
-        const SUMOReal end = (*i).second.leaveTime == 0 ? STEPS2TIME(stopTime) : (*i).second.leaveTime;
+        const SUMOReal end = (*i).second.backLeaveTime == 0 ? STEPS2TIME(stopTime) : (*i).second.backLeaveTime;
         const SUMOReal time = end - (*i).second.entryTime;
         const SUMOReal timeWithin = MIN2(time, end - STEPS2TIME(startTime));
         if (i->second.speedSum > 0.) {
@@ -258,6 +286,7 @@ MSE3Collector::writeXMLOutput(OutputDevice& dev,
 
     // write values
     dev << "meanTravelTime=\"" << meanTravelTime
+        << "\" meanOverlapTravelTime=\"" << meanOverlapTravelTime
         << "\" meanSpeed=\"" << meanSpeed
         << "\" meanHaltsPerVehicle=\"" << meanHaltsPerVehicle
         << "\" vehicleSum=\"" << vehicleSum
@@ -274,7 +303,7 @@ MSE3Collector::writeXMLOutput(OutputDevice& dev,
 
 void
 MSE3Collector::writeXMLDetectorProlog(OutputDevice& dev) const {
-    dev.writeXMLHeader("e3Detector");
+    dev.writeXMLHeader("e3Detector", "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://sumo.dlr.de/xsd/det_e3_file.xsd\"");
 }
 
 

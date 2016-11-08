@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBNode.cpp 21210 2016-07-21 10:02:38Z behrisch $
+/// @version $Id: NBNode.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // The representation of a single node
 /****************************************************************************/
@@ -78,7 +78,7 @@
 // minimum length for a weaving section at a combined on-off ramp
 #define MIN_WEAVE_LENGTH 20.0
 
-// #define DEBUG_SMOOTH_GEOM
+//#define DEBUG_SMOOTH_GEOM
 #define DEBUGCOND true
 
 // ===========================================================================
@@ -237,7 +237,8 @@ NBNode::NBNode(const std::string& id, const Position& position,
     myRadius(OptionsCont::getOptions().isDefault("default.junctions.radius") ? UNSPECIFIED_RADIUS : OptionsCont::getOptions().getFloat("default.junctions.radius")),
     myKeepClear(OptionsCont::getOptions().getBool("default.junctions.keep-clear")),
     myDiscardAllCrossings(false),
-    myCrossingsLoadedFromSumoNet(0) {
+    myCrossingsLoadedFromSumoNet(0),
+    myDisplacementError(0) {
 }
 
 
@@ -251,7 +252,8 @@ NBNode::NBNode(const std::string& id, const Position& position, NBDistrict* dist
     myRadius(OptionsCont::getOptions().isDefault("default.junctions.radius") ? UNSPECIFIED_RADIUS : OptionsCont::getOptions().getFloat("default.junctions.radius")),
     myKeepClear(OptionsCont::getOptions().getBool("default.junctions.keep-clear")),
     myDiscardAllCrossings(false),
-    myCrossingsLoadedFromSumoNet(0) {
+    myCrossingsLoadedFromSumoNet(0),
+    myDisplacementError(0) {
 }
 
 
@@ -441,11 +443,11 @@ NBNode::addOutgoingEdge(NBEdge* edge) {
 
 
 bool
-NBNode::isSimpleContinuation() const {
+NBNode::isSimpleContinuation(bool checkLaneNumbers) const {
     // one in, one out->continuation
     if (myIncomingEdges.size() == 1 && myOutgoingEdges.size() == 1) {
         // both must have the same number of lanes
-        return (*(myIncomingEdges.begin()))->getNumLanes() == (*(myOutgoingEdges.begin()))->getNumLanes();
+        return !checkLaneNumbers || ((*(myIncomingEdges.begin()))->getNumLanes() == (*(myOutgoingEdges.begin()))->getNumLanes());
     }
     // two in and two out and both in reverse direction
     if (myIncomingEdges.size() == 2 && myOutgoingEdges.size() == 2) {
@@ -458,7 +460,7 @@ NBNode::isSimpleContinuation() const {
             }
             // both must have the same number of lanes
             NBContHelper::nextCW(myOutgoingEdges, opposite);
-            if (in->getNumLanes() != (*opposite)->getNumLanes()) {
+            if (checkLaneNumbers && in->getNumLanes() != (*opposite)->getNumLanes()) {
                 return false;
             }
         }
@@ -475,11 +477,15 @@ NBNode::computeSmoothShape(const PositionVector& begShape,
                            int numPoints,
                            bool isTurnaround,
                            SUMOReal extrapolateBeg,
-                           SUMOReal extrapolateEnd) const {
+                           SUMOReal extrapolateEnd,
+                           NBNode* recordError) const {
 
-    PositionVector init = bezierControlPoints(begShape, endShape, isTurnaround, extrapolateBeg, extrapolateEnd);
+    bool ok = true;
+    PositionVector init = bezierControlPoints(begShape, endShape, isTurnaround, extrapolateBeg, extrapolateEnd, ok, recordError);
 #ifdef DEBUG_SMOOTH_GEOM
-    if (DEBUGCOND) std::cout << "computeSmoothShape node " << getID() << " init=" << init << "\n";
+    if (DEBUGCOND) {
+        std::cout << "computeSmoothShape node " << getID() << " init=" << init << "\n";
+    }
 #endif
     if (init.size() == 0) {
         PositionVector ret;
@@ -487,7 +493,6 @@ NBNode::computeSmoothShape(const PositionVector& begShape,
         ret.push_back(endShape.front());
         return ret;
     } else {
-        assert(init[0].z() == myPosition.z());
         return bezier(init, numPoints);
     }
 }
@@ -498,7 +503,9 @@ NBNode::bezierControlPoints(
     const PositionVector& endShape,
     bool isTurnaround,
     SUMOReal extrapolateBeg,
-    SUMOReal extrapolateEnd) {
+    SUMOReal extrapolateEnd,
+    bool& ok,
+    NBNode* recordError) {
 
     const Position beg = begShape.back();
     const Position end = endShape.front();
@@ -507,11 +514,12 @@ NBNode::bezierControlPoints(
     if (dist < POSITION_EPS || beg.distanceTo2D(begShape[-2]) < POSITION_EPS || end.distanceTo2D(endShape[1]) < POSITION_EPS) {
 #ifdef DEBUG_SMOOTH_GEOM
         if (DEBUGCOND) std::cout << "   bezierControlPoints failed beg=" << beg << " end=" << end
-            << " dist=" << dist 
-            << " distBegLast=" << beg.distanceTo2D(begShape[-2])
-            << " distEndFirst=" << end.distanceTo2D(endShape[1])
-            << "\n";
+                                     << " dist=" << dist
+                                     << " distBegLast=" << beg.distanceTo2D(begShape[-2])
+                                     << " distEndFirst=" << end.distanceTo2D(endShape[1])
+                                     << "\n";
 #endif
+        // typically, this node a is a simpleContinuation. see also #2539
         return init;
     } else {
         init.push_back(beg);
@@ -537,18 +545,23 @@ NBNode::bezierControlPoints(
                 if (fabs(displacementAngle) <= DEG2RAD(5)) {
 #ifdef DEBUG_SMOOTH_GEOM
                     if (DEBUGCOND) std::cout << "   bezierControlPoints identified straight line beg=" << beg << " end=" << end
-                        << " angle=" << RAD2DEG(angle) << " displacementAngle=" << RAD2DEG(displacementAngle) << "\n";
+                                                 << " angle=" << RAD2DEG(angle) << " displacementAngle=" << RAD2DEG(displacementAngle) << "\n";
 #endif
                     return PositionVector();
                 } else if (bendDeg > 22.5 && pow(bendDeg / 45, 2) / dist > 0.13) {
-                    // do not allow s-curves with extreme bends 
+                    // do not allow s-curves with extreme bends
                     // (a linear dependency is to restrictive at low displacementAngles and too permisive at high angles)
 #ifdef DEBUG_SMOOTH_GEOM
-                    if (DEBUGCOND) std::cout << "   bezierControlPoints found extreme s-curve (consider changing junction shape), falling back to straight line beg=" << beg << " end=" << end
-                        << " angle=" << RAD2DEG(angle) << " displacementAngle=" << RAD2DEG(displacementAngle) 
-                        << " dist=" << dist << " bendDeg=" << bendDeg << " bd2=" << pow(bendDeg / 45, 2)
-                            << "\n";
+                    if (DEBUGCOND) std::cout << "   bezierControlPoints found extreme s-curve, falling back to straight line beg=" << beg << " end=" << end
+                                                 << " angle=" << RAD2DEG(angle) << " displacementAngle=" << RAD2DEG(displacementAngle)
+                                                 << " dist=" << dist << " bendDeg=" << bendDeg << " bd2=" << pow(bendDeg / 45, 2)
+                                                 << " displacementError=" << sin(displacementAngle) * dist
+                                                 << " begShape=" << begShape << " endShape=" << endShape << "\n";
 #endif
+                    ok = false;
+                    if (recordError != 0) {
+                        recordError->myDisplacementError = MAX2(recordError->myDisplacementError, (SUMOReal)fabs(sin(displacementAngle) * dist));
+                    }
                     return PositionVector();
                 } else {
                     const SUMOReal endLength = begShape[-2].distanceTo2D(begShape[-1]);
@@ -558,8 +571,8 @@ NBNode::bezierControlPoints(
                     init.push_back(PositionVector::positionAtOffset2D(endShapeBegLine[0], endShapeBegLine[1], off2));
 #ifdef DEBUG_SMOOTH_GEOM
                     if (DEBUGCOND) std::cout << "   bezierControlPoints found s-curve beg=" << beg << " end=" << end
-                        << " angle=" << RAD2DEG(angle) << " displacementAngle=" << RAD2DEG(displacementAngle) 
-                        << " halfDistance=" << halfDistance << "\n";
+                                                 << " angle=" << RAD2DEG(angle) << " displacementAngle=" << RAD2DEG(displacementAngle)
+                                                 << " halfDistance=" << halfDistance << "\n";
 #endif
                 }
             } else {
@@ -575,6 +588,11 @@ NBNode::bezierControlPoints(
                         std::cout << "   bezierControlPoints failed beg=" << beg << " end=" << end << " intersect=" << intersect << "\n";
                     }
 #endif
+                    ok = false;
+                    if (recordError != 0) {
+                        // it's unclear if this error can be solved via stretching the intersection.
+                        recordError->myDisplacementError = MAX2(recordError->myDisplacementError, (SUMOReal)1.0);
+                    }
                     return PositionVector();
                 }
                 const SUMOReal minControlLength = MIN2((SUMOReal)1.0, dist / 2);
@@ -585,13 +603,18 @@ NBNode::bezierControlPoints(
                     if (DEBUGCOND) std::cout << "   bezierControlPoints failed beg=" << beg << " end=" << end << " intersect=" << intersect
                                                  << " dist1=" << intersect.distanceTo2D(beg) << " dist2=" << intersect.distanceTo2D(end) << "\n";
 #endif
+                    if (recordError != 0) {
+                        // This should be fixable with minor stretching
+                        recordError->myDisplacementError = MAX2(recordError->myDisplacementError, (SUMOReal)1.0);
+                    }
+                    ok = false;
                     return PositionVector();
                 } else if (lengthenBeg || lengthenEnd) {
                     init.push_back(begShapeEndLineRev.positionAtOffset2D(100 - minControlLength));
                     init.push_back(endShapeBegLine.positionAtOffset2D(100 - minControlLength));
                 } else {
                     SUMOReal z;
-                    const SUMOReal z1 = begShapeEndLineRev.positionAtOffset2D(begShapeEndLineRev.nearest_offset_to_point2D(intersect)).z(); 
+                    const SUMOReal z1 = begShapeEndLineRev.positionAtOffset2D(begShapeEndLineRev.nearest_offset_to_point2D(intersect)).z();
                     const SUMOReal z2 = endShapeBegLine.positionAtOffset2D(endShapeBegLine.nearest_offset_to_point2D(intersect)).z();
                     const SUMOReal z3 = 0.5 * (beg.z() + end.z());
                     // if z1 and z2 are on the same side in regard to z3 then we
@@ -614,7 +637,7 @@ NBNode::bezierControlPoints(
 
 
 PositionVector
-NBNode::computeInternalLaneShape(NBEdge* fromE, const NBEdge::Connection& con, int numPoints) const {
+NBNode::computeInternalLaneShape(NBEdge* fromE, const NBEdge::Connection& con, int numPoints, NBNode* recordError) const {
     if (con.fromLane >= fromE->getNumLanes()) {
         throw ProcessError("Connection '" + fromE->getID() + "_" + toString(con.fromLane) + "->" + con.toEdge->getID() + "_" + toString(con.toLane) + "' starts at a non-existant lane.");
     }
@@ -622,7 +645,7 @@ NBNode::computeInternalLaneShape(NBEdge* fromE, const NBEdge::Connection& con, i
         throw ProcessError("Connection '" + fromE->getID() + "_" + toString(con.fromLane) + "->" + con.toEdge->getID() + "_" + toString(con.toLane) + "' targets a non-existant lane.");
     }
     PositionVector ret;
-    if (myCustomLaneShapes.size() > 0 && con.id != "") {
+    if (myCustomLaneShapes.size() > 0 && con.internalLaneIndex != NBEdge::UNSPECIFIED_INTERNAL_LANE_INDEX) {
         // this is the second pass (ids and shapes are already set
         assert(con.shape.size() > 0);
         CustomShapeMap::const_iterator it = myCustomLaneShapes.find(con.getInternalLaneID());
@@ -643,7 +666,7 @@ NBNode::computeInternalLaneShape(NBEdge* fromE, const NBEdge::Connection& con, i
     ret = computeSmoothShape(fromE->getLaneShape(con.fromLane), con.toEdge->getLaneShape(con.toLane),
                              numPoints, fromE->getTurnDestination() == con.toEdge,
                              (SUMOReal) 5. * (SUMOReal) fromE->getNumLanes(),
-                             (SUMOReal) 5. * (SUMOReal) con.toEdge->getNumLanes());
+                             (SUMOReal) 5. * (SUMOReal) con.toEdge->getNumLanes(), recordError);
     const NBEdge::Lane& lane = fromE->getLaneStruct(con.fromLane);
     if (lane.endOffset > 0) {
         PositionVector beg = lane.shape.getSubpart(lane.shape.length() - lane.endOffset, lane.shape.length());;
@@ -990,7 +1013,7 @@ NBNode::computeLanes2Lanes() {
         for (EdgeVector::const_iterator i = myIncomingEdges.begin(); i != myIncomingEdges.end(); i++) {
             const std::vector<NBEdge::Connection> cons = (*i)->getConnections();
             for (std::vector<NBEdge::Connection>::const_iterator k = cons.begin(); k != cons.end(); ++k) {
-                if (getDirection(*i, (*k).toEdge) != LINKDIR_STRAIGHT) {
+                if (getDirection(*i, (*k).toEdge) == LINKDIR_TURN) {
                     (*i)->removeFromConnections((*k).toEdge);
                 }
             }
@@ -1993,6 +2016,8 @@ NBNode::buildCrossingsAndWalkingAreas() {
 
 void
 NBNode::buildInnerEdges() {
+    // myDisplacementError is computed during this operation. reset first
+    myDisplacementError = 0;
     // build inner edges for vehicle movements across the junction
     int noInternalNoSplits = 0;
     for (EdgeVector::const_iterator i = myIncomingEdges.begin(); i != myIncomingEdges.end(); i++) {
@@ -2644,5 +2669,7 @@ NBNode::rightOnRedConflict(int index, int foeIndex) const {
     }
     return false;
 }
+
+
 /****************************************************************************/
 

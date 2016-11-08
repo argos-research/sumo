@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBNodeCont.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: NBNodeCont.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Container for nodes during the netbuilding process
 /****************************************************************************/
@@ -219,7 +219,7 @@ public:
      * @return The number of removed nodes
      */
     int removeUnwishedNodes(NBDistrictCont& dc, NBEdgeCont& ec,
-                                     NBTrafficLightLogicCont& tlc, bool removeGeometryNodes);
+                            NBTrafficLightLogicCont& tlc, bool removeGeometryNodes);
     /// @}
 
 

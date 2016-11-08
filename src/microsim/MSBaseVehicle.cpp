@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Mon, 8 Nov 2010
-/// @version $Id: MSBaseVehicle.cpp 20665 2016-05-09 12:00:43Z behrisch $
+/// @version $Id: MSBaseVehicle.cpp 21790 2016-10-25 12:37:24Z behrisch $
 ///
 // A base class for vehicle implementations
 /****************************************************************************/
@@ -60,6 +60,12 @@ std::set<std::string> MSBaseVehicle::myShallTraceMoveReminders;
 // ===========================================================================
 // method definitions
 // ===========================================================================
+
+SUMOReal
+MSBaseVehicle::getPreviousSpeed() const {
+    throw ProcessError("getPreviousSpeed() is not available for non-MSVehicles.");
+}
+
 MSBaseVehicle::MSBaseVehicle(SUMOVehicleParameter* pars, const MSRoute* route,
                              const MSVehicleType* type, const SUMOReal speedFactor) :
     myParameter(pars),
@@ -69,7 +75,7 @@ MSBaseVehicle::MSBaseVehicle(SUMOVehicleParameter* pars, const MSRoute* route,
     myChosenSpeedFactor(speedFactor),
     myMoveReminders(0),
     myDeparture(NOT_YET_DEPARTED),
-    myDepartPos(NOT_YET_DEPARTED),
+    myDepartPos(-1),
     myArrivalPos(-1),
     myArrivalLane(-1),
     myNumberReroutes(0)
@@ -77,6 +83,9 @@ MSBaseVehicle::MSBaseVehicle(SUMOVehicleParameter* pars, const MSRoute* route,
     , myTraceMoveReminders(myShallTraceMoveReminders.count(pars->id) > 0)
 #endif
 {
+    if ((*myRoute->begin())->isTaz() || myRoute->getLastEdge()->isTaz()) {
+        pars->setParameter |= VEHPARS_FORCE_REROUTE;
+    }
     // init devices
     MSDevice::buildVehicleDevices(*this, myDevices);
     //
@@ -179,6 +188,10 @@ MSBaseVehicle::reroute(SUMOTime t, SUMOAbstractRouter<MSEdge, SUMOVehicle>& rout
         edges.pop_back();
     }
     replaceRouteEdges(edges, onInit);
+    // this must be called even if the route could not be replaced
+    if (onInit) {
+        calculateArrivalParams();
+    }
 }
 
 
@@ -208,10 +221,6 @@ MSBaseVehicle::replaceRouteEdges(ConstMSEdgeVector& edges, bool onInit, bool che
         edges.insert(edges.begin(), myRoute->begin(), myCurrEdge);
     }
     if (edges == myRoute->getEdges()) {
-        if (onInit) {
-            // if edges = 'from to' we still need to calculate the arrivalPos once
-            calculateArrivalParams();
-        }
         return true;
     }
     const RGBColor& c = myRoute->getColor();
@@ -236,7 +245,6 @@ MSBaseVehicle::replaceRouteEdges(ConstMSEdgeVector& edges, bool onInit, bool che
         newRoute->release();
         return false;
     }
-    calculateArrivalParams();
     return true;
 }
 
@@ -359,6 +367,9 @@ MSBaseVehicle::activateReminders(const MSMoveReminder::Notification reason) {
 
 void
 MSBaseVehicle::calculateArrivalParams() {
+    if (myRoute->getLastEdge()->isTaz()) {
+        return;
+    }
     const std::vector<MSLane*>& lanes = myRoute->getLastEdge()->getLanes();
     const SUMOReal lastLaneLength = lanes[0]->getLength();
     switch (myParameter->arrivalPosProcedure) {
@@ -448,7 +459,6 @@ MSBaseVehicle::addStops(const bool ignoreStopErrors) {
         }
     }
 }
-
 
 #ifdef _DEBUG
 void

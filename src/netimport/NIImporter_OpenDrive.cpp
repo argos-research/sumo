@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_OpenDrive.cpp 21243 2016-07-26 14:12:28Z namdre $
+/// @version $Id: NIImporter_OpenDrive.cpp 21744 2016-10-18 13:02:24Z namdre $
 ///
 // Importer for networks stored in openDrive format
 /****************************************************************************/
@@ -384,7 +384,7 @@ NIImporter_OpenDrive::loadNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
             if ((*j).rightLaneNumber > 0) {
                 currRight = new NBEdge("-" + id, sFrom, sTo, (*j).rightType, defaultSpeed, (*j).rightLaneNumber, priorityR,
                                        NBEdge::UNSPECIFIED_WIDTH, NBEdge::UNSPECIFIED_OFFSET, geom, e->streetName, id, LANESPREAD_RIGHT, true);
-                if (!nb.getEdgeCont().insert(currRight)) {
+                if (!nb.getEdgeCont().insert(currRight, myImportAllTypes)) {
                     throw ProcessError("Could not add edge '" + currRight->getID() + "'.");
                 }
                 lanesBuilt = true;
@@ -417,7 +417,7 @@ NIImporter_OpenDrive::loadNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
             if ((*j).leftLaneNumber > 0) {
                 currLeft = new NBEdge(id, sTo, sFrom, (*j).leftType, defaultSpeed, (*j).leftLaneNumber, priorityL,
                                       NBEdge::UNSPECIFIED_WIDTH, NBEdge::UNSPECIFIED_OFFSET, geom.reverse(), e->streetName, id, LANESPREAD_RIGHT, true);
-                if (!nb.getEdgeCont().insert(currLeft)) {
+                if (!nb.getEdgeCont().insert(currLeft, myImportAllTypes)) {
                     throw ProcessError("Could not add edge '" + currLeft->getID() + "'.");
                 }
                 lanesBuilt = true;
@@ -614,33 +614,28 @@ NIImporter_OpenDrive::loadNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
             continue;
         }
         NBNode* toNode = e->getToNode();
-        NBTrafficLightDefinition* tlDef = 0;
         if (!toNode->isTLControlled()) {
             TrafficLightType type = SUMOXMLDefinitions::TrafficLightTypes.get(OptionsCont::getOptions().getString("tls.default-type"));
-            tlDef = new NBOwnTLDef(toNode->getID(), toNode, 0, type);
+            NBOwnTLDef* tlDef = new NBOwnTLDef(toNode->getID(), toNode, 0, type);
             if (!nb.getTLLogicCont().insert(tlDef)) {
                 // actually, nothing should fail here
                 delete tlDef;
                 throw ProcessError();
             }
             toNode->addTrafficLight(tlDef);
-            static_cast<NBOwnTLDef*>(tlDef)->setSinglePhase();
+            //tlDef->setSinglePhase();
         }
-        tlDef = *toNode->getControllingTLS().begin();
+        NBTrafficLightDefinition* tlDef = *toNode->getControllingTLS().begin();
         tlDef->addParameter("connection:" + id, (*i).second);
     }
 
     // -------------------------
     // clean up
     // -------------------------
-    if (oc.exists("geometry.min-dist") && oc.isSet("geometry.min-dist")) {
-        oc.unSet("geometry.min-dist");
-    }
     for (std::map<std::string, OpenDriveEdge*>::iterator i = edges.begin(); i != edges.end(); ++i) {
         delete(*i).second;
     }
 }
-
 
 
 void
@@ -760,6 +755,7 @@ std::string NIImporter_OpenDrive::revertID(const std::string& id) {
     return "-" + id;
 }
 
+
 NBNode*
 NIImporter_OpenDrive::getOrBuildNode(const std::string& id, const Position& pos,
                                      NBNodeCont& nc) {
@@ -793,11 +789,6 @@ NIImporter_OpenDrive::setNodeSecure(NBNodeCont& nc, OpenDriveEdge& e,
         e.from = n;
     }
 }
-
-
-
-
-
 
 
 void
@@ -845,7 +836,7 @@ NIImporter_OpenDrive::computeShapes(std::map<std::string, OpenDriveEdge*>& edges
             }
             prevType = g.type;
         }
-        if (oc.exists("geometry.min-dist") && oc.isSet("geometry.min-dist")) {
+        if (oc.exists("geometry.min-dist") && !oc.isDefault("geometry.min-dist")) {
             e.geom.removeDoublePoints(oc.getFloat("geometry.min-dist"), true);
         }
         for (int j = 0; j < (int)e.geom.size(); ++j) {

@@ -2,10 +2,10 @@ function setType(polygonID, polygonType)
 %setType Sets the (abstract) type of the polygon.
 %   setType(POLYGONID,POLYGONTTYPE) Sets the (abstract) type of the polygon.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: setType.m 22 2015-04-13 14:20:57Z afacostag $
+%   $Id: setType.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 global message

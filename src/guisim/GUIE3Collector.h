@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Jan 2004
-/// @version $Id: GUIE3Collector.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIE3Collector.h 21496 2016-09-19 10:39:08Z behrisch $
 ///
 // The gui-version of a MSE3Collector
 /****************************************************************************/
@@ -56,7 +56,7 @@ public:
     GUIE3Collector(const std::string& id,
                    const CrossSectionVector& entries, const CrossSectionVector& exits,
                    SUMOReal haltingSpeedThreshold,
-                   SUMOTime haltingTimeThreshold);
+                   SUMOTime haltingTimeThreshold, const std::string& vTypes);
 
     /// @brief Destructor
     ~GUIE3Collector();

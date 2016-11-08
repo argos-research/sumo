@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: ROLoader.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: ROLoader.h 21790 2016-10-25 12:37:24Z behrisch $
 ///
 // Loader for networks and route imports
 /****************************************************************************/
@@ -177,7 +177,7 @@ protected:
 
 
 protected:
-    void writeStats(SUMOTime time, SUMOTime start, int absNo, bool endGiven);
+    void writeStats(const SUMOTime time, const SUMOTime start, const SUMOTime absNo, bool endGiven);
 
 
 private:

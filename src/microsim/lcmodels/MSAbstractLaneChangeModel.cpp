@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 29.04.2005
-/// @version $Id: MSAbstractLaneChangeModel.cpp 21083 2016-07-01 12:03:17Z namdre $
+/// @version $Id: MSAbstractLaneChangeModel.cpp 21373 2016-08-31 08:20:28Z luecken $
 ///
 // Interface for lane-change models
 /****************************************************************************/
@@ -39,7 +39,6 @@
 #include <microsim/MSGlobals.h>
 #include "MSLCM_DK2008.h"
 #include "MSLCM_LC2013.h"
-#include "MSLCM_JE2013.h"
 #include "MSLCM_SL2015.h"
 
 /* -------------------------------------------------------------------------
@@ -69,8 +68,6 @@ MSAbstractLaneChangeModel::build(LaneChangeModel lcm, MSVehicle& v) {
             return new MSLCM_DK2008(v);
         case LCM_LC2013:
             return new MSLCM_LC2013(v);
-        case LCM_JE2013:
-            return new MSLCM_JE2013(v);
         case LCM_SL2015:
             return new MSLCM_SL2015(v);
         case LCM_DEFAULT:

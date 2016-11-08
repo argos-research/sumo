@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSMeanData_Harmonoise.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSMeanData_Harmonoise.h 21652 2016-10-10 13:30:25Z luecken $
 ///
 // Noise data collector for edges/lanes
 /****************************************************************************/
@@ -70,8 +70,7 @@ public:
     public:
         /** @brief Constructor */
         MSLaneMeanDataValues(MSLane* const lane, const SUMOReal length, const bool doAdd,
-                             const std::set<std::string>* const vTypes = 0,
-                             const MSMeanData_Harmonoise* parent = 0);
+                             const MSMeanData_Harmonoise* parent);
 
         /** @brief Destructor */
         virtual ~MSLaneMeanDataValues();
@@ -84,25 +83,6 @@ public:
         /** @brief Add the values to this meanData
          */
         void addTo(MSMeanData::MeanDataValues& val) const;
-
-
-        /// @name Methods inherited from MSMoveReminder.
-        /// @{
-
-        /** @brief Computes current emission values and adds them to their sums
-         *
-         * The fraction of time the vehicle is on the lane is computed and
-         *  used as a weight for the vehicle's current emission values
-         *  which are computed using the current velocity and acceleration.
-         *
-         * @param[in] veh The entering vehicle.
-         * @param[in] reason how the vehicle enters the lane
-         * @return Always true
-         * @see MSMoveReminder::notifyEnter
-         * @see MSMoveReminder::Notification
-         */
-        bool notifyEnter(SUMOVehicle& veh, MSMoveReminder::Notification reason);
-        //@}
 
 
         /** @brief Computes the noise in the last time step
@@ -127,17 +107,9 @@ public:
 
     protected:
         /** @brief Internal notification about the vehicle moves
-         *
-         * Indicator if the reminders is still active for the passed
-         * vehicle/parameters. If false, the vehicle will erase this reminder
-         * from it's reminder-container.
-         *
-         * @param[in] veh Vehicle that asks this reminder.
-         * @param[in] timeOnLane time the vehicle spent on the lane.
-         * @param[in] speed Moving speed.
+         *  @see MSMoveReminder::notifyMoveInternal()
          */
-        void notifyMoveInternal(SUMOVehicle& veh, SUMOReal timeOnLane,
-                                SUMOReal speed);
+        void notifyMoveInternal(const SUMOVehicle& veh, const SUMOReal /* frontOnLane */, const SUMOReal timeOnLane, const SUMOReal meanSpeedFrontOnLane, const SUMOReal meanSpeedVehicleOnLane, const SUMOReal travelledDistanceFrontOnLane, const SUMOReal travelledDistanceVehicleOnLane);
 
     private:
         /// @name Collected values
@@ -177,7 +149,7 @@ public:
                           const bool printDefaults, const bool withInternal,
                           const bool trackVehicles,
                           const SUMOReal minSamples, const SUMOReal maxTravelTime,
-                          const std::set<std::string> vTypes);
+                          const std::string& vTypes);
 
 
     /// @brief Destructor
