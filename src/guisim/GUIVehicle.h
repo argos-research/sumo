@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVehicle.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: GUIVehicle.h 21505 2016-09-19 14:37:59Z namdre $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
@@ -138,7 +138,7 @@ public:
 
 protected:
     /// @brief register vehicle for drawing while outside the network
-    void drawOutsideNetwork(bool /*add*/) const;
+    void drawOutsideNetwork(bool add);
 
 private:
 

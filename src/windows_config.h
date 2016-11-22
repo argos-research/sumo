@@ -7,7 +7,7 @@
 /// @author  Felix Brack
 /// @author  Jakob Erdmann
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: windows_config.h 21238 2016-07-26 08:17:35Z namdre $
+/// @version $Id: windows_config.h 21852 2016-10-31 12:26:19Z behrisch $
 ///
 // The general windows configuration file
 /****************************************************************************/
@@ -33,6 +33,8 @@
 #pragma warning(disable: 4786)
 /* Disable "C++ Exception Specification ignored" warnings */
 #pragma warning(disable: 4290)
+/* Disable DLL-Interface warnings */
+#pragma warning(disable: 4251)
 
 /* Disable "unsafe" warnings for crt functions in VC++ 2005. */
 #if _MSC_VER >= 1400
@@ -66,7 +68,7 @@
 
 /* Version number of package */
 #ifndef HAVE_VERSION_H
-#define VERSION_STRING "0.27.1"
+#define VERSION_STRING "0.28.0"
 #endif
 
 /* Define if junction internal lanes should be used. */

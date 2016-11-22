@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVisualizationSettings.cpp 21232 2016-07-25 13:06:55Z namdre $
+/// @version $Id: GUIVisualizationSettings.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Stores the information about how to visualize structures
 /****************************************************************************/
@@ -51,12 +51,13 @@ GUIVisualizationSettings::GUIVisualizationSettings()
     : name(""), antialiase(false), dither(false),
       backgroundColor(RGBColor::WHITE),
       showGrid(false), gridXSize(100), gridYSize(100),
-      laneShowBorders(false), showLinkDecals(true), showRails(true),
+      laneShowBorders(false), showLinkDecals(true),
+      showLinkRules(true), showRails(true),
       edgeName(false, 50, RGBColor(255, 128, 0, 255)),
       internalEdgeName(false, 40, RGBColor(128, 64, 0, 255)),
       cwaEdgeName(false, 50, RGBColor::MAGENTA),
       streetName(false, 55, RGBColor::YELLOW),
-      hideConnectors(false), 
+      hideConnectors(false),
       laneWidthExaggeration(1),
       laneMinSize(0),
       showLaneDirection(false),
@@ -675,6 +676,7 @@ GUIVisualizationSettings::save(OutputDevice& dev) const {
     dev.writeAttr("scaleMode", getLaneEdgeScaleMode());
     dev.writeAttr("laneShowBorders", laneShowBorders);
     dev.writeAttr("showLinkDecals", showLinkDecals);
+    dev.writeAttr("showLinkRules", showLinkRules);
     dev.writeAttr("showRails", showRails);
     dev.writeAttr("hideConnectors", hideConnectors);
     dev.writeAttr("widthExaggeration", laneWidthExaggeration);
@@ -816,6 +818,9 @@ GUIVisualizationSettings::operator==(const GUIVisualizationSettings& v2) {
         return false;
     }
     if (showLinkDecals != v2.showLinkDecals) {
+        return false;
+    }
+    if (showLinkRules != v2.showLinkRules) {
         return false;
     }
     if (showRails != v2.showRails) {

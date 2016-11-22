@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    2004-01-12
-/// @version $Id: NBNodeShapeComputer.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBNodeShapeComputer.h 21545 2016-09-27 12:26:01Z namdre $
 ///
 // This class computes shapes of junctions
 /****************************************************************************/
@@ -107,9 +107,7 @@ private:
     EdgeVector computeUniqueDirectionList(
         std::map<NBEdge*, std::set<NBEdge*> >& same,
         GeomsMap& geomsCCW,
-        GeomsMap& geomsCW,
-        std::map<NBEdge*, NBEdge*>& ccwBoundary,
-        std::map<NBEdge*, NBEdge*>& cwBoundary);
+        GeomsMap& geomsCW);
 
     /** @brief Compute smoothed corner shape
      * @param[in] begShape

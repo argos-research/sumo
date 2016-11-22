@@ -7,12 +7,12 @@
 /// @author  Robbin Blokpoel
 /// @author  Jakob Erdmann
 /// @date    Mon Feb 03 2014 14:13 CET
-/// @version $Id: MSE2Collector.h 21201 2016-07-19 11:57:22Z behrisch $
+/// @version $Id: MSE2Collector.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // An areal (along a single lane) detector
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2014 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -82,22 +82,58 @@ class OutputDevice;
  */
 class MSE2Collector : public MSMoveReminder, public MSDetectorFileOutput {
 public:
+    /** @brief Internal representation of a vehicle
+    */
+    struct VehicleInfo {
+        VehicleInfo(std::string _id, std::string _type, SUMOReal _speed, SUMOReal _timeOnDet, SUMOReal _lengthOnDet, SUMOReal _position, SUMOReal _lengthWithGap, SUMOReal _accel, bool _stillOnDet)
+            : id(_id), type(_type), speed(_speed), timeOnDet(_timeOnDet), lengthOnDet(_lengthOnDet), position(_position), lengthWithGap(_lengthWithGap), accel(_accel), stillOnDet(_stillOnDet) {}
+        std::string id;
+        std::string type;
+        SUMOReal speed;
+        SUMOReal timeOnDet;
+        SUMOReal lengthOnDet;
+        SUMOReal position;
+        SUMOReal lengthWithGap;
+        SUMOReal accel;
+        bool stillOnDet;
+    };
+
+
     /** @brief Constructor
-     *
-     * @param[in] id The detector's unique id.
-     * @param[in] usage Information how the detector is used
-     * @param[in] lane The lane to place the detector at
-     * @param[in] startPos Begin position of the detector
-     * @param[in] detLength Length of the detector
-     * @param[in] haltingTimeThreshold The time a vehicle's speed must be below haltingSpeedThreshold to be assigned as jammed
-     * @param[in] haltingSpeedThreshold The speed a vehicle's speed must be below to be assigned as jammed
-     * @param[in] jamDistThreshold The distance between two vehicles in order to not count them to one jam
-     * @todo The lane should not be given as a pointer
-     */
+    *
+    * @param[in] id The detector's unique id.
+    * @param[in] usage Information how the detector is used
+    * @param[in] lane The lane to place the detector at
+    * @param[in] startPos Begin position of the detector
+    * @param[in] detLength Length of the detector
+    * @param[in] haltingTimeThreshold The time a vehicle's speed must be below haltingSpeedThreshold to be assigned as jammed
+    * @param[in] haltingSpeedThreshold The speed a vehicle's speed must be below to be assigned as jammed
+    * @param[in] jamDistThreshold The distance between two vehicles in order to not count them to one jam
+    * @todo The lane should not be given as a pointer
+    */
     MSE2Collector(const std::string& id, DetectorUsage usage,
                   MSLane* const lane, SUMOReal startPos, SUMOReal detLength,
                   SUMOTime haltingTimeThreshold, SUMOReal haltingSpeedThreshold,
-                  SUMOReal jamDistThreshold);
+                  SUMOReal jamDistThreshold,
+                  const std::string& vTypes);
+
+    /** @brief Constructor
+    *
+    * @param[in] id The detector's unique id.
+    * @param[in] usage Information how the detector is used
+    * @param[in] lane The lane to place the detector at
+    * @param[in] startPos Begin position of the detector
+    * @param[in] detLength Length of the detector
+    * @param[in] haltingTimeThreshold The time a vehicle's speed must be below haltingSpeedThreshold to be assigned as jammed
+    * @param[in] haltingSpeedThreshold The speed a vehicle's speed must be below to be assigned as jammed
+    * @param[in] jamDistThreshold The distance between two vehicles in order to not count them to one jam
+    * @todo The lane should not be given as a pointer
+    */
+    MSE2Collector(const std::string& id, DetectorUsage usage,
+                  MSLane* const lane, SUMOReal startPos, SUMOReal detLength,
+                  SUMOTime haltingTimeThreshold, SUMOReal haltingSpeedThreshold,
+                  SUMOReal jamDistThreshold,
+                  const std::set<std::string>& vTypes);
 
 
     /// @brief Destructor
@@ -122,14 +158,14 @@ public:
      *
      * As soon as the reported vehicle enters the detector area (position>myStartPos)
      *  it is added to the list of vehicles to regard (myKnownVehicles). It
-     *  is removed from this list if it leaves the detector (position<lengt>myEndPos).
+     *  is removed from this list if it leaves the detector (position<length>myEndPos).
      * The method returns true as long as the vehicle is not beyond the detector.
      *
      * @param[in] veh The vehicle in question.
      * @param[in] oldPos Position before the move-micro-timestep.
      * @param[in] newPos Position after the move-micro-timestep.
      * @param[in] newSpeed Unused here.
-     * @return False, if vehicle passed the detector entierly, else true.
+     * @return False, if vehicle passed the detector entirely, else true.
      * @see MSMoveReminder
      * @see MSMoveReminder::notifyMove
      */
@@ -286,7 +322,7 @@ public:
      *
      * @return The vehicles that have passed the entry, but not yet an exit point
      */
-    const std::list<SUMOVehicle*>& getCurrentVehicles() const;
+    const std::vector<VehicleInfo>& getCurrentVehicles() const;
     /// @}
 
     /** \brief Returns the number of vehicles passed over the sensor.
@@ -305,7 +341,7 @@ public:
         myPassedVeh -= passed;
     }
 
-protected:
+private:
     /** @brief Internal representation of a jam
      *
      * Used in execute, instances of this structure are used to track
@@ -313,58 +349,13 @@ protected:
      */
     struct JamInfo {
         /// @brief The first standing vehicle
-        std::list<SUMOVehicle*>::const_iterator firstStandingVehicle;
+        std::vector<VehicleInfo>::const_iterator firstStandingVehicle;
 
         /// @brief The last standing vehicle
-        std::list<SUMOVehicle*>::const_iterator lastStandingVehicle;
+        std::vector<VehicleInfo>::const_iterator lastStandingVehicle;
     };
 
 
-    /** @brief A class used to sort known vehicles by their position
-     *
-     * Sorting is needed, because the order may change if a vehicle has
-     *  entered the lane by lane changing.
-     *
-     * We need to have the lane, because the vehicle's position - used
-     *  for the sorting - may be beyond the lane's end (the vehicle may
-     *  be on a new lane) and we have to ask for the vehicle's position
-     *  using this information.
-     */
-    class by_vehicle_position_sorter {
-    public:
-        /** @brief constructor
-         *
-         * @param[in] lane The lane the detector is placed at
-         */
-        by_vehicle_position_sorter(const MSLane* const lane)
-            : myLane(lane) { }
-
-
-        /** @brief copy constructor
-         *
-         * @param[in] s The instance to copy
-         */
-        by_vehicle_position_sorter(const by_vehicle_position_sorter& s)
-            : myLane(s.myLane) { }
-
-
-        /** @brief Comparison funtcion
-         *
-         * @param[in] v1 First vehicle to compare
-         * @param[in] v2 Second vehicle to compare
-         * @return Whether the position of the first vehicles is smaller than the one of the second
-         */
-        int operator()(const SUMOVehicle* v1, const SUMOVehicle* v2);
-
-    private:
-        by_vehicle_position_sorter& operator=(const by_vehicle_position_sorter&); // just to avoid a compiler warning
-    private:
-        /// @brief The lane the detector is placed at
-        const MSLane* const myLane;
-    };
-
-
-private:
     /// @name Detector parameter
     /// @{
 
@@ -384,13 +375,16 @@ private:
     DetectorUsage myUsage;
 
     /// @brief List of known vehicles
-    std::list<SUMOVehicle*> myKnownVehicles;
+    std::vector<VehicleInfo> myKnownVehicles;
+
+    /// @brief List of previously known vehicles
+    std::vector<VehicleInfo> myPreviousKnownVehicles;
 
     /// @brief Storage for halting durations of known vehicles (for halting vehicles)
-    std::map<const SUMOVehicle*, SUMOTime> myHaltingVehicleDurations;
+    std::map<const std::string, SUMOTime> myHaltingVehicleDurations;
 
     /// @brief Storage for halting durations of known vehicles (current interval)
-    std::map<const SUMOVehicle*, SUMOTime> myIntervalHaltingVehicleDurations;
+    std::map<const std::string, SUMOTime> myIntervalHaltingVehicleDurations;
 
     /// @brief Halting durations of ended halts [s]
     std::vector<SUMOTime> myPastStandingDurations;
@@ -411,7 +405,7 @@ private:
     /// @brief The sum of jam lengths [#veh]
     int myJamLengthInVehiclesSum;
     /// @brief The number of collected samples [#]
-    int myVehicleSamples;
+    SUMOReal myVehicleSamples;
     /// @brief The current aggregation duration [#steps]
     int myTimeSamples;
     /// @brief The sum of occupancies [%]

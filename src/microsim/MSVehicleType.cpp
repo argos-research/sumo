@@ -6,7 +6,7 @@
 /// @author  Thimor Bohn
 /// @author  Michael Behrisch
 /// @date    Tue, 06 Mar 2001
-/// @version $Id: MSVehicleType.cpp 20550 2016-04-26 10:57:45Z namdre $
+/// @version $Id: MSVehicleType.cpp 21657 2016-10-10 14:50:05Z namdre $
 ///
 // The car-following model and parameter
 /****************************************************************************/
@@ -94,6 +94,16 @@ MSVehicleType::setLength(const SUMOReal& length) {
         myParameter.length = myOriginalType->getLength();
     } else {
         myParameter.length = length;
+    }
+}
+
+
+void
+MSVehicleType::setHeight(const SUMOReal& height) {
+    if (myOriginalType != 0 && height < 0) {
+        myParameter.height = myOriginalType->getHeight();
+    } else {
+        myParameter.height = height;
     }
 }
 

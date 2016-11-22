@@ -2,7 +2,7 @@
 /// @file    GNEVariableSpeedSignal.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEVariableSpeedSignal.h 21150 2016-07-12 12:28:35Z behrisch $
+/// @version $Id: GNEVariableSpeedSignal.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 ///
 /****************************************************************************/
@@ -66,12 +66,11 @@ public:
     /// @brief open GNEVariableSpeedSignalDialog
     void openAdditionalDialog();
 
-    /**@brief change the position of the rerouter geometry
-     * @param[in] posx new x position of rerouter in the map
-     * @param[in] posy new y position of rerouter in the map
-     * @param[in] undoList pointer to the undo list
-     */
-    void moveAdditional(SUMOReal posx, SUMOReal posy, GNEUndoList* undoList);
+    /// @brief change the position of the rerouter geometry
+    void moveAdditionalGeometry(SUMOReal offsetx, SUMOReal offsety);
+
+    /// @brief updated geometry changes in the attributes of additional
+    void commmitAdditionalGeometryMoved(SUMOReal oldPosx, SUMOReal oldPosy, GNEUndoList* undoList);
 
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element

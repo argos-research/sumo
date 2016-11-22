@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSMeanData_Harmonoise.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSMeanData_Harmonoise.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Redirector for mean data output (net->edgecontrol)
 /****************************************************************************/
@@ -51,8 +51,8 @@
 // MSMeanData_Harmonoise::MSLaneMeanDataValues - methods
 // ---------------------------------------------------------------------------
 MSMeanData_Harmonoise::MSLaneMeanDataValues::MSLaneMeanDataValues(MSLane* const lane, const SUMOReal length, const bool doAdd,
-        const std::set<std::string>* const vTypes, const MSMeanData_Harmonoise* parent)
-    : MSMeanData::MeanDataValues(lane, length, doAdd, vTypes),
+        const MSMeanData_Harmonoise* parent)
+    : MSMeanData::MeanDataValues(lane, length, doAdd, parent),
       currentTimeN(0), meanNTemp(0), myParent(parent) {}
 
 
@@ -86,18 +86,13 @@ MSMeanData_Harmonoise::MSLaneMeanDataValues::update() {
 
 
 void
-MSMeanData_Harmonoise::MSLaneMeanDataValues::notifyMoveInternal(SUMOVehicle& veh, SUMOReal timeOnLane, SUMOReal speed) {
+MSMeanData_Harmonoise::MSLaneMeanDataValues::notifyMoveInternal(const SUMOVehicle& veh, const SUMOReal /* frontOnLane */, const SUMOReal timeOnLane, const SUMOReal /*meanSpeedFrontOnLane*/, const SUMOReal meanSpeedVehicleOnLane, const SUMOReal /*travelledDistanceFrontOnLane*/, const SUMOReal travelledDistanceVehicleOnLane) {
     const SUMOReal sn = HelpersHarmonoise::computeNoise(veh.getVehicleType().getEmissionClass(),
-                        (double) speed, veh.getAcceleration());
+                        // XXX: recheck, which value to use here for the speed. (Leo) Refs. #2579
+                        (double) meanSpeedVehicleOnLane, veh.getAcceleration());
     currentTimeN += (SUMOReal) pow(10., (sn / 10.));
     sampleSeconds += timeOnLane;
-    travelledDistance += speed * timeOnLane;
-}
-
-
-bool
-MSMeanData_Harmonoise::MSLaneMeanDataValues::notifyEnter(SUMOVehicle& veh, MSMoveReminder::Notification /*reason*/) {
-    return vehicleApplies(veh);
+    travelledDistance += travelledDistanceVehicleOnLane;
 }
 
 
@@ -129,7 +124,7 @@ MSMeanData_Harmonoise::MSMeanData_Harmonoise(const std::string& id,
         const bool printDefaults, const bool withInternal,
         const bool trackVehicles,
         const SUMOReal maxTravelTime, const SUMOReal minSamples,
-        const std::set<std::string> vTypes)
+        const std::string& vTypes)
     : MSMeanData(id, dumpBegin, dumpEnd, useLanes, withEmpty, printDefaults,
                  withInternal, trackVehicles, maxTravelTime, minSamples, vTypes) {
 }
@@ -140,7 +135,7 @@ MSMeanData_Harmonoise::~MSMeanData_Harmonoise() {}
 
 MSMeanData::MeanDataValues*
 MSMeanData_Harmonoise::createValues(MSLane* const lane, const SUMOReal length, const bool doAdd) const {
-    return new MSLaneMeanDataValues(lane, length, doAdd, &myVehicleTypes, this);
+    return new MSLaneMeanDataValues(lane, length, doAdd, this);
 }
 
 

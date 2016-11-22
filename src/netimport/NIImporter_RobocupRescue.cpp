@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_RobocupRescue.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: NIImporter_RobocupRescue.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Importer for networks stored in robocup rescue league format
 /****************************************************************************/
@@ -188,8 +188,8 @@ NIImporter_RobocupRescue::loadEdges(const std::string& file) {
     do {
         std::cout << "  left " << (noEdges) << std::endl;
         int entrySize, id, begNode, endNode, length, roadKind, carsToHead,
-                 carsToTail, humansToHead, humansToTail, width, block, repairCost, median,
-                 linesToHead, linesToTail, widthForWalkers;
+            carsToTail, humansToHead, humansToTail, width, block, repairCost, median,
+            linesToHead, linesToTail, widthForWalkers;
         dev >> entrySize >> id >> begNode >> endNode >> length >> roadKind >> carsToHead
             >> carsToTail >> humansToHead >> humansToTail >> width >> block >> repairCost
             >> median >> linesToHead >> linesToTail >> widthForWalkers;

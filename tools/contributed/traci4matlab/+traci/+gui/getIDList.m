@@ -3,10 +3,10 @@ function IDList = getIDList()
 %   IDList = getIDList() Returns a cell array of strings containing the IDs
 %   of the views in the SUMO network.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: getIDList.m 20 2015-03-02 16:52:32Z afacostag $
+%   $Id: getIDList.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 IDList = traci.gui.getUniversal(constants.ID_LIST, '');

@@ -5,8 +5,9 @@
 @author  Karol Stosiek
 @author  Michael Behrisch
 @author  Jakob Erdmann
+@author  Robert Hilbrich
 @date    2008-03-27
-@version $Id: __init__.py 21064 2016-06-29 12:10:35Z namdre $
+@version $Id: __init__.py 21646 2016-10-10 12:49:13Z rhilbrich $
 
 This file contains a content handler for parsing sumo network xml files.
 It uses other classes from this module to represent the road network.
@@ -211,6 +212,7 @@ class Net:
         for ri, shape in enumerate(shapeList):
             self._rtree.add(ri, shape.getBoundingBox(includeJunctions))
 
+    # Please be aware that the resulting list of edges is NOT sorted
     def getNeighboringEdges(self, x, y, r=0.1, includeJunctions=True):
         edges = []
         try:
@@ -333,6 +335,16 @@ class Net:
                     for oID in lane.getParam("origId", "").split():
                         self._origIdx[oID].add(edge)
         return self._origIdx[origID]
+
+    def getBBoxXY(self):
+        """
+        Get the bounding box (bottom left and top right coordinates) for a net;
+        Coordinates are in X and Y (not Lat and Lon)
+
+        :return [(bottom_left_X, bottom_left_Y), (top_right_X, top_right_Y)]
+        """
+        return [(self._ranges[0][0], self._ranges[1][0]),
+                (self._ranges[0][1], self._ranges[1][1])]
 
     # the diagonal of the bounding box of all nodes
     def getBBoxDiameter(self):

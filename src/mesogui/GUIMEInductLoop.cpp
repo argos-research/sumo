@@ -2,7 +2,7 @@
 /// @file    GUIMEInductLoop.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Thu, 21.07.2005
-/// @version $Id: GUIMEInductLoop.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIMEInductLoop.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // The gui-version of the MEInductLoop
 /****************************************************************************/
@@ -53,8 +53,8 @@
  * GUIMEInductLoop-methods
  * ----------------------------------------------------------------------- */
 GUIMEInductLoop::GUIMEInductLoop(const std::string& id, MESegment* s,
-                                 SUMOReal position)
-    : MEInductLoop(id, s, position) {}
+                                 SUMOReal position, const std::string& vTypes)
+    : MEInductLoop(id, s, position, vTypes) {}
 
 
 GUIMEInductLoop::~GUIMEInductLoop() {}

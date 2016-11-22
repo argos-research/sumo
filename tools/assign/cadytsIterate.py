@@ -7,7 +7,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2010-09-15
-@version $Id: cadytsIterate.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: cadytsIterate.py 21851 2016-10-31 12:20:12Z behrisch $
 
 Run cadyts to calibrate the simulation with given routes and traffic measurements.
 Respective traffic zones information has to exist in the given route files.
@@ -75,8 +75,8 @@ def initOptions():
                            default='-CLONE', help="postfix attached to clone ids")
     argParser.add_argument("-X", "--cntfirstlink", action="store_true", dest="cntfirstlink",
                            default=False, help="if entering vehicles are assumed to cross the upstream sensor of their entry link")
-    argParser.add_argument("-K", "--cntlastlink", action="store_false", dest="cntlastlink",
-                           default=True, help="if exiting vehicles are assumed to cross the upstream sensor of their exit link")
+    argParser.add_argument("-K", "--cntlastlink", action="store_true", dest="cntlastlink",
+                           default=False, help="if exiting vehicles are assumed to cross the upstream sensor of their exit link")
     argParser.add_argument("remaining_args", nargs='*')
     return argParser
 
@@ -93,7 +93,7 @@ def main():
         sumoBinary = sumolib.checkBinary("meso", options.path)
     else:
         sumoBinary = sumolib.checkBinary("sumo", options.path)
-    calibrator = ["java", "-cp", options.classpath,
+    calibrator = ["java", "-cp", options.classpath, "-Xmx1G",
                   "cadyts.interfaces.sumo.SumoController"]
     log = open("cadySumo-log.txt", "w+")
 
@@ -113,7 +113,8 @@ def main():
     else:
         call(calibrator + ["INIT", "-varscale", options.varscale, "-freezeit", options.freezeit,
                            "-measfile", options.detvals, "-binsize", options.aggregation, "-PREPITS", options.PREPITS,
-                           "-bruteforce", options.bruteforce, "-mincountstddev", options.mincountstddev, "-overridett", options.overridett,
+                           "-bruteforce", options.bruteforce, "-demandscale", options.demandscale,
+                           "-mincountstddev", options.mincountstddev, "-overridett", options.overridett,
                            "-clonepostfix", options.clonepostfix, "-cntfirstlink", options.cntfirstlink, "-cntlastlink", options.cntlastlink], log)
 
     for step in range(options.calibStep):

@@ -2,7 +2,7 @@
 /// @file    GNEAdditionalDialog.h
 /// @author  Pablo Alvarez Lopez
 /// @date    April 2016
-/// @version $Id: GNEAdditionalDialog.h 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNEAdditionalDialog.h 21320 2016-08-23 11:11:18Z behrisch $
 ///
 /// A abstract class for editing additional elements
 /****************************************************************************/
@@ -73,15 +73,6 @@ public:
 protected:
     /// @brief FOX needs this
     GNEAdditionalDialog() {}
-
-    /// @brief Invalidated show dialog for external calls
-    void show();
-
-    /// @brief Invalidated show dialog for external calls
-    void hide();
-
-    /// @brief Invalidated execute dialog for external calls
-    void execute();
 
     /// @brief frame for contents
     FXVerticalFrame* myContentFrame;

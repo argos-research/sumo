@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    2006-01-24
-/// @version $Id: SUMOVehicleClass.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: SUMOVehicleClass.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Definitions of SUMO vehicle classes and helper functions
 /****************************************************************************/
@@ -204,12 +204,16 @@ parseVehicleClasses(const std::string& allowedS) {
     StringTokenizer sta(allowedS, " ");
     while (sta.hasNext()) {
         const std::string s = sta.next();
-        const SUMOVehicleClass vc = getVehicleClassID(s);
-        const std::string& realName = SumoVehicleClassStrings.getString(vc);
-        if (realName != s) {
-            deprecatedVehicleClassesSeen.insert(s);
+        if (!SumoVehicleClassStrings.hasString(s)) {
+            WRITE_ERROR("Unknown vehicle class '" + s + "' encountered. It will be ignored.");
+        } else {
+            const SUMOVehicleClass vc = getVehicleClassID(s);
+            const std::string& realName = SumoVehicleClassStrings.getString(vc);
+            if (realName != s) {
+                deprecatedVehicleClassesSeen.insert(s);
+            }
+            result |= vc;
         }
-        result |= vc;
     }
     return result;
 }

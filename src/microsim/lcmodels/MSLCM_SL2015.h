@@ -2,7 +2,7 @@
 /// @file    MSLCM_SL2015.h
 /// @author  Jakob Erdmann
 /// @date    Tue, 06.10.2015
-/// @version $Id: MSLCM_SL2015.h 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: MSLCM_SL2015.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // A lane change model for heterogeneous traffic (based on sub-lanes)
 /****************************************************************************/
@@ -221,12 +221,12 @@ protected:
                       const MSLeaderDistanceInfo& neighBlockers,
                       std::vector<CLeaderDist>* collectLeadBlockers = 0,
                       std::vector<CLeaderDist>* collectFollowBlockers = 0,
-                      bool saveOriginalLatDist = true);
+                      bool keepLatGapManeuver = false);
 
     /// @brief check whether any of the vehicles overlaps with ego
-    static int checkBlockingVehicles(const MSVehicle* ego, const MSLeaderDistanceInfo& vehicles,
-                                     SUMOReal latDist, SUMOReal foeOffset, bool leaders, LaneChangeAction blockType,
-                                     std::vector<CLeaderDist>* collectBlockers = 0);
+    int checkBlockingVehicles(const MSVehicle* ego, const MSLeaderDistanceInfo& vehicles,
+                              SUMOReal latDist, SUMOReal foeOffset, bool leaders, LaneChangeAction blockType,
+                              std::vector<CLeaderDist>* collectBlockers = 0) const;
 
     /// @brief return whether the given intervals overlap
     static bool overlap(SUMOReal right, SUMOReal left, SUMOReal right2, SUMOReal left2);
@@ -316,6 +316,7 @@ protected:
     const SUMOReal mySublaneParam;
     // @brief willingness to encroach on other vehicles laterally (pushing them around)
     const SUMOReal myPushy;
+    const SUMOReal myAssertive;
     //@}
 
     /// @name derived parameters

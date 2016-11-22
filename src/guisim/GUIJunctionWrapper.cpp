@@ -6,7 +6,7 @@
 /// @author  Laura Bieker
 /// @author  Andreas Gaubatz
 /// @date    Mon, 1 Jul 2003
-/// @version $Id: GUIJunctionWrapper.cpp 21193 2016-07-19 10:22:32Z namdre $
+/// @version $Id: GUIJunctionWrapper.cpp 21574 2016-09-29 07:45:02Z namdre $
 ///
 // }
 /****************************************************************************/

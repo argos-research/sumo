@@ -2,7 +2,7 @@
 /// @file    MSLaneChangerSublane.cpp
 /// @author  Jakob Erdmann
 /// @date    Oct 2015
-/// @version $Id: MSLaneChangerSublane.cpp 21076 2016-07-01 09:22:07Z namdre $
+/// @version $Id: MSLaneChangerSublane.cpp 21734 2016-10-18 10:59:35Z namdre $
 ///
 // Performs sub-lane changing of vehicles
 /****************************************************************************/
@@ -48,8 +48,8 @@
 // ===========================================================================
 // member method definitions
 // ===========================================================================
-MSLaneChangerSublane::MSLaneChangerSublane(const std::vector<MSLane*>* lanes, bool allowChanging, bool allowSwap) :
-    MSLaneChanger(lanes, allowChanging, allowSwap) {
+MSLaneChangerSublane::MSLaneChangerSublane(const std::vector<MSLane*>* lanes, bool allowChanging) :
+    MSLaneChanger(lanes, allowChanging) {
 }
 
 
@@ -194,6 +194,15 @@ MSLaneChangerSublane::startChangeSublane(MSVehicle* vehicle, ChangerIt& from, SU
     if (gDebugFlag4) std::cout << SIMTIME << " startChangeSublane shadowLane"
                                    << " old=" << Named::getIDSecure(oldShadowLane)
                                    << " new=" << Named::getIDSecure(vehicle->getLaneChangeModel().getShadowLane()) << "\n";
+
+    // compute new angle of the vehicle from the x- and y-distances travelled within last time step
+    // (should happen last because primaryLaneChanged() also triggers angle computation)
+    // this part of the angle comes from the orientation of our current lane
+    SUMOReal laneAngle = vehicle->getLane()->getShape().rotationAtOffset(vehicle->getLane()->interpolateLanePosToGeometryPos(vehicle->getPositionOnLane())) ;
+    // this part of the angle comes from the vehicle's lateral movement
+    SUMOReal changeAngle = atan2(latDist, SPEED2DIST(vehicle->getSpeed()));
+    vehicle->setAngle(laneAngle + changeAngle);
+
     return changedToNewLane;
 }
 

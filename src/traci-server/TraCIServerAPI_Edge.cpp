@@ -7,7 +7,7 @@
 /// @author  Laura Bieker
 /// @author  Mario Krumnow
 /// @date    Sept 2002
-/// @version $Id: TraCIServerAPI_Edge.cpp 21106 2016-07-04 12:52:52Z behrisch $
+/// @version $Id: TraCIServerAPI_Edge.cpp 21514 2016-09-22 13:00:49Z namdre $
 ///
 // APIs for getting/setting edge values via TraCI
 /****************************************************************************/
@@ -353,7 +353,7 @@ TraCIServerAPI_Edge::processSet(TraCIServer& server, tcpip::Storage& inputStorag
             SVCPermissions permissions = parseVehicleClasses(classes);
             const std::vector<MSLane*>& lanes = e->getLanes();
             for (std::vector<MSLane*>::const_iterator i = lanes.begin(); i != lanes.end(); ++i) {
-                (*i)->setPermissions(permissions);
+                (*i)->setPermissions(permissions, MSLane::CHANGE_PERMISSIONS_PERMANENT);
             }
             e->rebuildAllowedLanes();
         }
@@ -367,7 +367,7 @@ TraCIServerAPI_Edge::processSet(TraCIServer& server, tcpip::Storage& inputStorag
             SVCPermissions permissions = ~parseVehicleClasses(classes); // negation yields allowed
             const std::vector<MSLane*>& lanes = e->getLanes();
             for (std::vector<MSLane*>::const_iterator i = lanes.begin(); i != lanes.end(); ++i) {
-                (*i)->setPermissions(permissions);
+                (*i)->setPermissions(permissions, MSLane::CHANGE_PERMISSIONS_PERMANENT);
             }
             e->rebuildAllowedLanes();
         }

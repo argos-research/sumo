@@ -2,7 +2,7 @@
 /// @file    GNEApplicationWindow.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEApplicationWindow.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: GNEApplicationWindow.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // The main window of Netedit (adapted from GUIApplicationWindow)
 /****************************************************************************/
@@ -90,7 +90,7 @@ public:
     virtual void detach();
 
     /// @brief load net on startup
-    void loadOnStartup();
+    void loadOptionOnStartup();
 
     /// @brief build dependent
     void dependentBuild();
@@ -148,6 +148,9 @@ public:
     /// @brief called when the command/FXCall save additionals is executed
     long onCmdSaveAdditionals(FXObject*, FXSelector, void*);
 
+    /// @brief called when the command/FXCall save additionals as is executed
+    long onCmdSaveAdditionalsAs(FXObject*, FXSelector, void*);
+
     /// @brief called when the update/FXCall save network is executed
     long onUpdSaveNetwork(FXObject*, FXSelector, void*);
 
@@ -176,7 +179,8 @@ public:
     long onKeyRelease(FXObject* o, FXSelector sel, void* data);
 
     /**@brief Called by FOX if the application shall be closed
-        Called either by FileMenu->Quit, the normal close-menu or SIGINT  */
+     * @note Called either by FileMenu->Quit, the normal close-menu or SIGINT
+     */
     long onCmdQuit(FXObject*, FXSelector, void*);
 
     /// @brief called when the command/FXCall edit chosen is executed
@@ -355,7 +359,7 @@ protected:
 
 private:
     /// @brief starts to load a netimport configuration or a network */
-    void loadConfigOrNet(const std::string file, bool isNet, bool isReload = false, bool optionsReady = false, bool newNet = false);
+    void loadConfigOrNet(const std::string file, bool isNet, bool isReload = false, bool useStartupOptions = false, bool newNet = false);
 
     /// @brief this method closes all windows and deletes the current simulation */
     void closeAllWindows();

@@ -5,7 +5,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: RORouteHandler.cpp 21236 2016-07-25 14:24:30Z namdre $
+/// @version $Id: RORouteHandler.cpp 21790 2016-10-25 12:37:24Z behrisch $
 ///
 // Parser and container for routes during their loading
 /****************************************************************************/
@@ -182,7 +182,7 @@ RORouteHandler::myStartElement(int element,
         case SUMO_TAG_WALK: {
             bool ok = true;
             const char* const objId = myVehicleParameter->id.c_str();
-            const SUMOTime duration = attrs.getOptSUMOTimeReporting(SUMO_ATTR_DURATION, objId, ok, -1);
+            const SUMOReal duration = attrs.getOpt<SUMOReal>(SUMO_ATTR_DURATION, objId, ok, -1);
             if (attrs.hasAttribute(SUMO_ATTR_DURATION) && duration <= 0) {
                 throw ProcessError("Non-positive walking duration for  '" + myVehicleParameter->id + "'.");
             }

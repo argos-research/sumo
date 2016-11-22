@@ -2,7 +2,7 @@
 /// @file    MEVehicle.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MEVehicle.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MEVehicle.cpp 21675 2016-10-12 13:26:23Z namdre $
 ///
 // A vehicle from the mesoscopic point of view
 /****************************************************************************/
@@ -212,6 +212,7 @@ MEVehicle::replaceRoute(const MSRoute* newRoute, bool onInit, int offset) {
     // save information that the vehicle was rerouted
     myNumberReroutes++;
     MSNet::getInstance()->informVehicleStateListener(this, MSNet::VEHICLE_STATE_NEWROUTE);
+    calculateArrivalParams();
     return true;
 }
 

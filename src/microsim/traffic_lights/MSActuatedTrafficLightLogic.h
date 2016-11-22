@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: MSActuatedTrafficLightLogic.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSActuatedTrafficLightLogic.h 21496 2016-09-19 10:39:08Z behrisch $
 ///
 // An actuated (adaptive) traffic light logic
 /****************************************************************************/
@@ -141,7 +141,7 @@ protected:
     SUMOTime myFreq;
 
     /// Whether detector output separates by vType
-    bool mySplitByType;
+    std::string myVehicleTypes;
 
 };
 

@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSInsertionControl.h 21232 2016-07-25 13:06:55Z namdre $
+/// @version $Id: MSInsertionControl.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Inserts vehicles into the network when their departure time is reached
 /****************************************************************************/
@@ -62,7 +62,7 @@ class MSVehicleControl;
  *
  * Vehicles are not controlled (created, deleted) by this class.
  *
- * @todo Whe a vehicle is deleted due to waiting too long or because of vaporizing, ths is not reported anywhere
+ * @todo When a vehicle is deleted due to waiting too long or because of vaporizing, this is not reported anywhere
  */
 class MSInsertionControl {
 public:
@@ -168,14 +168,7 @@ private:
      * @return The number of emitted vehicles (0 or 1)
      */
     int tryInsert(SUMOTime time, SUMOVehicle* veh,
-                           MSVehicleContainer::VehicleVector& refusedEmits);
-
-
-    /** @brief Checks whether any flow is blocked due to this vehicle and clears the block
-     *
-     * @param[in] veh The vehicle to check for
-     */
-    void checkFlowWait(SUMOVehicle* veh);
+                  MSVehicleContainer::VehicleVector& refusedEmits);
 
 
     /** @brief Adds all vehicles that should have been emitted earlier to the refuse container
@@ -208,10 +201,6 @@ private:
     struct Flow {
         /// @brief The paramters
         SUMOVehicleParameter* pars;
-        /// @brief whether it has route or vehicle type distribution
-        bool isVolatile;
-        /// @brief The last created vehicle
-        SUMOVehicle* vehicle;
         /// @brief the running index
         int index;
     };

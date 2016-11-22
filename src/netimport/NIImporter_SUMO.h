@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_SUMO.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: NIImporter_SUMO.h 21714 2016-10-17 11:21:44Z namdre $
 ///
 // Importer for networks stored in SUMO format
 /****************************************************************************/
@@ -193,6 +193,8 @@ private:
         bool keepClear;
         /// @brief custom position for internal junction on this connection
         SUMOReal contPos;
+        /// @brief custom foe visibility for connection
+        SUMOReal visibility;
     };
 
 

@@ -4,7 +4,7 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    Sept 2011
-/// @version $Id: NBHeightMapper.cpp 21215 2016-07-22 10:56:13Z behrisch $
+/// @version $Id: NBHeightMapper.cpp 21440 2016-09-07 11:06:14Z behrisch $
 ///
 // Set z-values for all network positions based on data from a height map
 /****************************************************************************/
@@ -182,7 +182,7 @@ NBHeightMapper::loadShapeFile(const std::string& file) {
     OGRDataSource* ds = OGRSFDriverRegistrar::Open(file.c_str(), FALSE);
 #else
     GDALAllRegister();
-    GDALDataset* ds = (GDALDataset*) GDALOpen(file.c_str(), GA_ReadOnly);
+    GDALDataset* ds = (GDALDataset*)GDALOpenEx(file.c_str(), GDAL_OF_VECTOR | GA_ReadOnly, NULL, NULL, NULL);
 #endif
     if (ds == NULL) {
         throw ProcessError("Could not open shape file '" + file + "'.");

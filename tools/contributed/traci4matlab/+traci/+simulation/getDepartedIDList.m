@@ -4,10 +4,10 @@ function departedIDList = getDepartedIDList()
 %   containing the ids of vehicles which departed (were inserted into the 
 %   road network) in this time step. 
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: getDepartedIDList.m 20 2015-03-02 16:52:32Z afacostag $
+%   $Id: getDepartedIDList.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 departedIDList = traci.simulation.getUniversal(constants.VAR_DEPARTED_VEHICLES_IDS);

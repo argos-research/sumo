@@ -3,10 +3,10 @@ function typeID = getTypeID(personID)
 %   typeID = getTypeID(PERSONID) Returns the id of the type of the named 
 %   person.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: getTypeID.m 25 2015-06-25 22:38:10Z afacostag $
+%   $Id: getTypeID.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 typeID = traci.person.getUniversal(constants.VAR_TYPE, personID);

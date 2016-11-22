@@ -7,7 +7,7 @@
 /// @author  Melanie Knocke
 /// @author  Yun-Pang Floetteroed
 /// @date    Sept 2002
-/// @version $Id: ROEdge.h 21201 2016-07-19 11:57:22Z behrisch $
+/// @version $Id: ROEdge.h 21252 2016-07-28 06:37:09Z namdre $
 ///
 // A basic edge for routing applications
 /****************************************************************************/
@@ -211,6 +211,20 @@ public:
      * @return The speed allowed on this edge
      */
     SUMOReal getSpeed() const {
+        return mySpeed;
+    }
+
+    /** @brief Returns the lane's maximum speed, given a vehicle's speed limit adaptation
+     * @param[in] The vehicle to return the adapted speed limit for
+     * @return This lane's resulting max. speed
+     */
+    inline SUMOReal getVClassMaxSpeed(SUMOVehicleClass vclass) const {
+        if (myRestrictions != 0) {
+            std::map<SUMOVehicleClass, SUMOReal>::const_iterator r = myRestrictions->find(vclass);
+            if (r != myRestrictions->end()) {
+                return r->second;
+            }
+        }
         return mySpeed;
     }
 

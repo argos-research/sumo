@@ -2,7 +2,7 @@
 /// @file    GUIInstantInductLoop.h
 /// @author  Daniel Krajzewicz
 /// @date    Aug 2003
-/// @version $Id: GUIInstantInductLoop.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIInstantInductLoop.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // The gui-version of the MSInstantInductLoop
 /****************************************************************************/
@@ -53,7 +53,7 @@ public:
      * @param[in] position Position of the detector within the lane.
      */
     GUIInstantInductLoop(const std::string& id, OutputDevice& od,
-                         MSLane* const lane, SUMOReal positionInMeters);
+                         MSLane* const lane, SUMOReal positionInMeters, const std::string& vTypes);
 
 
     /// @brief Destructor

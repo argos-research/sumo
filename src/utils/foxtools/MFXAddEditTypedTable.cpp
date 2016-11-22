@@ -2,7 +2,7 @@
 /// @file    MFXAddEditTypedTable.cpp
 /// @author  Daniel Krajzewicz
 /// @date    2004-07-02
-/// @version $Id: MFXAddEditTypedTable.cpp 21217 2016-07-22 10:57:44Z behrisch $
+/// @version $Id: MFXAddEditTypedTable.cpp 21314 2016-08-22 10:37:46Z namdre $
 ///
 // missing_desc
 /****************************************************************************/
@@ -595,7 +595,7 @@ MFXAddEditTypedTable::setNumberCellParams(int pos, double min, double max,
 
 MFXAddEditTypedTable::NumberCellParams
 MFXAddEditTypedTable::getNumberCellParams(int pos) const {
-    if (myNumberCellParams.size() <= pos) {
+    if ((int)myNumberCellParams.size() <= pos) {
         NumberCellParams np;
         np.format = "undefined";
         return np;

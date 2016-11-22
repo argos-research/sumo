@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Sept 2002
-/// @version $Id: SUMOXMLDefinitions.cpp 21140 2016-07-08 16:28:36Z behrisch $
+/// @version $Id: SUMOXMLDefinitions.cpp 21802 2016-10-26 11:11:13Z namdre $
 ///
 // Definitions of elements and attributes known by SUMO
 /****************************************************************************/
@@ -106,6 +106,7 @@ StringBijection<int>::Entry SUMOXMLDefinitions::tags[] = {
     { "stop",                       SUMO_TAG_STOP },
     { "destProbReroute",            SUMO_TAG_DEST_PROB_REROUTE },
     { "closingReroute",             SUMO_TAG_CLOSING_REROUTE },
+    { "closingLaneReroute",         SUMO_TAG_CLOSING_LANE_REROUTE },
     { "routeProbReroute",           SUMO_TAG_ROUTE_PROB_REROUTE },
     { "polygonType",                SUMO_TAG_POLYTYPE },
     { "connection",                 SUMO_TAG_CONNECTION },
@@ -252,6 +253,7 @@ StringBijection<int>::Entry SUMOXMLDefinitions::attrs[] = {
     { "departSpeed",            SUMO_ATTR_DEPARTSPEED },
     { "arrivalLane",            SUMO_ATTR_ARRIVALLANE },
     { "arrivalPos",             SUMO_ATTR_ARRIVALPOS },
+    { "arrivalPosLat",          SUMO_ATTR_ARRIVALPOS_LAT },
     { "arrivalSpeed",           SUMO_ATTR_ARRIVALSPEED },
     { "route",                  SUMO_ATTR_ROUTE },
     { "maxSpeed",               SUMO_ATTR_MAXSPEED },
@@ -289,6 +291,7 @@ StringBijection<int>::Entry SUMOXMLDefinitions::attrs[] = {
     { "lcKeepRight",            SUMO_ATTR_LCA_KEEPRIGHT_PARAM },
     { "lcSublane",              SUMO_ATTR_LCA_SUBLANE_PARAM },
     { "lcPushy",                SUMO_ATTR_LCA_PUSHY },
+    { "lcAssertive",            SUMO_ATTR_LCA_ASSERTIVE },
 
     { "last",                   SUMO_ATTR_LAST },
     { "cost",                   SUMO_ATTR_COST },
@@ -349,6 +352,7 @@ StringBijection<int>::Entry SUMOXMLDefinitions::attrs[] = {
     { "source",                 SUMO_ATTR_SOURCE },
     { "via",                    SUMO_ATTR_VIA },
     { "nodes",                  SUMO_ATTR_NODES },
+    { "visibility",             SUMO_ATTR_VISIBILITY_DISTANCE },
 
     { "minDur",                 SUMO_ATTR_MINDURATION },
     { "maxDur",                 SUMO_ATTR_MAXDURATION },
@@ -496,7 +500,7 @@ StringBijection<int>::Entry SUMOXMLDefinitions::attrs[] = {
     { "modificationStatusNotForPrinting",   GNE_ATTR_MODIFICATION_STATUS },
     { "shapeStartNotForPrinting",           GNE_ATTR_SHAPE_START },
     { "shapeEndNotForPrinting",             GNE_ATTR_SHAPE_END },
-    { "movementOfElementBlocked",           GNE_ATTR_BLOCK_MOVEMENT },
+    { "blockMovement",                      GNE_ATTR_BLOCK_MOVEMENT },
     { "parentOfAdditional",                 GNE_ATTR_PARENT },
 
     // Other
@@ -577,6 +581,7 @@ StringBijection<TrafficLightType>::Entry SUMOXMLDefinitions::trafficLightTypesVa
     { "static",         TLTYPE_STATIC },
     { "rail",           TLTYPE_RAIL },
     { "actuated",       TLTYPE_ACTUATED },
+    { "delayBased",     TLTYPE_DELAYBASED },
     { "sotl_phase",     TLTYPE_SOTL_PHASE },
     { "sotl_platoon",   TLTYPE_SOTL_PLATOON },
     { "sotl_request",   TLTYPE_SOTL_REQUEST },
@@ -591,7 +596,6 @@ StringBijection<TrafficLightType>::Entry SUMOXMLDefinitions::trafficLightTypesVa
 StringBijection<LaneChangeModel>::Entry SUMOXMLDefinitions::laneChangeModelValues[] = {
     { "DK2008",     LCM_DK2008 },
     { "LC2013",     LCM_LC2013 },
-    { "JE2013",     LCM_JE2013 },
     { "SL2015",     LCM_SL2015 },
     { "default",    LCM_DEFAULT } //< must be the last one
 };
@@ -625,7 +629,7 @@ StringBijection<LaneChangeAction>::Entry SUMOXMLDefinitions::laneChangeActionVal
     { "strategic",   LCA_STRATEGIC },
     { "cooperative", LCA_COOPERATIVE },
     { "speedGain",   LCA_SPEEDGAIN },
-    { "keepRaight",  LCA_KEEPRIGHT },
+    { "keepRight",   LCA_KEEPRIGHT },
     { "sublane",     LCA_SUBLANE },
     { "traci",       LCA_TRACI },
     { "urgent",      LCA_URGENT },
@@ -676,7 +680,7 @@ SUMOXMLDefinitions::getJunctionIDFromInternalEdge(const std::string internalEdge
 
 std::string
 SUMOXMLDefinitions::getEdgeIDFromLane(const std::string laneID) {
-    return laneID.substr(0, laneID.rfind('_') - 1);
+    return laneID.substr(0, laneID.rfind('_'));
 }
 
 /****************************************************************************/

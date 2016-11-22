@@ -3,10 +3,10 @@ function imperfection = getImperfection(vehID)
 %   imperfection = getImperfection(VEHID) Returns the driver's imperfection
 %   (dawdling) [0,1]
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: getImperfection.m 20 2015-03-02 16:52:32Z afacostag $
+%   $Id: getImperfection.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 imperfection = traci.vehicle.getUniversal(constants.VAR_IMPERFECTION, vehID);

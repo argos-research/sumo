@@ -8,7 +8,7 @@
 /// @author  Michael Behrisch
 /// @author  Sascha Krieg
 /// @date    Tue, 06 Mar 2001
-/// @version $Id: MSEdge.cpp 21201 2016-07-19 11:57:22Z behrisch $
+/// @version $Id: MSEdge.cpp 21734 2016-10-18 10:59:35Z namdre $
 ///
 // A road/street connecting two junctions
 /****************************************************************************/
@@ -209,16 +209,15 @@ MSEdge::closeBuilding() {
 void
 MSEdge::buildLaneChanger() {
     if (!myLanes->empty()) {
-        const bool allowSwap = OptionsCont::getOptions().getBool("lanechange.allow-swap");
         const bool allowChanging = allowsLaneChanging();
         if (MSGlobals::gLateralResolution > 0) {
             // may always initiate sublane-change
-            myLaneChanger = new MSLaneChangerSublane(myLanes, allowChanging, allowSwap);
+            myLaneChanger = new MSLaneChangerSublane(myLanes, allowChanging);
         } else {
             if (MSGlobals::gLaneChangeDuration > 0) {
-                myLaneChanger = new MSLaneChanger(myLanes, allowChanging, allowSwap);
+                myLaneChanger = new MSLaneChanger(myLanes, allowChanging);
             } else if (myLanes->size() > 1 || canChangeToOpposite()) {
-                myLaneChanger = new MSLaneChanger(myLanes, allowChanging, allowSwap);
+                myLaneChanger = new MSLaneChanger(myLanes, allowChanging);
             }
         }
     }
@@ -475,19 +474,22 @@ MSEdge::insertVehicle(SUMOVehicle& v, SUMOTime time, const bool checkOnly) const
     if (isVaporizing()) {
         return checkOnly;
     }
+    if (isTaz() && checkOnly) {
+        return true;
+    }
     const SUMOVehicleParameter& pars = v.getParameter();
     const MSVehicleType& type = v.getVehicleType();
     if (pars.departSpeedProcedure == DEPART_SPEED_GIVEN && pars.departSpeed > getVehicleMaxSpeed(&v)) {
-        if (type.getSpeedDeviation() > 0 && pars.departSpeed <= type.getSpeedFactor() * getSpeedLimit() * (2 * type.getSpeedDeviation() + 1.)) {
-            WRITE_WARNING("Choosing new speed factor for vehicle '" + pars.id + "' to match departure speed.");
+        if (type.getSpeedDeviation() > 0) {
             v.setChosenSpeedFactor(type.computeChosenSpeedDeviation(0, pars.departSpeed / (type.getSpeedFactor() * getSpeedLimit())));
+            if (v.getChosenSpeedFactor() > type.getSpeedFactor() * (2 * type.getSpeedDeviation() + 1)) {
+                // only warn for significant deviation
+                WRITE_WARNING("Choosing new speed factor " + toString(v.getChosenSpeedFactor()) + " for vehicle '" + pars.id + "' to match departure speed.");
+            }
         } else {
             throw ProcessError("Departure speed for vehicle '" + pars.id +
                                "' is too high for the departure edge '" + getID() + "'.");
         }
-    }
-    if (checkOnly && v.getEdge()->getPurpose() == MSEdge::EDGEFUNCTION_DISTRICT) {
-        return true;
     }
     if (!checkOnly) {
         std::string msg;
@@ -549,7 +551,12 @@ MSEdge::insertVehicle(SUMOVehicle& v, SUMOTime time, const bool checkOnly) const
             case DEPART_LANE_GIVEN:
             case DEPART_LANE_DEFAULT:
             case DEPART_LANE_FIRST_ALLOWED: {
-                const SUMOReal occupancy = getDepartLane(static_cast<MSVehicle&>(v))->getBruttoOccupancy();
+                MSLane* insertionLane = getDepartLane(static_cast<MSVehicle&>(v));
+                if (insertionLane == 0) {
+                    WRITE_WARNING("could not insert vehicle '" + v.getID() + "' on any lane of edge '" + getID() + "', time=" + time2string(MSNet::getInstance()->getCurrentTimeStep()));
+                    return false;
+                }
+                const SUMOReal occupancy = insertionLane->getBruttoOccupancy();
                 return occupancy == (SUMOReal)0 || occupancy * myLength + v.getVehicleType().getLengthWithGap() <= myLength;
             }
             default:

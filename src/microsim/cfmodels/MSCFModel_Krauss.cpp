@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 04 Aug 2009
-/// @version $Id: MSCFModel_Krauss.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSCFModel_Krauss.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Krauss car-following model, with acceleration decrease and faster start
 /****************************************************************************/
@@ -54,18 +54,38 @@ MSCFModel_Krauss::~MSCFModel_Krauss() {}
 
 SUMOReal
 MSCFModel_Krauss::stopSpeed(const MSVehicle* const veh, const SUMOReal speed, SUMOReal gap) const {
-    return MIN2(maximumSafeStopSpeed(gap), maxNextSpeed(speed, veh));
+    // NOTE: This allows return of smaller values than minNextSpeed().
+    // Only relevant for the ballistic update: We give the argument headway=TS, to assure that
+    // the stopping position is approached with a uniform deceleration also for tau!=TS.
+    return MIN2(maximumSafeStopSpeed(gap, speed, false, TS), maxNextSpeed(speed, veh));
 }
 
 
 SUMOReal
 MSCFModel_Krauss::followSpeed(const MSVehicle* const veh, SUMOReal speed, SUMOReal gap, SUMOReal predSpeed, SUMOReal predMaxDecel) const {
-    return MIN2(maximumSafeFollowSpeed(gap, predSpeed, predMaxDecel), maxNextSpeed(speed, veh));
+    const SUMOReal vsafe = maximumSafeFollowSpeed(gap, speed, predSpeed, predMaxDecel);
+    const SUMOReal vmin = minNextSpeed(speed);
+    const SUMOReal vmax = maxNextSpeed(speed, veh);
+    if (MSGlobals::gSemiImplicitEulerUpdate) {
+        return MIN2(vsafe, vmax);
+    } else {
+        // ballistic
+        // XXX: the euler variant can break as strong as it wishes immediately! The ballistic cannot, refs. #2575.
+        return MAX2(MIN2(vsafe, vmax), vmin);
+    }
 }
 
 
 SUMOReal
 MSCFModel_Krauss::dawdle(SUMOReal speed) const {
+    if (!MSGlobals::gSemiImplicitEulerUpdate) {
+        // in case of the ballistic update, negative speeds indicate
+        // a desired stop before the completion of the next timestep.
+        // We do not allow dawdling to overwrite this indication
+        if (speed < 0) {
+            return speed;
+        }
+    }
     // generate random number out of [0,1)
     const SUMOReal random = RandHelper::rand();
     // Dawdle.

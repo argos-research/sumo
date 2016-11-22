@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    2011-09.08
-/// @version $Id: MSInstantInductLoop.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSInstantInductLoop.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // An instantaneous induction loop
 /****************************************************************************/
@@ -69,7 +69,8 @@ public:
      * @param[in] position Position of the detector within the lane.
      */
     MSInstantInductLoop(const std::string& id, OutputDevice& od,
-                        MSLane* const lane, SUMOReal positionInMeters);
+                        MSLane* const lane, SUMOReal positionInMeters,
+                        const std::string& vTypes);
 
 
     /// @brief Destructor

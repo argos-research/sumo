@@ -6,7 +6,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Fri, 08.10.2013
-/// @version $Id: MSLCM_LC2013.h 20765 2016-05-20 07:49:28Z luecken $
+/// @version $Id: MSLCM_LC2013.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // A lane change model developed by D. Krajzewicz, J. Erdmann et al. between 2004 and 2013
 /****************************************************************************/
@@ -36,6 +36,12 @@
 
 #include "MSAbstractLaneChangeModel.h"
 #include <vector>
+
+// INVALID_SPEED should be used when the construction of upper bound for the speed
+// leads to no restrictions, e.g. during LC-messaging to followers or leaders.
+// Currently either std::numeric_limits<...>.max() or -1 is used for this purpose in many places.
+// TODO: implement this everywhere and remove workarounds for ballistic update in cases of possible '-1'-returns. Refs. #2577
+#define INVALID_SPEED 299792458 + 1 // nothing can go faster than the speed of light!
 
 
 // ===========================================================================
@@ -121,7 +127,6 @@ protected:
         MSVehicle** lastBlocked,
         MSVehicle** firstBlocked);
 
-
     /* @brief decide whether we will overtake or follow a blocking leader
      * and inform it accordingly
      * If we decide to follow, myVSafes will be extended
@@ -139,8 +144,51 @@ protected:
                         SUMOReal plannedSpeed);
 
 
+    /* @brief compute the distance to cover until a safe gap to the vehicle v in front is reached
+     *        assuming constant velocities
+         * @param[in] follower the vehicle which overtakes
+         * @param[in] leader the vehicle to be overtaken
+         * @param[in] gap initial distance between front of follower and back of leader
+         * @param[in] leaderSpeed an assumed speed for the leader (default uses the current speed)
+         * @param[in] followerSpeed an assumed speed for the follower (default uses the current speed)
+         * @return the distance that the relative positions would have to change.
+         */
+    static SUMOReal overtakeDistance(const MSVehicle* follower, const MSVehicle* leader, const SUMOReal gap, SUMOReal followerSpeed = INVALID_SPEED, SUMOReal leaderSpeed = INVALID_SPEED);
+
     /// @brief compute useful slowdowns for blocked vehicles
     int slowDownForBlocked(MSVehicle** blocked, int state);
+
+
+    // XXX: consider relocation of the roundabout functions (perhaps to MSVehicle or the abstract LC Model...) (Leo)
+    /// @brief computes the distance and number of edges in the next upcoming
+    ///        roundabout along the lane continuations given in curr and neigh
+    /// @param[in] veh The considered ego Vehicle
+    /// @param[in] curr continuation info along veh's current lane
+    /// @param[in] neigh continuation info along a neighboring lane (in MSLCM_2013::_wantsChange() the considered lane for a lanechange)
+    /// @param[out] roundaboutDistanceAhead Accumulated length of lanes in the next oncoming roundabout in curr
+    /// @param[out] roundaboutDistanceAheadNeigh Accumulated length of lanes in the next oncoming roundabout in neigh
+    /// @param[out] roundaboutEdgesAhead  Number of lanes in the next oncoming roundabout in curr
+    /// @param[out] roundaboutEdgesAheadNeigh Number of lanes in the next oncoming roundabout in neigh
+    static void
+    getRoundaboutAheadInfo(const MSLCM_LC2013* lcm, const MSVehicle::LaneQ& curr, const MSVehicle::LaneQ& neigh,
+                           SUMOReal& roundaboutDistanceAhead, SUMOReal& roundaboutDistanceAheadNeigh, int& roundaboutEdgesAhead, int& roundaboutEdgesAheadNeigh);
+
+    /// @brief Computes the artificial bonus distance for roundabout lanes
+    ///        this additional distance reduces the sense of urgency within
+    ///        roundabouts and thereby promotes the use of the inner roundabout
+    ///        lane in multi-lane roundabouts.
+    /// @param[in] roundaboutDistAhead Distance on roundabout
+    /// @param[in] roundaboutEdgesAhead number of edges on roundabout
+    SUMOReal
+    roundaboutDistBonus(SUMOReal roundaboutDistAhead, int roundaboutEdgesAhead) const;
+
+    /// @brief compute the distance on the next upcoming roundabout along a given sequence of lanes.
+    /// @param[in] position position of the vehicle on the initial lane
+    /// @param[in] initialLane starting lane for the computation (may be internal)
+    /// @param[in] continuationLanes sequence of lanes along which the roundabout distance is to be computed (only containing non-internal lanes)
+    /// @return distance along next upcoming roundabout on the given sequence of lanes continuationLanes
+    static SUMOReal
+    distanceAlongNextRoundabout(SUMOReal position, const MSLane* initialLane, const std::vector<MSLane*>& continuationLanes);
 
     /// @brief save space for vehicles which need to counter-lane-change
     void saveBlockerLength(MSVehicle* blocker, int lcaCounter);
@@ -190,12 +238,12 @@ protected:
     SUMOReal myLookAheadSpeed;
 
     std::vector<SUMOReal> myVSafes;
-    bool myDontBrake;
+    bool myDontBrake; // XXX: myDontBrake is initialized as false and seems not to be changed anywhere... What's its purpose???
 
     /// @name user configurable model parameters
     //@{
     const SUMOReal myStrategicParam;
-    const SUMOReal myCooperativeParam;
+    const SUMOReal myCooperativeParam; // in [0,1]
     const SUMOReal mySpeedGainParam;
     const SUMOReal myKeepRightParam;
     //@}

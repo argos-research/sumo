@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Aug 2003
-/// @version $Id: GUIInductLoop.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: GUIInductLoop.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // The gui-version of the MSInductLoop, together with the according
 /****************************************************************************/
@@ -53,8 +53,8 @@
  * GUIInductLoop-methods
  * ----------------------------------------------------------------------- */
 GUIInductLoop::GUIInductLoop(const std::string& id, MSLane* const lane,
-                             SUMOReal position, bool splitByType)
-    : MSInductLoop(id, lane, position, splitByType) {}
+                             SUMOReal position, const std::string& vTypes)
+    : MSInductLoop(id, lane, position, vTypes) {}
 
 
 GUIInductLoop::~GUIInductLoop() {}

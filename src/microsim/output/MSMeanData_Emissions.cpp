@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSMeanData_Emissions.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSMeanData_Emissions.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Emission data collector for edges/lanes that
 /****************************************************************************/
@@ -52,10 +52,9 @@
 // ---------------------------------------------------------------------------
 MSMeanData_Emissions::MSLaneMeanDataValues::MSLaneMeanDataValues(MSLane* const lane,
         const SUMOReal length, const bool doAdd,
-        const std::set<std::string>* const vTypes,
         const MSMeanData_Emissions* parent)
-    : MSMeanData::MeanDataValues(lane, length, doAdd, vTypes),
-      myEmissions(), myParent(parent) {}
+    : MSMeanData::MeanDataValues(lane, length, doAdd, parent),
+      myEmissions() {}
 
 
 MSMeanData_Emissions::MSLaneMeanDataValues::~MSLaneMeanDataValues() {
@@ -80,11 +79,13 @@ MSMeanData_Emissions::MSLaneMeanDataValues::addTo(MSMeanData::MeanDataValues& va
 
 
 void
-MSMeanData_Emissions::MSLaneMeanDataValues::notifyMoveInternal(SUMOVehicle& veh, SUMOReal timeOnLane, SUMOReal speed) {
+MSMeanData_Emissions::MSLaneMeanDataValues::notifyMoveInternal(const SUMOVehicle& veh, const SUMOReal /* frontOnLane */, const SUMOReal timeOnLane, const SUMOReal /*meanSpeedFrontOnLane*/, const SUMOReal meanSpeedVehicleOnLane, const SUMOReal /*travelledDistanceFrontOnLane*/, const SUMOReal travelledDistanceVehicleOnLane) {
     sampleSeconds += timeOnLane;
-    travelledDistance += speed * timeOnLane;
+    travelledDistance += travelledDistanceVehicleOnLane;
     const double a = veh.getAcceleration();
-    myEmissions.addScaled(PollutantsInterface::computeAll(veh.getVehicleType().getEmissionClass(), speed, a, veh.getSlope()), timeOnLane);
+    myEmissions.addScaled(PollutantsInterface::computeAll(veh.getVehicleType().getEmissionClass(),
+                          // XXX: recheck, which value to use here for the speed. (Leo) Refs. #2579
+                          meanSpeedVehicleOnLane, a, veh.getSlope()), timeOnLane);
 }
 
 
@@ -106,9 +107,9 @@ MSMeanData_Emissions::MSLaneMeanDataValues::write(OutputDevice& dev, const SUMOT
         "\" NOx_normed=\"" << OutputDevice::realString(normFactor * myEmissions.NOx, 6) <<
         "\" fuel_normed=\"" << OutputDevice::realString(normFactor * myEmissions.fuel, 6) <<
         "\" electricity_normed=\"" << OutputDevice::realString(normFactor * myEmissions.electricity, 6);
-    if (sampleSeconds > myParent->myMinSamples) {
-        SUMOReal vehFactor = myParent->myMaxTravelTime / sampleSeconds;
-        SUMOReal traveltime = myParent->myMaxTravelTime;
+    if (sampleSeconds > myParent->getMinSamples()) {
+        SUMOReal vehFactor = myParent->getMaxTravelTime() / sampleSeconds;
+        SUMOReal traveltime = myParent->getMaxTravelTime();
         if (travelledDistance > 0.f) {
             vehFactor = MIN2(vehFactor, myLaneLength / travelledDistance);
             traveltime = MIN2(traveltime, myLaneLength * sampleSeconds / travelledDistance);
@@ -151,7 +152,7 @@ MSMeanData_Emissions::MSMeanData_Emissions(const std::string& id,
         const bool trackVehicles,
         const SUMOReal maxTravelTime,
         const SUMOReal minSamples,
-        const std::set<std::string> vTypes)
+        const std::string& vTypes)
     : MSMeanData(id, dumpBegin, dumpEnd, useLanes, withEmpty, printDefaults,
                  withInternal, trackVehicles, maxTravelTime, minSamples, vTypes) {
 }
@@ -162,7 +163,7 @@ MSMeanData_Emissions::~MSMeanData_Emissions() {}
 
 MSMeanData::MeanDataValues*
 MSMeanData_Emissions::createValues(MSLane* const lane, const SUMOReal length, const bool doAdd) const {
-    return new MSLaneMeanDataValues(lane, length, doAdd, &myVehicleTypes, this);
+    return new MSLaneMeanDataValues(lane, length, doAdd, this);
 }
 
 

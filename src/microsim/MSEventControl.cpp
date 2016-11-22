@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Matthias Heppner
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSEventControl.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSEventControl.cpp 21649 2016-10-10 13:24:35Z luecken $
 ///
 // Stores time-dependant events and executes them at the proper time
 /****************************************************************************/
@@ -77,9 +77,9 @@ MSEventControl::addEvent(Command* operation,
 void
 MSEventControl::execute(SUMOTime execTime) {
     // Execute all events that are scheduled for execTime.
-    for (; !myEvents.empty();) {
+    while (!myEvents.empty()) {
         Event currEvent = myEvents.top();
-        if (currEvent.second == execTime || currEvent.second < execTime + DELTA_T) {
+        if (currEvent.second < execTime + DELTA_T) {
             Command* command = currEvent.first;
             myEvents.pop();
             SUMOTime time = 0;

@@ -4,7 +4,7 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    30.05.2012
-/// @version $Id: TraCIAPI.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: TraCIAPI.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // C++ TraCI client API implementation
 /****************************************************************************/
@@ -33,6 +33,7 @@
 #endif
 
 #include <vector>
+#include <limits>
 #include <string>
 #include <sstream>
 #include <iomanip>
@@ -56,6 +57,7 @@
 
 
 typedef long long int SUMOTime; // <utils/common/SUMOTime.h>
+#define SUMOTime_MAX std::numeric_limits<SUMOTime>::max()
 
 
 class TraCIAPI {
@@ -247,8 +249,8 @@ public:
         SUMOReal getLastStepHaltingNumber(const std::string& edgeID) const;
         std::vector<std::string> getLastStepVehicleIDs(const std::string& edgeID) const;
 
-        void adaptTraveltime(const std::string& edgeID, SUMOReal time) const;
-        void setEffort(const std::string& edgeID, SUMOReal effort) const;
+        void adaptTraveltime(const std::string& edgeID, SUMOReal time, SUMOTime begin = 0, SUMOTime end = SUMOTime_MAX) const;
+        void setEffort(const std::string& edgeID, SUMOReal effort, SUMOTime begin = 0, SUMOTime end = SUMOTime_MAX) const;
         void setMaxSpeed(const std::string& edgeID, SUMOReal speed) const;
 
     private:
@@ -666,6 +668,7 @@ public:
         std::string getShapeClass(const std::string& typeID) const;
         SUMOReal getMinGap(const std::string& typeID) const;
         SUMOReal getWidth(const std::string& typeID) const;
+        SUMOReal getHeight(const std::string& typeID) const;
         TraCIColor getColor(const std::string& typeID) const;
 
         void setLength(const std::string& typeID, SUMOReal length) const;
@@ -675,6 +678,7 @@ public:
         void setSpeedDeviation(const std::string& typeID, SUMOReal deviation) const;
         void setEmissionClass(const std::string& typeID, const std::string& clazz) const;
         void setWidth(const std::string& typeID, SUMOReal width) const;
+        void setHeight(const std::string& typeID, SUMOReal height) const;
         void setMinGap(const std::string& typeID, SUMOReal minGap) const;
         void setShapeClass(const std::string& typeID, const std::string& clazz) const;
         void setAccel(const std::string& typeID, SUMOReal accel) const;
@@ -793,6 +797,7 @@ public:
         void slowDown(const std::string& vehicleID, SUMOReal speed, int duration) const;
         void setSpeed(const std::string& vehicleID, SUMOReal speed) const;
         void remove(const std::string& vehicleID, char reason = REMOVE_VAPORIZED) const;
+        void setColor(const std::string& vehicleID, const TraCIColor& c) const;
 
     private:
         /// @brief invalidated copy constructor

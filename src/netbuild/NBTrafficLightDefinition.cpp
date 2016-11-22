@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBTrafficLightDefinition.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: NBTrafficLightDefinition.cpp 21474 2016-09-14 09:05:31Z behrisch $
 ///
 // The base class for traffic light logic definitions
 /****************************************************************************/
@@ -126,7 +126,7 @@ NBTrafficLightDefinition::compute(OptionsCont& oc) {
     int brakingTime = computeBrakingTime(oc.getFloat("tls.yellow.min-decel"));
     // perform the computation depending on whether the traffic light
     //  definition was loaded or shall be computed new completely
-    if (oc.isSet("tls.yellow.time")) {
+    if (!oc.isDefault("tls.yellow.time")) {
         brakingTime = oc.getInt("tls.yellow.time");
     }
     NBTrafficLightLogic* ret = myCompute(brakingTime);

@@ -1,5 +1,5 @@
 dnl Process this file with autoconf to produce a configure script.
-AC_INIT(sumo, 0.27.1)
+AC_INIT(sumo, 0.28.0)
 AC_CONFIG_SRCDIR(src/sumo_main.cpp)
 AC_CANONICAL_SYSTEM
 
@@ -39,6 +39,14 @@ if test x$enable_coverage = xyes; then
     ac_enabled="$ac_enabled Coverage"
 else
     ac_disabled="$ac_disabled Coverage"
+fi
+
+AC_ARG_ENABLE([pic], [AS_HELP_STRING([--enable-pic],[enable compilation of position-independent code [default=no],])])
+if test x$enable_pic = xyes; then
+    CXXFLAGS="-fPIC $CXXFLAGS"
+    ac_enabled="$ac_enabled PIC"
+else
+    ac_disabled="$ac_disabled PIC"
 fi
 
 

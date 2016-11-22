@@ -4,7 +4,7 @@
 /// @author  Eric Nicolay
 /// @author  Michael Behrisch
 /// @date    Thu, 16.03.2006
-/// @version $Id: RODFDetector.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: RODFDetector.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Class representing a detector within the DFROUTER
 /****************************************************************************/
@@ -53,6 +53,7 @@ class RODFDetectorCon;
 class RODFNet;
 struct RODFRouteDesc;
 class OutputDevice;
+class SUMOVTypeParameter;
 
 
 // ===========================================================================
@@ -168,7 +169,7 @@ public:
     /// @{
 
     bool writeEmitterDefinition(const std::string& file,
-                                const std::map<int, RandomDistributor<int>* >& dists,
+                                const std::map<SUMOTime, RandomDistributor<int>* >& dists,
                                 const RODFDetectorFlows& flows,
                                 SUMOTime startTime, SUMOTime endTime, SUMOTime stepOffset,
                                 bool includeUnusedRoutes, SUMOReal scale,
@@ -185,7 +186,7 @@ public:
     void buildDestinationDistribution(const RODFDetectorCon& detectors,
                                       SUMOTime startTime, SUMOTime endTime, SUMOTime stepOffset,
                                       const RODFNet& net,
-                                      std::map<int, RandomDistributor<int>* >& into) const;
+                                      std::map<SUMOTime, RandomDistributor<int>* >& into) const;
 
     void computeSplitProbabilities(const RODFNet* net, const RODFDetectorCon& detectors,
                                    const RODFDetectorFlows& flows,
@@ -268,12 +269,13 @@ public:
 
     void mesoJoin(const std::string& nid, const std::vector<std::string>& oldids);
 
+    void setSpeedFactorAndDev(SUMOVTypeParameter& type, SUMOReal maxFactor, SUMOReal avgFactor, SUMOReal dev, bool forceDev);
 
 protected:
     /** @brief Clears the given distributions map, deleting the timed distributions
      * @param[in] dists The distribution map to clear
      */
-    void clearDists(std::map<int, RandomDistributor<int>* >& dists) const;
+    void clearDists(std::map<SUMOTime, RandomDistributor<int>* >& dists) const;
 
 
 protected:

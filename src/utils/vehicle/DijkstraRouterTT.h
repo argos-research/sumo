@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 25 July 2005
-/// @version $Id: DijkstraRouterTT.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: DijkstraRouterTT.h 21808 2016-10-26 13:13:07Z behrisch $
 ///
 // Dijkstra shortest path algorithm using travel time
 /****************************************************************************/
@@ -161,11 +161,11 @@ public:
         assert(from != 0 && (vehicle == 0 || to != 0));
         // check whether from and to can be used
         if (PF::operator()(from, vehicle)) {
-            myErrorMsgHandler->inform("Vehicle  '" + vehicle->getID() + "' is not allowed on from edge '" + from->getID() + "'.");
+            myErrorMsgHandler->inform("Vehicle '" + vehicle->getID() + "' is not allowed on source edge '" + from->getID() + "'.");
             return false;
         }
         if (PF::operator()(to, vehicle)) {
-            myErrorMsgHandler->inform("Vehicle  '" + vehicle->getID() + "' is not allowed on to edge '" + to->getID() + "'.");
+            myErrorMsgHandler->inform("Vehicle '" + vehicle->getID() + "' is not allowed on destination edge '" + to->getID() + "'.");
             return false;
         }
         this->startQuery();

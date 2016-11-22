@@ -2,7 +2,7 @@
 /// @file    GNEConnectorFrame.h
 /// @author  Jakob Erdmann
 /// @date    May 2011
-/// @version $Id: GNEConnectorFrame.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: GNEConnectorFrame.h 21780 2016-10-25 10:06:16Z namdre $
 ///
 // The Widget for modifying lane-to-lane connections
 /****************************************************************************/
@@ -149,14 +149,6 @@ private:
     /// @brief return the status of toLane
     LaneStatus getLaneStatus(const std::vector<NBEdge::Connection>& connections, GNELane* targetLane);
 
-    /* @brief return the link number (tlLinkNo) of an existing connection
-     * @param[in] connections All connections of the current edge from the given lane
-     * @param[in] targetLane The target lane of the connection
-     */
-    int getTLLLinkNumber(const std::vector<NBEdge::Connection>& connections, GNELane* targetLane);
-
-    /// @brief builds internal lanes for the given node
-    void buildIinternalLanes(NBNode* node);
 };
 
 

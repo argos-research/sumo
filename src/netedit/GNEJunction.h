@@ -2,7 +2,7 @@
 /// @file    GNEJunction.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEJunction.h 21150 2016-07-12 12:28:35Z behrisch $
+/// @version $Id: GNEJunction.h 21788 2016-10-25 11:05:18Z namdre $
 ///
 // A class for visualizing and editing junctions in netedit (adapted from
 // GUIJunctionWrapper)
@@ -107,6 +107,15 @@ public:
     /// @brief Return net build node
     NBNode* getNBNode() const;
 
+    /// @brief Return all GNEEdges vinculated with this Junction
+    std::vector<GNEEdge*> getGNEEdges() const;
+
+    /// @brief Return incoming GNEEdges
+    std::vector<GNEEdge*> getGNEIncomingEdges() const;
+
+    /// @brief Return incoming GNEEdges
+    std::vector<GNEEdge*> getGNEOutgoingEdges() const;
+
     /// @brief marks as first junction in createEdge-mode
     void markAsCreateEdgeSource();
 
@@ -128,6 +137,12 @@ public:
 
     /// @brief registers completed movement with the undoList
     void registerMove(GNEUndoList* undoList);
+
+    /**@brief update shapes of all elements associated to the junction
+     * @note this include the adyacent nodes connected by edges
+     * @note if this function is called during 'Move' mode, connections will not be updated to improve efficiency
+     */
+    void updateShapesAndGeometries();
 
     /// @name inherited from GNEAttributeCarrier
     /// @{
@@ -166,6 +181,9 @@ public:
      * @param[in] valid The new validity of the junction
      * @note: this should always be called with an active command group */
     void setLogicValid(bool valid, GNEUndoList* undoList = 0, const std::string& status = GUESSED);
+
+    /// @brief prevent re-guessing connections at this junction
+    void markAsModified(GNEUndoList* undoList);
 
     /* @brief invalidates loaded or edited TLS
      * @param[in] deletedConnection If a valid connection is given a replacement def with this connection removed

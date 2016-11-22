@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    late summer 2003
-/// @version $Id: MSGlobals.h 20550 2016-04-26 10:57:45Z namdre $
+/// @version $Id: MSGlobals.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Some static variables for faster access
 /****************************************************************************/
@@ -58,6 +58,10 @@ public:
     /// Information whether empty edges shall be written on dump
     static bool gOmitEmptyEdgesOnDump;
 
+    /* Allows switching between time step integration methods
+     * "Semi-Implicit Euler" (default) and the ballistic update rule. */
+    static bool gSemiImplicitEulerUpdate;
+
     /** Information how long the simulation shall wait until it recognizes
         a vehicle as a grid lock participant */
     static SUMOTime gTimeToGridlock;
@@ -68,7 +72,8 @@ public:
     /// Information whether the simulation regards internal lanes
     static bool gUsingInternalLanes;
 
-    /// Information whether the simulation regards internal lanes
+    /** Vehicles on internal lanes (even partially) with a waiting time that exceeds this threshold
+     * no longer block cross-traffic on the junction */
     static SUMOTime gIgnoreJunctionBlocker;
 
     /** information whether the network shall check for collisions */

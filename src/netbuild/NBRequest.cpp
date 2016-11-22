@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBRequest.cpp 21210 2016-07-21 10:02:38Z behrisch $
+/// @version $Id: NBRequest.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // This class computes the logic of a junction
 /****************************************************************************/
@@ -628,7 +628,10 @@ NBRequest::mergeConflict(const NBEdge* from, const NBEdge::Connection& con,
             && con.toLane == prohibitorCon.toLane
             && con.fromLane != prohibitorCon.fromLane
             && (foes ||
-                ((con.fromLane > prohibitorCon.fromLane && !con.mayDefinitelyPass)
+                // merging bicycles should yield
+                ((((con.fromLane > prohibitorCon.fromLane && prohibitorFrom->getPermissions(prohibitorCon.fromLane) != SVC_BICYCLE)
+                   || (con.fromLane < prohibitorCon.fromLane && from->getPermissions(con.fromLane) == SVC_BICYCLE)
+                  ) && !con.mayDefinitelyPass)
                  || prohibitorCon.mayDefinitelyPass)));
 }
 

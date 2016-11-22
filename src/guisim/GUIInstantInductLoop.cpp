@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Aug 2003
-/// @version $Id: GUIInstantInductLoop.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIInstantInductLoop.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // The gui-version of the MSInstantInductLoop
 /****************************************************************************/
@@ -53,8 +53,9 @@
  * GUIInstantInductLoop-methods
  * ----------------------------------------------------------------------- */
 GUIInstantInductLoop::GUIInstantInductLoop(const std::string& id, OutputDevice& od,
-        MSLane* const lane, SUMOReal positionInMeters)
-    : MSInstantInductLoop(id, od, lane, positionInMeters) {}
+        MSLane* const lane, SUMOReal positionInMeters,
+        const std::string& vTypes)
+    : MSInstantInductLoop(id, od, lane, positionInMeters, vTypes) {}
 
 
 GUIInstantInductLoop::~GUIInstantInductLoop() {}

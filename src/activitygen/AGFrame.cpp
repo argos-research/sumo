@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mo, 13 Sept 2010
-/// @version $Id: AGFrame.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: AGFrame.cpp 21474 2016-09-14 09:05:31Z behrisch $
 ///
 // Configuration of the options of ActivityGen
 /****************************************************************************/
@@ -84,13 +84,13 @@ void AGFrame::fillOptions() {
 
     // TODO: What time options are consistent with other parts of SUMO and
     // useful for the user?
-    oc.doRegister("begin", 'b', new Option_Integer());
+    oc.doRegister("begin", 'b', new Option_Integer(0));
     oc.addDescription("begin", "Time", "Sets the time of beginning of the simulation during the first day (in seconds)");
 
-    oc.doRegister("end", 'e', new Option_Integer());
+    oc.doRegister("end", 'e', new Option_Integer(0));
     oc.addDescription("end", "Time", "Sets the time of ending of the simulation during the last day (in seconds)");
 
-    oc.doRegister("duration-d", new Option_Integer());
+    oc.doRegister("duration-d", new Option_Integer(1));
     oc.addDescription("duration-d", "Time", "Sets the duration of the simulation in days");
 }
 

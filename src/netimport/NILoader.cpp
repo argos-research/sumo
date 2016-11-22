@@ -4,8 +4,9 @@
 /// @author  Jakob Erdmann
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
+/// @author  Robert Hilbrich
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NILoader.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: NILoader.cpp 21276 2016-08-02 11:39:45Z rhilbrich $
 ///
 // Perfoms network import
 /****************************************************************************/

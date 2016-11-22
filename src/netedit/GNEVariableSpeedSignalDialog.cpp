@@ -2,7 +2,7 @@
 /// @file    GNEVariableSpeedSignalDialog.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    April 2016
-/// @version $Id: GNEVariableSpeedSignalDialog.cpp 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNEVariableSpeedSignalDialog.cpp 21824 2016-10-27 13:03:52Z behrisch $
 ///
 /// A class for edit phases of Variable Speed Signals
 /****************************************************************************/
@@ -180,9 +180,9 @@ GNEVariableSpeedSignalDialog::updateTable() {
     myDataList->setTableSize(int(myVSSValues.size()), 3);
     // Configure list
     myDataList->setVisibleColumns(3);
-    myDataList->setColumnWidth(0, getWidth() * 0.35);
-    myDataList->setColumnWidth(1, getWidth() * 0.35);
-    myDataList->setColumnWidth(2, (getWidth() * 0.3) - 10);
+    myDataList->setColumnWidth(0, getWidth() / 3);
+    myDataList->setColumnWidth(1, getWidth() / 3);
+    myDataList->setColumnWidth(2, getWidth() / 3 - 10);
     myDataList->setColumnText(0, "timeStep");
     myDataList->setColumnText(1, "speed (km/h)");
     myDataList->setColumnText(2, "remove");

@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Tue, 17 Feb 2009
-/// @version $Id: SUMOVehicle.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: SUMOVehicle.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Abstract base class for vehicle representations
 /****************************************************************************/
@@ -65,6 +65,17 @@ typedef std::vector<const MSEdge*> ConstMSEdgeVector;
  */
 class SUMOVehicle {
 public:
+
+    // XXX: This definition was introduced to make the MSVehicle's previousSpeed
+    //      available in the context of MSMoveReminder::notifyMove(). Another solution
+    //      would be to modify notifyMove()'s interface to work with MSVehicle instead
+    //      of SUMOVehicle (it is only called with MSVehicles!). Refs. #2579
+    /** @brief Returns the vehicle's previous speed
+     * @return The vehicle's speed
+     */
+    virtual SUMOReal getPreviousSpeed() const = 0;
+
+
     typedef Named::NamedLikeComparatorIdLess<SUMOVehicle> ComparatorIdLess;
 
     /// @brief Destructor

@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Melanie Knocke
 /// @date    Mon, 05 Dec 2005
-/// @version $Id: polyconvert_main.cpp 20801 2016-05-28 05:31:30Z behrisch $
+/// @version $Id: polyconvert_main.cpp 21472 2016-09-14 08:50:06Z behrisch $
 ///
 // Main for POLYCONVERT
 /****************************************************************************/
@@ -135,10 +135,10 @@ fillOptions() {
     oc.addSynonyme("shapefile.id-column", "shape-files.id-name", true);
     oc.addDescription("shapefile.id-column", "Input", "Defines in which column the id can be found");
 
-    oc.doRegister("shapefile.use-running-id", new Option_Bool());
+    oc.doRegister("shapefile.use-running-id", new Option_Bool(false));
     oc.addDescription("shapefile.use-running-id", "Input", "A running number will be used as id");
 
-    oc.doRegister("shapefile.add-param", new Option_Bool());
+    oc.doRegister("shapefile.add-param", new Option_Bool(false));
     oc.addDescription("shapefile.add-param", "Input", "Extract all additonal columns as params");
 
     oc.doRegister("shapefile.fill", new Option_String());

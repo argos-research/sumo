@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILane.cpp 21232 2016-07-25 13:06:55Z namdre $
+/// @version $Id: GUILane.cpp 21539 2016-09-26 10:59:27Z namdre $
 ///
 // Representation of a lane in the micro simulation (gui-version)
 /****************************************************************************/
@@ -559,7 +559,9 @@ GUILane::drawGL(const GUIVisualizationSettings& s) const {
                         GLHelper::drawBoxLines(myShape, myShapeRotations, myShapeLengths, 0.01, 0, offset);
                     }
                 }
-                drawLinkRules(s, *net);
+                if (s.showLinkRules) {
+                    drawLinkRules(s, *net);
+                }
                 if (s.showLinkDecals && !drawAsRailway(s) && !drawAsWaterway(s) && myPermissions != SVC_PEDESTRIAN) {
                     drawArrows();
                 }
@@ -581,10 +583,10 @@ GUILane::drawGL(const GUIVisualizationSettings& s) const {
                 glPopMatrix();
             }
         }
-        if (mustDrawMarkings && drawDetails) { // needs matrix reset
+        if (mustDrawMarkings && drawDetails && s.laneShowBorders) { // needs matrix reset
             drawMarkings(s, exaggeration);
         }
-        if (drawDetails && isInternal && myPermissions == SVC_BICYCLE && exaggeration == 1.0 && s.showLinkDecals) {
+        if (drawDetails && isInternal && myPermissions == SVC_BICYCLE && exaggeration == 1.0 && s.showLinkDecals && s.laneShowBorders) {
             drawBikeMarkings();
         }
     } else {
@@ -743,8 +745,13 @@ GUILane::getPopUpMenu(GUIMainWindow& app,
     buildPositionCopyEntry(ret, false);
     new FXMenuSeparator(ret);
     if (myAmClosed) {
-        new FXMenuCommand(ret, "Reopen lane", 0, &parent, MID_CLOSE_LANE);
-        new FXMenuCommand(ret, "Reopen edge", 0, &parent, MID_CLOSE_EDGE);
+        if (myPermissionChanges.empty()) {
+            new FXMenuCommand(ret, "Reopen lane", 0, &parent, MID_CLOSE_LANE);
+            new FXMenuCommand(ret, "Reopen edge", 0, &parent, MID_CLOSE_EDGE);
+        } else {
+            new FXMenuCommand(ret, "Reopen lane (override rerouter)", 0, &parent, MID_CLOSE_LANE);
+            new FXMenuCommand(ret, "Reopen edge (override rerouter)", 0, &parent, MID_CLOSE_EDGE);
+        }
     } else {
         new FXMenuCommand(ret, "Close lane", 0, &parent, MID_CLOSE_LANE);
         new FXMenuCommand(ret, "Close edge", 0, &parent, MID_CLOSE_EDGE);
@@ -1098,10 +1105,10 @@ void
 GUILane::closeTraffic(bool rebuildAllowed) {
     MSGlobals::gCheckRoutes = false;
     if (myAmClosed) {
-        myPermissions = myOriginalPermissions;
+        myPermissionChanges.clear(); // reset rerouters
+        resetPermissions(CHANGE_PERMISSIONS_GUI);
     } else {
-        myOriginalPermissions = myPermissions;
-        myPermissions = SVC_AUTHORITY;
+        setPermissions(SVC_AUTHORITY, CHANGE_PERMISSIONS_GUI);
     }
     myAmClosed = !myAmClosed;
     if (rebuildAllowed) {

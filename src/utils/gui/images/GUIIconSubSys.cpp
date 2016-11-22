@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Andreas Gaubatz
 /// @date    Mon, 08.03.2004
-/// @version $Id: GUIIconSubSys.cpp 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GUIIconSubSys.cpp 21640 2016-10-09 20:28:52Z palcraft $
 ///
 // Helper for icons loading and usage
 /****************************************************************************/
@@ -121,6 +121,11 @@
 #include "lock.xpm"
 #include "add.xpm"
 #include "remove.xpm"
+#include "neteditarrow.xpm"
+
+#include "lanebike.xpm"
+#include "lanebus.xpm"
+#include "lanepedestrian.xpm"
 
 #include "cut.xpm"
 #include "ext.xpm"
@@ -239,6 +244,12 @@ GUIIconSubSys::GUIIconSubSys(FXApp* a) {
     myIcons[ICON_LOCK]    = new FXXPMIcon(a, lock_xpm);
     myIcons[ICON_ADD]     = new FXXPMIcon(a, add_xpm);
     myIcons[ICON_REMOVE]  = new FXXPMIcon(a, remove_xpm);
+    myIcons[ICON_NETEDITARROW]  = new FXXPMIcon(a, netEditArrow_xmp);
+
+    myIcons[ICON_LANEPEDESTRIAN]  = new FXXPMIcon(a, lanepedestrian);
+    myIcons[ICON_LANEBUS]  = new FXXPMIcon(a, lanebus);
+    myIcons[ICON_LANEBIKE]  = new FXXPMIcon(a, lanebike);
+
 
     myIcons[ICON_EXT]    = new FXXPMIcon(a, ext_xpm);
     myIcons[ICON_CUT_SWELL]    = new FXXPMIcon(a, cut_xpm);

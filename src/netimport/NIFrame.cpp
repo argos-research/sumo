@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NIFrame.cpp 21201 2016-07-19 11:57:22Z behrisch $
+/// @version $Id: NIFrame.cpp 21744 2016-10-18 13:02:24Z namdre $
 ///
 // Sets and checks options for netimport
 /****************************************************************************/
@@ -318,6 +318,10 @@ NIFrame::checkOptions() {
                 oc.setDefault("type-files", path + "opendriveNetconvert.typ.xml");
             }
         }
+    }
+    if (oc.isSet("opendrive-files") && oc.isDefault("tls.left-green.time")) {
+        // legacy behavior. see #2114
+        oc.set("tls.left-green.time", "0");
     }
     return ok;
 }

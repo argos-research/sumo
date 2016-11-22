@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Wed, 21. Dec 2005
-/// @version $Id: GUIDialog_ViewSettings.h 21228 2016-07-25 09:21:08Z namdre $
+/// @version $Id: GUIDialog_ViewSettings.h 21539 2016-09-26 10:59:27Z namdre $
 ///
 // The dialog to change the view (gui) settings.
 /****************************************************************************/
@@ -274,7 +274,7 @@ private:
     std::vector<FXButton*> myLaneScaleButtons;
     FXCheckButton* myLaneScaleInterpolation;
 
-    FXCheckButton* myShowLaneBorders, *myShowLaneDecals, *myShowRails,
+    FXCheckButton* myShowLaneBorders, *myShowLaneDecals, *myShowLinkRules, *myShowRails,
                    *myHideMacroConnectors, *myShowLaneDirection, *myShowSublanes;
     FXRealSpinDial* myLaneWidthUpscaleDialer;
     FXRealSpinDial* myLaneMinWidthDialer;

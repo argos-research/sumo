@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Christian Roessel
 /// @date    Sept 2002
-/// @version $Id: ROLoader.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: ROLoader.cpp 21790 2016-10-25 12:37:24Z behrisch $
 ///
 // Loader for networks and route imports
 /****************************************************************************/
@@ -308,7 +308,7 @@ ROLoader::loadWeights(RONet& net, const std::string& optionName,
 
 
 void
-ROLoader::writeStats(SUMOTime time, SUMOTime start, int absNo, bool endGiven) {
+ROLoader::writeStats(const SUMOTime time, const SUMOTime start, const SUMOTime absNo, bool endGiven) {
     if (myLogSteps) {
         if (endGiven) {
             const SUMOReal perc = (SUMOReal)(time - start) / (SUMOReal) absNo;

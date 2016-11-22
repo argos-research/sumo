@@ -2,7 +2,7 @@
 /// @file    GNEChange_Selection.h
 /// @author  Jakob Erdmann
 /// @date    Mar 2015
-/// @version $Id: GNEChange_Selection.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEChange_Selection.h 21430 2016-09-05 14:42:57Z namdre $
 ///
 // A change to the network selection
 /****************************************************************************/
@@ -55,7 +55,7 @@ public:
      * @param[in] deselected The ids to deselect
      * @param[in] forward Whether to select or deselect the selected ids
      */
-    GNEChange_Selection(const std::set<GUIGlID>& selected, const std::set<GUIGlID>& deselected, bool forward);
+    GNEChange_Selection(GNENet* net, const std::set<GUIGlID>& selected, const std::set<GUIGlID>& deselected, bool forward);
 
     /// @brief Destructor
     ~GNEChange_Selection();

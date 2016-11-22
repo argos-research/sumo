@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Mon, 20.07.2009
-/// @version $Id: GUIPropertyScheme.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: GUIPropertyScheme.h 21316 2016-08-22 13:08:50Z behrisch $
 ///
 //
 /****************************************************************************/
@@ -98,7 +98,7 @@ public:
     }
 
     void removeColor(const int pos) {
-        assert(pos < myColors.size());
+        assert(pos < (int)myColors.size());
         myColors.erase(myColors.begin() + pos);
         myThresholds.erase(myThresholds.begin() + pos);
         myNames.erase(myNames.begin() + pos);

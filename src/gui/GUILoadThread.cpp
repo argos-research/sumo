@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILoadThread.cpp 21010 2016-06-20 13:32:41Z behrisch $
+/// @version $Id: GUILoadThread.cpp 21790 2016-10-25 12:37:24Z behrisch $
 ///
 // Class describing the thread that performs the loading of a simulation
 /****************************************************************************/
@@ -177,8 +177,8 @@ GUILoadThread::run() {
     }
 
     GUINet* net = 0;
-    int simStartTime = 0;
-    int simEndTime = 0;
+    SUMOTime simStartTime = 0;
+    SUMOTime simEndTime = 0;
     std::vector<std::string> guiSettingsFiles;
     bool osgView = false;
     GUIEdgeControlBuilder* eb = 0;

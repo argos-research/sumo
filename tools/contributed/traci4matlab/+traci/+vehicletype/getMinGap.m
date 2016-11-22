@@ -3,10 +3,10 @@ function minGap = getMinGap(typeID)
 %   minGap = getMinGap(TYPEID) Returns the offset (gap to front vehicle if 
 %   halting) of vehicles of this type.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: getMinGap.m 22 2015-04-13 14:20:57Z afacostag $
+%   $Id: getMinGap.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 minGap = traci.vehicletype.getUniversal(constants.VAR_MINGAP, typeID);

@@ -2,7 +2,7 @@
 /// @file    GNENetElement.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNENetElement.h 21166 2016-07-14 12:59:19Z palcraft $
+/// @version $Id: GNENetElement.h 21640 2016-10-09 20:28:52Z palcraft $
 ///
 // A abstract class for net elements
 /****************************************************************************/
@@ -69,9 +69,6 @@ public:
     /// @brief update pre-computed geometry information
     /// @note: must be called when geometry changes (i.e. lane moved) and implemented in ALL childrens
     virtual void updateGeometry() = 0;
-
-    /// Returns the NetElement's geometry
-    //virtual Boundary getBoundary() const;
 
     /// @brief get Net in which this element is placed
     GNENet* getNet() const;

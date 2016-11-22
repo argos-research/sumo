@@ -4,7 +4,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSVehicleContainer.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSVehicleContainer.cpp 21320 2016-08-23 11:11:18Z behrisch $
 ///
 // vehicles sorted by their departures
 /****************************************************************************/
@@ -145,11 +145,11 @@ MSVehicleContainer::addReplacing(const VehicleDepartureVector& x) {
     // Percolate up
     int hole = ++currentSize;
     for (; hole > 1 && (x.first < array[ hole / 2 ].first); hole /= 2) {
-        assert(array.size() > (int) hole);
-        array[ hole ] = array[ hole / 2 ];
+        assert((int)array.size() > hole);
+        array[hole] = array[ hole / 2 ];
     }
-    assert(array.size() > (int) hole);
-    array[ hole ] = x;
+    assert((int)array.size() > hole);
+    array[hole] = x;
 }
 
 
@@ -208,23 +208,23 @@ MSVehicleContainer::isFull() const {
 void
 MSVehicleContainer::percolateDown(int hole) {
     int child;
-    assert(array.size() > (int)hole);
+    assert((int)array.size() > hole);
     VehicleDepartureVector tmp = array[ hole ];
 
     for (; hole * 2 <= currentSize; hole = child) {
         child = hole * 2;
-        if (child != currentSize && (array[ child + 1 ].first < array[ child ].first)) {
+        if (child != currentSize && (array[child + 1].first < array[child].first)) {
             child++;
         }
         if ((array[ child ].first < tmp.first)) {
-            assert(array.size() > (int) hole);
-            array[ hole ] = array[ child ];
+            assert((int)array.size() > hole);
+            array[hole] = array[child];
         } else {
             break;
         }
     }
-    assert(array.size() > (int) hole);
-    array[ hole ] = tmp;
+    assert((int)array.size() > hole);
+    array[hole] = tmp;
 }
 
 

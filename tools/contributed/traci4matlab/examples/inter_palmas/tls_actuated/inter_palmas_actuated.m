@@ -4,12 +4,12 @@
 %   see http://sumo.dlr.de/wiki/Tutorials/TraCIPedCrossing. If you
 %   want to test a TraCI command, just uncomment it.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: inter_palmas_actuated.m 29 2015-10-13 13:21:27Z afacostag $
+%   $Id: inter_palmas_actuated.m 31 2016-09-28 15:16:56Z afacostag $
 
-clear all
+clear
 close all
 clc
 
@@ -69,7 +69,6 @@ for i = 1: duration
     if traci.trafficlights.getPhase(TLSID) ~= VEHICLE_GREEN_PHASE
         greenPhase(i) = 0;
     end
-    
     
     % In this block we will test the remaining pedestrian commands
 %     pedsInSim = traci.person.getIDList();

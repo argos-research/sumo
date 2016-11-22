@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2010-03-06
-@version $Id: randomTrips.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: randomTrips.py 21557 2016-09-28 10:43:52Z luecken $
 
 Generates random trips for the given network.
 
@@ -92,9 +92,9 @@ def get_options(args=None):
     optParser.add_option("--binomial", type="int", metavar="N",
                          help="If this is set, the number of departures per seconds will be drawn from a binomial distribution with n=N and p=PERIOD/N where PERIOD is the argument given to option --period. Tnumber of attemps for finding a trip which meets the distance constraints")
     optParser.add_option(
-        "-c", "--vclass", help="only from and to edges which permit <vClass>")
+        "-c", "--vclass", "--edge-permission", help="only from and to edges which permit the given vehicle class")
     optParser.add_option(
-        "--vehicle-class", help="The vehicle class assigned to the generated trips")
+        "--vehicle-class", help="The vehicle class assigned to the generated trips (adds a standard vType definition to the output file).")
     optParser.add_option("--validate", default=False, action="store_true",
                          help="Whether to produce trip output that is already checked for connectivity")
     optParser.add_option("-v", "--verbose", action="store_true",
@@ -310,7 +310,7 @@ def main(options):
 
     with open(options.tripfile, 'w') as fouttrips:
         sumolib.writeXMLHeader(
-            fouttrips, "$Id: randomTrips.py 20482 2016-04-18 20:49:42Z behrisch $")
+            fouttrips, "$Id: randomTrips.py 21557 2016-09-28 10:43:52Z luecken $")
         fouttrips.write("<trips>\n")
         if options.vehicle_class:
             fouttrips.write('    <vType id="%s" vClass="%s" />\n' %

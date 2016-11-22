@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: PositionVector.h 21153 2016-07-12 14:21:01Z namdre $
+/// @version $Id: PositionVector.h 21575 2016-09-29 09:27:12Z namdre $
 ///
 // A list of positions
 /****************************************************************************/
@@ -348,6 +348,16 @@ public:
 
     /// @brief return whether two positions differ in z-coordinate
     bool hasElevation() const;
+
+    /// @brief return the same shape with intermediate colinear points removed
+    PositionVector simplified() const;
+
+    /** @brief return orthogonal through p (extending this vector if necessary)
+     * @param[in] p The point through which to draw the orthogonal
+     * @param[in] extend how long to extend this vector for finding an orthogonal
+     * @param[out] distToClosest Distance between the intersection point and the closest geometry point
+     */
+    PositionVector getOrthogonal(const Position& p, SUMOReal extend, SUMOReal& distToClosest) const;
 
 private:
     /// @brief return whether the line segments defined by Line p11,p12 and Line p21,p22 intersect

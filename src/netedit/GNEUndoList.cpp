@@ -2,7 +2,7 @@
 /// @file    GNEUndoList.cpp
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEUndoList.cpp 21150 2016-07-12 12:28:35Z behrisch $
+/// @version $Id: GNEUndoList.cpp 21777 2016-10-25 09:19:08Z namdre $
 ///
 // FXUndoList is pretty dandy but some features are missing:
 //   - we cannot find out wether we have currently begun an undo-group and
@@ -115,6 +115,7 @@ GNEUndoList::p_abort() {
 
 void
 GNEUndoList::undo() {
+    //std::cout << undoName().text() << "\n";
     FXUndoList::undo();
     myParent->updateControls();
 }
@@ -122,6 +123,7 @@ GNEUndoList::undo() {
 
 void
 GNEUndoList::redo() {
+    //std::cout << redoName().text() << "\n";
     FXUndoList::redo();
     myParent->updateControls();
 }

@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2008-10-27
-/// @version $Id: MSMoveReminder.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSMoveReminder.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Something on a lane to be noticed about vehicle movement
 /****************************************************************************/
@@ -75,7 +75,7 @@ MSMoveReminder::updateDetector(SUMOVehicle& veh, SUMOReal entryPos, SUMOReal lea
         myLastVehicleUpdateValues[&veh] = std::pair<SUMOTime, SUMOReal>(currentTime, entryPos + speed * timeOnLane);
         assert(timeOnLane >= 0);
         assert(speed >= 0);
-        notifyMoveInternal(veh, timeOnLane, speed);
+        notifyMoveInternal(veh, timeOnLane, timeOnLane, speed, speed, speed * timeOnLane, speed * timeOnLane);
     } else {
         // it would be natrual to
         // assert(entryTime == leaveTime);

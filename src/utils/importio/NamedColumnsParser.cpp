@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Fri, 19 Jul 2002
-/// @version $Id: NamedColumnsParser.cpp 21201 2016-07-19 11:57:22Z behrisch $
+/// @version $Id: NamedColumnsParser.cpp 21316 2016-08-22 13:08:50Z behrisch $
 ///
 // A parser to retrieve information from a table with known column
 /****************************************************************************/
@@ -114,7 +114,7 @@ NamedColumnsParser::know(const std::string& name) const {
 
 bool
 NamedColumnsParser::hasFullDefinition() const {
-    return myDefinitionsMap.size() == myLineParser.size();
+    return (int)myDefinitionsMap.size() == myLineParser.size();
 }
 
 

@@ -8,7 +8,7 @@
 /// @author  Mario Krumnow
 /// @author  Jakob Erdmann
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_Vehicle.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: TraCIServerAPI_Vehicle.cpp 21657 2016-10-10 14:50:05Z namdre $
 ///
 // APIs for getting/setting vehicle values via TraCI
 /****************************************************************************/
@@ -103,6 +103,7 @@ TraCIServerAPI_Vehicle::processGet(TraCIServer& server, tcpip::Storage& inputSto
             && variable != VAR_SPEEDSETMODE
             && variable != VAR_NEXT_TLS
             && variable != VAR_SLOPE
+            && variable != VAR_HEIGHT
        ) {
         return server.writeErrorStatusCmd(CMD_GET_VEHICLE_VARIABLE, "Get Vehicle Variable: unsupported variable " + toHex(variable, 2) + " specified", outputStorage);
     }
@@ -510,6 +511,7 @@ TraCIServerAPI_Vehicle::processSet(TraCIServer& server, tcpip::Storage& inputSto
             && variable != VAR_TAU && variable != VAR_LANECHANGE_MODE
             && variable != VAR_SPEED && variable != VAR_SPEEDSETMODE && variable != VAR_COLOR
             && variable != ADD && variable != ADD_FULL && variable != REMOVE
+            && variable != VAR_HEIGHT
             && variable != VAR_MOVE_TO_VTD && variable != VAR_PARAMETER/* && variable != VAR_SPEED_TIME_LINE && variable != VAR_LANE_TIME_LINE*/
        ) {
         return server.writeErrorStatusCmd(CMD_SET_VEHICLE_VARIABLE, "Change Vehicle State: unsupported variable " + toHex(variable, 2) + " specified", outputStorage);
@@ -1096,6 +1098,7 @@ TraCIServerAPI_Vehicle::processSet(TraCIServer& server, tcpip::Storage& inputSto
                     return server.writeErrorStatusCmd(CMD_SET_VEHICLE_VARIABLE, "Invalid departure time.", outputStorage);
                 }
                 vehicleParams.departProcedure = (DepartDefinition)proc;
+                vehicleParams.depart = MSNet::getInstance()->getCurrentTimeStep();
             } else if (depart < MSNet::getInstance()->getCurrentTimeStep()) {
                 vehicleParams.depart = MSNet::getInstance()->getCurrentTimeStep();
                 WRITE_WARNING("Departure time for vehicle '" + id + "' is in the past; using current time instead.");

@@ -2,7 +2,7 @@
 /// @file    MSLeaderInfo.cpp
 /// @author  Jakob Erdmann
 /// @date    Oct 2015
-/// @version $Id: MSLeaderInfo.cpp 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: MSLeaderInfo.cpp 21690 2016-10-14 11:33:55Z namdre $
 ///
 // Information about vehicles ahead (may be multiple vehicles if
 // lateral-resolution is active)
@@ -201,7 +201,7 @@ MSLeaderDistanceInfo::addLeader(const MSVehicle* veh, SUMOReal gap, SUMOReal lat
         // speedup for the simple case
         sublane = 0;
     }
-    if (sublane >= 0) {
+    if (sublane >= 0 && sublane < (int)myVehicles.size()) {
         // sublane is already given
         if (gap < myDistances[sublane]) {
             if (myVehicles[sublane] == 0) {
@@ -307,7 +307,7 @@ MSCriticalFollowerDistanceInfo::addFollower(const MSVehicle* veh, const MSVehicl
         // speedup for the simple case
         sublane = 0;
     }
-    if (sublane >= 0) {
+    if (sublane >= 0 && sublane < (int)myVehicles.size()) {
         // sublane is already given
         if (missingGap > myMissingGaps[sublane]) {
             if (myVehicles[sublane] == 0) {

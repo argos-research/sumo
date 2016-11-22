@@ -2,7 +2,7 @@
 /// @file    GNEViewNet.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEViewNet.h 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNEViewNet.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // A view on the network being edited (adapted from GUIViewTraffic)
 /****************************************************************************/
@@ -160,11 +160,47 @@ public:
     /// @brief duplicate selected lane
     long onCmdDuplicateLane(FXObject*, FXSelector, void*);
 
+    /// @brief restrict lane to pedestrians
+    long onCmdRestrictLaneSidewalk(FXObject*, FXSelector typeOfTransformation, void*);
+
+    /// @brief restrict lane to bikes
+    long onCmdRestrictLaneBikelane(FXObject*, FXSelector typeOfTransformation, void*);
+
+    /// @brief restrict lane to buslanes
+    long onCmdRestrictLaneBuslane(FXObject*, FXSelector typeOfTransformation, void*);
+
+    /// @brief revert transformation
+    long onCmdRevertRestriction(FXObject*, FXSelector, void*);
+
+    /// @brief Add restricted lane for pedestrians
+    long onCmdAddRestrictedLaneSidewalk(FXObject*, FXSelector typeOfTransformation, void*);
+
+    /// @brief Add restricted lane for bikes
+    long onCmdAddRestrictedLaneBikelane(FXObject*, FXSelector typeOfTransformation, void*);
+
+    /// @brief Add restricted lane for buses
+    long onCmdAddRestrictedLaneBuslane(FXObject*, FXSelector typeOfTransformation, void*);
+
+    /// @brief remove restricted lane for pedestrians
+    long onCmdRemoveRestrictedLaneSidewalk(FXObject*, FXSelector typeOfTransformation, void*);
+
+    /// @brief remove restricted lane for bikes
+    long onCmdRemoveRestrictedLaneBikelane(FXObject*, FXSelector typeOfTransformation, void*);
+
+    /// @brief remove restricted lane for bus
+    long onCmdRemoveRestrictedLaneBuslane(FXObject*, FXSelector typeOfTransformation, void*);
+
     /// @brief input custom node shape
     long onCmdNodeShape(FXObject*, FXSelector, void*);
 
     /// @brief replace node by geometry
     long onCmdNodeReplace(FXObject*, FXSelector, void*);
+
+    /// @brief toogle show connections
+    long onCmdToogleShowConnection(FXObject*, FXSelector, void*);
+
+    /// @brief toogle show bubbles
+    long onCmdToogleShowBubbles(FXObject*, FXSelector, void*);
 
     /// @brief sets edit mode (from hotkey)
     /// @param[in] selid An id MID_GNE_MODE_<foo> as defined in GUIAppEnum
@@ -203,6 +239,9 @@ public:
     /// @brief whether inspection, selection and inversion should apply to edges or to lanes
     bool selectEdges();
 
+    /// @brief show connections over junctions
+    bool showConnections();
+
     /// @brief whether to autoselect nodes or to lanes
     bool autoSelectNodes();
 
@@ -214,6 +253,9 @@ public:
 
     /// @brief change all phases
     bool changeAllPhases() const;
+
+    /// @brief return true if junction must be showed as bubbles
+    bool showJunctionAsBubbles() const;
 
 protected:
     /// @brief FOX needs this
@@ -240,6 +282,12 @@ private:
 
     /// @brief menu check to select only edges
     FXMenuCheck* mySelectEdges;
+
+    /// @brief menu check to show connections
+    FXMenuCheck* myShowConnections;
+
+    /// @brief whether show connections has been activated once
+    bool myShowConnectionActivated;
 
     /// @brief menu check to extend to edge nodes
     FXMenuCheck* myExtendToEdgeNodes;
@@ -271,8 +319,11 @@ private:
     /// @brief the stoppingPlace element which shape is being moved
     GNEAdditional* myAdditionalToMove;
 
-    /// @brief variable to save the firstposition of the additional before move
-    Position myAdditionalFirstPosition;
+    /// @brief variable for calculating moving offset of additionals
+    Position myAdditionalMovingReference;
+
+    /// @brief variable for saving additional position before moving
+    Position myOldAdditionalPosition;
 
     /// @brief position from which to move edge geometry
     Position myMoveSrc;
@@ -282,6 +333,9 @@ private:
 
     /// @brief whether we should warn about merging junctions
     FXMenuCheck* myWarnAboutMerge;
+
+    /// @brief show connection as buuble in "Move" mode.
+    FXMenuCheck* myShowJunctionAsBubble;
     // @}
 
     /// @name state-variables of inspect-mode and select-mode
@@ -351,6 +405,15 @@ private:
 
     /// @brief remove the currently edited polygon
     void removeCurrentPoly();
+
+    /// @brief restrict lane
+    bool restrictLane(SUMOVehicleClass vclass);
+
+    /// @brief add restricted lane
+    bool addRestrictedLane(SUMOVehicleClass vclass);
+
+    /// @brief remove restricted lane
+    bool removeRestrictedLane(SUMOVehicleClass vclass);
 
     /// @brief Invalidated copy constructor.
     GNEViewNet(const GNEViewNet&);

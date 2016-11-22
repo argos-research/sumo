@@ -4,7 +4,7 @@
 /// @author  Eric Nicolay
 /// @author  Michael Behrisch
 /// @date    Thu, 16.03.2006
-/// @version $Id: RODFNet.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: RODFNet.h 21252 2016-07-28 06:37:09Z namdre $
 ///
 // A DFROUTER-network
 /****************************************************************************/
@@ -91,6 +91,21 @@ public:
     bool hasDetector(ROEdge* edge) const;
     const std::vector<std::string>& getDetectorList(ROEdge* edge) const;
 
+    SUMOReal getMaxSpeedFactorPKW() const {
+        return myMaxSpeedFactorPKW;
+    }
+
+    SUMOReal getMaxSpeedFactorLKW() const {
+        return myMaxSpeedFactorLKW;
+    }
+
+    SUMOReal getAvgSpeedFactorPKW() const {
+        return myAvgSpeedFactorPKW;
+    }
+
+    SUMOReal getAvgSpeedFactorLKW() const {
+        return myAvgSpeedFactorLKW;
+    }
 
 protected:
     void revalidateFlows(const RODFDetector* detector,
@@ -175,6 +190,12 @@ private:
 
 
     bool myKeepTurnarounds;
+
+    /// @brief maximum speed factor in measurements
+    SUMOReal myMaxSpeedFactorPKW;
+    SUMOReal myMaxSpeedFactorLKW;
+    SUMOReal myAvgSpeedFactorPKW;
+    SUMOReal myAvgSpeedFactorLKW;
 
 };
 

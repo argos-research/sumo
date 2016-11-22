@@ -2,7 +2,7 @@
 /// @file    GNECalibratorDialog.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNECalibratorDialog.cpp 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNECalibratorDialog.cpp 21790 2016-10-25 12:37:24Z behrisch $
 ///
 /// Dialog for edit rerouters
 /****************************************************************************/
@@ -288,26 +288,26 @@ GNECalibratorDialog::updateTable() {
     myDataList->setTableSize(int(myFlowValues.size()), 20);
     // Configure list
     myDataList->setVisibleColumns(20);
-    myDataList->setColumnWidth(0, getWidth() * 0.05);
-    myDataList->setColumnWidth(1, getWidth() * 0.05);
-    myDataList->setColumnWidth(2, getWidth() * 0.05);
-    myDataList->setColumnWidth(3, getWidth() * 0.05);
-    myDataList->setColumnWidth(4, getWidth() * 0.05);
-    myDataList->setColumnWidth(5, getWidth() * 0.05);
-    myDataList->setColumnWidth(6, getWidth() * 0.05);
-    myDataList->setColumnWidth(7, getWidth() * 0.05);
-    myDataList->setColumnWidth(8, getWidth() * 0.05);
-    myDataList->setColumnWidth(9, getWidth() * 0.05);
-    myDataList->setColumnWidth(10, getWidth() * 0.05);
-    myDataList->setColumnWidth(11, getWidth() * 0.05);
-    myDataList->setColumnWidth(12, getWidth() * 0.05);
-    myDataList->setColumnWidth(13, getWidth() * 0.05);
-    myDataList->setColumnWidth(14, getWidth() * 0.05);
-    myDataList->setColumnWidth(15, getWidth() * 0.05);
-    myDataList->setColumnWidth(16, getWidth() * 0.05);
-    myDataList->setColumnWidth(17, getWidth() * 0.05);
-    myDataList->setColumnWidth(18, getWidth() * 0.05);
-    myDataList->setColumnWidth(19, (getWidth() * 0.05) - 10);
+    myDataList->setColumnWidth(0, getWidth() / 20);
+    myDataList->setColumnWidth(1, getWidth() / 20);
+    myDataList->setColumnWidth(2, getWidth() / 20);
+    myDataList->setColumnWidth(3, getWidth() / 20);
+    myDataList->setColumnWidth(4, getWidth() / 20);
+    myDataList->setColumnWidth(5, getWidth() / 20);
+    myDataList->setColumnWidth(6, getWidth() / 20);
+    myDataList->setColumnWidth(7, getWidth() / 20);
+    myDataList->setColumnWidth(8, getWidth() / 20);
+    myDataList->setColumnWidth(9, getWidth() / 20);
+    myDataList->setColumnWidth(10, getWidth() / 20);
+    myDataList->setColumnWidth(11, getWidth() / 20);
+    myDataList->setColumnWidth(12, getWidth() / 20);
+    myDataList->setColumnWidth(13, getWidth() / 20);
+    myDataList->setColumnWidth(14, getWidth() / 20);
+    myDataList->setColumnWidth(15, getWidth() / 20);
+    myDataList->setColumnWidth(16, getWidth() / 20);
+    myDataList->setColumnWidth(17, getWidth() / 20);
+    myDataList->setColumnWidth(18, getWidth() / 20);
+    myDataList->setColumnWidth(19, getWidth() / 20 - 10);
     myDataList->setColumnText(0, "Id");
     myDataList->setColumnText(1, "Begin");
     myDataList->setColumnText(2, "End");

@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Okt 2003
-/// @version $Id: GUI_E2_ZS_Collector.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUI_E2_ZS_Collector.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // The gui-version of the MS_E2_ZS_Collector
 /****************************************************************************/
@@ -57,21 +57,39 @@ class GUI_E2_ZS_CollectorOverLanes;
 class GUI_E2_ZS_Collector : public MSE2Collector {
 public:
     /** @brief Constructor
-     *
-     * @param[in] id The detector's unique id.
-     * @param[in] usage Information how the detector is used
-     * @param[in] lane The lane to place the detector at
-     * @param[in] startPos Begin position of the detector
-     * @param[in] detLength Length of the detector
-     * @param[in] haltingTimeThreshold The time a vehicle's speed must be below haltingSpeedThreshold to be assigned as jammed
-     * @param[in] haltingSpeedThreshold The speed a vehicle's speed must be below to be assigned as jammed
-     * @param[in] jamDistThreshold The distance between two vehicles in order to not count them to one jam
-     * @todo The lane should not be given as a pointer
-     */
+    *
+    * @param[in] id The detector's unique id.
+    * @param[in] usage Information how the detector is used
+    * @param[in] lane The lane to place the detector at
+    * @param[in] startPos Begin position of the detector
+    * @param[in] detLength Length of the detector
+    * @param[in] haltingTimeThreshold The time a vehicle's speed must be below haltingSpeedThreshold to be assigned as jammed
+    * @param[in] haltingSpeedThreshold The speed a vehicle's speed must be below to be assigned as jammed
+    * @param[in] jamDistThreshold The distance between two vehicles in order to not count them to one jam
+    * @todo The lane should not be given as a pointer
+    */
     GUI_E2_ZS_Collector(const std::string& id, DetectorUsage usage,
                         MSLane* const lane, SUMOReal startPos, SUMOReal detLength,
                         SUMOTime haltingTimeThreshold, SUMOReal haltingSpeedThreshold,
-                        SUMOReal jamDistThreshold);
+                        SUMOReal jamDistThreshold, const std::string& vTypes);
+
+
+    /** @brief Constructor
+    *
+    * @param[in] id The detector's unique id.
+    * @param[in] usage Information how the detector is used
+    * @param[in] lane The lane to place the detector at
+    * @param[in] startPos Begin position of the detector
+    * @param[in] detLength Length of the detector
+    * @param[in] haltingTimeThreshold The time a vehicle's speed must be below haltingSpeedThreshold to be assigned as jammed
+    * @param[in] haltingSpeedThreshold The speed a vehicle's speed must be below to be assigned as jammed
+    * @param[in] jamDistThreshold The distance between two vehicles in order to not count them to one jam
+    * @todo The lane should not be given as a pointer
+    */
+    GUI_E2_ZS_Collector(const std::string& id, DetectorUsage usage,
+                        MSLane* const lane, SUMOReal startPos, SUMOReal detLength,
+                        SUMOTime haltingTimeThreshold, SUMOReal haltingSpeedThreshold,
+                        SUMOReal jamDistThreshold, const std::set<std::string>& vTypes);
 
 
     /// @brief Destructor

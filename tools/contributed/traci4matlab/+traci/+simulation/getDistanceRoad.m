@@ -6,10 +6,10 @@ function distanceRoad = getDistanceRoad(edgeID1, pos1, edgeID2, pos2, isDriving)
 %   distance2D = getDistance2D(...,ISDRIVING) Specify wether the air or the
 %   driving distance shall be computed.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: getDistanceRoad.m 20 2015-03-02 16:52:32Z afacostag $
+%   $Id: getDistanceRoad.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 global message

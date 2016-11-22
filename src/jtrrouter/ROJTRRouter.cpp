@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Jan 2004
-/// @version $Id: ROJTRRouter.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: ROJTRRouter.cpp 21813 2016-10-26 20:30:04Z behrisch $
 ///
 // Computes routes using junction turning percentages
 /****************************************************************************/
@@ -93,7 +93,8 @@ ROJTRRouter::compute(const ROEdge* from, const ROEdge* to,
 
 
 SUMOReal
-ROJTRRouter::recomputeCosts(const ConstROEdgeVector& edges, const ROVehicle* const v, SUMOTime time) const {
+ROJTRRouter::recomputeCosts(const ConstROEdgeVector& edges, const ROVehicle* const v, SUMOTime msTime) const {
+    const SUMOReal time = STEPS2TIME(msTime);
     SUMOReal costs = 0;
     for (ConstROEdgeVector::const_iterator i = edges.begin(); i != edges.end(); ++i) {
         costs += (*i)->getTravelTime(v, time);

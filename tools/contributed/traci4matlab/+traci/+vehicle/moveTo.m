@@ -3,10 +3,10 @@ function moveTo(vehID, laneID, pos)
 %   moveTo(VEHID,LANEID,POS) Commands the vehicle to move to the specified
 %   position on the given lane.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: moveTo.m 22 2015-04-13 14:20:57Z afacostag $
+%   $Id: moveTo.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 global message

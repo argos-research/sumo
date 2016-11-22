@@ -2,7 +2,7 @@
 /// @file    GNECalibrator.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNECalibrator.h 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNECalibrator.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 ///
 /****************************************************************************/
@@ -87,7 +87,10 @@ public:
     ~GNECalibrator();
 
     /// @brief change the position of the calibrator geometry
-    void moveAdditional(SUMOReal, SUMOReal, GNEUndoList*);
+    void moveAdditionalGeometry(SUMOReal, SUMOReal);
+
+    /// @brief updated geometry changes in the attributes of additional
+    void commmitAdditionalGeometryMoved(SUMOReal, SUMOReal, GNEUndoList*);
 
     /// @brief update pre-computed geometry information
     /// @note: must be called when geometry c6hanges (i.e. lane moved)
@@ -153,9 +156,6 @@ public:
     /// @}
 
 protected:
-    /// @brief edge in which this calibrator is placed
-    GNEEdge* myEdge;
-
     /// @brief Frequency of calibrator
     SUMOTime myFrequency;
 

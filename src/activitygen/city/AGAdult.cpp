@@ -5,7 +5,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    July 2010
-/// @version $Id: AGAdult.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: AGAdult.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Person in working age: can be linked to a work position.
 /****************************************************************************/
@@ -45,7 +45,7 @@
 AGWorkPosition*
 AGAdult::randomFreeWorkPosition(std::vector<AGWorkPosition>* wps) {
     std::vector<AGWorkPosition*> freePos;
-    for (std::vector<AGWorkPosition>::iterator i = wps->begin(); i!= wps->end(); ++i) {
+    for (std::vector<AGWorkPosition>::iterator i = wps->begin(); i != wps->end(); ++i) {
         if (!i->isTaken()) {
             freePos.push_back(&*i);
         }

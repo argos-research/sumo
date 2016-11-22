@@ -1,16 +1,16 @@
 classdef constants
     %The SUMO hexadecimal constants.
     
-    %   Copyright 2014 Universidad Nacional de Colombia,
+    %   Copyright 2016 Universidad Nacional de Colombia,
     %   Politecnico Jaime Isaza Cadavid.
     %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-	%   $Id: constants.m 24 2015-06-25 22:33:59Z afacostag $
+	%   $Id: constants.m 31 2016-09-28 15:16:56Z afacostag $
 
 	properties (Constant = true)
 		% ****************************************
 		% VERSION
 		% ****************************************
-		TRACI_VERSION = 9
+		TRACI_VERSION = 10
 
 
 		% ****************************************
@@ -359,6 +359,15 @@ classdef constants
 		% vehicle finished route during teleport
 		REMOVE_TELEPORT_ARRIVED = '0x04'
 
+		% ****************************************
+		% PERSON/CONTAINER STAGES
+		% ****************************************
+		% person walking / container transhiping
+		STAGE_WALKING = '0x00'
+		% person riding / container being transported
+		STAGE_DRIVING = '0x01'
+		% person / container stopping
+		STAGE_WAITING = '0x02'
 
 		% ****************************************
 		% VARIABLE TYPES (for CMD_GET_*_VARIABLE)
@@ -607,10 +616,15 @@ classdef constants
 
 		% current person number (get: vehicle)
 		VAR_PERSON_NUMBER = '0x67'
+		
+		% number of persons waiting at a defined bus stop (get: simulation)
 		VAR_BUS_STOP_WAITING = '0x67'
 
         % current leader together with gap (get: vehicle)
         VAR_LEADER = '0x68'
+		
+		% edge index in current route (get: vehicle)
+		VAR_ROUTE_INDEX = '0x69'
         
         %current waiting time (get: vehicle, lane)
         VAR_WAITING_TIME = '0x7a'

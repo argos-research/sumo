@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: MSLink.cpp 21206 2016-07-20 08:08:35Z behrisch $
+/// @version $Id: MSLink.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // A connnection between lanes
 /****************************************************************************/
@@ -66,7 +66,7 @@ const SUMOReal MSLink::ZIPPER_ADAPT_DIST(100);
 // member method definitions
 // ===========================================================================
 #ifndef HAVE_INTERNAL_LANES
-MSLink::MSLink(MSLane* predLane, MSLane* succLane, LinkDirection dir, LinkState state, SUMOReal length, bool keepClear, MSTrafficLightLogic* logic, int tlIndex) :
+MSLink::MSLink(MSLane* predLane, MSLane* succLane, LinkDirection dir, LinkState state, SUMOReal length, SUMOReal foeVisibilityDistance, bool keepClear, MSTrafficLightLogic* logic, int tlIndex) :
     myLane(succLane),
     myLaneBefore(predLane),
     myIndex(-1),
@@ -76,15 +76,17 @@ MSLink::MSLink(MSLane* predLane, MSLane* succLane, LinkDirection dir, LinkState 
     myLastStateChange(SUMOTime_MIN),
     myDirection(dir),
     myLength(length),
+    myFoeVisibilityDistance(foeVisibilityDistance),
     myHasFoes(false),
     myAmCont(false),
     myKeepClear(keepClear),
     myMesoTLSPenalty(0),
     myParallelRight(0),
     myParallelLeft(0),
-    myJunction(0)
+    myJunction(0) {
+}
 #else
-MSLink::MSLink(MSLane * predLane, MSLane * succLane, MSLane * via, LinkDirection dir, LinkState state, SUMOReal length, bool keepClear, MSTrafficLightLogic * logic, int tlIndex) :
+MSLink::MSLink(MSLane* predLane, MSLane* succLane, MSLane* via, LinkDirection dir, LinkState state, SUMOReal length, SUMOReal foeVisibilityDistance, bool keepClear, MSTrafficLightLogic* logic, int tlIndex) :
     myLane(succLane),
     myLaneBefore(predLane),
     myIndex(-1),
@@ -94,6 +96,7 @@ MSLink::MSLink(MSLane * predLane, MSLane * succLane, MSLane * via, LinkDirection
     myLastStateChange(SUMOTime_MIN),
     myDirection(dir),
     myLength(length),
+    myFoeVisibilityDistance(foeVisibilityDistance),
     myHasFoes(false),
     myAmCont(false),
     myKeepClear(keepClear),
@@ -102,9 +105,9 @@ MSLink::MSLink(MSLane * predLane, MSLane * succLane, MSLane * via, LinkDirection
     myMesoTLSPenalty(0),
     myParallelRight(0),
     myParallelLeft(0),
-    myJunction(0)
+    myJunction(0) {
+}
 #endif
-{}
 
 
 MSLink::~MSLink() {}
@@ -573,6 +576,21 @@ MSLink::writeApproaching(OutputDevice& od, const std::string fromLaneID) const {
         }
         od.closeTag();
     }
+}
+
+
+SUMOReal
+MSLink::getInternalLengthsAfter() const {
+    SUMOReal len = 0.;
+#ifdef HAVE_INTERNAL_LANES
+    MSLane* lane = myInternalLane;
+
+    while (lane != 0 && lane->getEdge().getPurpose() == MSEdge::EDGEFUNCTION_INTERNAL) {
+        len += lane->getLength();
+        lane = lane->getLinkCont()[0]->getViaLane();
+    }
+#endif
+    return len;
 }
 
 

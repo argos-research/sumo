@@ -2,7 +2,7 @@
 /// @file    GNEChange_Connection.h
 /// @author  Jakob Erdmann
 /// @date    May 2011
-/// @version $Id: GNEChange_Connection.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: GNEChange_Connection.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // A network change in which a single connection is created or deleted
 /****************************************************************************/
@@ -33,12 +33,14 @@
 #include <fx.h>
 #include <string>
 #include <utils/foxtools/fxexdefs.h>
+#include <netbuild/NBEdge.h>
 #include "GNEChange.h"
 
 // ===========================================================================
 // class declarations
 // ===========================================================================
 class GNEEdge;
+class GNEConnection;
 
 // ===========================================================================
 // class definitions
@@ -51,15 +53,13 @@ class GNEChange_Connection : public GNEChange {
     FXDECLARE_ABSTRACT(GNEChange_Connection)
 
 public:
-    /**@brief Constructor for creating/deleting an edge
-     * @param[in] edge The edge on which to apply changes
-     * @param[in] lane The lane to be deleted or 0 if a lane should be created
-     * @param[in] laneAttrs The attributes of the lane to be created/deleted
+
+    /**@brief Constructor for creating/deleting a connection
+     * @param[in] edge The source edge of the connection
+     * @param[in] nbCon The data of the connection
      * @param[in] forward Whether to create/delete (true/false)
      */
-    GNEChange_Connection(GNEEdge* edge, int fromLane,
-                         const std::string& toEdgeID, int toLane,
-                         bool mayDefinitelyPass, bool forward);
+    GNEChange_Connection(GNEEdge* edge, NBEdge::Connection nbCon, bool forward);
 
     /// @brief Destructor
     ~GNEChange_Connection();
@@ -82,23 +82,20 @@ public:
 
 private:
     // @name full information regarding the lane that is to be created/deleted
-    // @briefwe assume shared responsibility for the pointers (via reference counting)
+    // @brief we assume shared responsibility for the pointers (via reference counting)
     /// @{
-    // @brief we need the edge because it is the target of our change commands
+    // @brief the connection object to be removed/re-added
     GNEEdge* myEdge;
 
-    /// @brief the lane from which the connection originates
-    int myFromLane;
+    /// @brief the data which must be copied because the original reference does not persist
+    NBEdge::Connection myNBEdgeConnection;
 
-    /// @brief the id of the target edge
-    const std::string myToEdgeID;
-
-    /// @brief the target lane of the connection
-    int myToLane;
+    /**@brief We only keep this to retain the GUIGlID
+     * @note we assume shared responsibility for the pointer (via reference counting)
+     */
+    GNEConnection* myConnection;
     /// @}
 
-    /// @brief whether this connection never yields
-    bool myPass;
 };
 
 #endif

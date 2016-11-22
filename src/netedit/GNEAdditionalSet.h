@@ -2,7 +2,7 @@
 /// @file    GNEAdditionalSet.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Feb 2016
-/// @version $Id: GNEAdditionalSet.h 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNEAdditionalSet.h 21640 2016-10-09 20:28:52Z palcraft $
 ///
 /// A abstract class for representation of additionalSet elements
 /****************************************************************************/
@@ -89,7 +89,7 @@ public:
      * @param[in] additionalSet pointer to GNEadditionalSet element to remove
      * @return true if was sucesfully removed, false in other case
      */
-    bool removeAdditionalChild(GNEAdditional* additional);
+    bool removeAdditionalGeometryChild(GNEAdditional* additional);
 
     /**@brief add edge element to this set
      * @param[in] edgeSet pointer to GNEEdge element to add

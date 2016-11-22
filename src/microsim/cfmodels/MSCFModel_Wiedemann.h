@@ -3,7 +3,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    June 2011
-/// @version $Id: MSCFModel_Wiedemann.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSCFModel_Wiedemann.h 21649 2016-10-10 13:24:35Z luecken $
 ///
 // The psycho-physical model of Wiedemann
 /****************************************************************************/
@@ -41,9 +41,10 @@
 // class definitions
 // ===========================================================================
 /** @class MSCFModel_Wiedemann
- * @brief The Intellignet Driver Model (IDM) car-following model
+ * @brief The Wiedemann Model car-following model
  * @see MSCFModel
  */
+// XXX: which Wiedemann is this? There are several versions... Below it is stated that it is modified it with Krauss vsafe... (Leo)
 class MSCFModel_Wiedemann : public MSCFModel {
 public:
 

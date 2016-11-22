@@ -2,7 +2,7 @@
 /// @file    MSDeterministicHiLevelTrafficLightLogic.cpp
 /// @author  Riccardo Belletti
 /// @date    Mar 2014
-/// @version $Id: MSDeterministicHiLevelTrafficLightLogic.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSDeterministicHiLevelTrafficLightLogic.cpp 21314 2016-08-22 10:37:46Z namdre $
 ///
 // The class for deterministic high level traffic light logic
 /****************************************************************************/
@@ -63,9 +63,9 @@ throw(ProcessError) {
 
     LinkVectorVector myLinks = getLinks();
 
-    for (int i = 0; i < myLinks.size(); i++) {
+    for (int i = 0; i < (int)myLinks.size(); i++) {
         LinkVector oneLink = getLinksAt(i);
-        for (int j = 0; j < oneLink.size(); j++) {
+        for (int j = 0; j < (int)oneLink.size(); j++) {
             currentLane = oneLink[j]->getLane();
             if (outputLanes.find(currentLane->getID()) == outputLanes.end()) {
                 outputLanes.insert(currentLane->getID());
@@ -158,7 +158,7 @@ void MSDeterministicHiLevelTrafficLightLogic::choosePolicy(
     int index_maxStimulus = 0;
     SUMOReal maxStimulus = -1;
     // Compute simulus for each policy
-    for (int i = 0; i < getPolicies().size(); i++) {
+    for (int i = 0; i < (int)getPolicies().size(); i++) {
         SUMOReal stimulus = getPolicies()[i]->computeDesirability(mean_vSpeed_in,
                             mean_vSpeed_out);
         if (stimulus > maxStimulus) {

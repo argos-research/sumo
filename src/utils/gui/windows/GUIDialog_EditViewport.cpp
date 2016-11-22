@@ -4,7 +4,7 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    Mon, 25.04.2005
-/// @version $Id: GUIDialog_EditViewport.cpp 21186 2016-07-18 12:04:16Z namdre $
+/// @version $Id: GUIDialog_EditViewport.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // A dialog to change the viewport
 /****************************************************************************/
@@ -121,11 +121,11 @@ long
 GUIDialog_EditViewport::onCmdOk(FXObject*, FXSelector, void*) {
     myParent->setViewportFromTo(Position(myXOff->getValue(), myYOff->getValue(), myZOff->getValue()),
 #ifdef HAVE_OSG
-                          Position(myLookAtX->getValue(), myLookAtY->getValue(), myLookAtZ->getValue())
+                                Position(myLookAtX->getValue(), myLookAtY->getValue(), myLookAtZ->getValue())
 #else
-                          Position::INVALID
+                                Position::INVALID
 #endif
-                         );
+                               );
     hide();
     return 1;
 }
@@ -148,11 +148,11 @@ GUIDialog_EditViewport::onCmdChanged(FXObject* o, FXSelector, void*) {
     }
     myParent->setViewportFromTo(Position(myXOff->getValue(), myYOff->getValue(), myZOff->getValue()),
 #ifdef HAVE_OSG
-                          Position(myLookAtX->getValue(), myLookAtY->getValue(), myLookAtZ->getValue())
+                                Position(myLookAtX->getValue(), myLookAtY->getValue(), myLookAtZ->getValue())
 #else
-                          Position::INVALID
+                                Position::INVALID
 #endif
-                         );
+                               );
     return 1;
 }
 

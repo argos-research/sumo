@@ -19,10 +19,10 @@ function [traciVersion, sumoVersion] = init(varargin)
 %   [TRACIVERSION,SUMOVERSION] = INIT(...) Returns the TRACIVERSION and the
 %   SUMOVERSION.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: init.m 29 2015-10-13 13:21:27Z afacostag $
+%   $Id: init.m 31 2016-09-28 15:16:56Z afacostag $
 
 % Add the DataReader class
 % [pathstr,~,~] = fileparts(which('traci.init'));
@@ -69,7 +69,7 @@ for i=1:numRetries
     end
 end
 if ~isempty(err)
-    disp(err);
+    disp([err.identifier, err.message]);
 end
 
 [traciVersion,sumoVersion] = traci.getVersion();

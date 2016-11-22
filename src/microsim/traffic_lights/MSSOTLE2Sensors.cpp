@@ -4,7 +4,7 @@
 /// @author  Alessio Bonfietti
 /// @author  Federico Caselli
 /// @date    2010-02-25
-/// @version $Id: MSSOTLE2Sensors.cpp 21202 2016-07-19 13:40:35Z behrisch $
+/// @version $Id: MSSOTLE2Sensors.cpp 21577 2016-09-29 09:58:48Z behrisch $
 ///
 // The class for SOTL sensors of "E2" type
 /****************************************************************************/
@@ -152,7 +152,7 @@ void MSSOTLE2Sensors::buildCountSensorForLane(MSLane* lane, NLDetectorBuilder& n
                         "SOTL_E2_lane:" + lane->getID() + "_tl:" + tlLogicID,
                         DU_TL_CONTROL, lane,
                         (lane->getLength() - sensorPos - lensorLength), lensorLength,
-                        HALTING_TIME_THRS, HALTING_SPEED_THRS, DIST_THRS);
+                        HALTING_TIME_THRS, HALTING_SPEED_THRS, DIST_THRS, "");
         //newSensor = nb.buildSingleLaneE2Det("SOTL_E2_lane:"+lane->getID()+"_tl:"+tlLogicID, DU_TL_CONTROL, lane, (lane->getLength() - sensorPos- 5), lensorLength, HALTING_TIME_THRS, HALTING_SPEED_THRS, DIST_THRS);
 
         MSNet::getInstance()->getDetectorControl().add(
@@ -197,7 +197,7 @@ void MSSOTLE2Sensors::buildCountSensorForOutLane(MSLane* lane, NLDetectorBuilder
                         "SOTL_E2_lane:" + lane->getID() + "_tl:" + tlLogicID,
                         DU_TL_CONTROL, lane,
                         (lane->getLength() - sensorPos - lensorLength), lensorLength,
-                        HALTING_TIME_THRS, HALTING_SPEED_THRS, DIST_THRS);
+                        HALTING_TIME_THRS, HALTING_SPEED_THRS, DIST_THRS, "");
         //newSensor = nb.buildSingleLaneE2Det("SOTL_E2_lane:"+lane->getID()+"_tl:"+tlLogicID, DU_TL_CONTROL, lane, (lane->getLength() - sensorPos- 5), lensorLength, HALTING_TIME_THRS, HALTING_SPEED_THRS, DIST_THRS);
 
         MSNet::getInstance()->getDetectorControl().add(
@@ -297,7 +297,7 @@ void MSSOTLE2Sensors::buildSensorForLane(MSLane* lane, NLDetectorBuilder& nb, SU
                         "SOTL_E2_lane:" + lane->getID() + "_tl:" + tlLogicID,
                         DU_TL_CONTROL, lane,
                         (lane->getLength() - sensorPos - lensorLength), lensorLength,
-                        HALTING_TIME_THRS, HALTING_SPEED_THRS, DIST_THRS);
+                        HALTING_TIME_THRS, HALTING_SPEED_THRS, DIST_THRS, "");
 //newSensor = nb.buildSingleLaneE2Det("SOTL_E2_lane:"+lane->getID()+"_tl:"+tlLogicID, DU_TL_CONTROL, lane, (lane->getLength() - sensorPos- 5), lensorLength, HALTING_TIME_THRS, HALTING_SPEED_THRS, DIST_THRS);
 
         MSNet::getInstance()->getDetectorControl().add(SUMO_TAG_LANE_AREA_DETECTOR, newSensor);
@@ -327,7 +327,7 @@ void MSSOTLE2Sensors::buildContinueSensior(MSLane* lane, NLDetectorBuilder& nb, 
                                        "SOTL_E2_lane:" + continueOnLane->getID() + "_tl:" + tlLogicID,
                                        DU_TL_CONTROL, continueOnLane,
                                        (continueOnLane->getLength() - length), length,
-                                       HALTING_TIME_THRS, HALTING_SPEED_THRS, DIST_THRS);
+                                       HALTING_TIME_THRS, HALTING_SPEED_THRS, DIST_THRS, "");
         MSNet::getInstance()->getDetectorControl().add(SUMO_TAG_LANE_AREA_DETECTOR, newSensor);
         m_sensorMap.insert(MSLaneID_MSE2Collector(continueOnLane->getID(), newSensor));
         m_continueSensorOnLanes[lane->getID()].push_back(continueOnLane->getID());
@@ -386,7 +386,7 @@ void MSSOTLE2Sensors::buildSensorForOutLane(MSLane* lane,
                         "SOTL_E2_lane:" + lane->getID() + "_tl:" + tlLogicID,
                         DU_TL_CONTROL, lane,
                         (lane->getLength() - sensorPos - lensorLength), lensorLength,
-                        HALTING_TIME_THRS, HALTING_SPEED_THRS, DIST_THRS);
+                        HALTING_TIME_THRS, HALTING_SPEED_THRS, DIST_THRS, "");
         //newSensor = nb.buildSingleLaneE2Det("SOTL_E2_lane:"+lane->getID()+"_tl:"+tlLogicID, DU_TL_CONTROL, lane, (lane->getLength() - sensorPos- 5), lensorLength, HALTING_TIME_THRS, HALTING_SPEED_THRS, DIST_THRS);
 
         MSNet::getInstance()->getDetectorControl().add(
@@ -544,16 +544,18 @@ int MSSOTLE2Sensors::count(MSE2Collector* sensor) {
         return totCars;
     }
     int number = 0;
-    const std::list<SUMOVehicle*> vehicles = sensor->getCurrentVehicles();
+    const std::vector<MSE2Collector::VehicleInfo> vehicles = sensor->getCurrentVehicles();
     std::ostringstream logstr;
     logstr << "[MSSOTLE2Sensors::count]";
-    for (std::list<SUMOVehicle*>::const_iterator vit = vehicles.begin(); vit != vehicles.end(); ++vit) {
-        const std::string vtype = vit.operator * ()->getVehicleType().getID();
-        if (m_typeWeightMap.find(vtype) != m_typeWeightMap.end()) {
-            number += m_typeWeightMap[vtype];
-            DBG(logstr << " Added " << m_typeWeightMap[vtype] << " for vtype " << vtype;)
-        } else {
-            ++number;
+    for (std::vector<MSE2Collector::VehicleInfo>::const_iterator vit = vehicles.begin(); vit != vehicles.end(); ++vit) {
+        if (vit->stillOnDet) {
+            const std::string vtype = vit->type;
+            if (m_typeWeightMap.find(vtype) != m_typeWeightMap.end()) {
+                number += m_typeWeightMap[vtype];
+                DBG(logstr << " Added " << m_typeWeightMap[vtype] << " for vtype " << vtype;)
+            } else {
+                ++number;
+            }
         }
     }
     DBG(if (totCars != number) {

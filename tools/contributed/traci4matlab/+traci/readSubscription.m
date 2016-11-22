@@ -1,10 +1,10 @@
 function [response, objectID] = readSubscription(result)
 %readSubscription Internal function to read the TraCI subscriptions.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: readSubscription.m 24 2015-06-25 22:33:59Z afacostag $
+%   $Id: readSubscription.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 global edgeSubscriptionResults guiSubscriptionResults ...

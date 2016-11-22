@@ -100,8 +100,7 @@ libmicrosimlcmodels_a_AR = $(AR) $(ARFLAGS)
 libmicrosimlcmodels_a_LIBADD =
 am_libmicrosimlcmodels_a_OBJECTS =  \
 	MSAbstractLaneChangeModel.$(OBJEXT) MSLCM_DK2008.$(OBJEXT) \
-	MSLCM_LC2013.$(OBJEXT) MSLCM_SL2015.$(OBJEXT) \
-	MSLCM_JE2013.$(OBJEXT)
+	MSLCM_LC2013.$(OBJEXT) MSLCM_SL2015.$(OBJEXT)
 libmicrosimlcmodels_a_OBJECTS = $(am_libmicrosimlcmodels_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -334,8 +333,7 @@ libmicrosimlcmodels_a_SOURCES = MSAbstractLaneChangeModel.cpp \
 MSAbstractLaneChangeModel.h \
 MSLCM_DK2008.cpp MSLCM_DK2008.h \
 MSLCM_LC2013.cpp MSLCM_LC2013.h \
-MSLCM_SL2015.cpp MSLCM_SL2015.h \
-MSLCM_JE2013.cpp MSLCM_JE2013.h 
+MSLCM_SL2015.cpp MSLCM_SL2015.h 
 
 all: all-am
 
@@ -388,7 +386,6 @@ distclean-compile:
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSAbstractLaneChangeModel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSLCM_DK2008.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSLCM_JE2013.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSLCM_LC2013.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSLCM_SL2015.Po@am__quote@
 

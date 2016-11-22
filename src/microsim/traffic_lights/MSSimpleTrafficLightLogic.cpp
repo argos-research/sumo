@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Friedemann Wesner
 /// @date    Sept 2002
-/// @version $Id: MSSimpleTrafficLightLogic.cpp 21217 2016-07-22 10:57:44Z behrisch $
+/// @version $Id: MSSimpleTrafficLightLogic.cpp 21316 2016-08-22 13:08:50Z behrisch $
 ///
 // A fixed traffic light logic
 /****************************************************************************/
@@ -86,7 +86,7 @@ MSSimpleTrafficLightLogic::trySwitch() {
         // ... set the index to the first phase
         myStep = 0;
     }
-    assert(myPhases.size() > myStep);
+    assert((int)myPhases.size() > myStep);
     //stores the time the phase started
     myPhases[myStep]->myLastSwitch = MSNet::getInstance()->getCurrentTimeStep();
     // check whether the next duration was overridden
@@ -157,7 +157,7 @@ MSSimpleTrafficLightLogic::getPhaseIndexAtTime(SUMOTime simStep) const {
 
 SUMOTime
 MSSimpleTrafficLightLogic::getOffsetFromIndex(int index) const {
-    assert(index < myPhases.size());
+    assert(index < (int)myPhases.size());
     if (index == 0) {
         return 0;
     }
@@ -182,7 +182,7 @@ MSSimpleTrafficLightLogic::getIndexFromOffset(SUMOTime offset) const {
             return i;
         }
         if (testPos == offset) {
-            assert(myPhases.size() > (i + 1));
+            assert((int)myPhases.size() > (i + 1));
             return (i + 1);
         }
     }

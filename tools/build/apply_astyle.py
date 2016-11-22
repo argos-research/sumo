@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2007
-@version $Id: apply_astyle.py 21159 2016-07-14 07:59:30Z behrisch $
+@version $Id: apply_astyle.py 21665 2016-10-12 08:26:16Z behrisch $
 
 Applies astyle with the proper settings used in SUMO on all
  files in src (except for foreign) and autopep8 on all .py files.
@@ -37,9 +37,9 @@ for root, dirs, files in os.walk(srcRoot):
                 "astyle --style=java --unpad-paren --pad-header --pad-oper --add-brackets --indent-switches --align-pointer=type -n".split() + [os.path.join(root, name)])
             subprocess.call(["sed", "-i", "-e", '$a\\',
                              os.path.join(root, name)])
-        for ignoreDir in ['.svn', 'foreign']:
-            if ignoreDir in dirs:
-                dirs.remove(ignoreDir)
+    for ignoreDir in ['.svn', 'foreign']:
+        if ignoreDir in dirs:
+            dirs.remove(ignoreDir)
 
 if autopep:
     sumoRoot = os.path.join(os.path.dirname(__file__), "../../")

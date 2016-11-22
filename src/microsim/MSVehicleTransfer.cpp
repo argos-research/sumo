@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sep 2003
-/// @version $Id: MSVehicleTransfer.cpp 20737 2016-05-18 13:17:18Z namdre $
+/// @version $Id: MSVehicleTransfer.cpp 21653 2016-10-10 13:32:16Z luecken $
 ///
 // A mover of vehicles that got stucked due to grid locks
 /****************************************************************************/
@@ -103,7 +103,7 @@ MSVehicleTransfer::checkInsertions(SUMOTime time) {
 
         if (desc.myParking) {
             // handle parking vehicles
-            if (desc.myVeh->processNextStop(1) == 0) {
+            if (desc.myVeh->processNextStop(1) <= 0) {
                 ++i;
                 continue;
             }

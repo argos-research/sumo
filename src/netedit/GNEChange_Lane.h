@@ -2,7 +2,7 @@
 /// @file    GNEChange_Lane.h
 /// @author  Jakob Erdmann
 /// @date    April 2011
-/// @version $Id: GNEChange_Lane.h 21143 2016-07-11 12:37:50Z palcraft $
+/// @version $Id: GNEChange_Lane.h 21640 2016-10-09 20:28:52Z palcraft $
 ///
 // A network change in which a single lane is created or deleted
 /****************************************************************************/
@@ -40,6 +40,7 @@
 // ===========================================================================
 class GNEEdge;
 class GNELane;
+class GNEAdditional;
 class GNEAdditionalSet;
 
 // ===========================================================================
@@ -90,8 +91,11 @@ private:
     /// @brief we need to preserve the attributes explicitly because they are not contained withing GNELane itself
     const NBEdge::Lane myLaneAttrs;
 
-    /// @brief additional sets vinculated with this lane
-    std::vector<GNEAdditionalSet*> myAdditionalSets;
+    /// @brief we need to preserve the list of additionals vinculated with this lane
+    std::vector<GNEAdditional*> myAdditionalChilds;
+
+    /// @brief we need to preserve the list of additional sets in which this lane is a child
+    std::vector<GNEAdditionalSet*> myAdditionalSetParents;
 };
 
 #endif

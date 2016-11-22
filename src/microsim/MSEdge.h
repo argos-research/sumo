@@ -6,7 +6,7 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSEdge.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSEdge.h 21667 2016-10-12 09:17:25Z namdre $
 ///
 // A road/street connecting two junctions
 /****************************************************************************/
@@ -265,6 +265,10 @@ public:
         return myFunction == EDGEFUNCTION_WALKINGAREA;
     }
 
+    inline bool isTaz() const {
+        return myFunction == EDGEFUNCTION_DISTRICT;
+    }
+
     /** @brief Returns the numerical id of the edge
      * @return This edge's numerical id
      */
@@ -442,7 +446,9 @@ public:
 
     /// @brief returns the minimum travel time for the given vehicle
     inline SUMOReal getMinimumTravelTime(const SUMOVehicle* const veh) const {
-        if (veh != 0) {
+        if (myFunction == EDGEFUNCTION_DISTRICT) {
+            return 0;
+        } else if (veh != 0) {
             return getLength() / getVehicleMaxSpeed(veh);
         } else {
             return getLength() / getSpeedLimit();

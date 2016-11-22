@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_SUMO.cpp 21210 2016-07-21 10:02:38Z behrisch $
+/// @version $Id: NIImporter_SUMO.cpp 21714 2016-10-17 11:21:44Z namdre $
 ///
 // Importer for networks stored in SUMO format
 /****************************************************************************/
@@ -138,6 +138,10 @@ NIImporter_SUMO::_loadNetwork(OptionsCont& oc) {
             WRITE_ERROR("Edge's '" + ed->id + "' to-node '" + ed->toNode + "' is not known.");
             continue;
         }
+        if (from == to) {
+            WRITE_ERROR("Edge's '" + ed->id + "' from-node and to-node '" + ed->toNode + "' art identical.");
+            continue;
+        }
         // edge shape
         PositionVector geom;
         if (ed->shape.size() > 0) {
@@ -188,7 +192,7 @@ NIImporter_SUMO::_loadNetwork(OptionsCont& oc) {
                 }
                 nbe->addLane2LaneConnection(
                     fromLaneIndex, toEdge, c.toLaneIdx, NBEdge::L2L_VALIDATED,
-                    true, c.mayDefinitelyPass, c.keepClear, c.contPos);
+                    true, c.mayDefinitelyPass, c.keepClear, c.contPos, c.visibility);
 
                 // maybe we have a tls-controlled connection
                 if (c.tlID != "" && myRailSignals.count(c.tlID) == 0) {
@@ -584,6 +588,7 @@ NIImporter_SUMO::addConnection(const SUMOSAXAttributes& attrs) {
     conn.mayDefinitelyPass = attrs.getOpt<bool>(SUMO_ATTR_PASS, 0, ok, false);
     conn.keepClear = attrs.getOpt<bool>(SUMO_ATTR_KEEP_CLEAR, 0, ok, true);
     conn.contPos = attrs.getOpt<SUMOReal>(SUMO_ATTR_CONTPOS, 0, ok, NBEdge::UNSPECIFIED_CONTPOS);
+    conn.visibility = attrs.getOpt<SUMOReal>(SUMO_ATTR_VISIBILITY_DISTANCE, 0, ok, NBEdge::UNSPECIFIED_VISIBILITY_DISTANCE);
     if (conn.tlID != "") {
         conn.tlLinkNo = attrs.get<int>(SUMO_ATTR_TLLINKINDEX, 0, ok);
     }

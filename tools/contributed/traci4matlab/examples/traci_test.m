@@ -1,12 +1,12 @@
 %% SUMO TRACI TEST
 % THIS FILE AIMS TO TEST THE TRACI PROTOCOL FOR SUMO.
 
-%   Copyright 2013 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: traci_test.m 4 2014-03-03 15:18:05Z afacostag $
+%   $Id: traci_test.m 31 2016-09-28 15:16:56Z afacostag $
 
-clear all
+clear
 close all
 clc
 
@@ -14,17 +14,7 @@ clc
 % HERE, WE START THE SUMO SIMULATOR AND INITIALIZE IT, ACCORDING TO
 % THE EXAMPLE FOUND IN http://sumo-sim.org/userdoc/Tutorials/TraCI4Traffic_Lights.html
 
-% Tutorial in docs
-if exist([getenv('SUMO_HOME') '\docs\tutorial\traci_tls\data\cross.sumocfg'],...
-        'file')==2
-    system(['sumo-gui -c ' getenv('SUMO_HOME')...
-        '\docs\tutorial\traci_tls\data\cross.sumocfg --start&']);
-% Tutorial in tests
-elseif exist([getenv('SUMO_HOME') '\tests\complex\tutorial\traci_tls\data\cross.sumocfg'],...
-        'file')==2
-    system(['sumo-gui -c ' getenv('SUMO_HOME')...
-        '\tests\complex\tutorial\traci_tls\data\cross.sumocfg --start&']);
-end
+system('sumo -c ./inter_palmas/tls_actuated/inter_palmas_actuated.sumocfg&');
 
 [traciVersion,sumoVersion] = traci.init();
 traci.close();

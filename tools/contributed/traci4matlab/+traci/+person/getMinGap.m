@@ -3,10 +3,10 @@ function minGap = getMinGap(personID)
 %   minGap = getMinGap(PERSONID) Returns the offset (gap to front person if 
 %   halting) of this person.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: getMinGap.m 25 2015-06-25 22:38:10Z afacostag $
+%   $Id: getMinGap.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 minGap = traci.person.getUniversal(constants.VAR_MINGAP, personID);

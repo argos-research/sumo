@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    2006-01-09
-/// @version $Id: GUICompleteSchemeStorage.cpp 21217 2016-07-22 10:57:44Z behrisch $
+/// @version $Id: GUICompleteSchemeStorage.cpp 21538 2016-09-26 10:52:35Z namdre $
 ///
 // Storage for available visualization settings
 /****************************************************************************/
@@ -124,11 +124,13 @@ GUICompleteSchemeStorage::init(FXApp* app) {
     {
         GUIVisualizationSettings vs;
         vs.name = "standard";
+        vs.laneShowBorders = true;
         gSchemeStorage.add(vs);
     }
     {
         GUIVisualizationSettings vs;
         vs.name = "faster standard";
+        vs.laneShowBorders = false;
         vs.showLinkDecals = false;
         vs.showRails = false;
         gSchemeStorage.add(vs);

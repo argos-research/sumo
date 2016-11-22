@@ -5,7 +5,7 @@
 ///@brief @author  Michael Behrisch
 ///@brief @author  Andreas Gaubatz
 ///@brief @date    Sept 2002
-///@brief @version $Id: GUISUMOAbstractView.h 21202 2016-07-19 13:40:35Z behrisch $
+///@brief @version $Id: GUISUMOAbstractView.h 21625 2016-10-06 12:18:47Z namdre $
 ///
 // The base class for a view
 /****************************************************************************/
@@ -296,7 +296,9 @@ public:
         bool initialised;
         ///@brief Whether this image should be skipped in 2D-views
         bool skip2D;
-        ///@brief The gl-id of the texture that holds this image
+        ///@brief Whether this image should be skipped in 2D-views
+        bool screenRelative;
+        ///@brief whether the decal shall be drawn in screen coordinates, rather than network coordinates
         int glID;
         ///@brief The image pointer for later cleanup
         FXImage* image;
@@ -308,6 +310,9 @@ public:
 
     ///@brief Returns the cursor's x/y position within the network
     Position getPositionInformation() const;
+
+    ///@brief Translate screen position to network position
+    Position screenPos2NetPos(int x, int y) const;
 
     ///@brief add decals
     void addDecals(const std::vector<Decal>& decals);

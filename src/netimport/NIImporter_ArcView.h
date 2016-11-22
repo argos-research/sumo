@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: NIImporter_ArcView.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: NIImporter_ArcView.h 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // Importer for networks stored in ArcView-shape format
 /****************************************************************************/
@@ -109,7 +109,7 @@ private:
      * @param[in] speed The edge's speed used to help determinig the edge's lane number
      */
     int getLaneNo(OGRFeature& f,
-                           const std::string& edgeid, SUMOReal speed);
+                  const std::string& edgeid, SUMOReal speed);
 
     /** @brief Parses the priority of the edge currently processed
      * @param[in] f The entry to read the priority from

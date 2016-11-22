@@ -3,10 +3,10 @@ function laneID = getLaneID(vehID)
 %   laneID = getLaneID(VEHID) Returns the id of the lane the named vehicle 
 %   was at within the last step.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: getLaneID.m 22 2015-04-13 14:20:57Z afacostag $
+%   $Id: getLaneID.m 31 2016-09-28 15:16:56Z afacostag $
 
 import traci.constants
 

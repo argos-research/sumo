@@ -2,7 +2,7 @@
 /// @file    GNEChange_Selection.cpp
 /// @author  Jakob Erdmann
 /// @date    Mar 2015
-/// @version $Id: GNEChange_Selection.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEChange_Selection.cpp 21851 2016-10-31 12:20:12Z behrisch $
 ///
 // A change to the network selection
 /****************************************************************************/
@@ -28,7 +28,10 @@
 #endif
 
 #include <utils/gui/div/GUIGlobalSelection.h>
+#include <utils/gui/globjects/GUIGlObjectStorage.h>
 #include "GNEChange_Selection.h"
+#include "GNENet.h"
+#include "GNEViewNet.h"
 
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
@@ -46,8 +49,8 @@ FXIMPLEMENT_ABSTRACT(GNEChange_Selection, GNEChange, NULL, 0)
 
 
 // Constructor for changing selection
-GNEChange_Selection::GNEChange_Selection(const std::set<GUIGlID>& selected, const std::set<GUIGlID>& deselected, bool forward):
-    GNEChange(0, forward),
+GNEChange_Selection::GNEChange_Selection(GNENet* net, const std::set<GUIGlID>& selected, const std::set<GUIGlID>& deselected, bool forward):
+    GNEChange(net, forward),
     mySelectedIDs(selected),
     myDeselectedIDs(deselected) {
 }
@@ -60,38 +63,56 @@ GNEChange_Selection::~GNEChange_Selection() {
 void GNEChange_Selection::undo() {
     if (myForward) {
         for (std::set<GUIGlID>::const_iterator it = mySelectedIDs.begin(); it != mySelectedIDs.end(); it++) {
-            gSelected.deselect(*it);
+            if (GUIGlObjectStorage::gIDStorage.getObjectBlocking(*it)) {
+                gSelected.deselect(*it);
+            }
         }
         for (std::set<GUIGlID>::const_iterator it = myDeselectedIDs.begin(); it != myDeselectedIDs.end(); it++) {
-            gSelected.select(*it);
+            if (GUIGlObjectStorage::gIDStorage.getObjectBlocking(*it)) {
+                gSelected.select(*it);
+            }
         }
     } else {
         for (std::set<GUIGlID>::const_iterator it = mySelectedIDs.begin(); it != mySelectedIDs.end(); it++) {
-            gSelected.select(*it);
+            if (GUIGlObjectStorage::gIDStorage.getObjectBlocking(*it)) {
+                gSelected.select(*it);
+            }
         }
         for (std::set<GUIGlID>::const_iterator it = myDeselectedIDs.begin(); it != myDeselectedIDs.end(); it++) {
-            gSelected.deselect(*it);
+            if (GUIGlObjectStorage::gIDStorage.getObjectBlocking(*it)) {
+                gSelected.deselect(*it);
+            }
         }
     }
+    myNet->getViewNet()->update();
 }
 
 
 void GNEChange_Selection::redo() {
     if (myForward) {
         for (std::set<GUIGlID>::const_iterator it = mySelectedIDs.begin(); it != mySelectedIDs.end(); it++) {
-            gSelected.select(*it);
+            if (GUIGlObjectStorage::gIDStorage.getObjectBlocking(*it)) {
+                gSelected.select(*it);
+            }
         }
         for (std::set<GUIGlID>::const_iterator it = myDeselectedIDs.begin(); it != myDeselectedIDs.end(); it++) {
-            gSelected.deselect(*it);
+            if (GUIGlObjectStorage::gIDStorage.getObjectBlocking(*it)) {
+                gSelected.deselect(*it);
+            }
         }
     } else {
         for (std::set<GUIGlID>::const_iterator it = mySelectedIDs.begin(); it != mySelectedIDs.end(); it++) {
-            gSelected.deselect(*it);
+            if (GUIGlObjectStorage::gIDStorage.getObjectBlocking(*it)) {
+                gSelected.deselect(*it);
+            }
         }
         for (std::set<GUIGlID>::const_iterator it = myDeselectedIDs.begin(); it != myDeselectedIDs.end(); it++) {
-            gSelected.select(*it);
+            if (GUIGlObjectStorage::gIDStorage.getObjectBlocking(*it)) {
+                gSelected.select(*it);
+            }
         }
     }
+    myNet->getViewNet()->update();
 }
 
 

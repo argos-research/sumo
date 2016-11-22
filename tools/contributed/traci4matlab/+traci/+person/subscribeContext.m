@@ -14,10 +14,10 @@ function subscribeContext(personID, domain, dist, varargin)
 %   BEGIN and END. 
 %   A call to this method clears all previous subscription results.
 
-%   Copyright 2015 Universidad Nacional de Colombia,
+%   Copyright 2016 Universidad Nacional de Colombia,
 %   Politecnico Jaime Isaza Cadavid.
 %   Authors: Andres Acosta, Jairo Espinosa, Jorge Espinosa.
-%   $Id: subscribeContext.m 25 2015-06-25 22:38:10Z afacostag $
+%   $Id: subscribeContext.m 31 2016-09-28 15:16:56Z afacostag $
 
 global personSubscriptionResults
 import traci.constants

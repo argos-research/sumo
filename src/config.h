@@ -29,7 +29,7 @@
 #define HAVE_DLFCN_H 1
 
 /* Reporting string for enabled options */
-#define HAVE_ENABLED "x86_64-unknown-linux-gnu InternalLanes DoublePrecision TRACI GUI ffmpeg"
+#define HAVE_ENABLED "x86_64-suse-linux-gnu InternalLanes DoublePrecision TRACI PROJ GDAL GUI UnitTests ffmpeg"
 
 /* defined if ffmpeg is available */
 #define HAVE_FFMPEG 1
@@ -44,7 +44,7 @@
 #define HAVE_FOX 1
 
 /* defined if GDAL is available */
-/* #undef HAVE_GDAL */
+#define HAVE_GDAL 1
 
 /* Define to 1 if you have the `getcwd' function. */
 #define HAVE_GETCWD 1
@@ -80,7 +80,7 @@
 #define HAVE_POW 1
 
 /* defined if PROJ is available */
-/* #undef HAVE_PROJ */
+#define HAVE_PROJ 1
 
 /* defined if python is available */
 /* #undef HAVE_PYTHON */
@@ -99,7 +99,7 @@
 /* #undef HAVE_STAT_EMPTY_STRING_BUG */
 
 /* Define to 1 if stdbool.h conforms to C99. */
-/* #undef HAVE_STDBOOL_H */
+#define HAVE_STDBOOL_H 1
 
 /* Define to 1 if you have the <stddef.h> header file. */
 #define HAVE_STDDEF_H 1
@@ -135,7 +135,7 @@
 #define HAVE_UNISTD_H 1
 
 /* Define if auto-generated version.h should be used. */
-/* #undef HAVE_VERSION_H */
+#define HAVE_VERSION_H 1
 
 /* Define to 1 if you have the <wchar.h> header file. */
 #define HAVE_WCHAR_H 1
@@ -173,7 +173,7 @@
 #define PACKAGE_NAME "sumo"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "sumo 0.27.1"
+#define PACKAGE_STRING "sumo 0.28.0"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "sumo"
@@ -182,7 +182,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.27.1"
+#define PACKAGE_VERSION "0.28.0"
 
 /* defines the epsilon to use on position comparison */
 #define POSITION_EPS (SUMOReal)0.1
@@ -220,10 +220,10 @@
 /* #undef TM_IN_SYS_TIME */
 
 /* Version number of package */
-#define VERSION "0.27.1"
+#define VERSION "0.28.0"
 
 /* Defined if auto-generated version.h is unavailable. */
-#define VERSION_STRING "0.27.1"
+/* #undef VERSION_STRING */
 
 /* Xerces and Fox expect this to be defined (cygwin) */
 /* #undef WIN32 */

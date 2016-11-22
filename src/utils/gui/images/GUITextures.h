@@ -2,7 +2,7 @@
 /// @file    GUITextures.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Jul 2016
-/// @version $Id: GUITextures.h 21120 2016-07-05 13:52:03Z behrisch $
+/// @version $Id: GUITextures.h 21640 2016-10-09 20:28:52Z palcraft $
 ///
 // An enumeration of gifs used by the gui applications
 /****************************************************************************/
@@ -60,6 +60,9 @@ enum GUITexture {
     GNETEXTURE_VAPORIZERSELECTED,
     GNETEXTURE_VARIABLESPEEDSIGNAL,
     GNETEXTURE_VARIABLESPEEDSIGNALSELECTED,
+    GNETEXTURE_LANEBIKE,
+    GNETEXTURE_LANEBUS,
+    GNETEXTURE_LANEPEDESTRIAN,
     GIF_MAX
 };
 

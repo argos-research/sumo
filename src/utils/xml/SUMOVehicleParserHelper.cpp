@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 07.04.2008
-/// @version $Id: SUMOVehicleParserHelper.cpp 21078 2016-07-01 09:23:25Z behrisch $
+/// @version $Id: SUMOVehicleParserHelper.cpp 21802 2016-10-26 11:11:13Z namdre $
 ///
 // Helper methods for parsing vehicle attributes
 /****************************************************************************/
@@ -299,6 +299,14 @@ SUMOVehicleParserHelper::parseCommonAttributes(const SUMOSAXAttributes& attrs,
             throw ProcessError(error);
         }
     }
+    // parse lateral arrival position information
+    if (attrs.hasAttribute(SUMO_ATTR_ARRIVALPOS_LAT)) {
+        ret->setParameter |= VEHPARS_ARRIVALPOSLAT_SET;
+        std::string helper = attrs.get<std::string>(SUMO_ATTR_ARRIVALPOS_LAT, ret->id.c_str(), ok);
+        if (!SUMOVehicleParameter::parseArrivalPosLat(helper, element, ret->id, ret->arrivalPosLat, ret->arrivalPosLatProcedure, error)) {
+            throw ProcessError(error);
+        }
+    }
     // parse arrival speed information
     if (attrs.hasAttribute(SUMO_ATTR_ARRIVALSPEED)) {
         ret->setParameter |= VEHPARS_ARRIVALSPEED_SET;
@@ -406,10 +414,13 @@ SUMOVehicleParserHelper::beginVTypeParsing(const SUMOSAXAttributes& attrs, const
         vtype->setParameter |= VTYPEPARS_PROBABILITY_SET;
     }
     if (attrs.hasAttribute(SUMO_ATTR_LANE_CHANGE_MODEL)) {
-        const std::string lcmS = attrs.get<std::string>(SUMO_ATTR_LANE_CHANGE_MODEL, vtype->id.c_str(), ok);
+        std::string lcmS = attrs.get<std::string>(SUMO_ATTR_LANE_CHANGE_MODEL, vtype->id.c_str(), ok);
+        if (lcmS == "JE2013") {
+            WRITE_WARNING("Lane change model 'JE2013' is deprecated. Using default model instead.");
+            lcmS = "default";
+        }
         if (SUMOXMLDefinitions::LaneChangeModels.hasString(lcmS)) {
-            vtype->lcModel = SUMOXMLDefinitions::LaneChangeModels.get(lcmS);
-            vtype->setParameter |= VTYPEPARS_LANE_CHANGE_MODEL_SET;
+            vtype->lcModel = SUMOXMLDefinitions::LaneChangeModels.get("default");
         } else {
             WRITE_ERROR("Unknown lane change model '" + lcmS + "' when parsing vtype '" + vtype->id + "'");
             throw ProcessError();
@@ -601,11 +612,11 @@ SUMOVehicleParserHelper::parseLCParams(SUMOVTypeParameter& into, LaneChangeModel
         lc2013Params.insert(SUMO_ATTR_LCA_SPEEDGAIN_PARAM);
         lc2013Params.insert(SUMO_ATTR_LCA_KEEPRIGHT_PARAM);
         allowedLCModelAttrs[LCM_LC2013] = lc2013Params;
-        allowedLCModelAttrs[LCM_JE2013] = lc2013Params;
 
         std::set<SumoXMLAttr> sl2015Params = lc2013Params;
         sl2015Params.insert(SUMO_ATTR_LCA_PUSHY);
         sl2015Params.insert(SUMO_ATTR_LCA_SUBLANE_PARAM);
+        sl2015Params.insert(SUMO_ATTR_LCA_ASSERTIVE);
         allowedLCModelAttrs[LCM_SL2015] = sl2015Params;
 
         std::set<SumoXMLAttr> noParams;
