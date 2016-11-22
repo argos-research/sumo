@@ -26,3 +26,6 @@ src/tools/emissionsMap
 src/traci_testclient/TraCITestClient
 
 __pycache__
+
+.vagrant
+*.log
