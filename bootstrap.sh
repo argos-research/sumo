@@ -10,4 +10,6 @@
 # Contributor: Bernhard Blieninger
 ##############################
 
-
+cd /vagrant
+./configure
+make -j4
