@@ -1468,6 +1468,28 @@ TraCIAPI::SimulationScope::convert2D(const std::string& edgeID, SUMOReal lanePos
     return myParent.getPosition(CMD_GET_SIM_VARIABLE, POSITION_CONVERSION, "", &content);
 }
 
+std::tuple<std::string, SUMOReal, int>
+TraCIAPI::SimulationScope::convertRoad(SUMOReal x, SUMOReal y, bool isGeo) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_COMPOUND);
+    content.writeInt(2);
+    content.writeUnsignedByte(POSITION_2D);
+    content.writeDouble(x);
+    content.writeDouble(y);
+    content.writeUnsignedByte(TYPE_UBYTE);
+    content.writeUnsignedByte(POSITION_ROADMAP);
+    myParent.send_commandGetVariable(CMD_GET_SIM_VARIABLE, POSITION_CONVERSION, "", &content);
+    tcpip::Storage inMsg;
+    myParent.processGET(inMsg, CMD_GET_SIM_VARIABLE, POSITION_ROADMAP);
+    std::string roadID = inMsg.readString();
+    SUMOReal pos = inMsg.readDouble();
+    int laneID = inMsg.readUnsignedByte();
+    return std::make_tuple(roadID, pos, laneID);
+}
+
+
+
+
 
 // ---------------------------------------------------------------------------
 // TraCIAPI::TrafficLightScope-methods
@@ -2213,4 +2235,3 @@ TraCIAPI::PersonScope::getNextEdge(const std::string& typeID) const {
 
 
 /****************************************************************************/
-

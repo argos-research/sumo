@@ -596,6 +596,7 @@ public:
         SubscribedValues getContextSubscriptionResults(const std::string& objID);
 
         TraCIPosition convert2D(const std::string& edgeID, SUMOReal lanePos, int laneIndex) const;
+	std::tuple<std::string, SUMOReal, int> convertRoad(SUMOReal x, SUMOReal y, bool isGeo=false) const;
 
     private:
         /// @brief invalidated copy constructor
@@ -970,4 +971,3 @@ protected:
 #endif
 
 /****************************************************************************/
-
