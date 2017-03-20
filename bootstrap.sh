@@ -12,4 +12,4 @@
 
 cd /vagrant
 ./configure CXXFLAGS="--std=c++11"
-make -j4
+make -j2
