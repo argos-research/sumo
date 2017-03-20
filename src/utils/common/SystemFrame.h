@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 23.06.2003
-/// @version $Id: SystemFrame.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: SystemFrame.h 22797 2017-01-31 14:53:07Z namdre $
 ///
 // A set of actions common to all applications
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -72,6 +72,8 @@ public:
      */
     static void addReportOptions(OptionsCont& oc);
 
+    /// @brief checks shared options and sets StdDefs
+    static bool checkOptions();
 
     /** @brief Closes all of an applications subsystems
      *

@@ -2,12 +2,12 @@
 /// @file    GNEDetectorE3.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetectorE3.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEDetectorE3.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 ///
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -50,6 +50,8 @@
 #include <utils/common/MsgHandler.h>
 
 #include "GNEDetectorE3.h"
+#include "GNEDetectorEntry.h"
+#include "GNEDetectorExit.h"
 #include "GNELane.h"
 #include "GNEViewNet.h"
 #include "GNEUndoList.h"
@@ -64,8 +66,8 @@
 // member method definitions
 // ===========================================================================
 
-GNEDetectorE3::GNEDetectorE3(const std::string& id, GNEViewNet* viewNet, Position pos, int freq, const std::string& filename, SUMOTime timeThreshold, SUMOReal speedThreshold, bool blocked) :
-    GNEAdditionalSet(id, viewNet, pos, SUMO_TAG_E3DETECTOR, blocked),
+GNEDetectorE3::GNEDetectorE3(const std::string& id, GNEViewNet* viewNet, Position pos, SUMOReal freq, const std::string& filename, const SUMOReal timeThreshold, SUMOReal speedThreshold) :
+    GNEAdditional(id, viewNet, pos, SUMO_TAG_E3DETECTOR, ICON_E3),
     myFreq(freq),
     myFilename(filename),
     myTimeThreshold(timeThreshold),
@@ -99,16 +101,26 @@ GNEDetectorE3::updateGeometry() {
     // Set position
     myShape.push_back(myPosition);
 
-    // Add shape of childs (To avoid graphics errors)
-    for (childAdditionals::iterator i = myChildAdditionals.begin(); i != myChildAdditionals.end(); i++) {
-        myShape.append((*i)->getShape());
-    }
-
-    // Update connections
-    updateConnections();
-
     // Refresh element (neccesary to avoid grabbing problems)
     myViewNet->getNet()->refreshAdditional(this);
+
+    // Clear all containers
+    myShapeRotations.clear();
+    myShapeLengths.clear();
+
+
+    // iterate over entry childs and update their gemometries
+    for (std::vector<GNEDetectorEntry*>::iterator i = myGNEDetectorEntrys.begin(); i != myGNEDetectorEntrys.end(); i++) {
+        (*i)->updateGeometryByParent();
+    }
+
+    // iterate over entry childs and update their gemometries
+    for (std::vector<GNEDetectorExit*>::iterator i = myGNEDetectorExits.begin(); i != myGNEDetectorExits.end(); i++) {
+        (*i)->updateGeometryByParent();
+    }
+
+    // Update connection's geometry
+    updateGeometryConnections();
 }
 
 
@@ -121,7 +133,7 @@ GNEDetectorE3::getPositionInView() const {
 void
 GNEDetectorE3::moveAdditionalGeometry(SUMOReal offsetx, SUMOReal offsety) {
     // change Position
-    myPosition = Position(offsetx, offsety);
+    myPosition.set(offsetx, offsety);
     updateGeometry();
 }
 
@@ -129,7 +141,8 @@ GNEDetectorE3::moveAdditionalGeometry(SUMOReal offsetx, SUMOReal offsety) {
 void
 GNEDetectorE3::commmitAdditionalGeometryMoved(SUMOReal oldPosx, SUMOReal oldPosy, GNEUndoList* undoList) {
     undoList->p_begin("position of " + toString(getTag()));
-    undoList->p_add(new GNEChange_Attribute(this, SUMO_ATTR_POSITION, toString(myPosition), true, toString(Position(oldPosx, oldPosy))));
+    undoList->p_add(new GNEChange_Attribute(this, SUMO_ATTR_X, toString(myPosition.x()), true, toString(oldPosx)));
+    undoList->p_add(new GNEChange_Attribute(this, SUMO_ATTR_Y, toString(myPosition.y()), true, toString(oldPosy)));
     undoList->p_end();
     // Refresh element
     myViewNet->getNet()->refreshAdditional(this);
@@ -137,9 +150,9 @@ GNEDetectorE3::commmitAdditionalGeometryMoved(SUMOReal oldPosx, SUMOReal oldPosy
 
 
 void
-GNEDetectorE3::writeAdditional(OutputDevice& device, const std::string& currentDirectory) {
+GNEDetectorE3::writeAdditional(OutputDevice& device) const {
     // Only save E3 if have Entry/Exits
-    if (getNumberOfAdditionalChilds() > 0) {
+    if ((myGNEDetectorEntrys.size() + myGNEDetectorExits.size()) > 0) {
         // Write parameters
         device.openTag(getTag());
         device.writeAttr(SUMO_ATTR_ID, getID());
@@ -151,22 +164,118 @@ GNEDetectorE3::writeAdditional(OutputDevice& device, const std::string& currentD
         device.writeAttr(SUMO_ATTR_HALTING_SPEED_THRESHOLD, mySpeedThreshold);
         device.writeAttr(SUMO_ATTR_X, myPosition.x());
         device.writeAttr(SUMO_ATTR_Y, myPosition.y());
-        if (myBlocked) {
-            device.writeAttr(GNE_ATTR_BLOCK_MOVEMENT, myBlocked);
+
+        // Write entrys
+        for (std::vector<GNEDetectorEntry*>::const_iterator i = myGNEDetectorEntrys.begin(); i != myGNEDetectorEntrys.end(); i++) {
+            device.openTag((*i)->getTag());
+            device.writeAttr(SUMO_ATTR_LANE, (*i)->getLane()->getID());
+            device.writeAttr(SUMO_ATTR_POSITION, (*i)->getPositionOverLane());
+            device.closeTag();
         }
-        // Write childs of this element
-        writeAdditionalChildrens(device, currentDirectory);
-        // Close tag
+
+        // Write exits
+        for (std::vector<GNEDetectorExit*>::const_iterator i = myGNEDetectorExits.begin(); i != myGNEDetectorExits.end(); i++) {
+            device.openTag((*i)->getTag());
+            device.writeAttr(SUMO_ATTR_LANE, (*i)->getLane()->getID());
+            device.writeAttr(SUMO_ATTR_POSITION, (*i)->getPositionOverLane());
+            device.closeTag();
+        }
+
+        // Close E3 tag
         device.closeTag();
     } else {
-        WRITE_WARNING(toString(getTag()) + " with ID = '" + getID() + "' cannot be writed in additional file because don't have childs.");
+        WRITE_WARNING(toString(getTag()) + " with ID '" + getID() + "' cannot be writed in additional file because doesn't have childs.");
     }
+}
+
+
+std::string
+GNEDetectorE3::generateEntryID() {
+    int counter = 0;
+    while (myViewNet->getNet()->getAdditional(SUMO_TAG_DET_ENTRY, getID() + "_Entry" + toString(counter)) != NULL) {
+        counter++;
+    }
+    return (getID() + "_Det_Entry" + toString(counter));
+}
+
+
+std::string
+GNEDetectorE3::generateExitID() {
+    int counter = 0;
+    while (myViewNet->getNet()->getAdditional(SUMO_TAG_DET_EXIT, getID() + "_Exit" + toString(counter)) != NULL) {
+        counter++;
+    }
+    return (getID() + "_Det_Exit" + toString(counter));
 }
 
 
 const std::string&
 GNEDetectorE3::getParentName() const {
     return myViewNet->getNet()->getMicrosimID();
+}
+
+
+void
+GNEDetectorE3::addEntryChild(GNEDetectorEntry* entry) {
+    // Check that entry is valid and doesn't exist previously
+    if (entry == NULL) {
+        throw InvalidArgument("Trying to add an empty " + toString(SUMO_TAG_DET_ENTRY) + " child in " + toString(SUMO_TAG_E3DETECTOR) + " with ID='" + getID() + "'");
+    } else if (std::find(myGNEDetectorEntrys.begin(), myGNEDetectorEntrys.end(), entry) != myGNEDetectorEntrys.end()) {
+        throw InvalidArgument("Trying to add a duplicated " + toString(SUMO_TAG_DET_ENTRY) + " child in " + toString(SUMO_TAG_E3DETECTOR) + " with ID='" + getID() + "'");
+    } else {
+        myGNEDetectorEntrys.push_back(entry);
+    }
+}
+
+
+void
+GNEDetectorE3::removeEntryChild(GNEDetectorEntry* entry) {
+    // Check that entry is valid and exist previously
+    if (entry == NULL) {
+        throw InvalidArgument("Trying to remove an empty " + toString(SUMO_TAG_DET_ENTRY) + " child in " + toString(SUMO_TAG_E3DETECTOR) + " with ID='" + getID() + "'");
+    } else if (std::find(myGNEDetectorEntrys.begin(), myGNEDetectorEntrys.end(), entry) == myGNEDetectorEntrys.end()) {
+        throw InvalidArgument("Trying to remove a non previously inserted " + toString(SUMO_TAG_DET_ENTRY) + " child in " + toString(SUMO_TAG_E3DETECTOR) + " with ID='" + getID() + "'");
+    } else {
+        myGNEDetectorEntrys.erase(std::find(myGNEDetectorEntrys.begin(), myGNEDetectorEntrys.end(), entry));
+    }
+}
+
+
+void
+GNEDetectorE3::addExitChild(GNEDetectorExit* exit) {
+    // Check that exit is valid and doesn't exist previously
+    if (exit == NULL) {
+        throw InvalidArgument("Trying to add an empty " + toString(SUMO_TAG_DET_EXIT) + " child in " + toString(SUMO_TAG_E3DETECTOR) + " with ID='" + getID() + "'");
+    } else if (std::find(myGNEDetectorExits.begin(), myGNEDetectorExits.end(), exit) != myGNEDetectorExits.end()) {
+        throw InvalidArgument("Trying to add a duplicated " + toString(SUMO_TAG_DET_EXIT) + " child in " + toString(SUMO_TAG_E3DETECTOR) + " with ID='" + getID() + "'");
+    } else {
+        myGNEDetectorExits.push_back(exit);
+    }
+}
+
+
+void
+GNEDetectorE3::removeExitChild(GNEDetectorExit* exit) {
+    // Check that exit is valid and exist previously
+    if (exit == NULL) {
+        throw InvalidArgument("Trying to remove an empty " + toString(SUMO_TAG_DET_EXIT) + " child in " + toString(SUMO_TAG_E3DETECTOR) + " with ID='" + getID() + "'");
+    } else if (std::find(myGNEDetectorExits.begin(), myGNEDetectorExits.end(), exit) == myGNEDetectorExits.end()) {
+        throw InvalidArgument("Trying to remove a non previously inserted " + toString(SUMO_TAG_DET_EXIT) + " child in " + toString(SUMO_TAG_E3DETECTOR) + " with ID='" + getID() + "'");
+    } else {
+        myGNEDetectorExits.erase(std::find(myGNEDetectorExits.begin(), myGNEDetectorExits.end(), exit));
+    }
+}
+
+
+int
+GNEDetectorE3::getNumberOfEntryChilds() const {
+    return (int)myGNEDetectorEntrys.size();
+}
+
+
+int
+GNEDetectorE3::getNumberOfExitChilds() const {
+    return (int)myGNEDetectorExits.size();
 }
 
 
@@ -180,12 +289,11 @@ GNEDetectorE3::drawGL(const GUIVisualizationSettings& s) const {
     glTranslated(myShape[0].x(), myShape[0].y(), getType());
     glColor3d(1, 1, 1);
     glRotated(180, 0, 0, 1);
-
     // Draw icon depending of detector is or isn't selected
     if (isAdditionalSelected()) {
-        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_E3SELECTED), 1);
+        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getTexture(GNETEXTURE_E3SELECTED), 1);
     } else {
-        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_E3), 1);
+        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getTexture(GNETEXTURE_E3), 1);
     }
 
     // Pop logo matrix
@@ -195,7 +303,7 @@ GNEDetectorE3::drawGL(const GUIVisualizationSettings& s) const {
     drawLockIcon(0.4);
 
     // Draw connections
-    drawConnections();
+    drawParentAndChildrenConnections();
 
     // Pop name
     glPopName();
@@ -210,8 +318,10 @@ GNEDetectorE3::getAttribute(SumoXMLAttr key) const {
     switch (key) {
         case SUMO_ATTR_ID:
             return getAdditionalID();
-        case SUMO_ATTR_POSITION:
-            return toString(myPosition);
+        case SUMO_ATTR_X:
+            return toString(myPosition.x());
+        case SUMO_ATTR_Y:
+            return toString(myPosition.y());
         case SUMO_ATTR_FREQUENCY:
             return toString(myFreq);
         case SUMO_ATTR_FILE:
@@ -223,7 +333,7 @@ GNEDetectorE3::getAttribute(SumoXMLAttr key) const {
         case GNE_ATTR_BLOCK_MOVEMENT:
             return toString(myBlocked);
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -236,7 +346,8 @@ GNEDetectorE3::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoLi
     switch (key) {
         case SUMO_ATTR_ID:
         case SUMO_ATTR_FREQUENCY:
-        case SUMO_ATTR_POSITION:
+        case SUMO_ATTR_X:
+        case SUMO_ATTR_Y:
         case SUMO_ATTR_FILE:
         case SUMO_ATTR_HALTING_TIME_THRESHOLD:
         case SUMO_ATTR_HALTING_SPEED_THRESHOLD:
@@ -245,7 +356,7 @@ GNEDetectorE3::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoLi
             updateGeometry();
             break;
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -259,22 +370,22 @@ GNEDetectorE3::isValid(SumoXMLAttr key, const std::string& value) {
             } else {
                 return false;
             }
-        case SUMO_ATTR_POSITION:
-            bool ok;
-            return GeomConvHelper::parseShapeReporting(value, "user-supplied position", 0, ok, false).size() == 1;
+        case SUMO_ATTR_X:
+            return canParse<SUMOReal>(value);
+        case SUMO_ATTR_Y:
+            return canParse<SUMOReal>(value);
         case SUMO_ATTR_FREQUENCY:
-            return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) >= 0);
+            return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) > 0);
         case SUMO_ATTR_FILE:
             return isValidFileValue(value);
         case SUMO_ATTR_HALTING_TIME_THRESHOLD:
-            // @ToDo SUMOTIME
-            return canParse<int>(value);
+            return canParse<SUMOReal>(value);
         case SUMO_ATTR_HALTING_SPEED_THRESHOLD:
             return canParse<SUMOReal>(value);
         case GNE_ATTR_BLOCK_MOVEMENT:
             return canParse<bool>(value);
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -284,10 +395,21 @@ GNEDetectorE3::setAttribute(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
             setAdditionalID(value);
+            // Change Ids of all Entry/Exits childs
+            for (std::vector<GNEDetectorEntry*>::iterator i = myGNEDetectorEntrys.begin(); i != myGNEDetectorEntrys.end(); i++) {
+                (*i)->setAdditionalID(generateEntryID());
+            }
+            for (std::vector<GNEDetectorExit*>::iterator i = myGNEDetectorExits.begin(); i != myGNEDetectorExits.end(); i++) {
+                (*i)->setAdditionalID(generateExitID());
+            }
             break;
-        case SUMO_ATTR_POSITION:
-            bool ok;
-            myPosition = GeomConvHelper::parseShapeReporting(value, "user-supplied position", 0, ok, false)[0];
+        case SUMO_ATTR_X:
+            myPosition.setx(parse<SUMOReal>(value));
+            updateGeometry();
+            getViewNet()->update();
+            break;
+        case SUMO_ATTR_Y:
+            myPosition.sety(parse<SUMOReal>(value));
             updateGeometry();
             getViewNet()->update();
             break;
@@ -298,8 +420,7 @@ GNEDetectorE3::setAttribute(SumoXMLAttr key, const std::string& value) {
             myFilename = value;
             break;
         case SUMO_ATTR_HALTING_TIME_THRESHOLD:
-            // @todo SUMOTIME
-            myTimeThreshold = parse<int>(value);
+            myTimeThreshold = parse<SUMOReal>(value);
             break;
         case SUMO_ATTR_HALTING_SPEED_THRESHOLD:
             mySpeedThreshold = parse<SUMOReal>(value);
@@ -309,7 +430,59 @@ GNEDetectorE3::setAttribute(SumoXMLAttr key, const std::string& value) {
             getViewNet()->update();
             break;
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
+    }
+}
+
+
+void
+GNEDetectorE3::updateGeometryConnections() {
+    myConnectionPositions.clear();
+    // Iterate over Entrys
+    for (std::vector<GNEDetectorEntry*>::iterator i = myGNEDetectorEntrys.begin(); i != myGNEDetectorEntrys.end(); i++) {
+        std::vector<Position> posConnection;
+        SUMOReal A = std::abs((*i)->getPositionInView().x() - getPositionInView().x());
+        SUMOReal B = std::abs((*i)->getPositionInView().y() - getPositionInView().y());
+        // Set positions of connection's vertex. Connection is build from Entry to E3
+        posConnection.push_back((*i)->getPositionInView());
+        if (getPositionInView().x() > (*i)->getPositionInView().x()) {
+            if (getPositionInView().y() > (*i)->getPositionInView().y()) {
+                posConnection.push_back(Position((*i)->getPositionInView().x() + A, (*i)->getPositionInView().y()));
+            } else {
+                posConnection.push_back(Position((*i)->getPositionInView().x(), (*i)->getPositionInView().y() - B));
+            }
+        } else {
+            if (getPositionInView().y() > (*i)->getPositionInView().y()) {
+                posConnection.push_back(Position((*i)->getPositionInView().x(), (*i)->getPositionInView().y() + B));
+            } else {
+                posConnection.push_back(Position((*i)->getPositionInView().x() - A, (*i)->getPositionInView().y()));
+            }
+        }
+        posConnection.push_back(getPositionInView());
+        myConnectionPositions.push_back(posConnection);
+    }
+    // Iterate over exits
+    for (std::vector<GNEDetectorExit*>::iterator i = myGNEDetectorExits.begin(); i != myGNEDetectorExits.end(); i++) {
+        std::vector<Position> posConnection;
+        SUMOReal A = std::abs((*i)->getPositionInView().x() - getPositionInView().x());
+        SUMOReal B = std::abs((*i)->getPositionInView().y() - getPositionInView().y());
+        // Set positions of connection's vertex. Connection is build from Entry to E3
+        posConnection.push_back((*i)->getPositionInView());
+        if (getPositionInView().x() > (*i)->getPositionInView().x()) {
+            if (getPositionInView().y() > (*i)->getPositionInView().y()) {
+                posConnection.push_back(Position((*i)->getPositionInView().x() + A, (*i)->getPositionInView().y()));
+            } else {
+                posConnection.push_back(Position((*i)->getPositionInView().x(), (*i)->getPositionInView().y() - B));
+            }
+        } else {
+            if (getPositionInView().y() > (*i)->getPositionInView().y()) {
+                posConnection.push_back(Position((*i)->getPositionInView().x(), (*i)->getPositionInView().y() + B));
+            } else {
+                posConnection.push_back(Position((*i)->getPositionInView().x() - A, (*i)->getPositionInView().y()));
+            }
+        }
+        posConnection.push_back(getPositionInView());
+        myConnectionPositions.push_back(posConnection);
     }
 }
 

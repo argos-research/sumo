@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 05 Jun 2012
-/// @version $Id: MSCFModel_Daniel1.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSCFModel_Daniel1.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The original Krauss (1998) car-following model and parameter
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

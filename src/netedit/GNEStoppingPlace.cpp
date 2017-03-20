@@ -2,12 +2,12 @@
 /// @file    GNEStoppingPlace.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Dec 2015
-/// @version $Id: GNEStoppingPlace.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEStoppingPlace.cpp 22915 2017-02-10 14:05:44Z palcraft $
 ///
 /// A abstract class to define common parameters of lane area in which vehicles can halt (GNE version)
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -65,8 +65,8 @@
 // member method definitions
 // ===========================================================================
 
-GNEStoppingPlace::GNEStoppingPlace(const std::string& id, GNEViewNet* viewNet, SumoXMLTag tag, GNELane* lane, SUMOReal startPos, SUMOReal endPos, bool blocked) :
-    GNEAdditional(id, viewNet, Position(), tag, NULL, blocked),
+GNEStoppingPlace::GNEStoppingPlace(const std::string& id, GNEViewNet* viewNet, SumoXMLTag tag, GUIIcon icon, GNELane* lane, SUMOReal startPos, SUMOReal endPos) :
+    GNEAdditional(id, viewNet, Position(), tag, icon),
     myStartPos(startPos),
     myEndPos(endPos),
     mySignColor(RGBColor::YELLOW),
@@ -131,11 +131,11 @@ GNEStoppingPlace::getEndPosition() const {
 void
 GNEStoppingPlace::setStartPosition(SUMOReal startPos) {
     if (startPos < 0) {
-        throw InvalidArgument("Start position '" + toString(startPos) + "' not allowed. Must be greather than 0");
+        throw InvalidArgument(toString(SUMO_ATTR_STARTPOS) + " '" + toString(startPos) + "' not allowed. Must be greater than 0");
     } else if (startPos >= myEndPos) {
-        throw InvalidArgument("Start position '" + toString(startPos) + "' not allowed. Must be smaller than endPos '" + toString(myEndPos) + "'");
+        throw InvalidArgument(toString(SUMO_ATTR_STARTPOS) + " '" + toString(startPos) + "' not allowed. Must be smaller than endPos '" + toString(myEndPos) + "'");
     } else if ((myEndPos - startPos) < 1) {
-        throw InvalidArgument("Start position '" + toString(startPos) + "' not allowed. Lenght of StoppingPlace must be equal or greather than 1");
+        throw InvalidArgument(toString(SUMO_ATTR_STARTPOS) + " '" + toString(startPos) + "' not allowed. Lenght of StoppingPlace must be equal or greater than 1");
     } else {
         myStartPos = startPos;
     }
@@ -145,11 +145,11 @@ GNEStoppingPlace::setStartPosition(SUMOReal startPos) {
 void
 GNEStoppingPlace::setEndPosition(SUMOReal endPos) {
     if (endPos > myLane->getLaneShapeLenght()) {
-        throw InvalidArgument("End position '" + toString(endPos) + "' not allowed. Must be smaller than lane length");
+        throw InvalidArgument(toString(SUMO_ATTR_ENDPOS) + " '" + toString(endPos) + "' not allowed. Must be smaller than lane length");
     } else if (myStartPos >= endPos) {
-        throw InvalidArgument("End position '" + toString(endPos) + "' not allowed. Must be smaller than endPos '" + toString(myEndPos) + "'");
+        throw InvalidArgument(toString(SUMO_ATTR_ENDPOS) + " '" + toString(endPos) + "' not allowed. Must be smaller than endPos '" + toString(myEndPos) + "'");
     } else if ((endPos - myStartPos) < 1) {
-        throw InvalidArgument("End position '" + toString(endPos) + "' not allowed. Lenght of StoppingPlace must be equal or greather than 1");
+        throw InvalidArgument(toString(SUMO_ATTR_ENDPOS) + " '" + toString(endPos) + "' not allowed. Lenght of StoppingPlace must be equal or greater than 1");
     } else {
         myEndPos = endPos;
     }

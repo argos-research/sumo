@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSLink.h 21706 2016-10-17 08:19:38Z luecken $
+/// @version $Id: MSLink.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A connnection between lanes
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -298,13 +298,6 @@ public:
     MSLane* getLane() const;
 
 
-    /** @brief Returns the lane leading to this link
-     *
-     * @return The lane leading to this link
-     */
-    MSLane* getApproachingLane() const;
-
-
     /** @brief Returns the respond index (for visualization)
      *
      * @return The respond index for this link
@@ -397,12 +390,12 @@ public:
 
     /** @brief Returns all potential link leaders (vehicles on foeLanes)
      * Valid during the planMove() phase
+     * @param[in] ego The ego vehicle that is looking for leaders
      * @param[in] dist The distance of the vehicle who is asking about the leader to this link
-     * @param[in] minGap The minGap of the vehicle who is asking about the leader to this link
      * @param[out] blocking Return blocking pedestrians if a vector is given
      * @return The all vehicles on foeLanes and their (virtual) distances to the asking vehicle
      */
-    LinkLeaders getLeaderInfo(SUMOReal dist, SUMOReal minGap, std::vector<const MSPerson*>* collectBlockers = 0) const;
+    LinkLeaders getLeaderInfo(const MSVehicle* ego, SUMOReal dist, std::vector<const MSPerson*>* collectBlockers = 0) const;
 #endif
 
     /// @brief return the speed at which ego vehicle must approach the zipper link
@@ -448,9 +441,19 @@ public:
         return myMesoTLSPenalty;
     }
 
+    /** @brief Returns the average proportion of green time to cycle time */
+    SUMOReal getGreenFraction() const {
+        return myGreenFraction;
+    }
+
     /** @brief Sets the time penalty for passing a tls-controlled link (meso) */
     void setMesoTLSPenalty(const SUMOTime penalty) {
         myMesoTLSPenalty = penalty;
+    }
+
+    /** @brief Sets the green fraction for passing a tls-controlled link (meso) */
+    void setGreenFraction(const SUMOReal fraction) {
+        myGreenFraction = fraction;
     }
 
     const std::vector<const MSLane*>& getFoeLanes() {
@@ -509,6 +512,11 @@ private:
     /// @brief The length of the link
     SUMOReal myLength;
 
+    /// @brief distance from which an approaching vehicle is able to
+    ///        see all relevant foes and may accelerate if the link is minor
+    ///        and no foe is approaching. Defaults to 4.5m.
+    SUMOReal myFoeVisibilityDistance;
+
     /// @brief Whether any foe links exist
     bool myHasFoes;
 
@@ -517,20 +525,18 @@ private:
 
     bool myKeepClear;
 
-    /// @brief distance from which an approaching vehicle is able to
-    ///        see all relevant foes and may accelerate if the link is minor
-    ///        and no foe is approaching. Defaults to 4.5m.
-    SUMOReal myFoeVisibilityDistance;
-
     /// @brief penalty time for mesoscopic simulation
     SUMOTime myMesoTLSPenalty;
+    SUMOReal myGreenFraction;
 
 #ifdef HAVE_INTERNAL_LANES
     /// @brief The following junction-internal lane if used
     MSLane* const myInternalLane;
 
-    /// @brief The preceding junction-internal lane if used
-    // XXX obsolete as this is identical with myLaneBefore
+    /* @brief The preceding junction-internal lane, only used at
+     * - exit links (from internal lane to normal lane)
+     * - internal junction links (from internal lane to internal lane)
+     */
     const MSLane* myInternalLaneBefore;
 
     /* @brief lengths after the crossing point with foeLane

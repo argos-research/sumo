@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: GUIParameterTableWindow.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: GUIParameterTableWindow.cpp 22917 2017-02-11 14:48:06Z palcraft $
 ///
 // The window that holds the table of an object's parameter
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -69,12 +69,10 @@ std::vector<GUIParameterTableWindow*> GUIParameterTableWindow::myContainer;
 // ===========================================================================
 // method definitions
 // ===========================================================================
-GUIParameterTableWindow::GUIParameterTableWindow(GUIMainWindow& app,
-        GUIGlObject& o, int noRows)
-    : FXMainWindow(app.getApp(), (o.getFullName() + " Parameter").c_str(),
-                   NULL, NULL, DECOR_ALL, 20, 20, 500, (FXint)(noRows * 20 + 60)),
-      myObject(&o),
-      myApplication(&app), myCurrentPos(0) {
+GUIParameterTableWindow::GUIParameterTableWindow(GUIMainWindow& app, GUIGlObject& o, int noRows) :
+    FXMainWindow(app.getApp(), (o.getFullName() + " Parameter").c_str(), NULL, NULL, DECOR_ALL, 20, 20, 500, (FXint)(noRows * 20 + 60)),
+    myObject(&o),
+    myApplication(&app), myCurrentPos(0) {
     myTable = new FXTable(this, this, MID_TABLE, TABLE_COL_SIZABLE | TABLE_ROW_SIZABLE | LAYOUT_FILL_X | LAYOUT_FILL_Y);
     myTable->setVisibleRows((FXint)(noRows + 1));
     myTable->setVisibleColumns(3);

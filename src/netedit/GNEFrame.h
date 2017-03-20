@@ -2,12 +2,12 @@
 /// @file    GNEFrame.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNEFrame.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEFrame.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 /// Abstract class for lateral frames in NetEdit
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -50,23 +50,30 @@ class GNEUndoList;
  * @class GNEFrame
  * Abstract class for lateral frames in NetEdit
  */
-class GNEFrame : public FXScrollWindow {
+class GNEFrame : public FXVerticalFrame {
 public:
     /**@brief Constructor
-     * @brief parent FXFrame in which this GNEFrame is placed
+     * @brief parent FXHorizontalFrame in which this GNEFrame is placed
      * @brief viewNet viewNet that uses this GNEFrame
      * @brief frameLabel label of the frame
      */
-    GNEFrame(FXComposite* parent, GNEViewNet* viewNet, const std::string& frameLabel);
+    GNEFrame(FXHorizontalFrame* horizontalFrameParent, GNEViewNet* viewNet, const std::string& frameLabel);
 
     /// @brief destructor
     ~GNEFrame();
 
-    /// @brief show Frame
-    virtual void show() = 0;
+    /**@brief show Frame
+     * @note some GNEFrames needs a re-implementation
+     */
+    virtual void show();
 
-    /// @brief hide Frame
-    virtual void hide() = 0;
+    /**@brief hide Frame
+     * @note some GNEFrames needs a re-implementation
+     */
+    virtual void hide();
+
+    /// @brief set width of GNEFrame
+    void setFrameWidth(int width);
 
     /// @brief get view net
     GNEViewNet* getViewNet() const;
@@ -90,7 +97,7 @@ protected:
     /// @brief the label for the frame's header
     FXLabel* myFrameHeaderLabel;
 
-    /// @brief the panel to hold all member widgets
+    /// @brief Vertical frame that holds all widgets of frame
     FXVerticalFrame* myContentFrame;
 
     /// @brief fame for header elements
@@ -103,6 +110,9 @@ protected:
     FXHorizontalFrame* myHeaderRightFrame;
 
 private:
+    /// @brief scroll windows that holds the content frame
+    FXScrollWindow* myScrollWindowsContents;
+
     /// @brief Invalidated copy constructor.
     GNEFrame(const GNEFrame&);
 

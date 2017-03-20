@@ -2,12 +2,12 @@
 /// @file    GNEChange_Selection.h
 /// @author  Jakob Erdmann
 /// @date    Mar 2015
-/// @version $Id: GNEChange_Selection.h 21430 2016-09-05 14:42:57Z namdre $
+/// @version $Id: GNEChange_Selection.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A change to the network selection
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -51,6 +51,7 @@ class GNEChange_Selection : public GNEChange {
 
 public:
     /**@brief Constructor for modifying selection
+     * @param[in] net net in which apply selection chagnes
      * @param[in] selected The ids to select
      * @param[in] deselected The ids to deselect
      * @param[in] forward Whether to select or deselect the selected ids

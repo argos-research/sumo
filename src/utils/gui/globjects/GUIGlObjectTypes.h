@@ -4,14 +4,14 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIGlObjectTypes.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GUIGlObjectTypes.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A list of object types which may be displayed within the gui
 // each type has an associated string which will be prefefixed to an object id
 // when constructing the full name
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

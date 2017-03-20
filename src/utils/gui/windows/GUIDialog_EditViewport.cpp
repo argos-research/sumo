@@ -4,12 +4,12 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    Mon, 25.04.2005
-/// @version $Id: GUIDialog_EditViewport.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GUIDialog_EditViewport.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A dialog to change the viewport
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -38,6 +38,7 @@
 #include <utils/gui/images/GUIIconSubSys.h>
 #include "GUISUMOAbstractView.h"
 #include <utils/gui/div/GUIIOGlobals.h>
+#include <utils/gui/div/GUIDesigns.h>
 #include <utils/gui/settings/GUISettingsHandler.h>
 #include "GUIDialog_EditViewport.h"
 
@@ -74,11 +75,9 @@ GUIDialog_EditViewport::GUIDialog_EditViewport(GUISUMOAbstractView* parent,
         FXHorizontalFrame* frame0 =
             new FXHorizontalFrame(f1, FRAME_THICK, 0, 0, 0, 0, 0, 0, 0, 0, 2, 2);
         new FXButton(frame0, "\t\tLoad viewport from file",
-                     GUIIconSubSys::getIcon(ICON_OPEN_CONFIG), this, GUIDialog_EditViewport::MID_LOAD,
-                     ICON_ABOVE_TEXT | BUTTON_TOOLBAR | FRAME_RAISED | LAYOUT_TOP | LAYOUT_LEFT);
+                     GUIIconSubSys::getIcon(ICON_OPEN_CONFIG), this, GUIDialog_EditViewport::MID_LOAD, GUIDesignButtonToolbar);
         new FXButton(frame0, "\t\tSave viewport to file",
-                     GUIIconSubSys::getIcon(ICON_SAVE), this, GUIDialog_EditViewport::MID_SAVE,
-                     ICON_ABOVE_TEXT | BUTTON_TOOLBAR | FRAME_RAISED | LAYOUT_TOP | LAYOUT_LEFT);
+                     GUIIconSubSys::getIcon(ICON_SAVE), this, GUIDialog_EditViewport::MID_SAVE, GUIDesignButtonToolbar);
     }
     FXMatrix* m1 = new FXMatrix(f1, 2, MATRIX_BY_COLUMNS);
     new FXLabel(m1, "Zoom:", 0, LAYOUT_CENTER_Y);
@@ -86,21 +85,21 @@ GUIDialog_EditViewport::GUIDialog_EditViewport(GUISUMOAbstractView* parent,
     myZoom->setRange(0.0001, 100000);
     myZoom->setNumberFormat(4);
     new FXLabel(m1, "X:", 0, LAYOUT_CENTER_Y);
-    myXOff = new FXRealSpinDial(m1, 16, this, MID_CHANGED, LAYOUT_CENTER_Y | LAYOUT_TOP | FRAME_SUNKEN | FRAME_THICK | SPINDIAL_NOMIN | SPINDIAL_NOMAX);
+    myXOff = new FXRealSpinDial(m1, 16, this, MID_CHANGED, GUIDesignSpinDial | SPINDIAL_NOMIN | SPINDIAL_NOMAX);
     new FXLabel(m1, "Y:", 0, LAYOUT_CENTER_Y);
-    myYOff = new FXRealSpinDial(m1, 16, this, MID_CHANGED, LAYOUT_CENTER_Y | LAYOUT_TOP | FRAME_SUNKEN | FRAME_THICK | SPINDIAL_NOMIN | SPINDIAL_NOMAX);
+    myYOff = new FXRealSpinDial(m1, 16, this, MID_CHANGED, GUIDesignSpinDial | SPINDIAL_NOMIN | SPINDIAL_NOMAX);
     new FXLabel(m1, "Z:", 0, LAYOUT_CENTER_Y);
-    myZOff = new FXRealSpinDial(m1, 16, this, MID_CHANGED, LAYOUT_CENTER_Y | LAYOUT_TOP | FRAME_SUNKEN | FRAME_THICK | SPINDIAL_NOMIN | SPINDIAL_NOMAX);
+    myZOff = new FXRealSpinDial(m1, 16, this, MID_CHANGED, GUIDesignSpinDial | SPINDIAL_NOMIN | SPINDIAL_NOMAX);
 #ifdef HAVE_OSG
     new FXLabel(m1, "LookAtX:", 0, LAYOUT_CENTER_Y);
-    myLookAtX = new FXRealSpinDial(m1, 16, this, MID_CHANGED, LAYOUT_CENTER_Y | LAYOUT_TOP | FRAME_SUNKEN | FRAME_THICK | SPINDIAL_NOMIN | SPINDIAL_NOMAX);
+    myLookAtX = new FXRealSpinDial(m1, 16, this, MID_CHANGED, GUIDesignSpinDial | SPINDIAL_NOMIN | SPINDIAL_NOMAX);
     new FXLabel(m1, "LookAtY:", 0, LAYOUT_CENTER_Y);
-    myLookAtY = new FXRealSpinDial(m1, 16, this, MID_CHANGED, LAYOUT_CENTER_Y | LAYOUT_TOP | FRAME_SUNKEN | FRAME_THICK | SPINDIAL_NOMIN | SPINDIAL_NOMAX);
+    myLookAtY = new FXRealSpinDial(m1, 16, this, MID_CHANGED, GUIDesignSpinDial | SPINDIAL_NOMIN | SPINDIAL_NOMAX);
     new FXLabel(m1, "LookAtZ:", 0, LAYOUT_CENTER_Y);
-    myLookAtZ = new FXRealSpinDial(m1, 16, this, MID_CHANGED, LAYOUT_CENTER_Y | LAYOUT_TOP | FRAME_SUNKEN | FRAME_THICK | SPINDIAL_NOMIN | SPINDIAL_NOMAX);
+    myLookAtZ = new FXRealSpinDial(m1, 16, this, MID_CHANGED, GUIDesignSpinDial | SPINDIAL_NOMIN | SPINDIAL_NOMAX);
 #endif
     // ok/cancel
-    new FXHorizontalSeparator(f1, SEPARATOR_GROOVE | LAYOUT_FILL_X);
+    new FXHorizontalSeparator(f1, GUIDesignHorizontalSeparator);
     FXHorizontalFrame* f6 = new FXHorizontalFrame(f1, LAYOUT_TOP | LAYOUT_LEFT | LAYOUT_FILL_X | PACK_UNIFORM_WIDTH, 0, 0, 0, 0, 10, 10, 5, 0);
     FXButton* initial =
         new FXButton(f6, "&OK", NULL, this, GUIDialog_EditViewport::MID_OK,

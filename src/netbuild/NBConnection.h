@@ -4,12 +4,12 @@
 /// @brief @author  Jakob Erdmann
 /// @brief @author  Sascha Krieg
 /// @brief @date    Sept 2002
-/// @brief @version $Id: NBConnection.h 21756 2016-10-23 09:15:22Z palcraft $
+/// @brief @version $Id: NBConnection.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The class holds a description of a connection between two edges
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

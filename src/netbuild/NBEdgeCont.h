@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdgeCont.h 21714 2016-10-17 11:21:44Z namdre $
+/// @version $Id: NBEdgeCont.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Storage for edges, including some functionality operating on multiple edges
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -452,8 +452,11 @@ public:
      * @todo Recheck usage; check whether this is really needed and whether it works at all
      */
     void recheckLaneSpread();
+
     /// @}
 
+    /// @brief Returns the edge with negated id if it exists
+    NBEdge* getOppositeByID(const std::string& edgeID) const;
 
 
     /** @brief Determines which edges belong to roundabouts and increases their priority
@@ -526,11 +529,20 @@ public:
     /// @brief mark edge priorities and prohibit turn-arounds for all roundabout edges
     void markRoundabouts();
 
+    /// @brief fix roundabout information after splitting an edge
+    void patchRoundabouts(NBEdge* orig, NBEdge* part1, NBEdge* part2, std::set<EdgeSet>& roundabouts);
+
     /// @brief Returns true if this edge matches one of the removal criteria
     bool ignoreFilterMatch(NBEdge* edge);
 
-    /// @brief ensure that all edge ids are integers
-    int mapToNumericalIDs();
+    /// @brief remap node IDs accoring to options --numerical-ids and --reserved-ids
+    int remapIDs(bool numericaIDs, bool reservedIDs);
+
+    /// @brief check whether edges overlap
+    void checkOverlap(SUMOReal threshold, SUMOReal zThreshold) const;
+
+    /// @brief check whether edges are to steep
+    void checkGrade(SUMOReal threshold) const;
 
 private:
     /** @brief Returns the edges which have been built by splitting the edge of the given id

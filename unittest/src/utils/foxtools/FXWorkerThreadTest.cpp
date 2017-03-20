@@ -2,12 +2,12 @@
 /// @file    FXWorkerThreadTest.cpp
 /// @author  Michael Behrisch
 /// @date    Oct 2010
-/// @version $Id: FXWorkerThreadTest.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: FXWorkerThreadTest.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Tests the class FXWorkerThread
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

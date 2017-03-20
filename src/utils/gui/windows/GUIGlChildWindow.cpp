@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 29.05.2005
-/// @version $Id: GUIGlChildWindow.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GUIGlChildWindow.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 //
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -34,6 +34,7 @@
 #include <utils/gui/windows/GUIAppEnum.h>
 #include <utils/foxtools/MFXCheckableButton.h>
 #include <utils/gui/div/GUIGlobalSelection.h>
+#include <utils/gui/div/GUIDesigns.h>
 #include "GUIGlChildWindow.h"
 
 #ifdef CHECK_MEMORY_LEAKS
@@ -70,10 +71,7 @@ GUIGlChildWindow::GUIGlChildWindow(
     myParent(parentWindow) {
     // Make MDI Window Menu
     setTracking();
-    myContentFrame =
-        new FXVerticalFrame(this,
-                            FRAME_SUNKEN | LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y,
-                            0, 0, 0, 0, 0, 0, 0, 0);
+    myContentFrame = new FXVerticalFrame(this, GUIDesignFrameArea);
     // build the tool bar
     buildNavigationToolBar(); // always there (recenter)
     buildColoringToolBar(); // always there (coloring)
@@ -98,72 +96,60 @@ GUIGlChildWindow::create() {
 
 void
 GUIGlChildWindow::buildNavigationToolBar() {
-    myNavigationToolBar = new FXToolBar(myContentFrame, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | FRAME_RAISED);
+    // Build navigation toolbar
+    myNavigationToolBar = new FXToolBar(myContentFrame, GUIDesignBar);
+
     // build the view settings
     // recenter view
     new FXButton(myNavigationToolBar,
                  "\tRecenter View\tRecenter view to the simulated area.",
-                 GUIIconSubSys::getIcon(ICON_RECENTERVIEW), this, MID_RECENTERVIEW,
-                 ICON_ABOVE_TEXT | BUTTON_TOOLBAR | FRAME_RAISED | LAYOUT_TOP | LAYOUT_LEFT);
+                 GUIIconSubSys::getIcon(ICON_RECENTERVIEW), this, MID_RECENTERVIEW, GUIDesignButtonToolbar);
     // add viewport button
     new FXButton(myNavigationToolBar,
                  "\tEdit Viewport...\tOpens a menu which lets you edit the viewport.",
-                 GUIIconSubSys::getIcon(ICON_EDITVIEWPORT), this, MID_EDITVIEWPORT,
-                 ICON_ABOVE_TEXT | BUTTON_TOOLBAR | FRAME_RAISED | LAYOUT_TOP | LAYOUT_LEFT);
+                 GUIIconSubSys::getIcon(ICON_EDITVIEWPORT), this, MID_EDITVIEWPORT, GUIDesignButtonToolbar);
     // toggle button for zooming style
     MFXCheckableButton* zoomBut = new MFXCheckableButton(false, myNavigationToolBar,
             "\tToggles Zooming Style\tToggles whether zooming is based at cursor position or at the center of the view.",
-            GUIIconSubSys::getIcon(ICON_ZOOMSTYLE), this, MID_ZOOM_STYLE,
-            BUTTON_NORMAL | LAYOUT_FIX_WIDTH | LAYOUT_FIX_HEIGHT,
-            0, 0, 23, 23);
+            GUIIconSubSys::getIcon(ICON_ZOOMSTYLE), this, MID_ZOOM_STYLE, GUIDesignButtonToolbarCheckable);
     zoomBut->setChecked(getApp()->reg().readIntEntry("gui", "zoomAtCenter", 1) != 1);
 
     // build the locator popup
     myLocatorPopup = new FXPopup(myNavigationToolBar, POPUP_VERTICAL);
     myLocatorButton = new FXMenuButton(myNavigationToolBar, "\tLocate Structures\tLocate structures within the network.",
                                        GUIIconSubSys::getIcon(ICON_LOCATE), myLocatorPopup,
-                                       MENUBUTTON_RIGHT | LAYOUT_TOP | BUTTON_TOOLBAR | FRAME_RAISED | FRAME_THICK);
+                                       GUIDesignButtonToolbarLocator);
     // add toggle button for tool-tips on/off
     new MFXCheckableButton(false, myNavigationToolBar,
                            "\tToggles Tool Tips\tToggles whether tool tips shall be shown.",
-                           GUIIconSubSys::getIcon(ICON_SHOWTOOLTIPS), this, MID_SHOWTOOLTIPS,
-                           BUTTON_NORMAL | LAYOUT_FIX_WIDTH | LAYOUT_FIX_HEIGHT,
-                           0, 0, 23, 23);
+                           GUIIconSubSys::getIcon(ICON_SHOWTOOLTIPS), this, MID_SHOWTOOLTIPS, GUIDesignButtonToolbarCheckable);
 
 }
 
 
 void
 GUIGlChildWindow::buildColoringToolBar() {
-    // in fact, we currently are not able to build another bar
-    //  we just add somthing to the navigation bar
-//    myColoringToolBar = new FXToolBar(myContentFrame,LAYOUT_DOCK_SAME|LAYOUT_SIDE_TOP|LAYOUT_FILL_X|FRAME_RAISED);
-    new FXToolBarGrip(myNavigationToolBar, NULL, 0, TOOLBARGRIP_SINGLE | FRAME_SUNKEN);
+    // Create Vertical separator
+    new FXVerticalSeparator(myNavigationToolBar, GUIDesignVerticalSeparator);
 
     // build coloring tools
     // combo
-    myColoringSchemes =
-        new FXComboBox(myNavigationToolBar, 12, this, MID_COLOURSCHEMECHANGE,
-                       FRAME_SUNKEN | LAYOUT_LEFT | LAYOUT_TOP | COMBOBOX_STATIC | LAYOUT_CENTER_Y);
+    myColoringSchemes = new FXComboBox(myNavigationToolBar, GUIDesignComboBoxNCol, this, MID_COLOURSCHEMECHANGE, GUIDesignComboBoxStatic);
     // editor
     new FXButton(myNavigationToolBar,
                  "\tEdit Coloring Schemes...\tOpens a menu which lets you edit the coloring schemes.",
-                 GUIIconSubSys::getIcon(ICON_COLORWHEEL), this, MID_EDITVIEWSCHEME,
-                 ICON_ABOVE_TEXT | BUTTON_TOOLBAR | FRAME_RAISED | LAYOUT_TOP | LAYOUT_LEFT);
+                 GUIIconSubSys::getIcon(ICON_COLORWHEEL), this, MID_EDITVIEWSCHEME, GUIDesignButtonToolbar);
 }
 
 
 void
 GUIGlChildWindow::buildScreenshotToolBar() {
-    // in fact, we currently are not able to build another bar
-    //  we just add somthing to the navigation bar
-//    myScreenshotToolBar = new FXToolBar(myContentFrame,LAYOUT_DOCK_SAME|LAYOUT_SIDE_TOP|LAYOUT_FILL_X|FRAME_RAISED);
-    new FXToolBarGrip(myNavigationToolBar, NULL, 0, TOOLBARGRIP_SINGLE | FRAME_SUNKEN);
+    // Create Vertical separator
+    new FXVerticalSeparator(myNavigationToolBar, GUIDesignVerticalSeparator);
     // snapshot
     new MFXCheckableButton(false, myNavigationToolBar,
                            "\tMake Snapshot\tMakes a snapshot of the view.",
-                           GUIIconSubSys::getIcon(ICON_CAMERA), this, MID_MAKESNAPSHOT,
-                           ICON_ABOVE_TEXT | BUTTON_TOOLBAR | FRAME_RAISED | LAYOUT_TOP | LAYOUT_LEFT);
+                           GUIIconSubSys::getIcon(ICON_CAMERA), this, MID_MAKESNAPSHOT, GUIDesignButtonToolbar);
 }
 
 

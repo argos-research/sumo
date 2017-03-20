@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Fri, 29.04.2005
-/// @version $Id: GLObjectValuePassConnector.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GLObjectValuePassConnector.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Class passing values from a GUIGlObject to another object
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

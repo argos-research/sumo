@@ -101,8 +101,10 @@
         <xsd:attribute name="laneChangeModel">
             <xsd:simpleType>
                 <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="default"/>
                     <xsd:enumeration value="DK2008"/>
                     <xsd:enumeration value="LC2013"/>
+                    <xsd:enumeration value="SL2015"/>
                 </xsd:restriction>
             </xsd:simpleType> 
         </xsd:attribute>
@@ -463,6 +465,7 @@
         <xsd:sequence>
             <xsd:element name="stop" type="stopType" minOccurs="0" maxOccurs="unbounded"/>
         </xsd:sequence>
+        <xsd:attribute name="id" type="xsd:string" use="optional"/>
         <xsd:attribute name="edges" type="xsd:string"/>
         <xsd:attribute name="color" type="colorType"/>
         <xsd:attribute name="cost" type="xsd:float"/>
@@ -477,6 +480,8 @@
         <xsd:attribute name="lane" type="xsd:string"/>
         <xsd:attribute name="busStop" type="xsd:string"/>
         <xsd:attribute name="containerStop" type="xsd:string"/>
+        <xsd:attribute name="chargingStation" type="xsd:string"/>
+        <xsd:attribute name="parkingArea" type="xsd:string"/>
         <xsd:attribute name="startPos" type="xsd:float"/>
         <xsd:attribute name="endPos" type="xsd:float"/>
         <xsd:attribute name="friendlyPos" type="boolType"/>
@@ -525,6 +530,7 @@
                     <xsd:attribute name="vTypes" type="xsd:string"/>
                     <xsd:attribute name="departPos" type="departPosType"/>
                     <xsd:attribute name="arrivalPos" type="arrivalPosType"/>
+                    <xsd:attribute name="walkFactor" type="positiveFloatType"/>
                 </xsd:complexType>
             </xsd:element>
             <xsd:element name="ride">
@@ -544,6 +550,7 @@
                     <xsd:attribute name="speed" type="positiveFloatType"/>
                     <xsd:attribute name="duration" type="positiveFloatType"/>
                     <xsd:attribute name="departPos" type="departPosType"/>
+                    <xsd:attribute name="departPosLat" type="xsd:float"/>
                     <xsd:attribute name="arrivalPos" type="arrivalPosType"/>
                 </xsd:complexType>
             </xsd:element>
@@ -556,6 +563,7 @@
         <xsd:attribute name="type" type="xsd:string"/>
         <xsd:attribute name="departPos" type="departPosType"/>
         <xsd:attribute name="arrivalPos" type="arrivalPosType"/>
+        <xsd:attribute name="color" type="colorType"/>
         <xsd:attribute name="modes" type="xsd:string"/>
         <xsd:attribute name="vTypes" type="xsd:string"/>
     </xsd:complexType>
@@ -588,6 +596,7 @@
         <xsd:attribute name="arrival" type="nonNegativeFloatType"/>
         <xsd:attribute name="type" type="xsd:string"/>
         <xsd:attribute name="departPos" type="departPosType"/>
+        <xsd:attribute name="color" type="colorType"/>
     </xsd:complexType>
 
 </xsd:schema>

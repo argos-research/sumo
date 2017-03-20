@@ -5,7 +5,7 @@
 @author  Daniel Krajzewicz
 @author  Jakob Erdmann
 @date    2007
-@version $Id: version.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: version.py 22608 2017-01-17 06:28:54Z behrisch $
 
 This script rebuilds "../../src/version.h", the file which
  lets the applications know the version of their build.
@@ -15,7 +15,7 @@ If the version file is newer than the svn file or the revision cannot be
 determined any exisitng vershion.h is kept
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

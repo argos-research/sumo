@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 05 Dec 2005
-/// @version $Id: PCTypeMap.h 20801 2016-05-28 05:31:30Z behrisch $
+/// @version $Id: PCTypeMap.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A storage for type mappings
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

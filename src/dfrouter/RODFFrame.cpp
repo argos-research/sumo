@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Melanie Knocke
 /// @date    Thu, 16.03.2006
-/// @version $Id: RODFFrame.cpp 21252 2016-07-28 06:37:09Z namdre $
+/// @version $Id: RODFFrame.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Sets and checks options for df-routing
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2006-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2006-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

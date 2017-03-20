@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: NBConnection.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: NBConnection.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The class holds a description of a connection between two edges
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -130,7 +130,9 @@ NBConnection::replaceFrom(NBEdge* which, int whichLane,
         } else {
             myFromID = "invalidFrom";
         }
-        myFromLane = byLane;
+        if (byLane >= 0) {
+            myFromLane = byLane;
+        }
         return true;
     }
     return false;
@@ -162,7 +164,9 @@ NBConnection::replaceTo(NBEdge* which, int whichLane,
         } else {
             myToID = "invalidTo";
         }
-        myToLane = byLane;
+        if (byLane >= 0) {
+            myToLane = byLane;
+        }
         return true;
     }
     return false;

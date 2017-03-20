@@ -2,12 +2,12 @@
 /// @file    NIImporter_ITSUMO.h
 /// @author  Daniel Krajzewicz
 /// @date    2011-09-16
-/// @version $Id: NIImporter_ITSUMO.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: NIImporter_ITSUMO.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Importer for networks stored in ITSUMO format
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

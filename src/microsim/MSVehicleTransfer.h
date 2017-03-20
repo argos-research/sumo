@@ -4,13 +4,13 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sep 2003
-/// @version $Id: MSVehicleTransfer.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSVehicleTransfer.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A mover of vehicles that got stucked due to grid locks
 // This class also serves as container for parking vehicles
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2003-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2003-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -111,6 +111,12 @@ public:
 
     /// @brief return parking vehicles on the given lane
     const std::set<const MSVehicle*>& getParkingVehicles(const MSLane* lane) const;
+
+    /** @brief Saves the current state into the given stream */
+    void saveState(OutputDevice& out) const;
+
+    /** @brief Loads one transfer vehicle state from the given descriptionn */
+    void loadState(const SUMOSAXAttributes& attrs, const SUMOTime offset, MSVehicleControl& vc);
 
     /** @brief Returns the instance of this object
      * @return The singleton instance

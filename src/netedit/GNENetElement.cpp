@@ -2,12 +2,12 @@
 /// @file    GNENetElement.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNENetElement.cpp 21201 2016-07-19 11:57:22Z behrisch $
+/// @version $Id: GNENetElement.cpp 22915 2017-02-10 14:05:44Z palcraft $
 ///
 // A abstract class for netElements
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -27,23 +27,8 @@
 #else
 #include <config.h>
 #endif
-/*
-#include <string>
-#include <iostream>
-#include <utility>
-#include <time.h>
-#include <foreign/polyfonts/polyfonts.h>
-#include <utils/foxtools/MFXUtils.h>
-#include <utils/geom/PositionVector.h>
-#include <utils/gui/windows/GUISUMOAbstractView.h>
-#include <utils/common/ToString.h>
-#include <utils/gui/windows/GUIAppEnum.h>
-#include <utils/gui/div/GUIParameterTableWindow.h>
-#include <utils/gui/globjects/GUIGLObjectPopupMenu.h>
-#include <utils/gui/div/GUIGlobalSelection.h>
-#include <utils/gui/div/GLHelper.h>
-#include <utils/gui/globjects/GLIncludes.h>
-*/
+
+
 #include "GNENetElement.h"
 #include "GNENet.h"
 
@@ -56,9 +41,9 @@
 // ===========================================================================
 
 
-GNENetElement::GNENetElement(GNENet* net, const std::string& id, GUIGlObjectType type, SumoXMLTag tag) :
+GNENetElement::GNENetElement(GNENet* net, const std::string& id, GUIGlObjectType type, SumoXMLTag tag, GUIIcon icon) :
     GUIGlObject(type, id),
-    GNEAttributeCarrier(tag),
+    GNEAttributeCarrier(tag, icon),
     myNet(net) {
 }
 

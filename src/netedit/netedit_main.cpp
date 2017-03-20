@@ -2,12 +2,12 @@
 /// @file    netedit_main.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: netedit_main.cpp 21640 2016-10-09 20:28:52Z palcraft $
+/// @version $Id: netedit_main.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Main for NETEDIT (adapted from guisim_main)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

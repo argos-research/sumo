@@ -4,12 +4,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Fri, 24. Apr 2009
-/// @version $Id: GUISettingsHandler.h 21186 2016-07-18 12:04:16Z namdre $
+/// @version $Id: GUISettingsHandler.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The handler for parsing gui settings from xml.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

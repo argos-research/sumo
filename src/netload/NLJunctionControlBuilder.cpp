@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLJunctionControlBuilder.cpp 21480 2016-09-15 08:49:36Z namdre $
+/// @version $Id: NLJunctionControlBuilder.cpp 22842 2017-02-03 22:15:26Z luecken $
 ///
 // Builder of microsim-junctions and tls
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -54,6 +54,7 @@
 #include <microsim/traffic_lights/MSSwarmTrafficLightLogic.h>
 #include <microsim/traffic_lights/MSDeterministicHiLevelTrafficLightLogic.h>
 #include <microsim/traffic_lights/MSSOTLWaveTrafficLightLogic.h>
+#include <microsim/traffic_lights/MSDelayBasedTrafficLightLogic.h>
 #include <microsim/MSEventControl.h>
 #include <microsim/MSGlobals.h>
 #include <microsim/MSNet.h>
@@ -309,7 +310,12 @@ NLJunctionControlBuilder::closeTrafficLightLogic(const std::string& basePath) {
                     myActivePhases, step, (*i)->minDuration + myNet.getCurrentTimeStep(),
                     myAdditionalParameter, basePath);
             break;
-        case TLTYPE_DELAYBASED: // placeholder for future development
+        case TLTYPE_DELAYBASED:
+            tlLogic = new MSDelayBasedTrafficLightLogic(getTLLogicControlToUse(),
+                    myActiveKey, myActiveProgram,
+                    myActivePhases, step, (*i)->minDuration + myNet.getCurrentTimeStep(),
+                    myAdditionalParameter, basePath);
+            break;
         case TLTYPE_STATIC:
             tlLogic =
                 new MSSimpleTrafficLightLogic(getTLLogicControlToUse(),

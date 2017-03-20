@@ -2,12 +2,12 @@
 /// @file    FXThreadMessageRetriever.h
 /// @author  Daniel Krajzewicz
 /// @date    2004-03-19
-/// @version $Id: FXThreadMessageRetriever.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: FXThreadMessageRetriever.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // missing_desc
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2004-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2004-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

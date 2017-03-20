@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: FileHelpers.cpp 21201 2016-07-19 11:57:22Z behrisch $
+/// @version $Id: FileHelpers.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Functions for an easier usage of files
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -160,13 +160,6 @@ FileHelpers::writeInt(std::ostream& strm, int value) {
 
 
 std::ostream&
-FileHelpers::writeUInt(std::ostream& strm, int value) {
-    strm.write((char*) &value, sizeof(int));
-    return strm;
-}
-
-
-std::ostream&
 FileHelpers::writeFloat(std::ostream& strm, SUMOReal value) {
     strm.write((char*) &value, sizeof(SUMOReal));
     return strm;
@@ -184,7 +177,7 @@ std::ostream&
 FileHelpers::writeString(std::ostream& strm, const std::string& value) {
     int size = (int)value.length();
     const char* cstr = value.c_str();
-    writeUInt(strm, (int) size);
+    writeInt(strm, size);
     strm.write((char*) cstr, (std::streamsize)(sizeof(char)*size));
     return strm;
 }

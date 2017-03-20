@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Fri, 29.04.2005
-/// @version $Id: GUIMainWindow.h 20907 2016-06-07 14:06:01Z namdre $
+/// @version $Id: GUIMainWindow.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 //
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -91,6 +91,16 @@ public:
         return myListInternal;
     }
 
+    /// @brief return whether to list parking vehicles
+    bool listParking() const {
+        return myListParking;
+    }
+
+    /// @brief return whether to list teleporting vehicles
+    bool listTeleporting() const {
+        return myListTeleporting;
+    }
+
     static GUIMainWindow* getInstance();
 
     /** @brief Returns the delay (should be overwritten by subclasses if applicable)
@@ -144,11 +154,21 @@ protected:
     /// information whether the locator should list internal structures
     bool myListInternal;
 
+    /// information whether the locator should list parking vehicles
+    bool myListParking;
+
+    /// information whether the locator should list teleporting vehicles
+    bool myListTeleporting;
+
     /// the singleton window instance
     static GUIMainWindow* myInstance;
 
 protected:
     GUIMainWindow() { }
+
+    /// @brief perform initial window positioning and sizing according to user options / previous call
+    void setWindowSizeAndPos();
+
 
 };
 

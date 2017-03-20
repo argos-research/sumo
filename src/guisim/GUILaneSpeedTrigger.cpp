@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 26.04.2004
-/// @version $Id: GUILaneSpeedTrigger.cpp 21206 2016-07-20 08:08:35Z behrisch $
+/// @version $Id: GUILaneSpeedTrigger.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Changes the speed allowed on a set of lanes (gui version)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

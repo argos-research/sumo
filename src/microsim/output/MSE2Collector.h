@@ -6,13 +6,14 @@
 /// @author  Michael Behrisch
 /// @author  Robbin Blokpoel
 /// @author  Jakob Erdmann
+/// @author  Leonhard Luecken
 /// @date    Mon Feb 03 2014 14:13 CET
-/// @version $Id: MSE2Collector.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: MSE2Collector.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // An areal (along a single lane) detector
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -85,8 +86,20 @@ public:
     /** @brief Internal representation of a vehicle
     */
     struct VehicleInfo {
-        VehicleInfo(std::string _id, std::string _type, SUMOReal _speed, SUMOReal _timeOnDet, SUMOReal _lengthOnDet, SUMOReal _position, SUMOReal _lengthWithGap, SUMOReal _accel, bool _stillOnDet)
-            : id(_id), type(_type), speed(_speed), timeOnDet(_timeOnDet), lengthOnDet(_lengthOnDet), position(_position), lengthWithGap(_lengthWithGap), accel(_accel), stillOnDet(_stillOnDet) {}
+        VehicleInfo(std::string _id, std::string _type, SUMOReal _speed, SUMOReal _timeOnDet,
+                    SUMOReal _lengthOnDet, SUMOReal _position, SUMOReal _lengthWithGap,
+                    SUMOReal _accel, SUMOReal vmax, bool _stillOnDet) :
+            id(_id),
+            type(_type),
+            speed(_speed),
+            timeOnDet(_timeOnDet),
+            lengthOnDet(_lengthOnDet),
+            position(_position),
+            lengthWithGap(_lengthWithGap),
+            accel(_accel),
+            timeLoss(vmax > 0 ? timeOnDet * (vmax - speed) / vmax : 0),
+            accumulatedTimeLoss(timeLoss),
+            stillOnDet(_stillOnDet) {}
         std::string id;
         std::string type;
         SUMOReal speed;
@@ -95,6 +108,8 @@ public:
         SUMOReal position;
         SUMOReal lengthWithGap;
         SUMOReal accel;
+        SUMOReal timeLoss;
+        SUMOReal accumulatedTimeLoss;
         bool stillOnDet;
     };
 
@@ -381,10 +396,10 @@ private:
     std::vector<VehicleInfo> myPreviousKnownVehicles;
 
     /// @brief Storage for halting durations of known vehicles (for halting vehicles)
-    std::map<const std::string, SUMOTime> myHaltingVehicleDurations;
+    std::map<std::string, SUMOTime> myHaltingVehicleDurations;
 
     /// @brief Storage for halting durations of known vehicles (current interval)
-    std::map<const std::string, SUMOTime> myIntervalHaltingVehicleDurations;
+    std::map<std::string, SUMOTime> myIntervalHaltingVehicleDurations;
 
     /// @brief Halting durations of ended halts [s]
     std::vector<SUMOTime> myPastStandingDurations;
@@ -406,6 +421,8 @@ private:
     int myJamLengthInVehiclesSum;
     /// @brief The number of collected samples [#]
     SUMOReal myVehicleSamples;
+    /// @brief The sum of timeLoss values [s]
+    SUMOReal myTimeLossSum;
     /// @brief The current aggregation duration [#steps]
     int myTimeSamples;
     /// @brief The sum of occupancies [%]

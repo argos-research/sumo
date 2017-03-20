@@ -2,13 +2,13 @@
 /// @file    GNEPoly.cpp
 /// @author  Jakob Erdmann
 /// @date    Sept 2012
-/// @version $Id: GNEPoly.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GNEPoly.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A class for visualizing and editing POIS in netedit (adapted from
 // GUIPolygon and NLHandler)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -75,7 +75,7 @@ GNEPoly::GNEPoly(GNENet* net, GNEJunction* junction, const std::string& id, cons
                  const RGBColor& color, SUMOReal layer,
                  SUMOReal angle, const std::string& imgFile) :
     GUIPolygon(id, type, color, shape, fill, layer, angle, imgFile),
-    GNEAttributeCarrier(SUMO_TAG_POLY),
+    GNEAttributeCarrier(SUMO_TAG_POLY, ICON_LOCATEPOLY),
     myNet(net),
     myJunction(junction) {
 }

@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: MSPerson.cpp 20773 2016-05-20 13:43:03Z behrisch $
+/// @version $Id: MSPerson.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // The class for modelling person-movements
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -60,11 +60,12 @@
 MSPerson::MSPersonStage_Walking::MSPersonStage_Walking(const ConstMSEdgeVector& route,
         MSStoppingPlace* toStop,
         SUMOTime walkingTime, SUMOReal speed,
-        SUMOReal departPos, SUMOReal arrivalPos) :
+        SUMOReal departPos, SUMOReal arrivalPos, SUMOReal departPosLat) :
     MSTransportable::Stage(*route.back(), toStop, SUMOVehicleParameter::interpretEdgePos(
                                arrivalPos, route.back()->getLength(), SUMO_ATTR_ARRIVALPOS, "person walking to " + route.back()->getID()), MOVING_WITHOUT_VEHICLE), myWalkingTime(walkingTime), myRoute(route),
     myCurrentInternalEdge(0),
     myDepartPos(departPos),
+    myDepartPosLat(departPosLat),
     mySpeed(speed),
     myPedestrianState(0) {
     myDepartPos = SUMOVehicleParameter::interpretEdgePos(
@@ -125,6 +126,11 @@ MSPerson::MSPersonStage_Walking::getSpeed() const {
 }
 
 
+ConstMSEdgeVector
+MSPerson::MSPersonStage_Walking::getEdges() const {
+    return myRoute;
+}
+
 void
 MSPerson::MSPersonStage_Walking::proceed(MSNet* net, MSTransportable* person, SUMOTime now, Stage* previous) {
     previous->getEdge()->removePerson(person);
@@ -143,6 +149,17 @@ MSPerson::MSPersonStage_Walking::proceed(MSNet* net, MSTransportable* person, SU
     }
     myPedestrianState = MSPModel::getModel()->add(dynamic_cast<MSPerson*>(person), this, now);
     (*myRouteStep)->addPerson(person);
+}
+
+void
+MSPerson::MSPersonStage_Walking::abort(MSTransportable*) {
+    MSPModel::getModel()->remove(myPedestrianState);
+    myPedestrianState = 0;
+}
+
+void
+MSPerson::MSPersonStage_Walking::setSpeed(SUMOReal speed) {
+    mySpeed = speed;
 }
 
 

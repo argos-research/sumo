@@ -4,12 +4,12 @@
 /// @author  Andreas Kendziorra
 /// @author  Michael Behrisch
 /// @date    Thu, 12 Jun 2014
-/// @version $Id: MSTransportable.cpp 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: MSTransportable.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // The common superclass for modelling transportable objects like persons and containers
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -215,6 +215,14 @@ MSTransportable::Stage_Waiting::getSpeed() const {
 }
 
 
+ConstMSEdgeVector
+MSTransportable::Stage_Waiting::getEdges() const {
+    ConstMSEdgeVector result;
+    result.push_back(&getDestination());
+    return result;
+}
+
+
 
 /* -------------------------------------------------------------------------
 * MSTransportable::Stage_Driving - methods
@@ -231,7 +239,7 @@ MSTransportable::Stage_Driving::~Stage_Driving() {}
 const MSEdge*
 MSTransportable::Stage_Driving::getEdge() const {
     if (myVehicle != 0) {
-        return myVehicle->getEdge();
+        return &myVehicle->getLane()->getEdge();
     }
     return myWaitingEdge;
 }
@@ -301,6 +309,24 @@ SUMOReal
 MSTransportable::Stage_Driving::getSpeed() const {
     return isWaiting4Vehicle() ? 0 : myVehicle->getSpeed();
 }
+
+
+ConstMSEdgeVector
+MSTransportable::Stage_Driving::getEdges() const {
+    ConstMSEdgeVector result;
+    result.push_back(getFromEdge());
+    result.push_back(&getDestination());
+    return result;
+}
+
+void
+MSTransportable::Stage_Driving::abort(MSTransportable* t) {
+    if (myVehicle != 0) {
+        // jumping out of a moving vehicle!
+        dynamic_cast<MSVehicle*>(myVehicle)->removeTransportable(t);
+    }
+}
+
 
 
 void
@@ -375,5 +401,61 @@ MSTransportable::getSpeed() const {
     return (*myStep)->getSpeed();
 }
 
+
+int
+MSTransportable::getNumRemainingStages() const {
+    return (int)(myPlan->end() - myStep);
+}
+
+int
+MSTransportable::getNumStages() const {
+    return (int)myPlan->size();
+}
+
+void
+MSTransportable::appendStage(Stage* stage) {
+    // myStep is invalidated upon modifying myPlan
+    const int stepIndex = (int)(myStep - myPlan->begin());
+    myPlan->push_back(stage);
+    myStep = myPlan->begin() + stepIndex;
+}
+
+
+void
+MSTransportable::removeStage(int next) {
+    assert(myStep + next < myPlan->end());
+    assert(next >= 0);
+    if (next > 0) {
+        // myStep is invalidated upon modifying myPlan
+        int stepIndex = (int)(myStep - myPlan->begin());
+        delete *(myStep + next);
+        myPlan->erase(myStep + next);
+        myStep = myPlan->begin() + stepIndex;
+    } else {
+        if (myStep + 1 == myPlan->end()) {
+            // stay in the simulation until the start of simStep to allow appending new stages (at the correct position)
+            appendStage(new Stage_Waiting(*getEdge(), 0, 0, getEdgePos(), "last stage removed", false));
+        }
+        (*myStep)->abort(this);
+        proceed(MSNet::getInstance(), MSNet::getInstance()->getCurrentTimeStep());
+    }
+}
+
+
+void
+MSTransportable::setSpeed(SUMOReal speed) {
+    for (MSTransportablePlan::const_iterator i = myPlan->begin(); i != myPlan->end(); ++i) {
+        (*i)->setSpeed(speed);
+    }
+}
+
+
+void
+MSTransportable::replaceVehicleType(MSVehicleType* type) {
+    if (myVType->amVehicleSpecific()) {
+        delete myVType;
+    }
+    myVType = type;
+}
 
 /****************************************************************************/

@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Thu, 11.03.2004
-/// @version $Id: GUIDialog_GLChosenEditor.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIDialog_GLChosenEditor.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Editor for the list of chosen objects
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -41,6 +41,7 @@
 #include <utils/gui/div/GUIGlobalSelection.h>
 #include <utils/gui/globjects/GUIGlObjectStorage.h>
 #include <utils/gui/div/GUIIOGlobals.h>
+#include <utils/gui/div/GUIDesigns.h>
 #include <utils/gui/windows/GUIMainWindow.h>
 #include <utils/gui/images/GUIIconSubSys.h>
 
@@ -90,7 +91,7 @@ GUIDialog_GLChosenEditor::GUIDialog_GLChosenEditor(GUIMainWindow* parent,
                  ICON_BEFORE_TEXT | LAYOUT_FILL_X | FRAME_THICK | FRAME_RAISED,
                  0, 0, 0, 0, 4, 4, 3, 3);
 
-    new FXHorizontalSeparator(layout, SEPARATOR_GROOVE | LAYOUT_FILL_X);
+    new FXHorizontalSeparator(layout, GUIDesignHorizontalSeparator);
 
     // "Deselect Chosen"
     new FXButton(layout, "Deselect Chosen\t\t", 0, this, MID_CHOOSEN_DESELECT,
@@ -101,7 +102,7 @@ GUIDialog_GLChosenEditor::GUIDialog_GLChosenEditor(GUIMainWindow* parent,
                  ICON_BEFORE_TEXT | LAYOUT_FILL_X | FRAME_THICK | FRAME_RAISED,
                  0, 0, 0, 0, 4, 4, 3, 3);
 
-    new FXHorizontalSeparator(layout, SEPARATOR_GROOVE | LAYOUT_FILL_X);
+    new FXHorizontalSeparator(layout, GUIDesignHorizontalSeparator);
 
     // "Close"
     new FXButton(layout, "Close\t\t", 0, this, MID_CANCEL,

@@ -4,12 +4,12 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    30.05.2012
-/// @version $Id: TraCIAPI.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: TraCIAPI.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // C++ TraCI client API implementation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -40,12 +40,11 @@
 #include <foreign/tcpip/socket.h>
 #include <traci-server/TraCIConstants.h>
 
-
 // ===========================================================================
 // global definitions
 // ===========================================================================
 #define DEFAULT_VIEW "View #0"
-
+#define PRECISION 2
 
 // ===========================================================================
 // class definitions
@@ -160,7 +159,7 @@ public:
     void connect(const std::string& host, int port);
 
 
-    /// @brief Closes the connection
+    /// @brief ends the simulation and closes the connection
     void close();
     /// @}
 
@@ -186,6 +185,7 @@ public:
     /// @}
 
 
+    static const SUMOReal DEPART_NOW;
 
     /** @class TraCIScopeWrapper
      * @brief An abstract interface for accessing type-dependent values
@@ -231,7 +231,7 @@ public:
 
         std::vector<std::string> getIDList() const;
         int getIDCount() const;
-        SUMOReal getAdaptedTraveltime(const std::string& edgeID, SUMOTime time) const;
+        SUMOReal getAdaptedTraveltime(const std::string& edgeID, SUMOReal time) const;
         SUMOReal getEffort(const std::string& edgeID, SUMOTime time) const;
         SUMOReal getCO2Emission(const std::string& edgeID) const;
         SUMOReal getCOEmission(const std::string& edgeID) const;
@@ -249,7 +249,7 @@ public:
         SUMOReal getLastStepHaltingNumber(const std::string& edgeID) const;
         std::vector<std::string> getLastStepVehicleIDs(const std::string& edgeID) const;
 
-        void adaptTraveltime(const std::string& edgeID, SUMOReal time, SUMOTime begin = 0, SUMOTime end = SUMOTime_MAX) const;
+        void adaptTraveltime(const std::string& edgeID, SUMOReal time, SUMOReal begin = 0, SUMOReal end = SUMOTime_MAX / 1000.0) const;
         void setEffort(const std::string& edgeID, SUMOReal effort, SUMOTime begin = 0, SUMOTime end = SUMOTime_MAX) const;
         void setMaxSpeed(const std::string& edgeID, SUMOReal speed) const;
 
@@ -678,10 +678,10 @@ public:
         void setSpeedFactor(const std::string& typeID, SUMOReal factor) const;
         void setSpeedDeviation(const std::string& typeID, SUMOReal deviation) const;
         void setEmissionClass(const std::string& typeID, const std::string& clazz) const;
+        void setShapeClass(const std::string& typeID, const std::string& shapeClass) const;
         void setWidth(const std::string& typeID, SUMOReal width) const;
         void setHeight(const std::string& typeID, SUMOReal height) const;
         void setMinGap(const std::string& typeID, SUMOReal minGap) const;
-        void setShapeClass(const std::string& typeID, const std::string& clazz) const;
         void setAccel(const std::string& typeID, SUMOReal accel) const;
         void setDecel(const std::string& typeID, SUMOReal decel) const;
         void setImperfection(const std::string& typeID, SUMOReal imperfection) const;
@@ -751,6 +751,10 @@ public:
         std::vector<NextTLSData> getNextTLS(const std::string& vehID) const;
         int getSpeedMode(const std::string& vehicleID) const;
         SUMOReal getSlope(const std::string& vehicleID) const;
+        std::string getLine(const std::string& vehicleID) const;
+        std::vector<std::string> getVia(const std::string& vehicleID) const;
+        std::string getEmissionClass(const std::string& vehicleID) const;
+        std::string getShapeClass(const std::string& vehicleID) const;
 
         /* /// not yet implemented
         SUMOReal getCO2Emissions(const std::string& vehicleID) const;
@@ -771,8 +775,6 @@ public:
         SUMOReal getSpeedFactor(const std::string& vehicleID) const;
         SUMOReal getSpeedDeviation(const std::string& vehicleID) const;
         std::string getVClass(const std::string& vehicleID) const;
-        std::string getEmissionClass(const std::string& vehicleID) const;
-        std::string getShapeClass(const std::string& vehicleID) const;
         SUMOReal getMinGap(const std::string& vehicleID) const;
         SUMOReal getWidth(const std::string& vehicleID) const;
         */
@@ -799,6 +801,10 @@ public:
         void setSpeed(const std::string& vehicleID, SUMOReal speed) const;
         void remove(const std::string& vehicleID, char reason = REMOVE_VAPORIZED) const;
         void setColor(const std::string& vehicleID, const TraCIColor& c) const;
+        void setLine(const std::string& vehicleID, const std::string& line) const;
+        void setVia(const std::string& vehicleID, const std::vector<std::string>& via) const;
+        void setShapeClass(const std::string& vehicleID, const std::string& clazz) const;
+        void setEmissionClass(const std::string& vehicleID, const std::string& clazz) const;
 
     private:
         /// @brief invalidated copy constructor
@@ -819,12 +825,30 @@ public:
 
         std::vector<std::string> getIDList() const;
         int getIDCount() const;
-        SUMOReal getSpeed(const std::string& typeID) const;
-        TraCIPosition getPosition(const std::string& typeID) const;
-        std::string getRoadID(const std::string& typeID) const;
-        std::string getTypeID(const std::string& typeID) const;
-        SUMOReal getWaitingTime(const std::string& typeID) const;
-        std::string getNextEdge(const std::string& typeID) const;
+        SUMOReal getSpeed(const std::string& personID) const;
+        TraCIPosition getPosition(const std::string& personID) const;
+        std::string getRoadID(const std::string& personID) const;
+        std::string getTypeID(const std::string& personID) const;
+        SUMOReal getWaitingTime(const std::string& personID) const;
+        std::string getNextEdge(const std::string& personID) const;
+        std::string getVehicle(const std::string& personID) const;
+        int getRemainingStages(const std::string& personID) const;
+        int getStage(const std::string& personID, int nextStageIndex = 0) const;
+        std::vector<std::string> getEdges(const std::string& personID, int nextStageIndex = 0) const;
+
+        void removeStages(const std::string& personID) const;
+        void add(const std::string& personID, const std::string& edgeID, SUMOReal pos, SUMOReal depart = DEPART_NOW, const std::string typeID = "DEFAULT_PEDTYPE");
+        void appendWaitingStage(const std::string& personID, SUMOReal duration, const std::string& description = "waiting", const std::string& stopID = "");
+        void appendWalkingStage(const std::string& personID, const std::vector<std::string>& edges, SUMOReal arrivalPos, SUMOReal duration = -1, SUMOReal speed = -1, const std::string& stopID = "");
+        void appendDrivingStage(const std::string& personID, const std::string& toEdge, const std::string& lines, const std::string& stopID = "");
+        void removeStage(const std::string& personID, int nextStageIndex) const;
+        void setSpeed(const std::string& personID, SUMOReal speed) const;
+        void setType(const std::string& personID, const std::string& typeID) const;
+        void setLength(const std::string& personID, SUMOReal length) const;
+        void setWidth(const std::string& personID, SUMOReal width) const;
+        void setHeight(const std::string& personID, SUMOReal height) const;
+        void setMinGap(const std::string& personID, SUMOReal minGap) const;
+        void setColor(const std::string& personID, const TraCIColor& c) const;
 
     private:
         /// @brief invalidated copy constructor
@@ -951,13 +975,16 @@ protected:
     void readVariables(tcpip::Storage& inMsg, const std::string& objectID, int variableCount, SubscribedValues& into);
 
     template <class T>
-    static inline std::string toString(const T& t, std::streamsize accuracy = OUTPUT_ACCURACY) {
+    static inline std::string toString(const T& t, std::streamsize accuracy = PRECISION) {
         std::ostringstream oss;
         oss.setf(std::ios::fixed , std::ios::floatfield);
         oss << std::setprecision(accuracy);
         oss << t;
         return oss.str();
     }
+
+    /// @brief Closes the connection
+    void closeSocket();
 
 protected:
     /// @brief The socket
@@ -971,3 +998,4 @@ protected:
 #endif
 
 /****************************************************************************/
+

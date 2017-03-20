@@ -6,12 +6,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Jul 2010
-/// @version $Id: activitygen_main.cpp 21474 2016-09-14 09:05:31Z behrisch $
+/// @version $Id: activitygen_main.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Main object of the ActivityGen application
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 // activitygen module
 // Copyright 2010 TUM (Technische Universitaet Muenchen, http://www.tum.de/)
 /****************************************************************************/

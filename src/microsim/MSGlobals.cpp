@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    late summer 2003
-/// @version $Id: MSGlobals.cpp 21650 2016-10-10 13:26:10Z luecken $
+/// @version $Id: MSGlobals.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Some static variables for faster access
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2003-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2003-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -61,6 +61,7 @@ bool MSGlobals::gUseMesoSim;
 bool MSGlobals::gMesoLimitedJunctionControl;
 bool MSGlobals::gMesoOvertaking;
 SUMOReal MSGlobals::gMesoTLSPenalty;
+SUMOTime MSGlobals::gMesoMinorPenalty;
 MELoop* MSGlobals::gMesoNet;
 
 bool MSGlobals::gSemiImplicitEulerUpdate;

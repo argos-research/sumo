@@ -5,12 +5,12 @@
 /// @author  Jakob Erdmann
 /// @author  Laura Bieker
 /// @date    Fri, 24. Apr 2009
-/// @version $Id: GUISettingsHandler.cpp 21625 2016-10-06 12:18:47Z namdre $
+/// @version $Id: GUISettingsHandler.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The dialog to change the view (gui) settings.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

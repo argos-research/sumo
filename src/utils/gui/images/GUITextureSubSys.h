@@ -2,12 +2,12 @@
 /// @file    GUITextureSubSys.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Jul 2016
-/// @version $Id: GUITextureSubSys.h 21120 2016-07-05 13:52:03Z behrisch $
+/// @version $Id: GUITextureSubSys.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A class to manage gifs of SUMO
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -40,24 +40,26 @@
 
 class GUITextureSubSys {
 public:
-    /// @brief Initiate GUITextureSubSys for textures
-    /// @param[in] a FOX Toolkit APP
-    static void init(FXApp* a);
+    /**@brief Initiate GUITextureSubSys for textures
+     * @param[in] a FOX Toolkit APP
+     */
+    static void initTextures(FXApp* a);
 
-    /// @brief returns a texture Gif previously defined in the enum GUITexture
-    /// @param[in] GUITexture code of texture to use
-    static GUIGlID getGif(GUITexture which);
+    /**@brief returns a texture previously defined in the enum GUITexture
+     * @param[in] GUITexture code of texture to use
+     */
+    static GUIGlID getTexture(GUITexture which);
 
-    /// @brief Reset textures
-    /// @note Necessary to avoid problems with textures (ej: white empty)
-    static void reset();
+    /**@brief Reset textures
+     * @note Necessary to avoid problems with textures (ej: white empty)
+     */
+    static void resetTextures();
 
     /// @brief close GUITextureSubSys
     static void close();
 
 private:
-    /// @brief constructor
-    /// @note is private because is called by the static function init(FXApp* a)
+    /// @brief constructor private because is called by the static function init(FXApp* a
     GUITextureSubSys(FXApp* a);
 
     /// @brief destructor

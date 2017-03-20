@@ -5,12 +5,12 @@
 ///@brief @author  Michael Behrisch
 ///@brief @author  Andreas Gaubatz
 ///@brief @date    Sept 2002
-///@brief @version $Id: GUISUMOAbstractView.h 21625 2016-10-06 12:18:47Z namdre $
+///@brief @version $Id: GUISUMOAbstractView.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The base class for a view
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

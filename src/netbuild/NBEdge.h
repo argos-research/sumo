@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdge.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: NBEdge.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // The representation of a single edge during network building
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -163,7 +163,11 @@ public:
         Connection(int fromLane_, NBEdge* toEdge_, int toLane_);
 
         /// @brief constructor with more parameters
-        Connection(int fromLane_, NBEdge* toEdge_, int toLane_, bool mayDefinitelyPass_, bool keepClear_, SUMOReal contPos_, SUMOReal visibility_, bool haveVia_ = false);
+        Connection(int fromLane_, NBEdge* toEdge_, int toLane_, bool mayDefinitelyPass_,
+                   bool keepClear_ = true,
+                   SUMOReal contPos_ = UNSPECIFIED_CONTPOS,
+                   SUMOReal visibility_ = UNSPECIFIED_VISIBILITY_DISTANCE,
+                   bool haveVia_ = false);
 
         /// @brief destructor
         ~Connection() { }
@@ -228,8 +232,11 @@ public:
         /// @brief The lane index of this internal lane within the internal edge
         int internalLaneIndex;
 
-        /// @brief get ID of internal lnae
+        /// @brief get ID of internal lane
         std::string getInternalLaneID() const;
+
+        /// @brief get string describing this connection
+        std::string getDescription(const NBEdge* parent) const;
     };
 
 
@@ -795,7 +802,7 @@ public:
      * @param[in] e The destination edge
      * @return Whether a connection to the specified edge exists
      */
-    bool isConnectedTo(NBEdge* e);
+    bool isConnectedTo(const NBEdge* e) const;
 
     /** @brief Returns the connections
      * @return This edge's connections to following edges
@@ -820,6 +827,11 @@ public:
      * @return Connected edges
      */
     EdgeVector getConnectedEdges() const;
+
+    /** @brief Returns the list of incoming edges unsorted
+     * @return Connected predecessor edges
+     */
+    EdgeVector getIncomingEdges() const;
 
     /** @brief Returns the list of lanes that may be used to reach the given edge
      * @return Lanes approaching the given edge
@@ -1071,17 +1083,11 @@ public:
     /// @brief restore an previously added sidewalk
     void restoreSidewalk(std::vector<NBEdge::Lane> oldLanes, PositionVector oldGeometry, std::vector<NBEdge::Connection> oldConnections);
 
-    /// @brief check if current edge hat a sideWalk
-    bool hatSidewalk() const;
-
     /// add a bicycle lane of the given width and shift existing connctions
     void addBikeLane(SUMOReal width);
 
     /// @brief restore an previously added BikeLane
     void restoreBikelane(std::vector<NBEdge::Lane> oldLanes, PositionVector oldGeometry, std::vector<NBEdge::Connection> oldConnections);
-
-    /// @brief check if current edge hat a bikelane
-    bool hatBikelane() const;
 
     /// @brief set allowed/disallowed classes for the given lane or for all lanes if -1 is given
     void setPermissions(SVCPermissions permissions, int lane = -1);
@@ -1115,12 +1121,14 @@ public:
 
     // @brief returns a reference to the internal structure for the convenience of NETEDIT
     Lane& getLaneStruct(int lane) {
+        assert(lane >= 0);
         assert(lane < (int)myLanes.size());
         return myLanes[lane];
     }
 
     // @brief returns a reference to the internal structure for the convenience of NETEDIT
     const Lane& getLaneStruct(int lane) const {
+        assert(lane >= 0);
         assert(lane < (int)myLanes.size());
         return myLanes[lane];
     }
@@ -1434,7 +1442,7 @@ public:
     class connections_toedge_finder {
     public:
         /// @brief constructor
-        connections_toedge_finder(NBEdge* const edge2find, bool hasFromLane = false) :
+        connections_toedge_finder(const NBEdge* const edge2find, bool hasFromLane = false) :
             myHasFromLane(hasFromLane),
             myEdge2Find(edge2find) { }
 
@@ -1448,7 +1456,7 @@ public:
         const bool myHasFromLane;
 
         /// @brief edge to find
-        NBEdge* const myEdge2Find;
+        const NBEdge* const myEdge2Find;
 
     private:
         /// @brief invalidated assignment operator

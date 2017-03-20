@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Wed, 21.08.2013
-/// @version $Id: emissionsDrivingCycle_main.cpp 21118 2016-07-05 13:46:32Z behrisch $
+/// @version $Id: emissionsDrivingCycle_main.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Main for an emissions calculator
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2013-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

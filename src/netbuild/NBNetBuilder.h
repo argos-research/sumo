@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Fri, 29.04.2005
-/// @version $Id: NBNetBuilder.h 20896 2016-06-07 10:40:32Z behrisch $
+/// @version $Id: NBNetBuilder.h 22923 2017-02-13 12:03:50Z palcraft $
 ///
 // Instance responsible for building networks
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -119,7 +119,6 @@ public:
     /// @brief Destructor
     ~NBNetBuilder();
 
-
     /** @brief Initialises the storage by applying given options
      *
      * Options, mainly steering the acceptance of edges, are parsed
@@ -130,67 +129,51 @@ public:
      */
     void applyOptions(OptionsCont& oc);
 
-
     /** @brief Performs the network building steps
      *
      * @param[in] oc Container that contains options for building
      * @param[in] explicitTurnarounds List of edge ids for which turn-arounds should be added (used by NETEDIT)
-     * @param[in] removeElements whether processing steps which cause nodes and edges to be removed shall be triggered
+     * @param[in] mayAddOrRemove whether processing steps which cause nodes and edges to be added or removed shall be triggered (used by netedit)
      * @exception ProcessError (recheck)
      */
-    void compute(OptionsCont& oc,
-                 const std::set<std::string>& explicitTurnarounds = std::set<std::string>(),
-                 bool removeElements = true);
-
-
+    void compute(OptionsCont& oc, const std::set<std::string>& explicitTurnarounds = std::set<std::string>(), bool mayAddOrRemove = true);
 
     /// @name Retrieval of subcontainers
     /// @{
-
-    /** @brief Returns the edge container
-     * @return The edge container (reference)
-     */
+    /// @brief Returns a reference to edge container
     NBEdgeCont& getEdgeCont() {
         return myEdgeCont;
     }
 
-
-    /** @brief Returns the node container
-     * @return The node container (reference)
-     */
+    /// @brief Returns a reference to the node container
     NBNodeCont& getNodeCont() {
         return myNodeCont;
     }
 
-
-    /** @brief Returns the type container
-     * @return The type container (reference)
-     */
+    /// @brief Returns a reference to the type container
     NBTypeCont& getTypeCont() {
         return myTypeCont;
     }
 
-
-    /** @brief Returns the traffic light logics container
-     * @return The traffic light logics container (reference)
-     */
+    /// @brief Returns a reference to the traffic light logics container
     NBTrafficLightLogicCont& getTLLogicCont() {
         return myTLLCont;
     }
 
-
-    /** @brief Returns the districts container
-     * @return The districts container (reference)
-     */
+    /// @brief Returns a reference the districts container
     NBDistrictCont& getDistrictCont() {
         return myDistrictCont;
     }
     /// @}
 
-
-    /// @brief notify about style of loaded network
+    /// @brief notify about style of loaded network (Without internal edges
     void haveLoadedNetworkWithoutInternalEdges() {
         myHaveLoadedNetworkWithoutInternalEdges = true;
+    }
+
+    /// @brief notify about style of loaded network (Without Crossings)
+    bool haveNetworkCrossings() {
+        return myNetworkHaveCrossings;
     }
 
     /**
@@ -201,7 +184,7 @@ public:
      * @param[in] from_srs The spatial reference system of the input coordinate
      * @notde These methods are located outside of GeoConvHelper to avoid linker-dependencies on GDAL for libgeom
      */
-    static bool transformCoordinates(Position& from, bool includeInBoundary = true, GeoConvHelper* from_srs = 0);
+    static bool transformCoordinate(Position& from, bool includeInBoundary = true, GeoConvHelper* from_srs = 0);
     static bool transformCoordinates(PositionVector& from, bool includeInBoundary = true, GeoConvHelper* from_srs = 0);
 
 
@@ -213,12 +196,12 @@ protected:
     class by_id_sorter {
     public:
         /// @brief constructor
-        explicit by_id_sorter() { }
+        explicit by_id_sorter() {}
 
+        /// @brief selection operator
         int operator()(const NBNode* n1, const NBNode* n2) const {
             return n1->getID() < n2->getID();
         }
-
     };
 
 protected:
@@ -240,6 +223,9 @@ protected:
     /// @brief whether a .net.xml without internal edges was loaded
     bool myHaveLoadedNetworkWithoutInternalEdges;
 
+    /// @brief flag to indicate that network has crossings
+    bool myNetworkHaveCrossings;
+
 private:
     /// @brief shift network so its lower left corner is at 0,0
     void moveToOrigin(GeoConvHelper& geoConvHelper, bool lefthand);
@@ -253,7 +239,6 @@ private:
 
     /// @brief invalidated assignment operator
     NBNetBuilder& operator=(const NBNetBuilder& s);
-
 };
 
 

@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2012-04-26
-/// @version $Id: MSEmissionExport.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSEmissionExport.cpp 22797 2017-01-31 14:53:07Z namdre $
 ///
 // Realises dumping Emission Data
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -73,6 +73,6 @@ MSEmissionExport::write(OutputDevice& of, SUMOTime timestep, int precision) {
             of.closeTag();
         }
     }
-    of.setPrecision(OUTPUT_ACCURACY);
+    of.setPrecision(gPrecision);
     of.closeTag();
 }

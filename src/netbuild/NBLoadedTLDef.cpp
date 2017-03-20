@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Tue, 29.05.2005
-/// @version $Id: NBLoadedTLDef.cpp 21210 2016-07-21 10:02:38Z behrisch $
+/// @version $Id: NBLoadedTLDef.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A loaded (complete) traffic light logic
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -4,12 +4,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Mon, 8 Nov 2010
-/// @version $Id: MSBaseVehicle.cpp 21790 2016-10-25 12:37:24Z behrisch $
+/// @version $Id: MSBaseVehicle.cpp 22812 2017-02-01 11:12:29Z namdre $
 ///
 // A base class for vehicle implementations
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -196,7 +196,7 @@ MSBaseVehicle::reroute(SUMOTime t, SUMOAbstractRouter<MSEdge, SUMOVehicle>& rout
 
 
 bool
-MSBaseVehicle::replaceRouteEdges(ConstMSEdgeVector& edges, bool onInit, bool check) {
+MSBaseVehicle::replaceRouteEdges(ConstMSEdgeVector& edges, bool onInit, bool check, bool addStops) {
     if (edges.empty()) {
         WRITE_WARNING("No route for vehicle '" + getID() + "' found.");
         return false;
@@ -239,8 +239,7 @@ MSBaseVehicle::replaceRouteEdges(ConstMSEdgeVector& edges, bool onInit, bool che
             return false;
         }
     }
-
-    if (!replaceRoute(newRoute, onInit, (int)edges.size() - oldSize)) {
+    if (!replaceRoute(newRoute, onInit, (int)edges.size() - oldSize, addStops)) {
         newRoute->addReference();
         newRoute->release();
         return false;
@@ -429,10 +428,11 @@ MSBaseVehicle::getDevice(const std::type_info& type) const {
 
 void
 MSBaseVehicle::saveState(OutputDevice& out) {
-    out.openTag(SUMO_TAG_VEHICLE).writeAttr(SUMO_ATTR_ID, myParameter->id);
-    out.writeAttr(SUMO_ATTR_DEPART, time2string(myParameter->depart));
+    // this saves lots of departParameters which are only needed for vehicles that did not yet depart
+    // the parameters may hold the name of a vTypeDistribution but we are interested in the actual type
+    myParameter->write(out, OptionsCont::getOptions(), SUMO_TAG_VEHICLE, getVehicleType().getID());
+    // params and stops must be written in child classes since they may wish to add additional attributes first
     out.writeAttr(SUMO_ATTR_ROUTE, myRoute->getID());
-    out.writeAttr(SUMO_ATTR_TYPE, myType->getID());
     // here starts the vehicle internal part (see loading)
     // @note: remember to close the vehicle tag when calling this in a subclass!
 }

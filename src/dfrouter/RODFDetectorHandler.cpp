@@ -5,7 +5,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Thu, 16.03.2006
-/// @version $Id: RODFDetectorHandler.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: RODFDetectorHandler.cpp 22532 2017-01-09 14:50:42Z behrisch $
 ///
 // A handler for loading detector descriptions
 /****************************************************************************/
@@ -63,7 +63,7 @@ RODFDetectorHandler::~RODFDetectorHandler() {}
 void
 RODFDetectorHandler::myStartElement(int element,
                                     const SUMOSAXAttributes& attrs) {
-    if (element == SUMO_TAG_DETECTOR_DEFINITION) {
+    if (element == SUMO_TAG_DETECTOR_DEFINITION || element == SUMO_TAG_E1DETECTOR || element == SUMO_TAG_INDUCTION_LOOP) {
         try {
             bool ok = true;
             // get the id, report an error if not given or empty...

@@ -2,12 +2,12 @@
 /// @file    GNEFrame.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNEFrame.cpp 21640 2016-10-09 20:28:52Z palcraft $
+/// @version $Id: GNEFrame.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 /// The Widget for add additional elements
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -38,6 +38,7 @@
 #include <utils/gui/windows/GUIAppEnum.h>
 #include <utils/gui/div/GUIIOGlobals.h>
 #include <utils/gui/div/GUIGlobalSelection.h>
+#include <utils/gui/div/GUIDesigns.h>
 #include <utils/gui/globjects/GUIGlObjectStorage.h>
 #include <utils/gui/images/GUIIconSubSys.h>
 
@@ -53,39 +54,70 @@
 // method definitions
 // ===========================================================================
 
-GNEFrame::GNEFrame(FXComposite* parent, GNEViewNet* viewNet, const std::string& frameLabel) :
-    FXScrollWindow(parent, LAYOUT_FILL),
+GNEFrame::GNEFrame(FXHorizontalFrame* horizontalFrameParent, GNEViewNet* viewNet, const std::string& frameLabel) :
+    FXVerticalFrame(horizontalFrameParent, GUIDesignFrame),
     myViewNet(viewNet) {
     // Create font
     myFrameHeaderFont = new FXFont(getApp(), "Arial", 14, FXFont::Bold),
 
-    // Create frame for contect
-    myContentFrame = new FXVerticalFrame(this, LAYOUT_FILL);
-
     // Create frame for header
-    myHeaderFrame = new FXHorizontalFrame(myContentFrame, LAYOUT_FILL_X);
+    myHeaderFrame = new FXHorizontalFrame(this, GUIDesignHorizontalFrame);
 
     // Create frame for left elements of header (By default unused)
-    myHeaderLeftFrame = new FXHorizontalFrame(myHeaderFrame);
+    myHeaderLeftFrame = new FXHorizontalFrame(myHeaderFrame, GUIDesignHorizontalFrame);
     myHeaderLeftFrame->hide();
 
     // Create titel frame
-    myFrameHeaderLabel = new FXLabel(myHeaderFrame, frameLabel.c_str(), 0, JUSTIFY_LEFT | LAYOUT_FILL_X);
+    myFrameHeaderLabel = new FXLabel(myHeaderFrame, frameLabel.c_str(), 0, GUIDesignLabelLeft);
 
     // Create frame for right elements of header (By default unused)
-    myHeaderRightFrame = new FXHorizontalFrame(myHeaderFrame);
+    myHeaderRightFrame = new FXHorizontalFrame(myHeaderFrame, GUIDesignHorizontalFrame);
     myHeaderRightFrame->hide();
+
+    // Add separator
+    new FXHorizontalSeparator(this, GUIDesignHorizontalSeparator);
+
+    // Create frame for contents
+    myScrollWindowsContents = new FXScrollWindow(this, GUIDesignContentsScrollWindow);
+
+    // Create frame for contents
+    myContentFrame = new FXVerticalFrame(myScrollWindowsContents, GUIDesignContentsFrame);
 
     // Set font of header
     myFrameHeaderLabel->setFont(myFrameHeaderFont);
 
     // Hide Frame
-    FXScrollWindow::hide();
+    FXVerticalFrame::hide();
 }
 
 
 GNEFrame::~GNEFrame() {
     delete myFrameHeaderFont;
+}
+
+
+void
+GNEFrame::show() {
+    // show scroll window
+    FXVerticalFrame::show();
+    // Show and update Frame Area in which this GNEFrame is placed
+    myViewNet->getViewParent()->showFramesArea();
+}
+
+
+void
+GNEFrame::hide() {
+    // hide scroll window
+    FXVerticalFrame::hide();
+    // Hide Frame Area in which this GNEFrame is placed
+    myViewNet->getViewParent()->hideFramesArea();
+}
+
+
+void
+GNEFrame::setFrameWidth(int width) {
+    setWidth(width);
+    myScrollWindowsContents->setWidth(width);
 }
 
 
@@ -105,5 +137,6 @@ FXFont*
 GNEFrame::getFrameHeaderFont() const {
     return myFrameHeaderFont;
 }
+
 
 /****************************************************************************/

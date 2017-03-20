@@ -4,12 +4,12 @@
 /// @author  Tamas Kurczveil
 /// @author  Pablo Alvarez Lopez
 /// @date    20-12-13
-/// @version $Id: MSChargingStation.h 21014 2016-06-21 09:02:22Z behrisch $
+/// @version $Id: MSChargingStation.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Chargin Station for Electric vehicles
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

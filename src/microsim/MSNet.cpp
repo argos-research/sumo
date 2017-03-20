@@ -10,12 +10,12 @@
 /// @author  Mario Krumnow
 /// @author  Christoph Sommer
 /// @date    Tue, 06 Mar 2001
-/// @version $Id: MSNet.cpp 21198 2016-07-19 11:34:56Z namdre $
+/// @version $Id: MSNet.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // The simulated network and simulation perfomer
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -183,7 +183,7 @@ MSNet::MSNet(MSVehicleControl* vc, MSEventControl* beginOfTimestepEvents,
     myStep = string2time(oc.getString("begin"));
     myLogExecutionTime = !oc.getBool("no-duration-log");
     myLogStepNumber = !oc.getBool("no-step-log");
-    myInserter = new MSInsertionControl(*vc, string2time(oc.getString("max-depart-delay")), !oc.getBool("eager-insert"), oc.getInt("max-num-vehicles"));
+    myInserter = new MSInsertionControl(*vc, string2time(oc.getString("max-depart-delay")), oc.getBool("eager-insert"), oc.getInt("max-num-vehicles"));
     myVehicleControl = vc;
     myDetectorControl = new MSDetectorControl();
     myEdges = 0;
@@ -423,15 +423,21 @@ MSNet::closeSimulation(SUMOTime start) {
 void
 MSNet::simulationStep() {
 #ifndef NO_TRACI
+    if (myLogExecutionTime) {
+        myTraCIStepDuration = SysUtils::getCurrentMillis();
+    }
     TraCIServer::processCommandsUntilSimStep(myStep);
     TraCIServer* t = TraCIServer::getInstance();
+    if (myLogExecutionTime) {
+        myTraCIStepDuration = SysUtils::getCurrentMillis() - myTraCIStepDuration;
+    }
     if (t != 0 && t->getTargetTime() != 0 && t->getTargetTime() < myStep) {
         return;
     }
 #endif
     // execute beginOfTimestepEvents
     if (myLogExecutionTime) {
-        mySimStepBegin = SysUtils::getCurrentMillis();
+        mySimStepDuration = SysUtils::getCurrentMillis();
     }
     // simulation state output
     std::vector<SUMOTime>::iterator timeIt = find(myStateDumpTimes.begin(), myStateDumpTimes.end(), myStep);
@@ -503,15 +509,20 @@ MSNet::simulationStep() {
 
 #ifndef NO_TRACI
     if (TraCIServer::getInstance() != 0) {
+        if (myLogExecutionTime) {
+            myTraCIStepDuration -= SysUtils::getCurrentMillis();
+        }
         TraCIServer::getInstance()->postProcessVTD();
+        if (myLogExecutionTime) {
+            myTraCIStepDuration += SysUtils::getCurrentMillis();
+        }
     }
 #endif
     // update and write (if needed) detector values
     writeOutput();
 
     if (myLogExecutionTime) {
-        mySimStepEnd = SysUtils::getCurrentMillis();
-        mySimStepDuration = mySimStepEnd - mySimStepBegin;
+        mySimStepDuration = SysUtils::getCurrentMillis() - mySimStepDuration;
         myVehiclesMoved += myVehicleControl->getRunningVehicleNo();
     }
     myStep += DELTA_T;
@@ -733,17 +744,24 @@ MSNet::postSimStepOutput() const {
         std::ostringstream oss;
         oss.setf(std::ios::fixed , std::ios::floatfield);    // use decimal format
         oss.setf(std::ios::showpoint);    // print decimal point
-        oss << std::setprecision(OUTPUT_ACCURACY);
+        oss << std::setprecision(gPrecision);
         if (mySimStepDuration != 0) {
+            const SUMOReal durationSec = (SUMOReal)mySimStepDuration / 1000.;
             oss << " (" << mySimStepDuration << "ms ~= "
-                << (1000. / (SUMOReal) mySimStepDuration) << "*RT, ~"
-                << ((SUMOReal) myVehicleControl->getRunningVehicleNo() / (SUMOReal) mySimStepDuration * 1000.);
+                << (TS / durationSec) << "*RT, ~"
+                << ((SUMOReal) myVehicleControl->getRunningVehicleNo() / durationSec);
         } else {
             oss << " (0ms ?*RT. ?";
         }
-        oss << "UPS, vehicles"
-            << " TOT " << myVehicleControl->getDepartedVehicleNo()
+        oss << "UPS, ";
+#ifndef NO_TRACI
+        if (TraCIServer::getInstance() != 0) {
+            oss << "TraCI: " << myTraCIStepDuration << "ms, ";
+        }
+#endif
+        oss << "vehicles TOT " << myVehicleControl->getDepartedVehicleNo()
             << " ACT " << myVehicleControl->getRunningVehicleNo()
+            << " BUF " << myInserter->getWaitingVehicleNo()
             << ")                                              ";
         std::string prev = "Step #" + time2string(myStep - DELTA_T);
         std::cout << oss.str().substr(0, 78 - prev.length());
@@ -826,6 +844,28 @@ MSNet::getContainerStopID(const MSLane* lane, const SUMOReal pos) const {
     return "";
 }
 
+// ------ Insertion and retrieval of container stops ------
+bool
+MSNet::addParkingArea(MSParkingArea* parkingArea) {
+    return myParkingAreaDict.add(parkingArea->getID(), parkingArea);
+}
+
+MSParkingArea*
+MSNet::getParkingArea(const std::string& id) const {
+    return myParkingAreaDict.get(id);
+}
+
+std::string
+MSNet::getParkingAreaID(const MSLane* lane, const SUMOReal pos) const {
+    const std::map<std::string, MSParkingArea*>& vals = myParkingAreaDict.getMyMap();
+    for (std::map<std::string, MSParkingArea*>::const_iterator it = vals.begin(); it != vals.end(); ++it) {
+        MSParkingArea* stop = it->second;
+        if (&stop->getLane() == lane && fabs(stop->getEndLanePosition() - pos) < POSITION_EPS) {
+            return stop->getID();
+        }
+    }
+    return "";
+}
 
 bool
 MSNet::addChargingStation(MSChargingStation* chargingStation) {

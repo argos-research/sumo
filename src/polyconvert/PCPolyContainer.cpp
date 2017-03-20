@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Melanie Knocke
 /// @date    Mon, 05 Dec 2005
-/// @version $Id: PCPolyContainer.cpp 20801 2016-05-28 05:31:30Z behrisch $
+/// @version $Id: PCPolyContainer.cpp 22797 2017-01-31 14:53:07Z namdre $
 ///
 // A storage for loaded polygons and pois
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -119,9 +119,9 @@ PCPolyContainer::save(const std::string& file, bool useGeo) {
         useGeo = false;
     }
     OutputDevice& out = OutputDevice::getDevice(file);
-    out.writeXMLHeader("additional", "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://sumo.dlr.de/xsd/additional_file.xsd\"");
+    out.writeXMLHeader("additional", "additional_file.xsd");
     if (useGeo) {
-        out.setPrecision(GEO_OUTPUT_ACCURACY);
+        out.setPrecision(gPrecisionGeo);
     } else if (gch.usingGeoProjection()) {
         GeoConvHelper::writeLocation(out);
     }
@@ -140,6 +140,80 @@ PCPolyContainer::save(const std::string& file, bool useGeo) {
         }
     }
     out.close();
+}
+
+
+void PCPolyContainer::writeDlrTDPHeader(OutputDevice& device, const OptionsCont& oc) {
+    // XXX duplicate of NWWriter_DlrNavteq::writeHeader()
+    const std::string OUTPUT_VERSION = "6.5"; // XXX duplicate of NWWriter_DlrNavteq OUTPUT_VERSION
+    time_t rawtime;
+    time(&rawtime);
+    char buffer [80];
+    strftime(buffer, 80, "on %c", localtime(&rawtime));
+    device << "# Generated " << buffer << " by " << oc.getFullName() << "\n";
+    device << "# Format matches Extraction version: V" << OUTPUT_VERSION << " \n";
+    std::stringstream tmp;
+    oc.writeConfiguration(tmp, true, false, false);
+    tmp.seekg(std::ios_base::beg);
+    std::string line;
+    while (!tmp.eof()) {
+        std::getline(tmp, line);
+        device << "# " << line << "\n";
+    }
+    device << "#\n";
+}
+
+
+void
+PCPolyContainer::saveDlrTDP(const std::string& prefix) {
+    const OptionsCont& oc = OptionsCont::getOptions();
+    const GeoConvHelper& gch = GeoConvHelper::getFinal();
+    const bool haveGeo = gch.usingGeoProjection();
+    const SUMOReal geoScale = pow(10.0f, haveGeo ? 5 : 2); // see NIImporter_DlrNavteq::GEO_SCALE
+    // write pois
+    OutputDevice& out = OutputDevice::getDevice(prefix + "_points_of_interest.txt");
+    out.setPrecision(0);
+    writeDlrTDPHeader(out, oc);
+    // write format specifier
+    out << "# ID\tCITY\tTYPE\tNAME\tgeo_x\tgeo_y\n";
+    int id = 0;
+    for (std::map<std::string, PointOfInterest*>::const_iterator i = myPOIs.getMyMap().begin(); i != myPOIs.getMyMap().end(); ++i) {
+        Position pos(*(i->second));
+        gch.cartesian2geo(pos);
+        pos.mul(geoScale);
+        out << id << "\t";
+        out << "" << "\t";
+        out << i->second->getType() << "\t";
+        out << i->first << "\t";
+        out << pos.x() << "\t";
+        out << pos.y() << "\t";
+        id++;
+    }
+    out.close();
+    // write polygons
+    OutputDevice& out2 = OutputDevice::getDevice(prefix + "_polygons.txt");
+    out2.setPrecision(0);
+    writeDlrTDPHeader(out2, oc);
+    // write format specifier
+    out2 << "# ID\tCITY\tTYPE\tNAME\tgeo_x1\tgeo_y1\t[geo_x2 geo_y2 ...]\n";
+    id = 0;
+    for (std::map<std::string, SUMO::Polygon*>::const_iterator i = myPolygons.getMyMap().begin(); i != myPolygons.getMyMap().end(); ++i) {
+        out2 << id << "\t";
+        out2 << "" << "\t";
+        out2 << i->second->getType() << "\t";
+        out2 << i->first << "\t";
+
+        PositionVector shape(i->second->getShape());
+        for (int i = 0; i < (int) shape.size(); i++) {
+            Position pos = shape[i];
+            gch.cartesian2geo(pos);
+            pos.mul(geoScale);
+            out2 << pos.x() << "\t";
+            out2 << pos.y() << "\t";
+        }
+        id++;
+    }
+    out2.close();
 }
 
 

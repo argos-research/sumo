@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSMeanData_Amitran.cpp 21652 2016-10-10 13:30:25Z luecken $
+/// @version $Id: MSMeanData_Amitran.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Network state mean data collector for edges/lanes
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -162,7 +162,7 @@ MSMeanData_Amitran::~MSMeanData_Amitran() {}
 
 void
 MSMeanData_Amitran::writeXMLDetectorProlog(OutputDevice& dev) const {
-    dev.writeXMLHeader("linkData", "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://sumo.dlr.de/xsd/amitran/linkdata.xsd\"");
+    dev.writeXMLHeader("linkData", "amitran/linkdata.xsd");
 }
 
 

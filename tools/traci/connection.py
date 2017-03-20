@@ -7,12 +7,12 @@
 @author  Daniel Krajzewicz
 @author  Jakob Erdmann
 @date    2008-10-09
-@version $Id: connection.py 21776 2016-10-25 09:10:31Z behrisch $
+@version $Id: connection.py 22804 2017-02-01 07:00:08Z namdre $
 
 Python implementation of the TraCI interface.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -145,6 +145,11 @@ class Connection:
         self._string += struct.pack("!BB", tc.TYPE_BYTE, value)
         self._sendExact()
 
+    def _sendUByteCmd(self, cmdID, varID, objID, value):
+        self._beginMessage(cmdID, varID, objID, 1 + 1)
+        self._string += struct.pack("!BB", tc.TYPE_UBYTE, value)
+        self._sendExact()
+
     def _sendStringCmd(self, cmdID, varID, objID, value):
         self._beginMessage(cmdID, varID, objID, 1 + 4 + len(value))
         self._packString(value)
@@ -223,10 +228,11 @@ class Connection:
             if parameters and v in parameters:
                 self._string += parameters[v]
         result = self._sendExact()
-        objectID, response = self._readSubscription(result)
-        if response - cmdID != 16 or objectID != objID:
-            raise FatalTraCIError("Received answer %02x,%s for subscription command %02x,%s." % (
-                response, objectID, cmdID, objID))
+        if varIDs:
+            objectID, response = self._readSubscription(result)
+            if response - cmdID != 16 or objectID != objID:
+                raise FatalTraCIError("Received answer %02x,%s for subscription command %02x,%s." % (
+                    response, objectID, cmdID, objID))
 
     def _getSubscriptionResults(self, cmdID):
         return self._subscriptionMapping[cmdID]
@@ -244,10 +250,11 @@ class Connection:
         for v in varIDs:
             self._string += struct.pack("!B", v)
         result = self._sendExact()
-        objectID, response = self._readSubscription(result)
-        if response - cmdID != 16 or objectID != objID:
-            raise FatalTraCIError("Received answer %02x,%s for context subscription command %02x,%s." % (
-                response, objectID, cmdID, objID))
+        if varIDs:
+            objectID, response = self._readSubscription(result)
+            if response - cmdID != 16 or objectID != objID:
+                raise FatalTraCIError("Received answer %02x,%s for context subscription command %02x,%s." % (
+                    response, objectID, cmdID, objID))
 
     def isEmbedded(self):
         return _embedded

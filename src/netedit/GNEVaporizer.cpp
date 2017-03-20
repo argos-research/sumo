@@ -2,12 +2,12 @@
 /// @file    GNEVaporizer.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNEVaporizer.cpp 21640 2016-10-09 20:28:52Z palcraft $
+/// @version $Id: GNEVaporizer.cpp 22915 2017-02-10 14:05:44Z palcraft $
 ///
 ///
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -65,8 +65,8 @@
 // member method definitions
 // ===========================================================================
 
-GNEVaporizer::GNEVaporizer(const std::string& id, GNEViewNet* viewNet, GNEEdge* edge, SUMOTime startTime, SUMOTime end, bool blocked) :
-    GNEAdditional(id, viewNet, Position(), SUMO_TAG_VAPORIZER, NULL, blocked),
+GNEVaporizer::GNEVaporizer(const std::string& id, GNEViewNet* viewNet, GNEEdge* edge, SUMOReal startTime, SUMOReal end) :
+    GNEAdditional(id, viewNet, Position(), SUMO_TAG_VAPORIZER, ICON_VAPORIZER),
     myStartTime(startTime),
     myEnd(end) {
     // This additional belongs to a edge
@@ -145,7 +145,7 @@ GNEVaporizer::commmitAdditionalGeometryMoved(SUMOReal, SUMOReal, GNEUndoList*) {
 
 
 void
-GNEVaporizer::writeAdditional(OutputDevice& device, const std::string&) {
+GNEVaporizer::writeAdditional(OutputDevice& device) const {
     // Write parameters
     device.openTag(getTag());
     device.writeAttr(SUMO_ATTR_ID, getID());
@@ -157,26 +157,26 @@ GNEVaporizer::writeAdditional(OutputDevice& device, const std::string&) {
 }
 
 
-SUMOTime
+SUMOReal
 GNEVaporizer::getStartTime() const {
     return myStartTime;
 }
 
 
-SUMOTime
+SUMOReal
 GNEVaporizer::getEnd() const {
     return myEnd;
 }
 
 
 void
-GNEVaporizer::setStartTime(SUMOTime startTime) {
+GNEVaporizer::setStartTime(SUMOReal startTime) {
     myStartTime = startTime;
 }
 
 
 void
-GNEVaporizer::setEndTime(SUMOTime end) {
+GNEVaporizer::setEndTime(SUMOReal end) {
     myEnd = end;
 }
 
@@ -241,9 +241,9 @@ GNEVaporizer::drawGL(const GUIVisualizationSettings& s) const {
 
     // Draw icon depending of detector is or isn't selected
     if (isAdditionalSelected()) {
-        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_VAPORIZERSELECTED), 1);
+        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getTexture(GNETEXTURE_VAPORIZERSELECTED), 1);
     } else {
-        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_VAPORIZER), 1);
+        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getTexture(GNETEXTURE_VAPORIZER), 1);
     }
 
     // Pop logo matrix
@@ -273,7 +273,7 @@ GNEVaporizer::getAttribute(SumoXMLAttr key) const {
         case SUMO_ATTR_END:
             return toString(myEnd);
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -292,7 +292,7 @@ GNEVaporizer::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoLis
             updateGeometry();
             break;
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -313,11 +313,11 @@ GNEVaporizer::isValid(SumoXMLAttr key, const std::string& value) {
                 return false;
             }
         case SUMO_ATTR_STARTTIME:
-            return canParse<int>(value);
+            return canParse<SUMOReal>(value);
         case SUMO_ATTR_END:
-            return canParse<int>(value);
+            return canParse<SUMOReal>(value);
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -332,13 +332,13 @@ GNEVaporizer::setAttribute(SumoXMLAttr key, const std::string& value) {
             changeEdge(value);
             break;
         case SUMO_ATTR_STARTTIME:
-            myStartTime = parse<int>(value);
+            myStartTime = parse<SUMOReal>(value);
             break;
         case SUMO_ATTR_END:
-            myEnd = parse<int>(value);
+            myEnd = parse<SUMOReal>(value);
             break;
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 

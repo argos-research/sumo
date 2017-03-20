@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdge.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: NBEdge.cpp 22641 2017-01-19 14:15:38Z namdre $
 ///
 // Methods for the representation of a single edge
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -81,6 +81,12 @@ const int NBEdge::UNSPECIFIED_INTERNAL_LANE_INDEX = -1;
 std::string
 NBEdge::Connection::getInternalLaneID() const {
     return id + "_" + toString(internalLaneIndex);
+}
+
+
+std::string
+NBEdge::Connection::getDescription(const NBEdge* parent) const {
+    return Named::getIDSecure(parent) + "_" + toString(fromLane) + "->" + Named::getIDSecure(toEdge) + "_" + toString(toLane);
 }
 
 
@@ -564,6 +570,15 @@ NBEdge::cutAtIntersection(const PositionVector& old) const {
             PositionVector tmp;
             tmp.push_back(shape[0]);
             tmp.push_back(shape[-1]);
+            // 3D geometry may be messed up since positions were extrapolated rather than interpolated due to cutting in the wrong direction
+            // make the edge level with one of the intersections (try to pick one that needs to be flat as well)
+            if (myTo->geometryLike()) {
+                tmp[0].setz(myFrom->getPosition().z());
+                tmp[1].setz(myFrom->getPosition().z());
+            } else {
+                tmp[0].setz(myTo->getPosition().z());
+                tmp[1].setz(myTo->getPosition().z());
+            }
             shape = tmp;
             if (tmp.length() < POSITION_EPS) {
                 // fall back to original shape
@@ -627,7 +642,12 @@ NBEdge::startShapeAt(const PositionVector& laneShape, const NBNode* startNode, P
         }
         PositionVector ns = laneShape.getSubpart2D(pb, laneShape.length2D());
         //PositionVector ns = pb < (laneShape.length() - POSITION_EPS) ? laneShape.getSubpart2D(pb, laneShape.length()) : laneShape;
-        ns[0].set(ns[0].x(), ns[0].y(), startNode->getPosition().z());
+        if (!startNode->geometryLike() || pb < 1) {
+            // make "real" intersections and small intersections flat
+            ns[0].setz(startNode->getPosition().z());
+            // cutting and patching z-coordinate may cause steep grades which should be smoothed
+            ns = ns.smoothedZFront(pb * 2);
+        }
         assert(ns.size() >= 2);
         return ns;
     } else if (nodeShape.intersects(lb)) {
@@ -638,7 +658,11 @@ NBEdge::startShapeAt(const PositionVector& laneShape, const NBNode* startNode, P
         assert(pb >= 0);
         PositionVector result = laneShape.getSubpartByIndex(1, (int)laneShape.size() - 1);
         Position np = PositionVector::positionAtOffset2D(lb[0], lb[1], pb);
-        result.push_front_noDoublePos(Position(np.x(), np.y(), startNode->getPosition().z()));
+        if (!startNode->geometryLike()) {
+            // make "real" intersections flat
+            np.setz(startNode->getPosition().z());
+        }
+        result.push_front_noDoublePos(np);
         return result;
         //if (result.size() >= 2) {
         //    return result;
@@ -956,7 +980,7 @@ NBEdge::hasConnectionTo(NBEdge* destEdge, int destLane, int fromLane) const {
 
 
 bool
-NBEdge::isConnectedTo(NBEdge* e) {
+NBEdge::isConnectedTo(const NBEdge* e) const {
     if (e == myTurnDestination) {
         return true;
     }
@@ -1011,6 +1035,19 @@ NBEdge::getConnectedEdges() const {
     for (std::vector<Connection>::const_iterator i = myConnections.begin(); i != myConnections.end(); ++i) {
         if (find(ret.begin(), ret.end(), (*i).toEdge) == ret.end()) {
             ret.push_back((*i).toEdge);
+        }
+    }
+    return ret;
+}
+
+
+EdgeVector
+NBEdge::getIncomingEdges() const {
+    EdgeVector ret;
+    const EdgeVector& candidates = myFrom->getIncomingEdges();
+    for (EdgeVector::const_iterator i = candidates.begin(); i != candidates.end(); i++) {
+        if ((*i)->isConnectedTo(this)) {
+            ret.push_back(*i);
         }
     }
     return ret;
@@ -2832,16 +2869,6 @@ NBEdge::restoreSidewalk(std::vector<NBEdge::Lane> oldLanes, PositionVector oldGe
 }
 
 
-bool
-NBEdge::hatSidewalk() const {
-    if (myLanes[0].permissions == SVC_PEDESTRIAN) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
-
 void
 NBEdge::addBikeLane(SUMOReal width) {
     addRestrictedLane(width, SVC_BICYCLE);
@@ -2851,16 +2878,6 @@ NBEdge::addBikeLane(SUMOReal width) {
 void
 NBEdge::restoreBikelane(std::vector<NBEdge::Lane> oldLanes, PositionVector oldGeometry, std::vector<NBEdge::Connection> oldConnections) {
     restoreRestrictedLane(SVC_BICYCLE, oldLanes, oldGeometry, oldConnections);
-}
-
-
-bool
-NBEdge::hatBikelane() const {
-    if (myLanes[0].permissions == SVC_BICYCLE) {
-        return true;
-    } else {
-        return false;
-    }
 }
 
 

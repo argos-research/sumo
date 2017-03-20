@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIMEVehicle.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: GUIMEVehicle.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -133,7 +133,7 @@ GUIMEVehicle::getParameterWindow(GUIMainWindow& app,
     ret->mkItem("event time [s]", true, new FunctionBinding<GUIMEVehicle, SUMOReal>(this, &MEVehicle::getEventTimeSeconds));
     ret->mkItem("entry time [s]", true, new FunctionBinding<GUIMEVehicle, SUMOReal>(this, &MEVehicle::getLastEntryTimeSeconds));
     ret->mkItem("block time [s]", true, new FunctionBinding<GUIMEVehicle, SUMOReal>(this, &MEVehicle::getBlockTimeSeconds));
-    ret->mkItem("tls penalty [s]", true, new FunctionBinding<GUIMEVehicle, SUMOReal>(this, &MEVehicle::getCurrentTLSPenaltySeconds));
+    ret->mkItem("link penalty [s]", true, new FunctionBinding<GUIMEVehicle, SUMOReal>(this, &MEVehicle::getCurrentLinkPenaltySeconds));
     // close building
     ret->closeBuilding();
     return ret;
@@ -211,7 +211,7 @@ GUIMEVehicle::getColorValue(int activeScheme) const {
         case 23:
             return 0; // invalid getAcceleration();
         case 24:
-            return 0; // invalid getTimeGap();
+            return 0; // invalid getTimeGapOnLane();
         case 25:
             return STEPS2TIME(getDepartDelay());
     }

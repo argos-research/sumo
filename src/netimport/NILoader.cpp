@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Robert Hilbrich
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NILoader.cpp 21276 2016-08-02 11:39:45Z rhilbrich $
+/// @version $Id: NILoader.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Perfoms network import
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

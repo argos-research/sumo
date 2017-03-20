@@ -4,13 +4,13 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2010-10-15
-@version $Id: timingStats.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: timingStats.py 22608 2017-01-17 06:28:54Z behrisch $
 
 This script executes a config repeatedly and measures the execution time,
  computes the mean values and deviation.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

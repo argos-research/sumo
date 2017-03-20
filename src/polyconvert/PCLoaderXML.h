@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Thu, 02.11.2006
-/// @version $Id: PCLoaderXML.h 21148 2016-07-12 08:47:10Z behrisch $
+/// @version $Id: PCLoaderXML.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A reader for polygons and pois stored in XML-format
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

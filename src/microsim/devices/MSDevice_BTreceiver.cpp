@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    14.08.2013
-/// @version $Id: MSDevice_BTreceiver.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSDevice_BTreceiver.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A BT sender
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2013-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

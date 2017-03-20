@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Mario Krumnow
 /// @date    2004
-/// @version $Id: OutputDevice.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: OutputDevice.h 22797 2017-01-31 14:53:07Z namdre $
 ///
 // Static storage of an output device and its base (abstract) implementation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2004-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2004-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -136,7 +136,7 @@ public:
      * @param[in] precision the precision to achieve
      * @return The formatted string
      */
-    static std::string realString(const SUMOReal v, const int precision = OUTPUT_ACCURACY);
+    static std::string realString(const SUMOReal v, const int precision = gPrecision);
 
 
 public:
@@ -165,7 +165,7 @@ public:
     /** @brief Sets the precison or resets it to default
      * @param[in] precision The accuracy (number of digits behind '.') to set
      */
-    void setPrecision(int precision = OUTPUT_ACCURACY);
+    void setPrecision(int precision = gPrecision);
 
 
     /** @brief Writes an XML header with optional configuration
@@ -174,15 +174,14 @@ public:
      *  is written and false returned.
      *
      * @param[in] rootElement The root element to use
+     * @param[in] schemaFile  The basename of the schema file to use
      * @param[in] attrs Additional attributes to save within the rootElement
-     * @param[in] comment Additional comment (saved in front the rootElement)
      * @return Whether the header could be written (stack was empty)
-     * @todo Check which parameter is used herein
      * @todo Describe what is saved
      */
     bool writeXMLHeader(const std::string& rootElement,
-                        const std::string& attrs = "",
-                        const std::string& comment = "");
+                        const std::string& schemaFile,
+                        std::map<SumoXMLAttr, std::string> attrs = std::map<SumoXMLAttr, std::string>());
 
 
     template <typename E>

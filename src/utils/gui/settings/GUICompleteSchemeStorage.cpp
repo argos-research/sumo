@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    2006-01-09
-/// @version $Id: GUICompleteSchemeStorage.cpp 21538 2016-09-26 10:52:35Z namdre $
+/// @version $Id: GUICompleteSchemeStorage.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Storage for available visualization settings
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    15 Feb 2004
-/// @version $Id: Command_SaveTLSState.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: Command_SaveTLSState.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Writes the state of the tls to a file (in each second)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -47,7 +47,7 @@ Command_SaveTLSState::Command_SaveTLSState(const MSTLLogicControl::TLSLogicVaria
         OutputDevice& od)
     : myOutputDevice(od), myLogics(logics) {
     MSNet::getInstance()->getEndOfTimestepEvents()->addEvent(this, 0, MSEventControl::ADAPT_AFTER_EXECUTION);
-    myOutputDevice.writeXMLHeader("tls-states");
+    myOutputDevice.writeXMLHeader("tls-states", "tlsstate_file.xsd");
 }
 
 

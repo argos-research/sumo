@@ -2,12 +2,12 @@
 /// @file    GNEDetectorE1.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetector.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEDetector.cpp 22915 2017-02-10 14:05:44Z palcraft $
 ///
 ///
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -63,8 +63,8 @@
 // member method definitions
 // ===========================================================================
 
-GNEDetector::GNEDetector(const std::string& id, GNEViewNet* viewNet, SumoXMLTag tag, GNELane* lane, SUMOReal posOverLane, int freq, const std::string& filename, bool blocked, GNEAdditionalSet* parent) :
-    GNEAdditional(id, viewNet, Position(posOverLane, 0), tag, parent, blocked),
+GNEDetector::GNEDetector(const std::string& id, GNEViewNet* viewNet, SumoXMLTag tag, GUIIcon icon, GNELane* lane, SUMOReal posOverLane, SUMOReal freq, const std::string& filename) :
+    GNEAdditional(id, viewNet, Position(posOverLane, 0), tag, icon),
     myFreq(freq),
     myFilename(filename) {
     // This additional belongs to a Lane
@@ -113,7 +113,7 @@ GNEDetector::getPositionOverLane() const {
 }
 
 
-int
+SUMOReal
 GNEDetector::getFrequency() const {
     return myFreq;
 }
@@ -128,9 +128,9 @@ GNEDetector::getFilename() const {
 void
 GNEDetector::setPositionOverLane(SUMOReal pos) {
     if (pos < 0) {
-        throw InvalidArgument("Position '" + toString(pos) + "' not allowed. Must be greather than 0");
+        throw InvalidArgument("Position '" + toString(pos) + "' of " + toString(getTag()) + " not allowed. Must be greater than 0");
     } else if (pos > myLane->getLaneShapeLenght()) {
-        throw InvalidArgument("Position '" + toString(pos) + "' not allowed. Must be smaller than lane length");
+        throw InvalidArgument("Position '" + toString(pos) + "' of " + toString(getTag()) + " not allowed. Must be smaller than lane length");
     } else {
         myPosition = Position(pos, 0);
     }
@@ -138,11 +138,11 @@ GNEDetector::setPositionOverLane(SUMOReal pos) {
 
 
 void
-GNEDetector::setFrequency(int freq) {
-    if (freq >= 0) {
+GNEDetector::setFrequency(const SUMOReal freq) {
+    if (freq > 0) {
         myFreq = freq;
     } else {
-        throw InvalidArgument("Frequency '" + toString(freq) + "' not allowed. Must be greather than 0");
+        throw InvalidArgument("Frequency '" + toString(freq) + "' not allowed. Must be greater than 0");
     }
 }
 

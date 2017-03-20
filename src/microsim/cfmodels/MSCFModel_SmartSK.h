@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Peter Wagner
 /// @date    Tue, 05 Jun 2012
-/// @version $Id: MSCFModel_SmartSK.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSCFModel_SmartSK.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A smarter SK
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

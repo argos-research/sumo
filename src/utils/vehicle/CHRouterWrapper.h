@@ -4,12 +4,12 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    March 2012
-/// @version $Id: CHRouterWrapper.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: CHRouterWrapper.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Wraps multiple CHRouters for different vehicle types
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -46,6 +46,10 @@
 #include <utils/common/SUMOVehicleClass.h>
 #include "CHRouter.h"
 
+#ifdef HAVE_FOX
+#include <utils/foxtools/FXWorkerThread.h>
+#endif
+
 
 // ===========================================================================
 // class definitions
@@ -73,35 +77,75 @@ public:
 
     /** @brief Constructor
      */
-    CHRouterWrapper(const std::vector<E*>& edges, bool ignoreErrors, Operation operation, SUMOTime begin, SUMOTime weightPeriod):
+    CHRouterWrapper(const std::vector<E*>& edges, const bool ignoreErrors, Operation operation,
+                    const SUMOTime begin, const SUMOTime end, const SUMOTime weightPeriod, const int numThreads) :
         SUMOAbstractRouter<E, V>(operation, "CHRouterWrapper"),
         myEdges(edges),
         myIgnoreErrors(ignoreErrors),
         myBegin(begin),
-        myWeightPeriod(weightPeriod) {
+        myEnd(end),
+        myWeightPeriod(weightPeriod),
+        myMaxNumInstances(numThreads) {
     }
 
     ~CHRouterWrapper() {
         for (typename RouterMap::iterator i = myRouters.begin(); i != myRouters.end(); ++i) {
-            delete(*i).second;
+            for (typename std::vector<CHRouterType*>::iterator j = i->second.begin(); j != i->second.end(); ++j) {
+                delete *j;
+            }
         }
     }
 
 
     virtual SUMOAbstractRouter<E, V>* clone() {
-        return new CHRouterWrapper<E, V, PF>(myEdges, myIgnoreErrors, this->myOperation, myBegin, myWeightPeriod);
+        CHRouterWrapper<E, V, PF>* clone = new CHRouterWrapper<E, V, PF>(myEdges, myIgnoreErrors, this->myOperation, myBegin, myEnd, myWeightPeriod, myMaxNumInstances);
+        for (typename RouterMap::iterator i = myRouters.begin(); i != myRouters.end(); ++i) {
+            for (typename std::vector<CHRouterType*>::iterator j = i->second.begin(); j != i->second.end(); ++j) {
+                clone->myRouters[i->first].push_back(static_cast<CHRouterType*>((*j)->clone()));
+            }
+        }
+        return clone;
     }
+
 
     bool compute(const E* from, const E* to, const V* const vehicle,
                  SUMOTime msTime, std::vector<const E*>& into) {
         const std::pair<const SUMOVehicleClass, const SUMOReal> svc = std::make_pair(vehicle->getVClass(), vehicle->getMaxSpeed());
+        int index = 0;
+        int numIntervals = 1;
+#ifdef HAVE_FOX
+        if (myMaxNumInstances >= 2 && myEnd < std::numeric_limits<int>::max()) {
+            index = (int)((msTime - myBegin) / myWeightPeriod);
+            numIntervals = (int)((myEnd - myBegin) / myWeightPeriod);
+            if (numIntervals > 0) {
+                while ((int)myThreadPool.size() < myMaxNumInstances) {
+                    new FXWorkerThread(myThreadPool);
+                }
+            } else {
+                // this covers the cases of negative (unset) end time and unset weight period (no weight file)
+                numIntervals = 1;
+            }
+        }
+#endif
         if (myRouters.count(svc) == 0) {
             // create new router for the given permissions and maximum speed
             // XXX a new router may also be needed if vehicles differ in speed factor
-            myRouters[svc] = new CHRouterType(
-                myEdges, myIgnoreErrors, &E::getTravelTimeStatic, svc.first, myWeightPeriod, false);
+            for (int i = 0; i < numIntervals; i++) {
+                myRouters[svc].push_back(new CHRouterType(
+                                             myEdges, myIgnoreErrors, &E::getTravelTimeStatic, svc.first, myWeightPeriod, false));
+#ifdef HAVE_FOX
+                if (myThreadPool.size() > 0) {
+                    myThreadPool.add(new ComputeHierarchyTask(myRouters[svc].back(), vehicle, myBegin + i * myWeightPeriod));
+                }
+#endif
+            }
+#ifdef HAVE_FOX
+            if (myThreadPool.size() > 0) {
+                myThreadPool.waitAll();
+            }
+#endif
         }
-        return myRouters[svc]->compute(from, to, vehicle, msTime, into);
+        return myRouters[svc][index]->compute(from, to, vehicle, msTime, into);
     }
 
 
@@ -122,17 +166,45 @@ public:
 
 private:
     typedef CHRouter<E, V, noProhibitions<E, V> > CHRouterType;
-    typedef std::map<std::pair<const SUMOVehicleClass, const SUMOReal>, CHRouterType*> RouterMap;
+
+#ifdef HAVE_FOX
+private:
+    class ComputeHierarchyTask : public FXWorkerThread::Task {
+    public:
+        ComputeHierarchyTask(CHRouterType* router, const V* const vehicle, const SUMOTime msTime)
+            : myRouter(router), myVehicle(vehicle), myStartTime(msTime) {}
+        void run(FXWorkerThread* /* context */) {
+            myRouter->buildContractionHierarchy(myStartTime, myVehicle);
+        }
+    private:
+        CHRouterType* myRouter;
+        const V* const myVehicle;
+        const SUMOTime myStartTime;
+    private:
+        /// @brief Invalidated assignment operator.
+        ComputeHierarchyTask& operator=(const ComputeHierarchyTask&);
+    };
+
+
+private:
+    /// @brief for multi threaded routing
+    FXWorkerThread::Pool myThreadPool;
+#endif
+
+private:
+    typedef std::map<std::pair<const SUMOVehicleClass, const SUMOReal>, std::vector<CHRouterType*> > RouterMap;
 
     RouterMap myRouters;
 
     /// @brief all edges with numerical ids
     const std::vector<E*>& myEdges;
 
-    bool myIgnoreErrors;
+    const bool myIgnoreErrors;
 
-    SUMOTime myBegin;
-    SUMOTime myWeightPeriod;
+    const SUMOTime myBegin;
+    const SUMOTime myEnd;
+    const SUMOTime myWeightPeriod;
+    const int myMaxNumInstances;
 };
 
 

@@ -112,11 +112,11 @@ am_libmicrosim_a_OBJECTS = MSBaseVehicle.$(OBJEXT) \
 	MSNet.$(OBJEXT) MSNoLogicJunction.$(OBJEXT) \
 	MSRightOfWayJunction.$(OBJEXT) MSRoute.$(OBJEXT) \
 	MSRouteHandler.$(OBJEXT) MSStoppingPlace.$(OBJEXT) \
-	MSVehicle.$(OBJEXT) MSLeaderInfo.$(OBJEXT) \
-	MSVehicleContainer.$(OBJEXT) MSVehicleControl.$(OBJEXT) \
-	MSVehicleTransfer.$(OBJEXT) MSVehicleType.$(OBJEXT) \
-	MSStateHandler.$(OBJEXT) MSTransportable.$(OBJEXT) \
-	MSTransportableControl.$(OBJEXT)
+	MSParkingArea.$(OBJEXT) MSVehicle.$(OBJEXT) \
+	MSLeaderInfo.$(OBJEXT) MSVehicleContainer.$(OBJEXT) \
+	MSVehicleControl.$(OBJEXT) MSVehicleTransfer.$(OBJEXT) \
+	MSVehicleType.$(OBJEXT) MSStateHandler.$(OBJEXT) \
+	MSTransportable.$(OBJEXT) MSTransportableControl.$(OBJEXT)
 libmicrosim_a_OBJECTS = $(am_libmicrosim_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -408,6 +408,7 @@ MSNet.cpp MSNet.h MSNoLogicJunction.cpp MSNoLogicJunction.h \
 MSRightOfWayJunction.cpp MSRightOfWayJunction.h \
 MSRoute.cpp MSRoute.h MSRouteHandler.cpp MSRouteHandler.h \
 MSStoppingPlace.cpp MSStoppingPlace.h \
+MSParkingArea.cpp MSParkingArea.h \
 MSVehicle.cpp MSVehicle.h \
 MSLeaderInfo.cpp MSLeaderInfo.h \
 MSVehicleContainer.cpp MSVehicleContainer.h \
@@ -494,6 +495,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSMoveReminder.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSNet.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSNoLogicJunction.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSParkingArea.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSRightOfWayJunction.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSRoute.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSRouteHandler.Po@am__quote@

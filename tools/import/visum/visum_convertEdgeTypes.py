@@ -4,14 +4,14 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2009-05-27
-@version $Id: visum_convertEdgeTypes.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: visum_convertEdgeTypes.py 22608 2017-01-17 06:28:54Z behrisch $
 
 
 This script converts edge type definitions (STRECKENTYP) into their
  SUMO-representation.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2009-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

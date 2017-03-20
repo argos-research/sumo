@@ -2,12 +2,12 @@
 /// @file    GUIIconSubSys.h
 /// @author  Daniel Krajzewicz
 /// @date    Jul 2003
-/// @version $Id: GUIIconSubSys.h 21107 2016-07-04 12:57:59Z palcraft $
+/// @version $Id: GUIIconSubSys.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A class to manage icons of SUMO
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -39,20 +39,21 @@
 // ===========================================================================
 class GUIIconSubSys {
 public:
-    /// @brief Initiate GUIIconSubSys
-    /// @param[in] a FOX Toolkit APP
-    static void init(FXApp* a);
+    /**@brief Initiate GUIIconSubSys
+     * @param[in] a FOX Toolkit APP
+     */
+    static void initIcons(FXApp* a);
 
-    /// @brief returns a icon previously defined in the enum GUIIcon
-    /// @param[in] a FOX Toolkit APP
+    /**@brief returns a icon previously defined in the enum GUIIcon
+     * @param[in] which GUIIcon enum
+     */
     static FXIcon* getIcon(GUIIcon which);
 
     /// @brief close GUIIconSubSys
     static void close();
 
 private:
-    /// @brief constructor
-    /// @note is private because is called by the static function init(FXApp* a)
+    /// @brief constructor is private because is called by the static function init(FXApp* a)
     GUIIconSubSys(FXApp* a);
 
     /// @brief destructor

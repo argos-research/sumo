@@ -4,12 +4,12 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2011-03-17
-@version $Id: _edge.py 21851 2016-10-31 12:20:12Z behrisch $
+@version $Id: _edge.py 22782 2017-01-31 08:15:49Z namdre $
 
 Python implementation of the TraCI interface.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2011-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2011-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -69,7 +69,7 @@ class EdgeDomain(Domain):
         self._connection._beginMessage(tc.CMD_GET_EDGE_VARIABLE, tc.VAR_EDGE_TRAVELTIME,
                                        edgeID, 1 + 4)
         self._connection._string += struct.pack(
-            "!Bi", tc.TYPE_INTEGER, _TIME2STEPS(time))
+            "!Bi", tc.TYPE_INTEGER, time)
         return self._connection._checkResult(tc.CMD_GET_EDGE_VARIABLE,
                                              tc.VAR_EDGE_TRAVELTIME, edgeID).readDouble()
 
@@ -89,7 +89,7 @@ class EdgeDomain(Domain):
         self._connection._beginMessage(tc.CMD_GET_EDGE_VARIABLE, tc.VAR_EDGE_EFFORT,
                                        edgeID, 1 + 4)
         self._connection._string += struct.pack(
-            "!Bi", tc.TYPE_INTEGER, _TIME2STEPS(time))
+            "!Bi", tc.TYPE_INTEGER, time)
         return self._connection._checkResult(tc.CMD_GET_EDGE_VARIABLE,
                                              tc.VAR_EDGE_EFFORT, edgeID).readDouble()
 
@@ -225,8 +225,8 @@ class EdgeDomain(Domain):
                 tc.CMD_SET_EDGE_VARIABLE, tc.VAR_EDGE_TRAVELTIME, edgeID, 1 + 4 + 1 + 4 + 1 + 4 + 1 + 8)
             self._connection._string += struct.pack("!BiBiBiBd",
                                                     tc.TYPE_COMPOUND, 3,
-                                                    tc.TYPE_INTEGER, 1000 * begin,
-                                                    tc.TYPE_INTEGER, 1000 * end,
+                                                    tc.TYPE_INTEGER, begin,
+                                                    tc.TYPE_INTEGER, end,
                                                     tc.TYPE_DOUBLE, time)
             self._connection._sendExact()
         else:
@@ -252,8 +252,8 @@ class EdgeDomain(Domain):
                 tc.CMD_SET_EDGE_VARIABLE, tc.VAR_EDGE_EFFORT, edgeID, 1 + 4 + 1 + 4 + 1 + 4 + 1 + 8)
             self._connection._string += struct.pack("!BiBiBiBd",
                                                     tc.TYPE_COMPOUND, 3,
-                                                    tc.TYPE_INTEGER, 1000 * begin,
-                                                    tc.TYPE_INTEGER, 1000 * end,
+                                                    tc.TYPE_INTEGER, begin,
+                                                    tc.TYPE_INTEGER, end,
                                                     tc.TYPE_DOUBLE, effort)
             self._connection._sendExact()
         else:

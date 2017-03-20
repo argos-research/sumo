@@ -2,12 +2,12 @@
 /// @file    MELoop.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MELoop.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MELoop.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The main mesocopic simulation loop
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -266,7 +266,6 @@ MELoop::buildSegmentsFor(const MSEdge& e, const OptionsCont& oc) {
     const SUMOReal length = e.getLength();
     int no = numSegmentsFor(length, oc.getFloat("meso-edgelength"));
     const SUMOReal slength = length / (SUMOReal)no;
-    const SUMOReal lengthGeometryFactor = e.getLanes()[0]->getLengthGeometryFactor();
     MESegment* newSegment = 0;
     MESegment* nextSegment = 0;
     bool multiQueue = oc.getBool("meso-multi-queue");
@@ -278,8 +277,7 @@ MELoop::buildSegmentsFor(const MSEdge& e, const OptionsCont& oc) {
                           e.getLanes()[0]->getSpeedLimit(), s,
                           string2time(oc.getString("meso-tauff")), string2time(oc.getString("meso-taufj")),
                           string2time(oc.getString("meso-taujf")), string2time(oc.getString("meso-taujj")),
-                          oc.getFloat("meso-jam-threshold"), multiQueue, junctionControl,
-                          lengthGeometryFactor);
+                          oc.getFloat("meso-jam-threshold"), multiQueue, junctionControl);
         multiQueue = false;
         junctionControl = false;
         nextSegment = newSegment;

@@ -4,12 +4,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    2004-03-19
-/// @version $Id: FXBaseObject.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: FXBaseObject.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 //
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2004-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2004-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

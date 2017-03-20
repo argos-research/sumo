@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2009-10-24
-/// @version $Id: PositionVectorTest.cpp 20859 2016-06-03 08:45:01Z namdre $
+/// @version $Id: PositionVectorTest.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Tests the class PositionVector
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

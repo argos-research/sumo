@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: MSRouteHandler.cpp 21206 2016-07-20 08:08:35Z behrisch $
+/// @version $Id: MSRouteHandler.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Parser and container for routes during their loading
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -78,7 +78,8 @@ MSRouteHandler::MSRouteHandler(const std::string& file,
     myActiveContainerPlan(0),
     myAddVehiclesDirectly(addVehiclesDirectly),
     myCurrentVTypeDistribution(0),
-    myCurrentRouteDistribution(0) {
+    myCurrentRouteDistribution(0),
+    myAmLoadingState(false) {
     myActiveRoute.reserve(100);
 }
 
@@ -220,8 +221,8 @@ MSRouteHandler::myStartElement(int element,
                     SUMOReal speed = DEFAULT_PEDESTRIAN_SPEED;
                     const MSVehicleType* vtype = MSNet::getInstance()->getVehicleControl().getVType(myVehicleParameter->vtypeid, &myParsingRNG);
                     // need to check for explicitly set speed since we might have // DEFAULT_VEHTYPE
-                    if (vtype != 0 && vtype->wasSet(VTYPEPARS_MAXSPEED_SET)) {
-                        speed = vtype->getMaxSpeed();
+                    if (vtype != 0) {
+                        speed = vtype->getMaxSpeed() * vtype->computeChosenSpeedDeviation(&myParsingRNG);
                     }
                     speed = attrs.getOpt<SUMOReal>(SUMO_ATTR_SPEED, 0, ok, speed);
                     if (speed <= 0) {
@@ -271,7 +272,8 @@ MSRouteHandler::myStartElement(int element,
                         myActivePlan->push_back(new MSTransportable::Stage_Waiting(
                                                     *myActiveRoute.front(), -1, myVehicleParameter->depart, departPos, "start", true));
                     }
-                    myActivePlan->push_back(new MSPerson::MSPersonStage_Walking(myActiveRoute, bs, duration, speed, departPos, arrivalPos));
+                    const SUMOReal departPosLat = attrs.getOpt<SUMOReal>(SUMO_ATTR_DEPARTPOS_LAT, 0, ok, 0);
+                    myActivePlan->push_back(new MSPerson::MSPersonStage_Walking(myActiveRoute, bs, duration, speed, departPos, arrivalPos, departPosLat));
                     myActiveRoute.clear();
                 } catch (ProcessError&) {
                     deleteActivePlans();
@@ -675,7 +677,7 @@ MSRouteHandler::closeVehicle() {
     MSVehicleControl& vehControl = MSNet::getInstance()->getVehicleControl();
     if (myVehicleParameter->departProcedure == DEPART_GIVEN) {
         // let's check whether this vehicle had to depart before the simulation starts
-        if (!(myAddVehiclesDirectly || checkLastDepart()) || myVehicleParameter->depart < string2time(OptionsCont::getOptions().getString("begin"))) {
+        if (!(myAddVehiclesDirectly || checkLastDepart()) || (myVehicleParameter->depart < string2time(OptionsCont::getOptions().getString("begin")) && !myAmLoadingState)) {
             if (route != 0) {
                 route->addReference();
                 route->release();
@@ -692,6 +694,9 @@ MSRouteHandler::closeVehicle() {
             vtype = vehControl.getVType(myVehicleParameter->vtypeid, &myParsingRNG);
             if (vtype == 0) {
                 throw ProcessError("The vehicle type '" + myVehicleParameter->vtypeid + "' for vehicle '" + myVehicleParameter->id + "' is not known.");
+            }
+            if (vtype->getVehicleClass() == SVC_PEDESTRIAN) {
+                WRITE_WARNING("Vehicle type '" + vtype->getID() + "' with vClass=pedestrian should only be used for persons and not for vehicle '" + myVehicleParameter->id + "'.");
             }
         } else {
             // there should be one (at least the default one)
@@ -856,7 +861,10 @@ MSRouteHandler::closeContainer() {
 
 void
 MSRouteHandler::closeFlow() {
+    myInsertStopEdgesAt = -1;
     if (myVehicleParameter->repetitionNumber == 0) {
+        delete myVehicleParameter;
+        myVehicleParameter = 0;
         return;
     }
     // let's check whether vehicles had to depart before the simulation starts
@@ -866,6 +874,8 @@ MSRouteHandler::closeFlow() {
         while (myVehicleParameter->repetitionsDone * myVehicleParameter->repetitionOffset < offsetToBegin) {
             myVehicleParameter->repetitionsDone++;
             if (myVehicleParameter->repetitionsDone == myVehicleParameter->repetitionNumber) {
+                delete myVehicleParameter;
+                myVehicleParameter = 0;
                 return;
             }
         }
@@ -892,7 +902,6 @@ MSRouteHandler::closeFlow() {
         }
     }
     myVehicleParameter = 0;
-    myInsertStopEdgesAt = -1;
 }
 
 
@@ -919,7 +928,7 @@ MSRouteHandler::addStop(const SUMOSAXAttributes& attrs) {
         // ok, we have a bus stop
         MSStoppingPlace* bs = MSNet::getInstance()->getBusStop(stop.busstop);
         if (bs == 0) {
-            WRITE_ERROR("The bus stop '" + stop.busstop + "' is not known" + errorSuffix);
+            WRITE_ERROR("The busStop '" + stop.busstop + "' is not known" + errorSuffix);
             return;
         }
         const MSLane& l = bs->getLane();
@@ -932,13 +941,26 @@ MSRouteHandler::addStop(const SUMOSAXAttributes& attrs) {
         // ok, we have obviously a container stop
         MSStoppingPlace* cs = MSNet::getInstance()->getContainerStop(stop.containerstop);
         if (cs == 0) {
-            WRITE_ERROR("The container stop '" + stop.containerstop + "' is not known" + errorSuffix);
+            WRITE_ERROR("The containerStop '" + stop.containerstop + "' is not known" + errorSuffix);
             return;
         }
         const MSLane& l = cs->getLane();
         stop.lane = l.getID();
         stop.endPos = cs->getEndLanePosition();
         stop.startPos = cs->getBeginLanePosition();
+        edge = &l.getEdge();
+    } //try to parse the assigned parking area
+    else if (stop.parkingarea != "") {
+        // ok, we have obviously a parking area
+        MSStoppingPlace* pa = MSNet::getInstance()->getParkingArea(stop.parkingarea);
+        if (pa == 0) {
+            WRITE_ERROR("The parkingArea '" + stop.parkingarea + "' is not known" + errorSuffix);
+            return;
+        }
+        const MSLane& l = pa->getLane();
+        stop.lane = l.getID();
+        stop.endPos = pa->getEndLanePosition();
+        stop.startPos = pa->getBeginLanePosition();
         edge = &l.getEdge();
     } else if (stop.chargingStation != "") {
         // ok, we have a charging station
@@ -949,7 +971,7 @@ MSRouteHandler::addStop(const SUMOSAXAttributes& attrs) {
             stop.endPos = cs->getEndLanePosition();
             stop.startPos = cs->getBeginLanePosition();
         } else {
-            WRITE_ERROR("The charging station '" + stop.chargingStation + "' is not known" + errorSuffix);
+            WRITE_ERROR("The chargingStation '" + stop.chargingStation + "' is not known" + errorSuffix);
             return;
         }
     } else {
@@ -976,7 +998,7 @@ MSRouteHandler::addStop(const SUMOSAXAttributes& attrs) {
                     stop.startPos = stop.endPos - POSITION_EPS;
                 }
             } else {
-                WRITE_ERROR("A stop must be placed on a bus stop, a charging station, a container stop or a lane" + errorSuffix);
+                WRITE_ERROR("A stop must be placed on a busStop, a chargingStation, a containerStop a parkingArea or a lane" + errorSuffix);
                 return;
             }
         }

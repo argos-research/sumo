@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_SUMO.cpp 21714 2016-10-17 11:21:44Z namdre $
+/// @version $Id: NIImporter_SUMO.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Importer for networks stored in SUMO format
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -532,7 +532,7 @@ NIImporter_SUMO::addJunction(const SUMOSAXAttributes& attrs) {
         WRITE_WARNING("Unknown node type for junction '" + id + "'.");
     }
     Position pos = readPosition(attrs, id, ok);
-    NBNetBuilder::transformCoordinates(pos, true, myLocation);
+    NBNetBuilder::transformCoordinate(pos, true, myLocation);
     NBNode* node = new NBNode(id, pos, type);
     if (!myNodeCont.insert(node)) {
         WRITE_ERROR("Problems on adding junction '" + id + "'.");

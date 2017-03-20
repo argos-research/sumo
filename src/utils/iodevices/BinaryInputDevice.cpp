@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    2005-09-15
-/// @version $Id: BinaryInputDevice.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: BinaryInputDevice.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Encapsulates binary reading operations on a file
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

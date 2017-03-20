@@ -12,9 +12,6 @@
 /* Define to 1 if using `alloca.c'. */
 /* #undef C_ALLOCA */
 
-/* defines the number of digits after the comma in geo-coordinates output */
-#define GEO_OUTPUT_ACCURACY 6
-
 /* Define to 1 if you have `alloca', as a function or macro. */
 #define HAVE_ALLOCA 1
 
@@ -160,9 +157,6 @@
 /* defines the epsilon to use on general floating point comparison */
 #define NUMERICAL_EPS (SUMOReal)0.001
 
-/* defines the number of digits after the comma in output */
-#define OUTPUT_ACCURACY 2
-
 /* Name of package */
 #define PACKAGE "sumo"
 
@@ -173,7 +167,7 @@
 #define PACKAGE_NAME "sumo"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "sumo 0.28.0"
+#define PACKAGE_STRING "sumo 0.29.0"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "sumo"
@@ -182,7 +176,7 @@
 #define PACKAGE_URL ""
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.28.0"
+#define PACKAGE_VERSION "0.29.0"
 
 /* defines the epsilon to use on position comparison */
 #define POSITION_EPS (SUMOReal)0.1
@@ -220,7 +214,7 @@
 /* #undef TM_IN_SYS_TIME */
 
 /* Version number of package */
-#define VERSION "0.28.0"
+#define VERSION "0.29.0"
 
 /* Defined if auto-generated version.h is unavailable. */
 /* #undef VERSION_STRING */

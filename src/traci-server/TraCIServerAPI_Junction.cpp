@@ -6,12 +6,12 @@
 /// @author  Mario Krumnow
 /// @author  Jakob Erdmann
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_Junction.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: TraCIServerAPI_Junction.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // APIs for getting/setting junction values via TraCI
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2009-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

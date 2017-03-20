@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: MSPerson.h 20768 2016-05-20 08:38:44Z behrisch $
+/// @version $Id: MSPerson.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // The class for modelling person-movements
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -80,13 +80,20 @@ public:
 
     public:
         /// constructor
-        MSPersonStage_Walking(const ConstMSEdgeVector& route, MSStoppingPlace* toStop, SUMOTime walkingTime, SUMOReal speed, SUMOReal departPos, SUMOReal arrivalPos);
+        MSPersonStage_Walking(const ConstMSEdgeVector& route, MSStoppingPlace* toStop, SUMOTime walkingTime,
+                              SUMOReal speed, SUMOReal departPos, SUMOReal arrivalPos, SUMOReal departPosLat);
 
         /// destructor
         ~MSPersonStage_Walking();
 
         /// proceeds to the next step
         virtual void proceed(MSNet* net, MSTransportable* person, SUMOTime now, Stage* previous);
+
+        /// abort this stage (TraCI)
+        void abort(MSTransportable*);
+
+        /// sets the walking speed (ignored in other stages)
+        void setSpeed(SUMOReal speed);
 
         /// Returns the current edge
         const MSEdge* getEdge() const;
@@ -101,6 +108,9 @@ public:
         SUMOTime getWaitingTime(SUMOTime now) const;
 
         SUMOReal getSpeed() const;
+
+        /// @brief the edges of the current stage
+        ConstMSEdgeVector getEdges() const;
 
         std::string getStageDescription() const {
             return "walking";
@@ -142,6 +152,11 @@ public:
         inline SUMOReal getDepartPos() const {
             return myDepartPos;
         }
+
+        inline SUMOReal getDepartPosLat() const {
+            return myDepartPosLat;
+        }
+
         inline SUMOReal getArrivalPos() const {
             return myArrivalPos;
         }
@@ -165,7 +180,7 @@ public:
     private:
 
         /* @brief compute average speed if the total walking duration is given
-         * @note Must be callled when the previous stage changes myDepartPos from the default*/
+         * @note Must be called when the previous stage changes myDepartPos from the default*/
         SUMOReal computeAverageSpeed() const;
 
 
@@ -183,6 +198,7 @@ public:
         MSEdge* myCurrentInternalEdge;
 
         SUMOReal myDepartPos;
+        SUMOReal myDepartPosLat;
         SUMOReal mySpeed;
 
         /// @brief state that is to be manipulated by MSPModel

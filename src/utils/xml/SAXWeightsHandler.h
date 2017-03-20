@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Fri, 30 Mar 2007
-/// @version $Id: SAXWeightsHandler.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: SAXWeightsHandler.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // An XML-handler for network weights
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2007-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

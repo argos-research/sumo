@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: Boundary.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: Boundary.h 22631 2017-01-18 15:26:38Z namdre $
 ///
 // A class that stores a 2D geometrical boundary
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -97,6 +97,9 @@ public:
 
     /// Returns the height of the boundary (y-axis)
     SUMOReal getHeight() const;
+
+    /// Returns the elevation range of the boundary (z-axis)
+    SUMOReal getZRange() const;
 
     /// Returns whether the boundary contains the given coordinate
     bool around(const Position& p, SUMOReal offset = 0) const;

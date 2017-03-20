@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    2012
-/// @version $Id: BinaryFormatter.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: BinaryFormatter.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Output formatter for plain XML output
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -102,7 +102,9 @@ public:
         /// @brief
         BF_SCALED2INT_POSITION_2D,
         /// @brief
-        BF_SCALED2INT_POSITION_3D
+        BF_SCALED2INT_POSITION_3D,
+        /// @brief
+        BF_INVALID
     };
 
     /// @brief Constructor
@@ -121,13 +123,10 @@ public:
      * @param[in] into The output stream to use
      * @param[in] rootElement The root element to use
      * @param[in] attrs Additional attributes to save within the rootElement
-     * @param[in] comment Additional comment (saved in front the rootElement)
-     * @todo Check which parameter is used herein
      * @todo Describe what is saved
      */
     bool writeXMLHeader(std::ostream& into, const std::string& rootElement,
-                        const std::string& attrs = "",
-                        const std::string& comment = "");
+                        const std::map<SumoXMLAttr, std::string>& attrs);
 
 
     /** @brief Writes a header with optional edge list and connections.
@@ -220,10 +219,14 @@ private:
      * @param[in] attr The attribute (name)
      * @param[in] type The attribute type
      */
-    static inline void writeAttrHeader(std::ostream& into, const SumoXMLAttr attr, const DataType type) {
+    static inline void writeAttrHeader(std::ostream& into, const SumoXMLAttr attr, const DataType type = BF_INVALID) {
         FileHelpers::writeByte(into, static_cast<unsigned char>(BF_XML_ATTRIBUTE));
-        FileHelpers::writeByte(into, static_cast<unsigned char>(attr));
-        FileHelpers::writeByte(into, static_cast<unsigned char>(type));
+        const int attrNum = (int)attr;
+        FileHelpers::writeByte(into, static_cast<unsigned char>(attrNum % 256));
+        FileHelpers::writeByte(into, static_cast<unsigned char>(attrNum / 256));
+        if (type != BF_INVALID) {
+            FileHelpers::writeByte(into, static_cast<unsigned char>(type));
+        }
     }
 
 

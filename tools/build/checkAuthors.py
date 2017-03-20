@@ -4,12 +4,12 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2011-11-07
-@version $Id: checkAuthors.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: checkAuthors.py 22608 2017-01-17 06:28:54Z behrisch $
 
 Checks authors for all files.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2011-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2011-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

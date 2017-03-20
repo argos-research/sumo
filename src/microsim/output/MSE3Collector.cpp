@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Tue Dec 02 2003 22:17 CET
-/// @version $Id: MSE3Collector.cpp 21652 2016-10-10 13:30:25Z luecken $
+/// @version $Id: MSE3Collector.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A detector of vehicles passing an area between entry/exit points
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -196,6 +196,11 @@ MSE3Collector::enter(const SUMOVehicle& veh, const SUMOReal entryTimestep, const
         }
     }
     v.hadUpdate = false;
+    if (!MSGlobals::gUseMesoSim) {
+        v.timeLoss = static_cast<const MSVehicle&>(veh).getTimeLoss();
+        v.intervalTimeLoss = v.timeLoss;
+    }
+
     myEnteredContainer[&veh] = v;
 }
 
@@ -220,6 +225,13 @@ MSE3Collector::leave(const SUMOVehicle& veh, const SUMOReal leaveTimestep, const
         const SUMOReal speedFraction = veh.getSpeed() * (TS - fractionTimeOnDet);
         values.speedSum -= speedFraction;
         values.intervalSpeedSum -= speedFraction;
+        if (MSGlobals::gUseMesoSim) {
+            // not yet supported
+            values.timeLoss = 0;
+        } else {
+            // timeLoss was initialized when entering
+            values.timeLoss = static_cast<const MSVehicle&>(veh).getTimeLoss() - values.timeLoss;
+        }
         myEnteredContainer.erase(&veh);
         myLeftContainer[&veh] = values;
     }
@@ -231,33 +243,37 @@ MSE3Collector::writeXMLOutput(OutputDevice& dev,
                               SUMOTime startTime, SUMOTime stopTime) {
     dev << "   <interval begin=\"" << time2string(startTime) << "\" end=\"" << time2string(stopTime) << "\" " << "id=\"" << myID << "\" ";
     // collect values about vehicles that have left the area
-    int vehicleSum = (int) myLeftContainer.size();
+    const int vehicleSum = (int) myLeftContainer.size();
     SUMOReal meanTravelTime = 0.;
     SUMOReal meanOverlapTravelTime = 0.;
     SUMOReal meanSpeed = 0.;
     SUMOReal meanHaltsPerVehicle = 0.;
+    SUMOReal meanTimeLoss = 0.;
     for (std::map<const SUMOVehicle*, E3Values>::iterator i = myLeftContainer.begin(); i != myLeftContainer.end(); ++i) {
         meanHaltsPerVehicle += (SUMOReal)(*i).second.haltings;
         meanTravelTime += (*i).second.frontLeaveTime - (*i).second.entryTime;
         const SUMOReal steps = (*i).second.backLeaveTime - (*i).second.entryTime;
         meanOverlapTravelTime += steps;
         meanSpeed += ((*i).second.speedSum / steps);
+        meanTimeLoss += STEPS2TIME((*i).second.timeLoss);
     }
     meanTravelTime = vehicleSum != 0 ? meanTravelTime / (SUMOReal)vehicleSum : -1;
     meanOverlapTravelTime = vehicleSum != 0 ? meanOverlapTravelTime / (SUMOReal)vehicleSum : -1;
     meanSpeed = vehicleSum != 0 ? meanSpeed / (SUMOReal)vehicleSum : -1;
     meanHaltsPerVehicle = vehicleSum != 0 ? meanHaltsPerVehicle / (SUMOReal) vehicleSum : -1;
+    meanTimeLoss = vehicleSum != 0 ? meanTimeLoss / (SUMOReal) vehicleSum : -1;
     // clear container
     myLeftContainer.clear();
 
     // collect values about vehicles within the container
-    int vehicleSumWithin = (int) myEnteredContainer.size();
+    const int vehicleSumWithin = (int) myEnteredContainer.size();
     SUMOReal meanSpeedWithin = 0.;
     SUMOReal meanDurationWithin = 0.;
     SUMOReal meanHaltsPerVehicleWithin = 0.;
     SUMOReal meanIntervalSpeedWithin = 0.;
     SUMOReal meanIntervalHaltsPerVehicleWithin = 0.;
     SUMOReal meanIntervalDurationWithin = 0.;
+    SUMOReal meanTimeLossWithin = 0.;
     for (std::map<const SUMOVehicle*, E3Values>::iterator i = myEnteredContainer.begin(); i != myEnteredContainer.end(); ++i) {
         meanHaltsPerVehicleWithin += (SUMOReal)(*i).second.haltings;
         meanIntervalHaltsPerVehicleWithin += (SUMOReal)(*i).second.intervalHaltings;
@@ -275,6 +291,12 @@ MSE3Collector::writeXMLOutput(OutputDevice& dev,
         // reset interval values
         (*i).second.intervalHaltings = 0;
         (*i).second.intervalSpeedSum = 0;
+
+        if (!MSGlobals::gUseMesoSim) {
+            const SUMOTime currentTimeLoss = static_cast<const MSVehicle*>(i->first)->getTimeLoss();
+            meanTimeLossWithin += STEPS2TIME(currentTimeLoss - (*i).second.intervalTimeLoss);
+            (*i).second.intervalTimeLoss = currentTimeLoss;
+        }
     }
     myLastResetTime = stopTime;
     meanSpeedWithin = vehicleSumWithin != 0 ?  meanSpeedWithin / (SUMOReal) vehicleSumWithin : -1;
@@ -283,12 +305,14 @@ MSE3Collector::writeXMLOutput(OutputDevice& dev,
     meanIntervalSpeedWithin = vehicleSumWithin != 0 ?  meanIntervalSpeedWithin / (SUMOReal) vehicleSumWithin : -1;
     meanIntervalHaltsPerVehicleWithin = vehicleSumWithin != 0 ? meanIntervalHaltsPerVehicleWithin / (SUMOReal) vehicleSumWithin : -1;
     meanIntervalDurationWithin = vehicleSumWithin != 0 ? meanIntervalDurationWithin / (SUMOReal) vehicleSumWithin : -1;
+    meanTimeLossWithin = vehicleSumWithin != 0 ? meanTimeLossWithin / (SUMOReal) vehicleSumWithin : -1;
 
     // write values
     dev << "meanTravelTime=\"" << meanTravelTime
         << "\" meanOverlapTravelTime=\"" << meanOverlapTravelTime
         << "\" meanSpeed=\"" << meanSpeed
         << "\" meanHaltsPerVehicle=\"" << meanHaltsPerVehicle
+        << "\" meanTimeLoss=\"" << meanTimeLoss
         << "\" vehicleSum=\"" << vehicleSum
         << "\" meanSpeedWithin=\"" << meanSpeedWithin
         << "\" meanHaltsPerVehicleWithin=\"" << meanHaltsPerVehicleWithin
@@ -297,13 +321,14 @@ MSE3Collector::writeXMLOutput(OutputDevice& dev,
         << "\" meanIntervalSpeedWithin=\"" << meanIntervalSpeedWithin
         << "\" meanIntervalHaltsPerVehicleWithin=\"" << meanIntervalHaltsPerVehicleWithin
         << "\" meanIntervalDurationWithin=\"" << meanIntervalDurationWithin
+        << "\" meanTimeLossWithin=\"" << meanTimeLossWithin
         << "\"/>\n";
 }
 
 
 void
 MSE3Collector::writeXMLDetectorProlog(OutputDevice& dev) const {
-    dev.writeXMLHeader("e3Detector", "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://sumo.dlr.de/xsd/det_e3_file.xsd\"");
+    dev.writeXMLHeader("e3Detector", "det_e3_file.xsd");
 }
 
 

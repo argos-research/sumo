@@ -2,12 +2,12 @@
 /// @file    GNEViewNet.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEViewNet.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEViewNet.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A view on the network being edited (adapted from GUIViewTraffic)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -39,6 +39,7 @@
 #include <utils/shapes/Polygon.h>
 #include <utils/gui/windows/GUISUMOAbstractView.h>
 #include <utils/common/StringBijection.h>
+#include <utils/foxtools/MFXCheckableButton.h>
 
 // ===========================================================================
 // enum
@@ -61,7 +62,9 @@ enum EditMode {
     ///@brief mode for editing tls
     GNE_MODE_TLS,
     ///@brief Mode for editing additionals
-    GNE_MODE_ADDITIONAL
+    GNE_MODE_ADDITIONAL,
+    ///@brief Mode for editing crossing
+    GNE_MODE_CROSSING
 };
 
 // ===========================================================================
@@ -75,6 +78,7 @@ class GNEViewParent;
 class GNEUndoList;
 class GNEAdditional;
 class GNEPoly;
+class GNEPOI;
 
 // ===========================================================================
 // class definitions
@@ -112,7 +116,7 @@ public:
     /// @brief set color schieme
     bool setColorScheme(const std::string& name);
 
-    /// @brief overloaded handlers
+    /// @name overloaded handlers
     /// @{
     /// @brief called when user press mouse's left button
     long onLeftBtnPress(FXObject*, FXSelector, void*);
@@ -127,8 +131,35 @@ public:
     long onMouseMove(FXObject*, FXSelector, void*);
     /// @}
 
-    /// @brief sets edit mode via combo box
-    long onCmdChangeMode(FXObject*, FXSelector, void*);
+    /// @name set mode call backs
+    /// @{
+    /// @brief called when user press the button for create edge mode
+    long onCmdSetModeCreateEdge(FXObject*, FXSelector, void*);
+
+    /// @brief called when user press the button for move mode
+    long onCmdSetModeMove(FXObject*, FXSelector, void*);
+
+    /// @brief called when user press the button for delete mode
+    long onCmdSetModeDelete(FXObject*, FXSelector, void*);
+
+    /// @brief called when user press the button for inspect mode
+    long onCmdSetModeInspect(FXObject*, FXSelector, void*);
+
+    /// @brief called when user press the button for select mode
+    long onCmdSetModeSelect(FXObject*, FXSelector, void*);
+
+    /// @brief called when user press the button for connect mode
+    long onCmdSetModeConnect(FXObject*, FXSelector, void*);
+
+    /// @brief called when user press the button for traffic lights mode
+    long onCmdSetModeTLS(FXObject*, FXSelector, void*);
+
+    /// @brief called when user press the button for additional mode
+    long onCmdSetModeAdditional(FXObject*, FXSelector, void*);
+
+    /// @brief called when user press the button for crossing mode
+    long onCmdSetModeCrossing(FXObject*, FXSelector, void*);
+    /// @}
 
     /// @brief split edge at cursor position
     long onCmdSplitEdge(FXObject*, FXSelector, void*);
@@ -316,6 +347,9 @@ private:
     /// @brief the poly of which geometry is being moved
     GNEPoly* myPolyToMove;
 
+    /// @brief the poi which is being moved
+    GNEPOI* myPoiToMove;
+
     /// @brief the stoppingPlace element which shape is being moved
     GNEAdditional* myAdditionalToMove;
 
@@ -335,7 +369,7 @@ private:
     FXMenuCheck* myWarnAboutMerge;
 
     /// @brief show connection as buuble in "Move" mode.
-    FXMenuCheck* myShowJunctionAsBubble;
+    FXMenuCheck* myShowBubbleOverJunction;
     // @}
 
     /// @name state-variables of inspect-mode and select-mode
@@ -355,11 +389,42 @@ private:
     /// @brief a reference to the toolbar in myParent
     FXToolBar* myToolbar;
 
-    /// @brief combo box for selecting the  edit mode
-    FXComboBox* myEditModesCombo;
+    /// @name buttons  for selecting the edit mode
+    /// @{
+    /// @brief chekable button for edit mode create edge
+    MFXCheckableButton* myEditModeCreateEdge;
+
+    /// @brief chekable button for edit mode move
+    MFXCheckableButton* myEditModeMove;
+
+    /// @brief chekable button for edit mode delete
+    MFXCheckableButton* myEditModeDelete;
+
+    /// @brief chekable button for edit mode inspect
+    MFXCheckableButton* myEditModeInspect;
+
+    /// @brief chekable button for edit mode select
+    MFXCheckableButton* myEditModeSelect;
+
+    /// @brief chekable button for edit mode connection
+    MFXCheckableButton* myEditModeConnection;
+
+    /// @brief chekable button for edit mode traffic light
+    MFXCheckableButton* myEditModeTrafficLight;
+
+    /// @brief chekable button for edit mode additional
+    MFXCheckableButton* myEditModeAdditional;
+
+    /// @brief chekable button for edit mode crossing
+    MFXCheckableButton* myEditModeCrossing;
+    /// @}
 
     /// @brief since we cannot switch on strings we map the mode names to an enum
+    /// @{
+    /// @brief stringBijection for edit mode names
     StringBijection<EditMode> myEditModeNames;
+
+    /// @brief stringBijection for edit additional mode names
     StringBijection<EditMode> myEditAdditionalModeNames;
     /// @}
 
@@ -371,6 +436,11 @@ private:
 
     /// @brief current polygon
     GNEPoly* myCurrentPoly;
+
+    /// @brief testing mode
+    bool myTestingMode;
+    int myTestingWidth;
+    int myTestingHeight;
 
 private:
     /// @brief set edit mode

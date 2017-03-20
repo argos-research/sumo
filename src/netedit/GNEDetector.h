@@ -2,12 +2,12 @@
 /// @file    GNEDetectorE1.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetector.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEDetector.h 22876 2017-02-07 13:40:22Z palcraft $
 ///
 /// A abstract class to define common parameters of detectors
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -52,13 +52,12 @@ public:
      * @param[in] lane Lane of this detector belongs
      * @param[in] viewNet pointer to GNEViewNet of this additional element belongs
      * @param[in] tag Type of xml tag that define the detector (SUMO_TAG_E1DETECTOR, SUMO_TAG_LANE_AREA_DETECTOR, etc...)
+     * @param[in] icon GUIIcon associated to the detector
      * @param[in] posOverLane position of detector in lane
      * @param[in] freq the aggregation period the values the detector collects shall be summed up.
      * @param[in] filename The path to the output file.
-     * @param[in] blocked set initial blocking state of item
-     * @param[in] parent pointer to parent, if this additional belongs to an additionalSet
      */
-    GNEDetector(const std::string& id, GNEViewNet* viewNet, SumoXMLTag tag, GNELane* lane, SUMOReal posOverLane, int freq, const std::string& filename, bool blocked = false, GNEAdditionalSet* parent = NULL);
+    GNEDetector(const std::string& id, GNEViewNet* viewNet, SumoXMLTag tag, GUIIcon icon, GNELane* lane, SUMOReal posOverLane, SUMOReal freq, const std::string& filename);
 
     /// @brief Destructor
     ~GNEDetector();
@@ -79,13 +78,13 @@ public:
      * @param[in] device device in which write parameters of additional element
      * @param[in] currentDirectory current directory in which this additional are writted
      */
-    virtual void writeAdditional(OutputDevice& device, const std::string& currentDirectory) = 0;
+    virtual void writeAdditional(OutputDevice& device) const = 0;
 
     /// @brief Returns the position of the detector over lane
     SUMOReal getPositionOverLane() const;
 
     /// @brief returns the aggregation period the values the detector collects shall be summed up.
-    int getFrequency() const;
+    SUMOReal getFrequency() const;
 
     /// @brief returns the path to the output file
     std::string getFilename() const;
@@ -100,7 +99,7 @@ public:
      * @param[in] freq new frequency of detector
      * @throws InvalidArgument if value of frequency isn't valid
      */
-    void setFrequency(int freq);
+    void setFrequency(const SUMOReal freq);
 
     /**@brief Set a new filename in detector
      * @param[in] filename new filename of detector
@@ -145,7 +144,7 @@ public:
 
 protected:
     /// @brief The aggregation period the values the detector collects shall be summed up.
-    int myFreq;
+    SUMOReal myFreq;
 
     /// @brief The path to the output file
     std::string myFilename;

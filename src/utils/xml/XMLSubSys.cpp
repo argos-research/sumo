@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 1 Jul 2002
-/// @version $Id: XMLSubSys.cpp 21316 2016-08-22 13:08:50Z behrisch $
+/// @version $Id: XMLSubSys.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Utility methods for initialising, closing and using the XML-subsystem
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

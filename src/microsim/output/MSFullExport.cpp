@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2012-04-26
-/// @version $Id: MSFullExport.cpp 21206 2016-07-20 08:08:35Z behrisch $
+/// @version $Id: MSFullExport.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Dumping a hugh List of Parameters available in the Simulation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

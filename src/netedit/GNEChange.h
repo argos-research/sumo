@@ -2,13 +2,13 @@
 /// @file    GNEChange.h
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEChange.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEChange.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The reification of a NETEDIT editing operation (see command pattern)
 // inherits from FXCommand and is used to for undo/redo
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -51,7 +51,7 @@ class GNEChange : public FXCommand {
 
 public:
     /**@brief Constructor
-     * @param[in] net The net on which to apply changes
+     * @param[in] net GNENet net on which to apply changes
      * @param[in] forward The direction of this change
      */
     GNEChange(GNENet* net, bool forward);

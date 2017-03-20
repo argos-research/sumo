@@ -5,10 +5,10 @@
 @author  Laura Bieker
 @author  Robert Hilbrich
 @date    2016-08-05
-@version $Id: plot_net_dump.py 21291 2016-08-09 09:07:53Z rhilbrich $
+@version $Id: plot_net_dump.py 22608 2017-01-17 06:28:54Z behrisch $
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

@@ -6,12 +6,12 @@
 /// @author  Tamas Kurczveil
 /// @author  Pablo Alvarez Lopez
 /// @date    20-12-13
-/// @version $Id: GUIChargingStation.cpp 21160 2016-07-14 08:03:04Z behrisch $
+/// @version $Id: GUIChargingStation.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A lane area vehicles can halt at (gui-version)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

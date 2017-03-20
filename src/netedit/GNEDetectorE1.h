@@ -2,12 +2,12 @@
 /// @file    GNEDetectorE1.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetectorE1.h 21150 2016-07-12 12:28:35Z behrisch $
+/// @version $Id: GNEDetectorE1.h 22876 2017-02-07 13:40:22Z palcraft $
 ///
 ///
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -54,9 +54,8 @@ public:
      * @param[in] freq the aggregation period the values the detector collects shall be summed up.
      * @param[in] filename The path to the output file.
      * @param[in] splitByType If set, the collected values will be additionally reported on per-vehicle type base.
-     * @param[in] blocked set initial blocking state of item
      */
-    GNEDetectorE1(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal pos, SUMOReal freq, const std::string& filename, bool splitByType, bool blocked);
+    GNEDetectorE1(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal pos, SUMOReal freq, const std::string& filename, bool splitByType);
 
     /// @brief Destructor
     ~GNEDetectorE1();
@@ -71,7 +70,7 @@ public:
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element
      */
-    void writeAdditional(OutputDevice& device, const std::string&);
+    void writeAdditional(OutputDevice& device) const;
 
     /// @name inherited from GUIGlObject
     /// @{

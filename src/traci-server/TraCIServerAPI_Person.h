@@ -2,12 +2,12 @@
 /// @file    TraCIServerAPI_Person.h
 /// @author  Daniel Krajzewicz
 /// @date    26.05.2014
-/// @version $Id: TraCIServerAPI_Person.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: TraCIServerAPI_Person.h 22715 2017-01-26 14:55:39Z namdre $
 ///
 // APIs for getting/setting person values via TraCI
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -78,7 +78,7 @@ public:
     static bool getPosition(const std::string& id, Position& p);
 
 private:
-    //static MSVehicleType& getSingularType(MSPerson* const person);
+    static MSVehicleType& getSingularType(MSTransportable* const t);
 
 private:
     /// @brief invalidated copy constructor

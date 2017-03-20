@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 30.01.2009
-/// @version $Id: MSDevice_Tripinfo.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: MSDevice_Tripinfo.cpp 22797 2017-01-31 14:53:07Z namdre $
 ///
 // A device which collects info on the vehicle trip
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2009-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -88,7 +88,7 @@ MSDevice_Tripinfo::MSDevice_Tripinfo(SUMOVehicle& holder, const std::string& id)
     myArrivalPos(-1),
     myArrivalPosLat(0),
     myArrivalSpeed(-1),
-    myTimeLoss(0) {
+    myMesoTimeLoss(0) {
 }
 
 
@@ -107,16 +107,6 @@ MSDevice_Tripinfo::notifyMove(SUMOVehicle& veh, SUMOReal /*oldPos*/,
     if (newSpeed <= SUMO_const_haltingSpeed) {
         myWaitingTime += DELTA_T;
     }
-    // @note we are including the speed factor here, thus myTimeLoss can never be
-    // negative. The value is that of a driver who compares his travel time when
-    // the road is clear (which includes speed factor) with the actual travel time.
-    // @todo It might be useful to recognize a departing vehicle and not
-    // count the time spent accelerating towards time loss since it is unavoidable
-    // (current interfaces do not give access to maximum acceleration)
-    const SUMOReal vmax = veh.getEdge()->getVehicleMaxSpeed(&veh);
-    if (vmax > 0) {
-        myTimeLoss += TIME2STEPS(TS * (vmax - newSpeed) / vmax);
-    }
     return true;
 }
 
@@ -132,7 +122,7 @@ MSDevice_Tripinfo::notifyMoveInternal(const SUMOVehicle& veh,
     // called by meso
     const SUMOReal vmax = veh.getEdge()->getVehicleMaxSpeed(&veh);
     if (vmax > 0) {
-        myTimeLoss += TIME2STEPS(timeOnLane * (vmax - meanSpeedVehicleOnLane) / vmax);
+        myMesoTimeLoss += TIME2STEPS(timeOnLane * (vmax - meanSpeedVehicleOnLane) / vmax);
     }
     myWaitingTime += veh.getWaitingTime();
 }
@@ -201,7 +191,8 @@ MSDevice_Tripinfo::computeLengthAndDuration(SUMOReal& routeLength, SUMOTime& dur
 
 void
 MSDevice_Tripinfo::generateOutput() const {
-    updateStatistics();
+    const SUMOTime timeLoss = MSGlobals::gUseMesoSim ? myMesoTimeLoss : static_cast<MSVehicle&>(myHolder).getTimeLoss();
+    updateStatistics(timeLoss);
     if (!OptionsCont::getOptions().isSet("tripinfo-output")) {
         return;
     }
@@ -231,7 +222,7 @@ MSDevice_Tripinfo::generateOutput() const {
     os.writeAttr("duration", time2string(duration));
     os.writeAttr("routeLength", routeLength);
     os.writeAttr("waitSteps", myWaitingTime / DELTA_T);
-    os.writeAttr("timeLoss", time2string(myTimeLoss));
+    os.writeAttr("timeLoss", time2string(timeLoss));
     os.writeAttr("rerouteNo", myHolder.getNumberReroutes());
     const std::vector<MSDevice*>& devices = myHolder.getDevices();
     std::ostringstream str;
@@ -243,6 +234,7 @@ MSDevice_Tripinfo::generateOutput() const {
     }
     os.writeAttr("devices", str.str());
     os.writeAttr("vType", myHolder.getVehicleType().getID());
+    os.writeAttr("speedFactor", myHolder.getChosenSpeedFactor());
     os.writeAttr("vaporized", (myHolder.getEdge() == *(myHolder.getRoute().end() - 1) ? "" : "0"));
     // cannot close tag because emission device output might follow
 }
@@ -267,7 +259,7 @@ MSDevice_Tripinfo::generateOutputForUnfinished() {
 
 
 void
-MSDevice_Tripinfo::updateStatistics() const {
+MSDevice_Tripinfo::updateStatistics(SUMOTime timeLoss) const {
     SUMOReal routeLength;
     SUMOTime duration;
     computeLengthAndDuration(routeLength, duration);
@@ -276,7 +268,7 @@ MSDevice_Tripinfo::updateStatistics() const {
     myTotalRouteLength += routeLength;
     myTotalDuration += duration;
     myTotalWaitingTime += myWaitingTime;
-    myTotalTimeLoss += myTimeLoss;
+    myTotalTimeLoss += timeLoss;
     myTotalDepartDelay += myHolder.getDepartDelay();
 }
 
@@ -285,7 +277,7 @@ std::string
 MSDevice_Tripinfo::printStatistics() {
     std::ostringstream msg;
     msg.setf(msg.fixed);
-    msg.precision(OUTPUT_ACCURACY);
+    msg.precision(gPrecision);
     msg << "Statistics (avg):\n"
         << " RouteLength: " << getAvgRouteLength() << "\n"
         << " Duration: " << getAvgDuration() << "\n"

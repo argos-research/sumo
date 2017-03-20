@@ -7,12 +7,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 09 Apr 2001
-/// @version $Id: MSEdgeControl.h 21018 2016-06-21 11:53:01Z behrisch $
+/// @version $Id: MSEdgeControl.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Stores edges and lanes, performs moving of vehicle
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

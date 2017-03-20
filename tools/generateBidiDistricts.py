@@ -3,7 +3,7 @@
 @file    generateBidiDistricts.py
 @author  Jakob Erdmann
 @date    2015-07-31
-@version $Id: generateBidiDistricts.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: generateBidiDistricts.py 22608 2017-01-17 06:28:54Z behrisch $
 
 Generate a taz (district) file which groups edges in opposite directions
 belonging to the same road. For each edge, a taz is created which contains this edge
@@ -13,7 +13,7 @@ initial/final turn-around by replacing the attribute names 'from' and 'to' with
 'fromTaz' and 'toTaz'
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -107,7 +107,7 @@ def main(netFile, outFile, radius, useTravelDist, symmetrical):
     net = sumolib.net.readNet(netFile, withConnections=False, withFoes=False)
     with open(outFile, 'w') as outf:
         sumolib.writeXMLHeader(
-            outf, "$Id: generateBidiDistricts.py 20482 2016-04-18 20:49:42Z behrisch $")
+            outf, "$Id: generateBidiDistricts.py 22608 2017-01-17 06:28:54Z behrisch $")
         outf.write('<tazs>\n')
         for taz, edges in computeAllBidiTaz(net, radius, useTravelDist, symmetrical):
             outf.write('    <taz id="%s" edges="%s"/>\n' % (

@@ -2,12 +2,12 @@
 /// @file    MSPushButton.h
 /// @author  Federico Caselli
 /// @date    2015-07-15
-/// @version $Id: MSPushButton.cpp 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSPushButton.cpp 22689 2017-01-24 10:37:24Z behrisch $
 ///
 // The class for a PushButton
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright 2001-2009 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2010-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -131,8 +131,8 @@ void getWalking(const std::vector<MSEdge*>& edges, std::vector< MSEdge*>& walkin
 ///@brief Get the walking areas adjacent to the crossing
 const std::vector<MSEdge*> getWalkingAreas(const MSEdge* crossing) {
     std::vector<MSEdge*> walkingEdges;
-    getWalking(crossing->getOutgoingEdges(), walkingEdges);
-    getWalking(crossing->getIncomingEdges(), walkingEdges);
+    getWalking(crossing->getSuccessors(), walkingEdges);
+    getWalking(crossing->getPredecessors(), walkingEdges);
     return walkingEdges;
 
 }

@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Fri, 29.04.2005
-/// @version $Id: GUIDialog_AboutSUMO.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIDialog_AboutSUMO.h 22743 2017-01-29 11:07:55Z palcraft $
 ///
 // The application's "About" - dialog
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -44,31 +44,19 @@
 class GUIDialog_AboutSUMO : public FXDialogBox {
 public:
     /** @brief Constructor
-     *
      * @param[in] parent The parent window
-     * @param[in] name The title to show
-     * @param[in] x x-position of the window to use
-     * @param[in] y y-position of the window to use
      */
-    GUIDialog_AboutSUMO(FXWindow* parent,  const char* name, int x, int y);
-
+    GUIDialog_AboutSUMO(FXWindow* parent);
 
     /// @brief Destructor
     ~GUIDialog_AboutSUMO();
 
-
-    /** @brief Creates the widget (and the icons)
-     */
+    /// @brief Creates the widget
     void create();
 
-
 private:
-    /// @brief Icons for the widget
-    FXIcon* myDLRIcon;
-
     /// @brief Font for the widget
     FXFont* myHeadlineFont;
-
 };
 
 

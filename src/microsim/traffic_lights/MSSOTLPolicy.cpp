@@ -4,12 +4,12 @@
 /// @author  Anna Chiara Bellini
 /// @author  Federico Caselli
 /// @date    Jun 2013
-/// @version $Id: MSSOTLPolicy.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSSOTLPolicy.cpp 22628 2017-01-18 12:58:45Z behrisch $
 ///
 // The class for low-level policy
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright 2001-2013 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2013-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

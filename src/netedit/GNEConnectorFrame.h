@@ -2,12 +2,12 @@
 /// @file    GNEConnectorFrame.h
 /// @author  Jakob Erdmann
 /// @date    May 2011
-/// @version $Id: GNEConnectorFrame.h 21780 2016-10-25 10:06:16Z namdre $
+/// @version $Id: GNEConnectorFrame.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // The Widget for modifying lane-to-lane connections
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -50,19 +50,13 @@ class GNEConnectorFrame : public GNEFrame {
 
 public:
     /**@brief Constructor
-     * @brief parent FXFrame in which this GNEFrame is placed
+     * @brief parent FXHorizontalFrame in which this GNEFrame is placed
      * @brief viewNet viewNet that uses this GNEFrame
      */
-    GNEConnectorFrame(FXComposite* parent, GNEViewNet* viewNet);
+    GNEConnectorFrame(FXHorizontalFrame* horizontalFrameParent, GNEViewNet* viewNet);
 
     /// @brief Destructor
     ~GNEConnectorFrame();
-
-    /// @brief show Frame
-    void show();
-
-    /// @brief hide Frame
-    void hide();
 
     /**@brief either sets the current lane or toggles the connection of the
      * current lane to this lane (if they share a junction)
@@ -103,8 +97,68 @@ private:
         CONFLICTED
     };
 
+    /// @brief Groupbox for description
+    FXGroupBox* myGroupBoxDescription;
+
     /// @brief the label that shows the current editing state
-    FXLabel* myDescription;
+    FXLabel* myLaneDescriptionLabel;
+
+    /// @brief GroupBox for Buttons
+    FXGroupBox* myGroupBoxModifications;
+
+    /// @brief "Cancel" button
+    FXButton* myCancelButton;
+
+    /// @brief "OK" button
+    FXButton* mySaveButton;
+
+    /// @brief groupbox for operations
+    FXGroupBox* myGroupBoxOperations;
+
+    /// @brief "Select Dead Ends" button
+    FXButton* mySelectDeadEndsButton;
+
+    /// @brief "Select Dead Starts" button
+    FXButton* mySelectDeadStartsButton;
+
+    /// @brief "Select Conflicts" button
+    FXButton* mySelectConflictsButton;
+
+    /// @brief "Select Edges which may always pass"
+    FXButton* mySelectPassingButton;
+
+    /// @brief "Clear Selected"
+    FXButton* myClearSelectedButton;
+
+    /// @brief "Reset Selected"
+    FXButton* myResetSelectedButton;
+
+    /// @brief groupbox for selection hints
+    FXGroupBox* myGroupBoxSelection;
+
+    /// @brief Selection Hint
+    FXLabel* myHoldShiftLabel;
+
+    /// @brief hold control label
+    FXLabel* myHoldControlLabel;
+
+    /// @brief group box for legend
+    FXGroupBox* myGroupBoxLegend;
+
+    /// @brief source label
+    FXLabel* mySourceLabel;
+
+    /// @brief target label
+    FXLabel* myTargetLabel;
+
+    /// @brief possible target label
+    FXLabel* myPossibleTargetLabel;
+
+    /// @brief target pass label
+    FXLabel* myTargetPassLabel;
+
+    /// @brief conflict label
+    FXLabel* myConflictLabel;
 
     /// @brief the lane of which connections are to be modified
     GNELane* myCurrentLane;

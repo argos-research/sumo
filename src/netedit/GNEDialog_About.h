@@ -2,12 +2,12 @@
 /// @file    GNEDialog_About.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEDialog_About.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEDialog_About.h 22743 2017-01-29 11:07:55Z palcraft $
 ///
 // The "About" - dialog for NETEDIT, (adapted from GUIDialog_AboutSUMO)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -50,14 +50,10 @@ public:
     /// @brief Destructor
     ~GNEDialog_About();
 
-    /// @brief Creates the widget (and the icons)
+    /// @brief Creates the widget
     void create();
 
-
 private:
-    /// @brief Icons for the widget
-    FXIcon* myDLRIcon;
-
     /// @brief Font for the widget
     FXFont* myHeadlineFont;
 };

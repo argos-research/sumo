@@ -2,7 +2,7 @@
 /// @file    MESegment.h
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MESegment.h 21206 2016-07-20 08:08:35Z behrisch $
+/// @version $Id: MESegment.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A single mesoscopic segment (cell)
 /****************************************************************************/
@@ -80,8 +80,7 @@ public:
               SUMOTime tauff, SUMOTime taufj,
               SUMOTime taujf, SUMOTime taujj,
               SUMOReal jamThresh,
-              bool multiQueue, bool junctionControl,
-              SUMOReal lengthGeometryFactor);
+              bool multiQueue, bool junctionControl);
 
 
     typedef std::vector<MEVehicle*> Queue;
@@ -290,6 +289,11 @@ public:
         return STEPS2TIME(getEventTime());
     }
 
+    /// @brief get the last headway time in seconds
+    inline SUMOReal getLastHeadwaySeconds() const {
+        return STEPS2TIME(myLastHeadway);
+    }
+
     /// @name State saving/loading
     /// @{
 
@@ -345,7 +349,7 @@ public:
     /** @brief return whether this segment is considered free as opposed to jammed
      */
     inline bool free() const {
-        return (myOccupancy <= myJamThreshold) || myTLSPenalty;
+        return myOccupancy <= myJamThreshold;
     }
 
     /// @brief return the remaining physical space on this segment
@@ -377,16 +381,17 @@ public:
     /// @brief add this lanes MoveReminders to the given vehicle
     void addReminders(MEVehicle* veh) const;
 
-    /// @brief return precomputed geometrical length / myLength
-    inline SUMOReal getLengthGeometryFactor() const {
-        return myLengthGeometryFactor;
-    }
-
-    /** @brief Returns the penalty time for passing a tls-controlled link (if using gMesoTLSPenalty > 0)
+    /** @brief Returns the penalty time for passing a link (if using gMesoTLSPenalty > 0 or gMesoMinorPenalty > 0)
      * @param[in] veh The vehicle in question
      * @return The time penalty
      */
-    SUMOTime getTLSPenalty(const MEVehicle* veh) const;
+    SUMOTime getLinkPenalty(const MEVehicle* veh) const;
+
+    /** @brief Returns the average green time as fraction of cycle time
+     * @param[in] veh The vehicle in question for determining the link
+     * @return The green fraction or 1 if the vehicle does not continue after this edge
+     */
+    SUMOReal getTLSCapacity(const MEVehicle* veh) const;
 
 private:
     /** @brief Updates data of all detectors for a leaving vehicle
@@ -399,7 +404,7 @@ private:
 
     bool overtake();
 
-    SUMOTime getTimeHeadway(bool predecessorIsFree, SUMOReal leaderLength);
+    SUMOTime getTimeHeadway(const MESegment* pred, const MEVehicle* veh);
 
     void setSpeedForQueue(SUMOReal newSpeed, SUMOTime currentTime,
                           SUMOTime blockTime, const std::vector<MEVehicle*>& vehs);
@@ -408,6 +413,8 @@ private:
      */
     SUMOTime newArrival(const MEVehicle* const v, SUMOReal newSpeed, SUMOTime currentTime);
 
+    /// @brief whether a leader in any queue is blocked
+    bool hasBlockedLeader() const;
 
     /** @brief compute a value for myJamThreshold
      * if jamThresh is negative, compute a value which allows free flow at mySpeed
@@ -420,6 +427,17 @@ private:
 
     /// @brief whether the given link may be passed because the option meso-junction-control.limited is set
     bool limitedControlOverride(const MSLink* link) const;
+
+    /// @brief return the maximum tls penalty for all links from this edge
+    SUMOReal getMaxPenaltySeconds() const;
+
+    /// @brief whether the segment requires use of multiple queues
+    static bool useMultiQueue(bool multiQueue, const MSEdge& parent);
+
+    /// @brief convert net time gap (leader back to follower front) to gross time gap (leader front to follower front)
+    inline SUMOTime tauWithVehLength(SUMOTime tau, SUMOReal lengthWithGap) const {
+        return tau + (SUMOTime)(lengthWithGap / myTau_length);
+    }
 
 private:
     /// @brief The microsim edge this segment belongs to
@@ -436,7 +454,7 @@ private:
 
     /// @brief The time headway parameters, see the Eissfeldt thesis
     const SUMOTime myTau_ff, myTau_fj, myTau_jf, myTau_jj;
-    /// @brief Headway paramter for computing gross time headyway from net time heawdway, length and edge speed
+    /// @brief Headway parameter for computing gross time headyway from net time headway, length and edge speed
     SUMOReal myTau_length;
 
     /// @brief slope and axis offset for the jam-jam headway function
@@ -458,6 +476,9 @@ private:
     /// @brief Whether tls penalty is enabled
     const bool myTLSPenalty;
 
+    /// @brief Whether minor penalty is enabled
+    const bool myMinorPenalty;
+
     /// @brief The space (in m) which needs to be occupied before the segment is considered jammed
     SUMOReal myJamThreshold;
 
@@ -478,8 +499,8 @@ private:
      * value for all queues */
     SUMOTime myEntryBlockTime;
 
-    // precomputed factor between geometrical length and given length
-    const SUMOReal myLengthGeometryFactor;
+    /// @brief the last headway
+    SUMOTime myLastHeadway;
 
     /* @brief segment for signifying vaporization. This segment has invalid
      * data and should only be used as a unique pointer */

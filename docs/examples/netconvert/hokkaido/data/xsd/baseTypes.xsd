@@ -36,6 +36,12 @@
         </xsd:restriction>
     </xsd:simpleType>
 
+    <xsd:simpleType name="nonNegativeIntType">
+        <xsd:restriction base="xsd:int">
+            <xsd:minInclusive value="0"/>
+        </xsd:restriction>
+    </xsd:simpleType>
+
     <xsd:simpleType name="boolType">
         <xsd:restriction base="xsd:string">
             <xsd:enumeration value="true"/>
@@ -252,5 +258,26 @@
             <xsd:enumeration value="traffic_light_right_on_red"/>
         </xsd:restriction>
     </xsd:simpleType>
+
+    <xsd:complexType name="splitType">
+        <xsd:attribute name="lanes" use="optional">
+            <xsd:simpleType>
+                <xsd:restriction base="xsd:string">
+                    <xsd:pattern value="\d+(([,;]|\s)\d+)*"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+        </xsd:attribute>
+        <xsd:attribute name="pos" type="xsd:float" use="required"/>
+        <xsd:attribute name="speed" type="positiveFloatType" use="optional"/>
+        <xsd:attribute name="type" type="nodeTypeType" use="optional"/>
+        <xsd:attribute name="tl" type="xsd:string" use="optional"/>
+        <xsd:attribute name="tlType" type="tlTypeType" use="optional"/>
+        <xsd:attribute name="shape" type="shapeType" use="optional"/>
+        <xsd:attribute name="radius" type="nonNegativeFloatType" use="optional"/>
+        <xsd:attribute name="keepClear" type="boolType" use="optional"/>
+        <xsd:attribute name="idBefore" type="xsd:string" use="optional"/>
+        <xsd:attribute name="idAfter" type="xsd:string" use="optional"/>
+    </xsd:complexType>
+
 
 </xsd:schema>

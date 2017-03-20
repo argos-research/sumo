@@ -2,12 +2,12 @@
 /// @file    MSSOTLPolicyStimulus.cpp
 /// @author  Riccardo Belletti
 /// @date    Mar 2014
-/// @version $Id: MSSOTLPolicy3DStimulus.cpp 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSSOTLPolicy3DStimulus.cpp 22628 2017-01-18 12:58:45Z behrisch $
 ///
 // The class for Swarm-based low-level policy
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright 2001-2013 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2013-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

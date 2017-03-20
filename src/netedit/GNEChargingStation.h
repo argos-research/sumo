@@ -2,12 +2,12 @@
 /// @file    GNEChargingStation.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEChargingStation.h 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNEChargingStation.h 22876 2017-02-07 13:40:22Z palcraft $
 ///
 /// A class for visualizing chargingStation geometry (adapted from GUILaneWrapper)
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -58,9 +58,8 @@ public:
      * @param[in] efficiency efficiency of the charge [0,1]
      * @param[in] chargeInTransit enable or disable charge in transit
      * @param[in] chargeDelay delay in timeSteps in the charge
-     * @param[in] blocked set initial blocking state of item
      */
-    GNEChargingStation(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal startPos, SUMOReal endPos, SUMOReal chargingPower, SUMOReal efficiency, bool chargeInTransit, int chargeDelay, bool blocked);
+    GNEChargingStation(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal startPos, SUMOReal endPos, SUMOReal chargingPower, SUMOReal efficiency, bool chargeInTransit, const SUMOReal chargeDelay);
 
     /// @brief Destructor
     ~GNEChargingStation();
@@ -71,7 +70,7 @@ public:
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element
      */
-    void writeAdditional(OutputDevice& device, const std::string&);
+    void writeAdditional(OutputDevice& device) const;
 
     /**@brief Returns the charging power of the chargingStation
      * @return The charging power of the chargingStation
@@ -155,7 +154,7 @@ protected:
     bool myChargeInTransit;
 
     /// @brief delay in the starting of charge
-    int myChargeDelay;
+    SUMOReal myChargeDelay;
 
 private:
     /// @brief set attribute after validation

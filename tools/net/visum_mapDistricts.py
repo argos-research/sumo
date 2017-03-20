@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2007-10-25
-@version $Id: visum_mapDistricts.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: visum_mapDistricts.py 22608 2017-01-17 06:28:54Z behrisch $
 
 
 This script reads a network and a dump file and
@@ -12,7 +12,7 @@ This script reads a network and a dump file and
  found within the dump-file.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

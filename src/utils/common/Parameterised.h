@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Melanie Knocke
 /// @date    Sept 2002
-/// @version $Id: Parameterised.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: Parameterised.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A super class for objects with additional parameters
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -36,6 +36,10 @@
 #include <map>
 #include <string>
 
+// ===========================================================================
+// class declarations
+// ===========================================================================
+class OutputDevice;
 
 // ===========================================================================
 // class definitions
@@ -107,6 +111,8 @@ public:
     const std::map<std::string, std::string>& getMap() const {
         return myMap;
     }
+
+    void writeParams(OutputDevice& out) const;
 
 
 private:

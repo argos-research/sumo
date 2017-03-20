@@ -3,13 +3,13 @@
 @file    validate.py
 @author  Michael Behrisch
 @date    2013-06-12
-@version $Id: validate.py 20687 2016-05-10 11:27:00Z behrisch $
+@version $Id: validate.py 22608 2017-01-17 06:28:54Z behrisch $
 
 This script validates detector data resulting from dfrouter 
 validation detectors against the original data fed into dfrouter
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2013-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: PCLoaderArcView.cpp 21440 2016-09-07 11:06:14Z behrisch $
+/// @version $Id: PCLoaderArcView.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A reader of pois and polygons from shape files
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

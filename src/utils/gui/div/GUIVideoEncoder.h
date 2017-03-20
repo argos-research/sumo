@@ -2,7 +2,7 @@
 /// @file    GUIVideoEncoder.h
 /// @author  Michael Behrisch
 /// @date    Dec 2015
-/// @version $Id: GUIVideoEncoder.h 20851 2016-06-02 11:13:12Z rhilbrich $
+/// @version $Id: GUIVideoEncoder.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A simple video encoder from RGBA pics to anything ffmpeg can handle.
 // Tested with h264 only.
@@ -11,7 +11,7 @@
 // https://github.com/codefromabove/FFmpegRGBAToYUV
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

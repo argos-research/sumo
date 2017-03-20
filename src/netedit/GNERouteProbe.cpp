@@ -2,12 +2,12 @@
 /// @file    GNERouteProbe.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    May 2016
-/// @version $Id: GNERouteProbe.cpp 21640 2016-10-09 20:28:52Z palcraft $
+/// @version $Id: GNERouteProbe.cpp 22915 2017-02-10 14:05:44Z palcraft $
 ///
 ///
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -65,8 +65,8 @@
 // member method definitions
 // ===========================================================================
 
-GNERouteProbe::GNERouteProbe(const std::string& id, GNEViewNet* viewNet, GNEEdge* edge, int frequency, const std::string& filename, int begin, bool blocked) :
-    GNEAdditional(id, viewNet, Position(), SUMO_TAG_ROUTEPROBE, NULL, blocked),
+GNERouteProbe::GNERouteProbe(const std::string& id, GNEViewNet* viewNet, GNEEdge* edge, SUMOReal frequency, const std::string& filename, SUMOReal begin) :
+    GNEAdditional(id, viewNet, Position(), SUMO_TAG_ROUTEPROBE, ICON_ROUTEPROBE),
     myFrequency(frequency),
     myFilename(filename),
     myBegin(begin) {
@@ -148,7 +148,7 @@ GNERouteProbe::commmitAdditionalGeometryMoved(SUMOReal, SUMOReal, GNEUndoList*) 
 }
 
 void
-GNERouteProbe::writeAdditional(OutputDevice& device, const std::string&) {
+GNERouteProbe::writeAdditional(OutputDevice& device) const {
     // Write parameters
     device.openTag(getTag());
     device.writeAttr(SUMO_ATTR_ID, getID());
@@ -169,13 +169,13 @@ GNERouteProbe::getFilename() const {
 }
 
 
-int
+SUMOReal
 GNERouteProbe::getFrequency() const {
     return myFrequency;
 }
 
 
-int
+SUMOReal
 GNERouteProbe::getBegin() const {
     return myBegin;
 }
@@ -188,13 +188,13 @@ GNERouteProbe::setFilename(std::string filename) {
 
 
 void
-GNERouteProbe::setFrequency(int frequency) {
+GNERouteProbe::setFrequency(SUMOReal frequency) {
     myFrequency = frequency;
 }
 
 
 void
-GNERouteProbe::setBegin(int begin) {
+GNERouteProbe::setBegin(SUMOReal begin) {
     myBegin = begin;
 }
 
@@ -256,9 +256,9 @@ GNERouteProbe::drawGL(const GUIVisualizationSettings& s) const {
 
     // Draw icon depending of detector is or isn't selected
     if (isAdditionalSelected()) {
-        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_ROUTEPROBESELECTED), 1);
+        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getTexture(GNETEXTURE_ROUTEPROBESELECTED), 1);
     } else {
-        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_ROUTEPROBE), 1);
+        GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getTexture(GNETEXTURE_ROUTEPROBE), 1);
     }
 
     // Pop logo matrix
@@ -290,7 +290,7 @@ GNERouteProbe::getAttribute(SumoXMLAttr key) const {
         case SUMO_ATTR_BEGIN:
             return toString(myBegin);
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -310,7 +310,7 @@ GNERouteProbe::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoLi
             updateGeometry();
             break;
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -335,9 +335,9 @@ GNERouteProbe::isValid(SumoXMLAttr key, const std::string& value) {
         case SUMO_ATTR_FREQUENCY:
             return canParse<int>(value);
         case SUMO_ATTR_BEGIN:
-            return canParse<int>(value);
+            return canParse<SUMOReal>(value);
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -358,10 +358,10 @@ GNERouteProbe::setAttribute(SumoXMLAttr key, const std::string& value) {
             myFrequency = parse<int>(value);
             break;
         case SUMO_ATTR_BEGIN:
-            myBegin = parse<int>(value);
+            myBegin = parse<SUMOReal>(value);
             break;
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 

@@ -2,12 +2,12 @@
 /// @file    GNEAdditional.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Jan 2016
-/// @version $Id: GNEAdditional.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEAdditional.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 /// A abstract class for representation of additional elements
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -48,7 +48,6 @@ class GNEEdge;
 class GNELane;
 class GNENet;
 class GNEViewNet;
-class GNEAdditionalSet;
 class GNEAdditionalDialog;
 
 // ===========================================================================
@@ -67,10 +66,9 @@ public:
      * @param[in] viewNet pointer to GNEViewNet of this additional element belongs
      * @param[in] pos position of view in which additional is located
      * @param[in] tag Type of xml tag that define the additional element (SUMO_TAG_BUS_STOP, SUMO_TAG_REROUTER, etc...)
-     * @param[in] additionalSetParent pointer to parent, if this additional belongs to an additionalSet
-     * @param[in] blocked enable or disable blocking. By default additional element isn't blocked (i.e. value is false)
+     * @param[in] icon GUIIcon associated to the additional
      */
-    GNEAdditional(const std::string& id, GNEViewNet* viewNet, Position pos, SumoXMLTag tag, GNEAdditionalSet* additionalSetParent = NULL, bool blocked = false);
+    GNEAdditional(const std::string& id, GNEViewNet* viewNet, Position pos, SumoXMLTag tag, GUIIcon icon);
 
     /// @brief Destructor
     ~GNEAdditional();
@@ -113,7 +111,7 @@ public:
     virtual Position getPositionInView() const = 0;
 
     /// @brief open Additional Dialog
-    /// @note: if additional needs an additional dialog, this function has to be implemented in childrens (see GNERerouter and GNEVariableSpeedSignal)
+    /// @note: if additional needs an additional dialog, this function has to be implemented in childrens (see GNERerouter and GNEVariableSpeedSign)
     virtual void openAdditionalDialog();
 
     /// @brief returns the ID of additional
@@ -140,9 +138,6 @@ public:
     // @brief Check if additional item is selected
     bool isAdditionalSelected() const;
 
-    /// @brief get additionalSet parent, or NULL if don't belongs to an additionalSet
-    GNEAdditionalSet* getAdditionalSetParent() const;
-
     /// @brief set the ID of additional
     void setAdditionalID(const std::string& id);
 
@@ -150,10 +145,11 @@ public:
     /// @note movement cannot be undo with GNEUndoRedo
     void setPositionInView(const Position& pos);
 
-    /// @brief writte additional element into a xml file
-    /// @param[in] device device in which write parameters of additional element
-    /// @note must be implemented in all childrens
-    virtual void writeAdditional(OutputDevice& device, const std::string& currentDirectory) = 0;
+    /**@brief writte additional element into a xml file
+     * @param[in] device device in which write parameters of additional element
+     * @note must be implemented in all derived classes
+     */
+    virtual void writeAdditional(OutputDevice& device) const = 0;
 
     /// @brief get edge of additional, or NULL if additional isn't placed over an edge
     GNEEdge* getEdge() const;
@@ -163,8 +159,7 @@ public:
 
     /// @name inherited from GUIGlObject
     /// @{
-    /// @brief Returns the name of the parent object
-    /// @return This object's parent id
+    /// @brief Returns the name (ID) of the parent object
     virtual const std::string& getParentName() const = 0;
 
     /**@brief Returns an own popup-menu
@@ -238,24 +233,25 @@ protected:
     /// @brief The GNEViewNet this additional element belongs
     GNEViewNet* myViewNet;
 
-    /// @brief The edge this additional belongs
-    /// @bote NULL if additional doesnt' belongs to a edge
+    /**@brief The edge this additional belongs.
+     * @note is NULL if additional doesnt' belongs to a edge
+     */
     GNEEdge* myEdge;
 
-    /// @brief The lane this additional belongs
-    /// @bote NULL if additional doesnt' belongs to a lane
+    /**@brief The lane this additional belongs.
+     * @note is NULL if additional doesnt' belongs to a lane
+     */
     GNELane* myLane;
 
-    /// @brief The position in which this additional element is located
-    /// @note if this element belongs to a Lane, x() value will be the position over Lane
+    /**@brief The position in which this additional element is located
+     * @note if this element belongs to a Lane, x() value will be the position over Lane
+     */
     Position myPosition;
 
-    /// @brief The shape of the additional element
-    /// @note must be configured in updateGeometry()
+    /**@brief The shape of the additional element
+     * @note must be configured in updateGeometry()
+     */
     PositionVector myShape;
-
-    /// @brief pointer to additional set parent, if belong to set
-    GNEAdditionalSet* myAdditionalSetParent;
 
     /// @name computed only once (for performance) in updateGeometry()
     /// @{
@@ -271,12 +267,16 @@ protected:
 
     /// @name members and functions relative to block icon
     /// @{
-    /// @brief set Rotation of block Icon
-    /// @note must be called in updateGeometry() after setting of Shape, and use parameter "lane" if additional is placed over a lane
+    /**@brief set Rotation of block Icon
+     * @note must be called in updateGeometry() after setting of Shape, and use parameter "lane" if additional is placed over a lane
+     */
     void setBlockIconRotation(GNELane* lane = NULL);
 
     /// @brief draw lock icon
     void drawLockIcon(SUMOReal size = 0.5) const;
+
+    /// @brief draw connections between Parent and childrens
+    void drawParentAndChildrenConnections() const;
 
     /// @brief position of the block icon
     Position myBlockIconPosition;
@@ -300,16 +300,21 @@ protected:
     /// @brief boolean to check if additional element is movable (with the mouse). By default true
     bool myMovable;
 
-    /// @brief base color (Default green)
-    /// @note default color can be defined in the constructor of every additional
+    /**@brief base color (Default green)
+     * @note default color can be defined in the constructor of every additional
+     */
     RGBColor myBaseColor;
 
-    /// @brief base color selected (Default blue)
-    /// @note default color can be defined in the constructor of every additional
+    /**@brief base color selected (Default blue)
+     * @note default color can be defined in the constructor of every additional
+     */
     RGBColor myBaseColorSelected;
 
     /// @brief pointer to additional dialog
     GNEAdditionalDialog* myAdditionalDialog;
+
+    /// @brief Matrix with the Vertex's positions of connections between Additional Parent an their childs
+    std::vector<std::vector<Position> > myConnectionPositions;
 
 private:
     /// @brief set attribute after validation

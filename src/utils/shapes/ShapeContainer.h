@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2005-09-15
-/// @version $Id: ShapeContainer.h 20801 2016-05-28 05:31:30Z behrisch $
+/// @version $Id: ShapeContainer.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Storage for geometrical objects, sorted by the layers they are in
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

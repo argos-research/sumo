@@ -3,12 +3,12 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Thu, 12 Jun 2014
-/// @version $Id: MSContainer.cpp 20773 2016-05-20 13:43:03Z behrisch $
+/// @version $Id: MSContainer.cpp 22680 2017-01-23 15:28:43Z namdre $
 ///
 // The class for modelling container-movements
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -176,6 +176,12 @@ MSContainer::MSContainerStage_Tranship::getWaitingTime(SUMOTime /* now */) const
 SUMOReal
 MSContainer::MSContainerStage_Tranship::getSpeed() const {
     return myContainerState->getSpeed(*this);
+}
+
+
+ConstMSEdgeVector
+MSContainer::MSContainerStage_Tranship::getEdges() const {
+    return myRoute;
 }
 
 

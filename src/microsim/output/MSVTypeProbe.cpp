@@ -5,12 +5,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Wed, 24.10.2007
-/// @version $Id: MSVTypeProbe.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSVTypeProbe.cpp 22797 2017-01-31 14:53:07Z namdre $
 ///
 // Writes positions of vehicles that have a certain (named) type
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -54,7 +54,7 @@ MSVTypeProbe::MSVTypeProbe(const std::string& id,
                            OutputDevice& od, SUMOTime frequency)
     : Named(id), myVType(vType), myOutputDevice(od), myFrequency(frequency) {
     MSNet::getInstance()->getEndOfTimestepEvents()->addEvent(this, 0, MSEventControl::ADAPT_AFTER_EXECUTION);
-    myOutputDevice.writeXMLHeader("vehicle-type-probes");
+    myOutputDevice.writeXMLHeader("vehicle-type-probes", "vtypeprobe_file.xsd");
 }
 
 
@@ -88,7 +88,7 @@ MSVTypeProbe::execute(SUMOTime currentTime) {
                 }
                 if (GeoConvHelper::getFinal().usingGeoProjection()) {
                     GeoConvHelper::getFinal().cartesian2geo(pos);
-                    myOutputDevice.setPrecision(GEO_OUTPUT_ACCURACY);
+                    myOutputDevice.setPrecision(gPrecisionGeo);
                     myOutputDevice.writeAttr(SUMO_ATTR_LAT, pos.y());
                     myOutputDevice.writeAttr(SUMO_ATTR_LON, pos.x());
                     myOutputDevice.setPrecision();

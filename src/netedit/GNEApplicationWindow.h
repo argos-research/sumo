@@ -2,12 +2,12 @@
 /// @file    GNEApplicationWindow.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEApplicationWindow.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEApplicationWindow.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The main window of Netedit (adapted from GUIApplicationWindow)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -67,8 +67,7 @@ class GUIParameterTableWindow;
  * may also have some further views (children) assigned which are stored
  * within a separate list.
  */
-class GNEApplicationWindow :
-    public GUIMainWindow, public MFXInterThreadEventClient {
+class GNEApplicationWindow : public GUIMainWindow, public MFXInterThreadEventClient {
     /// @brief FOX-declaration
     FXDECLARE(GNEApplicationWindow)
 
@@ -96,7 +95,10 @@ public:
     void dependentBuild();
 
     /// @brief set text of the statusBar
-    void setStatusBarText(const std::string&);
+    void setStatusBarText(const std::string& statusBarText);
+
+    /// @brief set additionals file
+    void setAdditionalsFile(const std::string& additionalsFile);
 
     /// @name Inter-thread event handling
     /// @{
@@ -254,10 +256,10 @@ public:
     void updateControls();
 
 protected:
-    /// FOX needs this for static members
-    GNEApplicationWindow() { }
+    /// @brief FOX needs this for static members
+    GNEApplicationWindow() {}
 
-    /// Builds the menu bar
+    /// @brief Builds the menu bar
     virtual void fillMenuBar();
 
     /// @brief the name of the simulation
@@ -275,8 +277,8 @@ protected:
     /// @brief the submenus
     FXMenuPane* myFileMenu,
                 *myEditMenu,
-                *myLocatorMenu,
                 *myProcessingMenu,
+                *myLocatorMenu,
                 *myWindowsMenu,
                 *myHelpMenu;
 
@@ -327,6 +329,9 @@ protected:
     /// @brief the prefix for the window title
     const FXString myTitlePrefix;
 
+    /// @brief filename for load/save additionals
+    std::string myAdditionalsFile;
+
     /**
      * @class GNEShapeHandler
      * @brief The XML-Handler for shapes loading network loading
@@ -364,7 +369,7 @@ private:
     /// @brief this method closes all windows and deletes the current simulation */
     void closeAllWindows();
 
-    /// @brief opens a new simulation display */
+    /// @brief opens a new simulation display
     GUISUMOAbstractView* openNewView();
 
     /// @brief convenience method

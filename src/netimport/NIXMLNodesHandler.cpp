@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NIXMLNodesHandler.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: NIXMLNodesHandler.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Importer for network nodes stored in XML
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -135,7 +135,7 @@ NIXMLNodesHandler::addNode(const SUMOSAXAttributes& attrs) {
         myPosition.set(myPosition.x(), myPosition.y(), attrs.get<SUMOReal>(SUMO_ATTR_Z, myID.c_str(), ok));
     }
     if (xOk && yOk) {
-        if (needConversion && !NBNetBuilder::transformCoordinates(myPosition, true, myLocation)) {
+        if (needConversion && !NBNetBuilder::transformCoordinate(myPosition, true, myLocation)) {
             WRITE_ERROR("Unable to project coordinates for node '" + myID + "'.");
         }
     } else {

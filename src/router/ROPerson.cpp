@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2002
-/// @version $Id: ROPerson.cpp 20698 2016-05-11 08:25:47Z behrisch $
+/// @version $Id: ROPerson.cpp 22909 2017-02-10 12:17:30Z namdre $
 ///
 // A vehicle as used by router
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -69,8 +69,8 @@ ROPerson::~ROPerson() {
 
 void
 ROPerson::addTrip(const ROEdge* const from, const ROEdge* const to, const SVCPermissions modeSet,
-                  const std::string& vTypes, const SUMOReal departPos, const SUMOReal arrivalPos, const std::string& busStop) {
-    PersonTrip* trip = new PersonTrip(from, to, modeSet, departPos, arrivalPos, busStop);
+                  const std::string& vTypes, const SUMOReal departPos, const SUMOReal arrivalPos, const std::string& busStop, SUMOReal walkFactor) {
+    PersonTrip* trip = new PersonTrip(from, to, modeSet, departPos, arrivalPos, busStop, walkFactor);
     RONet* net = RONet::getInstance();
     SUMOVehicleParameter pars;
     pars.departProcedure = DEPART_TRIGGERED;
@@ -170,12 +170,16 @@ bool
 ROPerson::computeIntermodal(const RORouterProvider& provider, PersonTrip* const trip, const ROVehicle* const veh, MsgHandler* const errorHandler) {
     std::vector<ROIntermodalRouter::TripItem> result;
     provider.getIntermodalRouter().compute(trip->getOrigin(), trip->getDestination(), trip->getDepartPos(), trip->getArrivalPos(),
-                                           myType->maxSpeed, veh, trip->getModes(), 0, result);
+                                           myType->maxSpeed * trip->getWalkFactor(), veh, trip->getModes(), myParameter.depart, result);
     bool carUsed = false;
     for (std::vector<ROIntermodalRouter::TripItem>::const_iterator it = result.begin(); it != result.end(); ++it) {
         if (!it->edges.empty()) {
             if (it->line == "") {
-                trip->addTripItem(new Walk(it->edges, it->destStop));
+                if (it + 1 == result.end() && !trip->hasBusStopDest()) {
+                    trip->addTripItem(new Walk(it->edges));
+                } else {
+                    trip->addTripItem(new Walk(it->edges, it->destStop));
+                }
             } else if (veh != 0 && it->line == veh->getID()) {
                 trip->addTripItem(new Ride(it->edges.front(), it->edges.back(), veh->getID(), it->destStop));
                 veh->getRouteDefinition()->addLoadedAlternative(new RORoute(veh->getID() + "_RouteDef", it->edges));

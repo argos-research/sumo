@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    :find(mySortedSchemeNames.begin(), mySortedSchemeNames.end(), name)==mySortedSchemeNames.end()) {
-/// @version $Id: GUICompleteSchemeStorage.h 21186 2016-07-18 12:04:16Z namdre $
+/// @version $Id: GUICompleteSchemeStorage.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Storage for available visualization settings
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

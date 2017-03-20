@@ -2,12 +2,12 @@
 /// @file    GNEInspectorFrame.h
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEInspectorFrame.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEInspectorFrame.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // The Widget for modifying network-element attributes (i.e. lane speed)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -35,11 +35,9 @@
 // ===========================================================================
 // class declarations
 // ===========================================================================
-class GNENet;
-class GNEEdge;
 class GNEAttributeCarrier;
 class GNEAdditional;
-class GNEConnection;
+class GNEEdge;
 
 // ===========================================================================
 // class definitions
@@ -101,20 +99,23 @@ public:
         /// @brief pointer to label
         FXLabel* myLabel;
 
-        /// @brief textField to modify the value of int values
+        /// @brief textField to modify the value of int attributes
         FXTextField* myTextFieldInt;
 
-        /// @brief textField to modify the value of real values
+        /// @brief textField to modify the value of real attributes
         FXTextField* myTextFieldReal;
 
-        /// @brief textField to modify the value of strings values
+        /// @rief SpinDial to modify the value of time attributes
+        FXSpinner* myTimeSpinDial;
+
+        /// @brief textField to modify the value of string attributes
         FXTextField* myTextFieldStrings;
 
         /// @brief pointer to combo box choices
         FXComboBox* myChoicesCombo;
 
-        /// @brief pointer to checkBox
-        FXCheckButton* myCheckBox;
+        /// @brief pointer to menu check
+        FXMenuCheck* myCheckBox;
 
         /// @brief pointer to buttonCombinableChoices
         FXButton* myButtonCombinableChoices;
@@ -158,8 +159,8 @@ public:
         // @brief Matrix in that CheckBoxs will be inserted
         FXMatrix* myCheckBoxMatrix;
 
-        /// @brief vector of CheckBoxs
-        std::vector<FXCheckButton*> myVectorOfCheckBox;
+        /// @brief vector of Menuchecks
+        std::vector<FXMenuCheck*> myVectorOfCheckBox;
 
         /// @brief frame for the buttons
         FXHorizontalFrame* frameButtons;
@@ -174,81 +175,30 @@ public:
         FXButton* myResetButton;
     };
 
-    // ===========================================================================
-    // class AttrConnection
-    // ===========================================================================
-
-    class AttrConnection : public FXHorizontalFrame  {
-        /// @brief FOX-declaration
-        FXDECLARE(GNEInspectorFrame::AttrConnection)
-
-    public:
-        /// @brief constructor
-        AttrConnection(FXComposite* parent, GNEInspectorFrame* inspectorFrameParent);
-
-        /// @brief destructor
-        ~AttrConnection();
-
-        /// @brief show attribute
-        void showConnections(GNEConnection* connection);
-
-        /// @brief show attribute
-        void hideAttrConnection();
-
-        /// @brief set show connection attribute
-        long onCmdSetShowConnection(FXObject*, FXSelector, void*);
-
-        /// @brief inspect connection
-        long onCmdInspectConnection(FXObject*, FXSelector, void*);
-
-    protected:
-        /// @brief FOX needs this
-        AttrConnection() {}
-
-    private:
-        /// @brief pointer to inspectorFrame Parent
-        GNEInspectorFrame* myInspectorFrameParent;
-
-        /// @brief pointer to current connection
-        GNEConnection* myConnection;
-
-        /// @brief Label for show information of connection
-        FXLabel* myConnectionInfoLabel;
-
-        /// @brief FXCheckBox to hide/show connection individually
-        FXCheckButton* myShowConnection;
-
-        /// @brief FXCheckBox to hide/show connection individually
-        FXButton* myInspectConnection;
-
-        /// @brief set show as private function
-        void show();
-
-        /// @brief set hide as private function
-        void hide();
-    };
-
 public:
     /**@brief Constructor
-     * @brief parent FXFrame in which this GNEFrame is placed
+     * @brief parent FXHorizontalFrame in which this GNEFrame is placed
      * @brief viewNet viewNet that uses this GNEFrame
      */
-    GNEInspectorFrame(FXComposite* parent, GNEViewNet* viewNet);
+    GNEInspectorFrame(FXHorizontalFrame* horizontalFrameParent, GNEViewNet* viewNet);
 
     /// @brief Destructor
     ~GNEInspectorFrame();
 
-    /// @brief show Frame
+    /// @brief show inspector frame
     void show();
 
-    /// @brief hide Frame
-    void hide();
-
     /// @brief Inspect a single element
-    void inspect(GNEAttributeCarrier* AC, GNEAttributeCarrier* previousElement = NULL);
+    void inspectElement(GNEAttributeCarrier* AC);
 
     /// @brief Inspect the given multi-selection
-    void inspect(const std::vector<GNEAttributeCarrier*>& ACs, GNEAttributeCarrier* previousElement = NULL);
+    void inspectMultisection(const std::vector<GNEAttributeCarrier*>& ACs);
+
+    /// @brief inspect child of already inspected element
+    void inspectChild(GNEAttributeCarrier* AC, GNEAttributeCarrier* previousElement);
+
+    /// @brief inspect called from DeleteFrame
+    void inspectFromDeleteFrame(GNEAttributeCarrier* AC, GNEAttributeCarrier* previousElement, bool previousElementWasMarked);
 
     /// @brief get current list of ACs
     const std::vector<GNEAttributeCarrier*>& getACs() const;
@@ -259,6 +209,8 @@ public:
     /// @brief seh the template edge (we assume shared responsibility via reference counting)
     void setEdgeTemplate(GNEEdge* tpl);
 
+    /// @name FOX-callbacks
+    /// @{
     /// @brief copy edge attributes from edge template
     long onCmdCopyTemplate(FXObject*, FXSelector, void*);
 
@@ -274,9 +226,28 @@ public:
     /// @brief called when user toogle the go back button
     long onCmdGoBack(FXObject*, FXSelector, void*);
 
+    /// @brief called when user press right click over an item of list of childs
+    long onCmdShowChildMenu(FXObject*, FXSelector, void* data);
+
+    /// @brief called when user select option "center item" of child Menu
+    long onCmdCenterItem(FXObject*, FXSelector, void*);
+
+    /// @brief called when user select option "inspect item" of child menu
+    long onCmdInspectItem(FXObject*, FXSelector, void*);
+
+    /// @brief called when user select option "delte item" of child menu
+    long onCmdDeleteItem(FXObject*, FXSelector, void*);
+    /// @}
+
 protected:
     /// @brief FOX needs this
     GNEInspectorFrame() {}
+
+    // @brief create pop-up menu in the positions X-Y for the attribute carrier ac
+    void createPopUpMenu(int X, int Y, GNEAttributeCarrier* ac);
+
+    /// @brief show child of current attributeCarrier
+    void showAttributeCarrierChilds();
 
 private:
     /// @brief groupBox for attributes
@@ -303,23 +274,38 @@ private:
     /// @brief GropuBox for editor attributes
     FXGroupBox* myGroupBoxForEditor;
 
-    /// @brief pointer to check button block
-    FXCheckButton* myCheckBlocked;
+    /// @brief pointer to menu check block
+    FXMenuCheck* myCheckBlocked;
 
     /// @brief pointer to additional element
     GNEAdditional* myAdditional;
 
-    /// @brief pointer to previous element (If exist)
-    GNEAttributeCarrier* myPreviousElement;
+    /// @brief pointer to previous element called by Inspector Frame
+    GNEAttributeCarrier* myPreviousElementInspect;
 
-    /// @brief groupBox for AttrConnection
-    FXGroupBox* myGroupBoxForAttrConnections;
+    /// @brief pointer to previous element called by Delete Frame
+    GNEAttributeCarrier* myPreviousElementDelete;
 
-    /// @brief vector of attrConnections
-    std::vector<AttrConnection*> myAttrConnections;
+    /// @brief flag to ckec if myPreviousElementDelete was marked in Delete Frame
+    bool myPreviousElementDeleteWasMarked;
 
     /// @brief the multi-selection currently being inspected
     std::vector<GNEAttributeCarrier*> myACs;
+
+    /// @brief groupBox for AttrConnection
+    FXGroupBox* myGroupBoxForTreeList;
+
+    /// @brief tree list to show the childs of the element to erase
+    FXTreeList* myTreelist;
+
+    /// @brief map used to save the Tree items with their AC
+    std::map<FXTreeItem*, GNEAttributeCarrier*> myTreeItemToACMap;
+
+    /// @brief set used to save tree items without AC assigned (for example, Incoming/Outcoming connections)
+    std::set<FXTreeItem*> myTreeItesmWithoutAC;
+
+    /// @brief pointer to current right clicked Attribute Carrier
+    GNEAttributeCarrier* myRightClickedAC;
 };
 
 

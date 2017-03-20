@@ -8,12 +8,12 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: MSFrame.cpp 21734 2016-10-18 10:59:35Z namdre $
+/// @version $Id: MSFrame.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Sets and checks options for microsim; inits global outputs and settings
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -53,6 +53,7 @@
 #include <microsim/lcmodels/MSAbstractLaneChangeModel.h>
 #include <microsim/devices/MSDevice.h>
 #include <microsim/devices/MSDevice_Vehroutes.h>
+#include <microsim/output/MSStopOut.h>
 #include <utils/common/RandHelper.h>
 #include "MSFrame.h"
 #include <utils/common/SystemFrame.h>
@@ -108,6 +109,8 @@ MSFrame::fillOptions() {
     oc.addDescription("load-state", "Input", "Loads a network state from FILE");
     oc.doRegister("load-state.offset", new Option_String("0", "TIME"));//!!! check, describe
     oc.addDescription("load-state.offset", "Input", "Shifts all times loaded from a saved state by the given offset");
+    oc.doRegister("load-state.remove-vehicles", new Option_String(""));
+    oc.addDescription("load-state.remove-vehicles", "Input", "Removes vehicles with the given IDs from the loaded state");
 
     //  register output options
     oc.doRegister("netstate-dump", new Option_FileName());
@@ -120,7 +123,7 @@ MSFrame::fillOptions() {
     oc.addSynonyme("netstate-dump.empty-edges", "netstate-output.empty-edges");
     oc.addSynonyme("netstate-dump.empty-edges", "dump-empty-edges", true);
     oc.addDescription("netstate-dump.empty-edges", "Output", "Write also empty edges completely when dumping");
-    oc.doRegister("netstate-dump.precision", new Option_Integer(OUTPUT_ACCURACY));
+    oc.doRegister("netstate-dump.precision", new Option_Integer(2));
     oc.addSynonyme("netstate-dump.precision", "netstate.precision");
     oc.addSynonyme("netstate-dump.precision", "netstate-output.precision");
     oc.addSynonyme("netstate-dump.precision", "dump-precision", true);
@@ -129,12 +132,12 @@ MSFrame::fillOptions() {
 
     oc.doRegister("emission-output", new Option_FileName());
     oc.addDescription("emission-output", "Output", "Save the emission values of each vehicle");
-    oc.doRegister("emission-output.precision", new Option_Integer(OUTPUT_ACCURACY));
+    oc.doRegister("emission-output.precision", new Option_Integer(2));
     oc.addDescription("emission-output.precision", "Output", "Write emission values with the given precision (default 2)");
 
     oc.doRegister("battery-output", new Option_FileName());
     oc.addDescription("battery-output", "Output", "Save the battery values of each vehicle");
-    oc.doRegister("battery-output.precision", new Option_Integer(OUTPUT_ACCURACY));
+    oc.doRegister("battery-output.precision", new Option_Integer(2));
     oc.addDescription("battery-output.precision", "Output", "Write battery values with the given precision (default 2)");
 
     oc.doRegister("fcd-output", new Option_FileName());
@@ -203,6 +206,9 @@ MSFrame::fillOptions() {
 
     oc.doRegister("lanechange-output", new Option_FileName());
     oc.addDescription("lanechange-output", "Output", "Record lane changes and their motivations for all vehicles into FILE");
+
+    oc.doRegister("stop-output", new Option_FileName());
+    oc.addDescription("stop-output", "Output", "Record stops and loading/unloading of passenger and containers for all vehicles into FILE");
 
 #ifdef _DEBUG
     oc.doRegister("movereminder-output", new Option_FileName());
@@ -359,7 +365,7 @@ MSFrame::fillOptions() {
     oc.addDescription("meso-tauff", "Mesoscopic", "Factor for calculating the net free-free headway time");
     oc.doRegister("meso-taufj", new Option_String("1.13", "TIME"));
     oc.addDescription("meso-taufj", "Mesoscopic", "Factor for calculating the net free-jam headway time");
-    oc.doRegister("meso-taujf", new Option_String("2", "TIME"));
+    oc.doRegister("meso-taujf", new Option_String("1.73", "TIME"));
     oc.addDescription("meso-taujf", "Mesoscopic", "Factor for calculating the jam-free headway time");
     oc.doRegister("meso-taujj", new Option_String("1.4", "TIME"));
     oc.addDescription("meso-taujj", "Mesoscopic", "Factor for calculating the jam-jam headway time");
@@ -376,6 +382,9 @@ MSFrame::fillOptions() {
     oc.doRegister("meso-tls-penalty", new Option_Float(0));
     oc.addDescription("meso-tls-penalty", "Mesoscopic",
                       "Apply scaled time penalties when driving across tls controlled junctions based on green split instead of checking actual phases");
+    oc.doRegister("meso-minor-penalty", new Option_String("0", "TIME"));
+    oc.addDescription("meso-minor-penalty", "Mesoscopic",
+                      "Apply fixed time penalty when driving across a minor link. When using --meso-junction-control.limited, the penalty is not applied whenever limited control is active.");
     oc.doRegister("meso-overtaking", new Option_Bool(false));
     oc.addDescription("meso-overtaking", "Mesoscopic", "Enable mesoscopic overtaking");
     oc.doRegister("meso-recheck", new Option_String("0", "TIME"));
@@ -408,6 +417,9 @@ MSFrame::fillOptions() {
     oc.doRegister("window-size", new Option_String());
     oc.addDescription("window-size", "GUI Only", "Create initial window with the given x,y size");
 
+    oc.doRegister("window-pos", new Option_String());
+    oc.addDescription("window-pos", "GUI Only", "Create initial window at the given x,y position");
+
 #ifdef HAVE_OSG
     oc.doRegister("osg-view", new Option_Bool(false));
     oc.addDescription("osg-view", "GUI Only", "Start with an OpenSceneGraph view instead of the regular 2D view");
@@ -435,12 +447,14 @@ MSFrame::buildStreams() {
     OutputDevice::createDeviceByOption("link-output", "link-output");
     OutputDevice::createDeviceByOption("bt-output", "bt-output");
     OutputDevice::createDeviceByOption("lanechange-output", "lanechanges");
+    OutputDevice::createDeviceByOption("stop-output", "stops");
 
 #ifdef _DEBUG
     OutputDevice::createDeviceByOption("movereminder-output", "movereminder-output");
 #endif
 
     MSDevice_Vehroutes::init();
+    MSStopOut::init();
 }
 
 
@@ -509,7 +523,22 @@ MSFrame::checkOptions() {
     if (oc.getBool("duration-log.statistics") && oc.isDefault("verbose")) {
         oc.set("verbose", "true");
     }
+    if (oc.isDefault("precision") && string2time(oc.getString("step-length")) < 10) {
+        oc.set("precision", "3");
+    }
+    if (oc.getInt("precision") > 2) {
+        if (oc.isDefault("netstate-dump.precision")) {
+            oc.set("netstate-dump.precision", toString(oc.getInt("precision")));
+        }
+        if (oc.isDefault("emission-output.precision")) {
+            oc.set("emission-output.precision", toString(oc.getInt("precision")));
+        }
+        if (oc.isDefault("battery-output.precision")) {
+            oc.set("battery-output.precision", toString(oc.getInt("precision")));
+        }
+    }
     ok &= MSDevice::checkOptions(oc);
+    ok &= SystemFrame::checkOptions();
     return ok;
 }
 
@@ -540,6 +569,7 @@ MSFrame::setMSGlobals(OptionsCont& oc) {
     MSGlobals::gMesoLimitedJunctionControl = oc.getBool("meso-junction-control.limited");
     MSGlobals::gMesoOvertaking = oc.getBool("meso-overtaking");
     MSGlobals::gMesoTLSPenalty = oc.getFloat("meso-tls-penalty");
+    MSGlobals::gMesoMinorPenalty = string2time(oc.getString("meso-minor-penalty"));
     MSGlobals::gSemiImplicitEulerUpdate = !oc.getBool("step-method.ballistic");
     if (MSGlobals::gUseMesoSim) {
         MSGlobals::gUsingInternalLanes = false;

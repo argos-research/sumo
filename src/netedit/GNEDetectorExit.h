@@ -2,12 +2,12 @@
 /// @file    GNEDetectorExit.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetectorExit.h 21150 2016-07-12 12:28:35Z behrisch $
+/// @version $Id: GNEDetectorExit.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 ///
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -47,14 +47,12 @@ class GNEDetectorE3;
 class GNEDetectorExit  : public GNEDetector {
 public:
     /**@brief Constructor
-     * @param[in] id The storage of gl-ids to get the one for this lane representation from
      * @param[in] viewNet pointer to GNEViewNet of this additional element belongs
+     * @param[in] parent pointer to GNEDetectorE3 of this Exit belongs
      * @param[in] lane Lane of this StoppingPlace belongs
      * @param[in] pos position of the detector on the lane
-     * @param[in] parent pointer to GNEDetectorE3 of this additional element belongs
-     * @param[in] blocked set initial blocking state of item
      */
-    GNEDetectorExit(const std::string& id, GNEViewNet* viewNet, GNELane* lane, SUMOReal pos, GNEDetectorE3* parent, bool blocked = false);
+    GNEDetectorExit(GNEViewNet* viewNet, GNEDetectorE3* parent, GNELane* lane, SUMOReal pos);
 
     /// @brief destructor
     ~GNEDetectorExit();
@@ -66,10 +64,16 @@ public:
     /// @brief Returns position of detector Exit in view
     Position getPositionInView() const;
 
+    /// @brief get E3 Detector parent
+    GNEDetectorE3* getE3Parent() const;
+
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element
      */
-    void writeAdditional(OutputDevice& device, const std::string&);
+    void writeAdditional(OutputDevice& device) const;
+
+    /// @brief update pre-computed geometry information called by E3 parent
+    void updateGeometryByParent();
 
     /// @name inherited from GUIGlObject
     /// @{
@@ -104,11 +108,14 @@ public:
     /// @}
 
 private:
+    /// @brief pointer to E3 parent
+    GNEDetectorE3* myE3Parent;
+
     /// @brief variable to save detectorExit icon
-    static GUIGlID detectorE3ExitGlID;
+    static GUIGlID detectorExitGlID;
 
     /// @brief check if detectorExit icon was inicilalizated
-    static bool detectorE3ExitInitialized;
+    static bool detectorExitInitialized;
 
     /// @brief set attribute after validation
     void setAttribute(SumoXMLAttr key, const std::string& value);
@@ -126,7 +133,7 @@ private:
     int getFrequency() const;
 
     /// @brief Invalidated set filename
-    void setFrequency(int freq);
+    void setFrequency(SUMOReal freq);
 
     /// @brief Invalidated
     void setFilename(std::string filename);

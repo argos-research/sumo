@@ -3,13 +3,13 @@
 @file    checkImages.py
 @author  Michael Behrisch
 @date    2016
-@version $Id: checkImages.py 21805 2016-10-26 12:33:50Z behrisch $
+@version $Id: checkImages.py 22608 2017-01-17 06:28:54Z behrisch $
 
 Checks whether all images in src/utils/gui/images are properly
  inserted into the Makefile
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2016-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2016-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

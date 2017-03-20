@@ -4,12 +4,12 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2013-02-25
-@version $Id: geomhelper.py 20604 2016-05-02 06:13:40Z behrisch $
+@version $Id: geomhelper.py 22608 2017-01-17 06:28:54Z behrisch $
 
 Some helper functions for geometrical computations.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2013-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

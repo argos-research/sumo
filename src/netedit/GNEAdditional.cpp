@@ -2,12 +2,12 @@
 /// @file    GNEAdditional.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Dec 2015
-/// @version $Id: GNEAdditional.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEAdditional.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 /// A abstract class for representation of additional elements
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -64,16 +64,15 @@
 // member method definitions
 // ===========================================================================
 
-GNEAdditional::GNEAdditional(const std::string& id, GNEViewNet* viewNet, Position pos, SumoXMLTag tag, GNEAdditionalSet* additionalSetParent, bool blocked) :
+GNEAdditional::GNEAdditional(const std::string& id, GNEViewNet* viewNet, Position pos, SumoXMLTag tag, GUIIcon icon) :
     GUIGlObject(GLO_ADDITIONAL, id),
-    GNEAttributeCarrier(tag),
+    GNEAttributeCarrier(tag, icon),
     myViewNet(viewNet),
     myEdge(NULL),
     myLane(NULL),
     myPosition(pos),
-    myAdditionalSetParent(additionalSetParent),
     myBlockIconRotation(0),
-    myBlocked(blocked),
+    myBlocked(false),
     myInspectionable(true),
     mySelectable(true),
     myMovable(true),
@@ -82,19 +81,10 @@ GNEAdditional::GNEAdditional(const std::string& id, GNEViewNet* viewNet, Positio
     myAdditionalDialog(NULL) {
     // Set rotation left hand
     myRotationLefthand = OptionsCont::getOptions().getBool("lefthand");
-    // If this additional belongs to a set, add it.
-    if (myAdditionalSetParent) {
-        myAdditionalSetParent->addAdditionalChild(this);
-    }
 }
 
 
-GNEAdditional::~GNEAdditional() {
-    // If this additional belongs to a set, remove it.
-    if (myAdditionalSetParent) {
-        myAdditionalSetParent->removeAdditionalGeometryChild(this);
-    }
-}
+GNEAdditional::~GNEAdditional() {}
 
 
 void
@@ -163,12 +153,6 @@ GNEAdditional::isAdditionalSelected() const {
 }
 
 
-GNEAdditionalSet*
-GNEAdditional::getAdditionalSetParent() const {
-    return myAdditionalSetParent;
-}
-
-
 void
 GNEAdditional::setAdditionalID(const std::string& id) {
     // Save old ID
@@ -230,10 +214,10 @@ GNEAdditional::getPopUpMenu(GUIMainWindow& app, GUISUMOAbstractView& parent) {
             // If shape isn't empty, show menu command lane position
             if (myShape.size() > 0) {
                 const SUMOReal lanePos = lane->getShape().nearest_offset_to_point2D(myShape[0]);
-                new FXMenuCommand(ret, ("lane position: " + toString(innerPos + lanePos)).c_str(), 0, 0, 0);
+                new FXMenuCommand(ret, ("position over " + toString(SUMO_TAG_LANE) + ": " + toString(innerPos + lanePos)).c_str(), 0, 0, 0);
             }
         } else {
-            throw InvalidArgument("Additional with id = '" + getMicrosimID() + "' don't have their lane as a ParentName()");
+            throw InvalidArgument(toString(getTag()) + " with ID '" + getMicrosimID() + "' doesn't have their lane as a ParentName()");
         }
     } else if (std::find(attributes.begin(), attributes.end(), SUMO_ATTR_EDGE) != attributes.end()) {
         // If additional own an edge as attribute, get lane
@@ -245,25 +229,13 @@ GNEAdditional::getPopUpMenu(GUIMainWindow& app, GUISUMOAbstractView& parent) {
             // If shape isn't empty, show menu command edge position
             if (myShape.size() > 0) {
                 const SUMOReal edgePos = edge->getLanes().at(0)->getShape().nearest_offset_to_point2D(myShape[0]);
-                new FXMenuCommand(ret, ("edge position: " + toString(innerPos + edgePos)).c_str(), 0, 0, 0);
+                new FXMenuCommand(ret, ("position over " + toString(SUMO_TAG_LANE) + ": " + toString(innerPos + edgePos)).c_str(), 0, 0, 0);
             }
         } else {
-            throw InvalidArgument("Additional with id = '" + getMicrosimID() + "' don't have their edge as a ParentName()");
+            throw InvalidArgument(toString(getTag()) + " with ID '" + getMicrosimID() + "' don't have their edge as a ParentName()");
         }
     } else {
         new FXMenuCommand(ret, ("position in view: " + toString(myPosition.x()) + "," + toString(myPosition.y())).c_str(), 0, 0, 0);
-    }
-    // Show childs if this is is an additionalSet
-    GNEAdditionalSet* additionalSet = dynamic_cast<GNEAdditionalSet*>(this);
-    if (additionalSet) {
-        new FXMenuSeparator(ret);
-        if (additionalSet->getNumberOfAdditionalChilds() > 0) {
-            new FXMenuCommand(ret, ("number of additional childs: " + toString(additionalSet->getNumberOfAdditionalChilds())).c_str(), 0, 0, 0);
-        } else if (additionalSet->getNumberOfEdgeChilds() > 0) {
-            new FXMenuCommand(ret, ("number of edge childs: " + toString(additionalSet->getNumberOfEdgeChilds())).c_str(), 0, 0, 0);
-        } else if (additionalSet->getNumberOfLaneChilds() > 0) {
-            new FXMenuCommand(ret, ("number of lane childs: " + toString(additionalSet->getNumberOfLaneChilds())).c_str(), 0, 0, 0);
-        }
     }
     new FXMenuSeparator(ret);
     // let the GNEViewNet store the popup position
@@ -278,12 +250,12 @@ GNEAdditional::getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView& paren
     UNUSED_PARAMETER(parent);
     // get attributes
     std::vector<SumoXMLAttr> attributes = getAttrs();
-    // Create tanñe
+    // Create table
     GUIParameterTableWindow* ret = new GUIParameterTableWindow(app, *this, (int)attributes.size());
     // Iterate over attributes
     for (std::vector<SumoXMLAttr>::iterator i = attributes.begin(); i != attributes.end(); i++) {
         // Add attribute and set it dynamic if aren't unique
-        if (GNEAttributeCarrier::isUnique(*i)) {
+        if (GNEAttributeCarrier::isUnique(getTag(), *i)) {
             ret->mkItem(toString(*i).c_str(), false, getAttribute(*i));
         } else {
             ret->mkItem(toString(*i).c_str(), true, getAttribute(*i));
@@ -338,24 +310,24 @@ GNEAdditional::drawLockIcon(SUMOReal size) const {
         if (isAdditionalSelected()) {
             if (myMovable == false) {
                 // Draw not movable texture if additional isn't movable and is selected
-                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_NOTMOVINGSELECTED), size);
+                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getTexture(GNETEXTURE_NOTMOVINGSELECTED), size);
             } else if (myBlocked) {
                 // Draw lock texture if additional is movable, is blocked and is selected
-                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_LOCKSELECTED), size);
+                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getTexture(GNETEXTURE_LOCKSELECTED), size);
             } else {
                 // Draw empty texture if additional is movable, isn't blocked and is selected
-                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_EMPTYSELECTED), size);
+                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getTexture(GNETEXTURE_EMPTYSELECTED), size);
             }
         } else {
             if (myMovable == false) {
                 // Draw not movable texture if additional isn't movable
-                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_NOTMOVING), size);
+                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getTexture(GNETEXTURE_NOTMOVING), size);
             } else if (myBlocked) {
                 // Draw lock texture if additional is movable and is blocked
-                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_LOCK), size);
+                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getTexture(GNETEXTURE_LOCK), size);
             } else {
                 // Draw empty texture if additional is movable and isn't blocked
-                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_EMPTY), size);
+                GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getTexture(GNETEXTURE_EMPTY), size);
             }
         }
         // Pop matrix
@@ -365,9 +337,29 @@ GNEAdditional::drawLockIcon(SUMOReal size) const {
 
 
 void
+GNEAdditional::drawParentAndChildrenConnections() const {
+    // Iterate over myConnectionPositions
+    for (std::vector<std::vector<Position> >::const_iterator i = myConnectionPositions.begin(); i != myConnectionPositions.end(); i++) {
+        // Add a draw matrix
+        glPushMatrix();
+        // traslate in the Z axis
+        glTranslated(0, 0, getType() - 0.01);
+        // Set color of the base
+        GLHelper::setColor(RGBColor(255, 235, 0, 255));
+        for (std::vector<Position>::const_iterator j = (*i).begin(); (j + 1) != (*i).end(); j++) {
+            // Draw Lines
+            GLHelper::drawLine((*j), (*(j + 1)));
+        }
+        // Pop draw matrix
+        glPopMatrix();
+    }
+}
+
+
+void
 GNEAdditional::changeEdge(const std::string& edgeID) {
     if (myEdge == NULL) {
-        throw InvalidArgument("Additional with id = '" + getMicrosimID() + "' doesn't belong to a edge");
+        throw InvalidArgument(toString(getTag()) + " with ID '" + getMicrosimID() + "' doesn't belong to an " + toString(SUMO_TAG_EDGE));
     } else {
         myEdge->removeAdditionalChild(this);
         myEdge = getViewNet()->getNet()->retrieveEdge(edgeID);
@@ -381,7 +373,7 @@ GNEAdditional::changeEdge(const std::string& edgeID) {
 void
 GNEAdditional::changeLane(const std::string& laneID) {
     if (myLane == NULL) {
-        throw InvalidArgument("Additional with id = '" + getMicrosimID() + "' doesn't belong to a lane");
+        throw InvalidArgument(toString(getTag()) + " with ID '" + getMicrosimID() + "' doesn't belong to a " + toString(SUMO_TAG_LANE));
     } else {
         myLane->removeAdditionalChild(this);
         myLane = getViewNet()->getNet()->retrieveLane(laneID);

@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    2011-09.08
-/// @version $Id: MSInstantInductLoop.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: MSInstantInductLoop.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // An instantaneous induction loop
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2011-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2011-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -146,7 +146,7 @@ MSInstantInductLoop::notifyLeave(SUMOVehicle& veh, SUMOReal /* lastPos */, MSMov
 
 void
 MSInstantInductLoop::writeXMLDetectorProlog(OutputDevice& dev) const {
-    dev.writeXMLHeader("instantE1");
+    dev.writeXMLHeader("instantE1", "instant_e1_file.xsd");
 }
 
 

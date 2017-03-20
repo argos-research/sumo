@@ -3,12 +3,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 13 Jan 2014
-/// @version $Id: MSPModel_Striping.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSPModel_Striping.h 22946 2017-02-14 11:54:08Z namdre $
 ///
 // The pedestrian following model (prototype)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2014-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2014-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -69,6 +69,9 @@ public:
     /// @brief register the given person as a pedestrian
     PedestrianState* add(MSPerson* person, MSPerson::MSPersonStage_Walking* stage, SUMOTime now);
 
+    /// @brief remove the specified person from the pedestrian simulation
+    void remove(PedestrianState* state);
+
     /// @brief whether a pedestrian is blocking the crossing of lane at offset distToCrossing
     bool blockedAtDist(const MSLane* lane, SUMOReal distToCrossing, std::vector<const MSPerson*>* collectBlockers);
 
@@ -115,6 +118,7 @@ public:
 
     // @brief fraction of the leftmost lanes to reserve for oncoming traffic
     static const SUMOReal RESERVE_FOR_ONCOMING_FACTOR;
+    static const SUMOReal RESERVE_FOR_ONCOMING_FACTOR_JUNCTIONS;
 
     // @brief the time pedestrians take to reach maximum impatience
     static const SUMOReal MAX_WAIT_TOLERANCE;
@@ -129,6 +133,10 @@ public:
 
 
 protected:
+    static const SUMOReal DIST_FAR_AWAY;
+    static const SUMOReal DIST_BEHIND;
+    static const SUMOReal DIST_OVERLAP;
+
     class lane_by_numid_sorter {
     public:
         /// comparing operation
@@ -170,12 +178,12 @@ protected:
     /// @brief information regarding surround Pedestrians (and potentially other things)
     struct Obstacle {
         /// @brief create No-Obstacle
-        Obstacle(int dir);
+        Obstacle(int dir, SUMOReal dist = DIST_FAR_AWAY);
         /// @brief create an obstacle from ped for ego moving in dir
         Obstacle(const PState& ped);
         /// @brief create an obstacle from explict values
-        Obstacle(SUMOReal _x, SUMOReal _speed, const std::string& _description, const SUMOReal width = 0.)
-            : xFwd(_x + width / 2.), xBack(_x - width / 2.), speed(_speed), description(_description) {};
+        Obstacle(SUMOReal _x, SUMOReal _speed, const std::string& _description, const SUMOReal width = 0., bool _border = false)
+            : xFwd(_x + width / 2.), xBack(_x - width / 2.), speed(_speed), description(_description), border(_border) {};
 
         /// @brief maximal position on the current lane in forward direction
         SUMOReal xFwd;
@@ -185,6 +193,8 @@ protected:
         SUMOReal speed;
         /// @brief the id / description of the obstacle
         std::string description;
+        /// @brief whether this obstacle denotes a border or a pedestrian
+        bool border;
     };
 
     struct WalkingAreaPath {
@@ -351,6 +361,9 @@ protected:
     /// @brief move pedestrians forward on one lane
     void moveInDirectionOnLane(Pedestrians& pedestrians, const MSLane* lane, SUMOTime currentTime, std::set<MSPerson*>& changedLane, int dir);
 
+    /// @brief handle arrivals and lane advancement
+    void arriveAndAdvance(Pedestrians& pedestrians, SUMOTime currentTime, std::set<MSPerson*>& changedLane, int dir);
+
     const ActiveLanes& getActiveLanes() {
         return myActiveLanes;
     }
@@ -381,10 +394,18 @@ private:
     const Obstacles& getNextLaneObstacles(NextLanesObstacles& nextLanesObs, const MSLane* lane, const MSLane* nextLane, int stripes,
                                           SUMOReal nextLength, int nextDir, SUMOReal currentLength, int currentDir);
 
+    static void transformToCurrentLanePositions(Obstacles& o, int currentDir, int nextDir, SUMOReal currentLength, SUMOReal nextLength);
+
     static void addCloserObstacle(Obstacles& obs, SUMOReal x, int stripe, int numStripes, const std::string& id, SUMOReal width, int dir);
 
     /// @brief retrieves the pedestian vector for the given lane (may be empty)
     Pedestrians& getPedestrians(const MSLane* lane);
+
+    /* @brief compute stripe-offset to transform relY values from a lane with origStripes into a lane wit destStrips
+     * @note this is called once for transforming nextLane peds to into the current system as obstacles and another time
+     * (in reverse) to transform the pedestrian coordinates into the nextLane-coordinates when changing lanes
+     */
+    static int getStripeOffset(int origStripes, int destStripes, bool addRemainder);
 
 
 private:

@@ -4,7 +4,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2011-10-05
-/// @version $Id: NIXMLTrafficLightsHandler.cpp 21130 2016-07-08 05:50:46Z namdre $
+/// @version $Id: NIXMLTrafficLightsHandler.cpp 22952 2017-02-15 08:47:22Z namdre $
 ///
 // Importer for traffic lights stored in XML
 /****************************************************************************/
@@ -137,7 +137,7 @@ NIXMLTrafficLightsHandler::initTrafficLightLogic(const SUMOSAXAttributes& attrs,
         WRITE_ERROR("Unknown traffic light type '" + typeS + "' for tlLogic '" + id + "'.");
         return 0;
     }
-    // there are two scenarios to consider
+    // there are three scenarios to consider
     // 1) the tll.xml is loaded to update traffic lights defined in a net.xml:
     //   simply retrieve the loaded definitions and update them
     // 2) the tll.xml is loaded to define new traffic lights

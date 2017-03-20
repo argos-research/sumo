@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Fri, 30 Mar 2007
-/// @version $Id: SUMOSAXAttributesImpl_Xerces.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: SUMOSAXAttributesImpl_Xerces.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Encapsulated Xerces-SAX-attributes
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2007-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -286,6 +286,8 @@ public:
      */
     void serialize(std::ostream& os) const;
 
+    /// @brief return a new deep-copy attributes object
+    SUMOSAXAttributes* clone() const;
 
 private:
     /** @brief Returns Xerces-value of the named attribute

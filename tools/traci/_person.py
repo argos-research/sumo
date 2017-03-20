@@ -3,12 +3,12 @@
 @file    person.py
 @author  Jakob Erdmann
 @date    2015-02-06
-@version $Id: _person.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: _person.py 22929 2017-02-13 14:38:39Z behrisch $
 
 Python implementation of the TraCI interface.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2011-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2011-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -38,10 +38,15 @@ _RETURN_VALUE_FUNC = {tc.ID_LIST:             Storage.readStringList,
                       tc.VAR_WIDTH:           Storage.readDouble,
                       tc.VAR_MINGAP:          Storage.readDouble,
                       tc.VAR_NEXT_EDGE:       Storage.readString,
+                      tc.VAR_STAGE:           Storage.readInt,
+                      tc.VAR_STAGES_REMAINING: Storage.readInt,
+                      tc.VAR_VEHICLE:         Storage.readString,
+                      tc.VAR_EDGES:           Storage.readStringList,
                       }
 
 
 class PersonDomain(Domain):
+    DEPART_NOW = -3
 
     def __init__(self):
         Domain.__init__(self, "person", tc.CMD_GET_PERSON_VARIABLE, tc.CMD_SET_PERSON_VARIABLE,
@@ -64,7 +69,7 @@ class PersonDomain(Domain):
         return self._getUniversal(tc.VAR_POSITION, personID)
 
     def getPosition3D(self, personID):
-        """getPosition(string) -> (double, double)
+        """getPosition(string) -> (double, double, double)
 
         Returns the position of the named person within the last step [m,m,m].
         """
@@ -141,6 +146,225 @@ class PersonDomain(Domain):
         person is in another stage, returns the empty string.
         """
         return self._getUniversal(tc.VAR_NEXT_EDGE, personID)
+
+    def getEdges(self, personID, nextStageIndex=0):
+        """getEdges(string, int) -> list(string)
+
+        Returns a list of all edges in the nth next stage.
+        For waiting stages this is a single edge
+        For walking stages this is the complete route
+        For driving stages this is [origin, destination]
+
+        nextStageIndex 0 retrieves value for the current stage.
+        nextStageIndex must be lower then value of getRemainingStages(personID)
+        """
+        self._connection._beginMessage(
+            tc.CMD_GET_PERSON_VARIABLE, tc.VAR_EDGES, personID, 1 + 4)
+        self._connection._string += struct.pack("!Bi",
+                                                tc.TYPE_INTEGER, nextStageIndex)
+        return self._connection._checkResult(tc.CMD_GET_PERSON_VARIABLE,
+                                             tc.VAR_EDGES, personID).readStringList()
+
+    def getStage(self, personID, nextStageIndex=0):
+        """getStage(string, int) -> int
+        Returns the type of the nth next stage
+          0 for not-yet-departed
+          1 for waiting
+          2 for walking
+          3 for driving
+        nextStageIndex 0 retrieves value for the current stage.
+        nextStageIndex must be lower then value of getRemainingStages(personID)
+        """
+        self._connection._beginMessage(
+            tc.CMD_GET_PERSON_VARIABLE, tc.VAR_STAGE, personID, 1 + 4)
+        self._connection._string += struct.pack("!Bi",
+                                                tc.TYPE_INTEGER, nextStageIndex)
+        return self._connection._checkResult(tc.CMD_GET_PERSON_VARIABLE,
+                                             tc.VAR_STAGE, personID).readInt()
+
+    def getRemainingStages(self, personID):
+        """getStage(string) -> int
+        Returns the number of remaining stages (at least 1)
+        """
+        return self._getUniversal(tc.VAR_STAGES_REMAINING, personID)
+
+    def getVehicle(self, personID):
+        """getVehicle(string) -> string
+        Returns the id of the current vehicle if the person is in stage driving
+        and has entered a vehicle.
+        Return the empty string otherwise
+        """
+        return self._getUniversal(tc.VAR_VEHICLE, personID)
+
+    def removeStages(self, personID):
+        """remove(string)
+        Removes all stages of the person. If no new phases are appended, 
+        the person will be removed from the simulation in the next simulationStep().
+        """
+        # remove all stages after the current and then abort the current stage
+        while self.getRemainingStages(personID) > 1:
+            self.removeStage(personID, 1)
+        self.removeStage(personID, 0)
+
+    def add(self, personID, edgeID, pos, depart=DEPART_NOW, typeID="DEFAULT_PEDTYPE"):
+        """add(string, string, double, int, string)
+        Inserts a new person to the simulation at the given edge, position and
+        time (in s). This function should be followed by appending Stages or the person
+        will immediatly vanish on departure.
+        """
+        if depart > 0:
+            depart *= 1000
+        self._connection._beginMessage(tc.CMD_SET_PERSON_VARIABLE, tc.ADD, personID,
+                                       1 + 4 + 1 + 4 + len(typeID) + 1 + 4 + len(edgeID) + 1 + 4 + 1 + 8)
+        self._connection._string += struct.pack("!Bi", tc.TYPE_COMPOUND, 4)
+        self._connection._packString(typeID)
+        self._connection._packString(edgeID)
+        self._connection._string += struct.pack("!Bi", tc.TYPE_INTEGER, depart)
+        self._connection._string += struct.pack("!Bd", tc.TYPE_DOUBLE, pos)
+        self._connection._sendExact()
+
+    def appendWaitingStage(self, personID, duration, description="waiting", stopID=""):
+        """appendWaitingStage(string, int, string, string)
+        Appends a waiting stage with duration in s to the plan of the given person
+        """
+        duration *= 1000
+        self._connection._beginMessage(tc.CMD_SET_PERSON_VARIABLE, tc.APPEND_STAGE, personID,
+                                       1 + 4  # compound
+                                       + 1 + 4  # stage type
+                                       + 1 + 4  # duration
+                                       + 1 + 4 + len(description)
+                                       + 1 + 4 + len(stopID))
+        self._connection._string += struct.pack("!Bi", tc.TYPE_COMPOUND, 4)
+        self._connection._string += struct.pack(
+            "!Bi", tc.TYPE_INTEGER, tc.STAGE_WAITING)
+        self._connection._string += struct.pack("!Bi",
+                                                tc.TYPE_INTEGER, duration)
+        self._connection._packString(description)
+        self._connection._packString(stopID)
+        self._connection._sendExact()
+
+    def appendWalkingStage(self, personID, edges, arrivalPos, duration=-1, speed=-1, stopID=""):
+        """appendWalkingStage(string, stringList, double, int, double, string)
+        Appends a walking stage to the plan of the given person
+        The walking speed can either be specified, computed from the duration parameter (in s) or taken from the type of the person
+        """
+        if duration is not None:
+            duration *= 1000
+
+        if isinstance(edges, str):
+            edges = [edgeList]
+        self._connection._beginMessage(tc.CMD_SET_PERSON_VARIABLE, tc.APPEND_STAGE, personID,
+                                       1 + 4  # compound
+                                       + 1 + 4  # stageType
+                                       + 1 + 4 + \
+                                       sum(map(len, edges)) + 4 * len(edges)
+                                       + 1 + 8  # arrivalPos
+                                       + 1 + 4  # duration
+                                       + 1 + 8  # speed
+                                       + 1 + 4 + len(stopID)
+                                       )
+        self._connection._string += struct.pack("!Bi", tc.TYPE_COMPOUND, 6)
+        self._connection._string += struct.pack(
+            "!Bi", tc.TYPE_INTEGER, tc.STAGE_WALKING)
+        self._connection._packStringList(edges)
+        self._connection._string += struct.pack("!Bd",
+                                                tc.TYPE_DOUBLE, arrivalPos)
+        self._connection._string += struct.pack("!Bi",
+                                                tc.TYPE_INTEGER, duration)
+        self._connection._string += struct.pack("!Bd", tc.TYPE_DOUBLE, speed)
+        self._connection._packString(stopID)
+        self._connection._sendExact()
+
+    def appendDrivingStage(self, personID, toEdge, lines, stopID=""):
+        """appendDrivingStage(string, string, string, string)
+        Appends a driving stage to the plan of the given person
+        The lines parameter should be a space-separated list of line ids
+        """
+        self._connection._beginMessage(tc.CMD_SET_PERSON_VARIABLE, tc.APPEND_STAGE, personID,
+                                       1 + 4  # compound
+                                       + 1 + 4  # stage type
+                                       + 1 + 4 + len(toEdge)
+                                       + 1 + 4 + len(lines)
+                                       + 1 + 4 + len(stopID))
+        self._connection._string += struct.pack("!Bi", tc.TYPE_COMPOUND, 4)
+        self._connection._string += struct.pack(
+            "!Bi", tc.TYPE_INTEGER, tc.STAGE_DRIVING)
+        self._connection._packString(toEdge)
+        self._connection._packString(lines)
+        self._connection._packString(stopID)
+        self._connection._sendExact()
+
+    def removeStage(self, personID, nextStageIndex):
+        """removeStage(string, int)
+        Removes the nth next stage
+        nextStageIndex must be lower then value of getRemainingStages(personID)
+        nextStageIndex 0 immediately aborts the current stage and proceeds to the next stage
+        """
+        self._connection._beginMessage(
+            tc.CMD_SET_PERSON_VARIABLE, tc.REMOVE_STAGE, personID, 1 + 4)
+        self._connection._string += struct.pack("!Bi",
+                                                tc.TYPE_INTEGER, nextStageIndex)
+        self._connection._sendExact()
+
+    def setSpeed(self, personID, speed):
+        """setSpeed(string, double) -> None
+
+        Sets the maximum speed in m/s for the named person for subsequent step.
+        """
+        self._connection._sendDoubleCmd(
+            tc.CMD_SET_PERSON_VARIABLE, tc.VAR_SPEED, personID, speed)
+
+    def setType(self, personID, typeID):
+        """setType(string, string) -> None
+
+        Sets the id of the type for the named person.
+        """
+        self._connection._sendStringCmd(
+            tc.CMD_SET_PERSON_VARIABLE, tc.VAR_TYPE, personID, typeID)
+
+    def setWidth(self, personID, width):
+        """setWidth(string, double) -> None
+
+        Sets the width in m for this person.
+        """
+        self._connection._sendDoubleCmd(
+            tc.CMD_SET_PERSON_VARIABLE, tc.VAR_WIDTH, personID, width)
+
+    def setHeight(self, personID, height):
+        """setHeight(string, double) -> None
+
+        Sets the height in m for this person.
+        """
+        self._connection._sendDoubleCmd(
+            tc.CMD_SET_PERSON_VARIABLE, tc.VAR_HEIGHT, personID, height)
+
+    def setLength(self, personID, length):
+        """setLength(string, double) -> None
+
+        Sets the length in m for the given person.
+        """
+        self._connection._sendDoubleCmd(
+            tc.CMD_SET_PERSON_VARIABLE, tc.VAR_LENGTH, personID, length)
+
+    def setMinGap(self, personID, minGap):
+        """setMinGap(string, double) -> None
+
+        Sets the offset (gap to front person if halting) for this vehicle.
+        """
+        self._connection._sendDoubleCmd(
+            tc.CMD_SET_PERSON_VARIABLE, tc.VAR_MINGAP, personID, minGap)
+
+    def setColor(self, personID, color):
+        """setColor(string, (integer, integer, integer, integer))
+        sets color for person with the given ID.
+        i.e. (255,0,0,0) for the color red. 
+        The fourth integer (alpha) is only used when drawing persons with raster images
+        """
+        self._connection._beginMessage(
+            tc.CMD_SET_PERSON_VARIABLE, tc.VAR_COLOR, personID, 1 + 1 + 1 + 1 + 1)
+        self._connection._string += struct.pack("!BBBBB", tc.TYPE_COLOR, int(
+            color[0]), int(color[1]), int(color[2]), int(color[3]))
+        self._connection._sendExact()
 
 
 PersonDomain()

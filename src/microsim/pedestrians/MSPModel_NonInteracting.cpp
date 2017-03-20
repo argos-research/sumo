@@ -2,7 +2,7 @@
 /// @file    MSPModel_NonInteracting.h
 /// @author  Jakob Erdmann
 /// @date    Mon, 13 Jan 2014
-/// @version $Id: MSPModel_NonInteracting.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSPModel_NonInteracting.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // The pedestrian following model (prototype)
 /****************************************************************************/
@@ -74,13 +74,19 @@ MSPModel_NonInteracting::~MSPModel_NonInteracting() {
 
 PedestrianState*
 MSPModel_NonInteracting::add(MSPerson* person, MSPerson::MSPersonStage_Walking* stage, SUMOTime now) {
-    PState* state = new PState();
+    MoveToNextEdge* cmd = new MoveToNextEdge(person, *stage);
+    PState* state = new PState(cmd);
     const SUMOTime firstEdgeDuration = state->computeWalkingTime(0, *stage, now);
-    myNet->getBeginOfTimestepEvents()->addEvent(new MoveToNextEdge(person, *stage),
-            now + firstEdgeDuration, MSEventControl::ADAPT_AFTER_EXECUTION);
+    myNet->getBeginOfTimestepEvents()->addEvent(cmd, now + firstEdgeDuration, MSEventControl::ADAPT_AFTER_EXECUTION);
 
     //if DEBUGCOND(person->getID()) std::cout << SIMTIME << " " << person->getID() << " inserted on " << stage->getEdge()->getID() << "\n";
     return state;
+}
+
+
+void
+MSPModel_NonInteracting::remove(PedestrianState* state) {
+    dynamic_cast<PState*>(state)->getCommand()->abortWalk();
 }
 
 
@@ -92,6 +98,9 @@ MSPModel_NonInteracting::blockedAtDist(const MSLane*, SUMOReal, std::vector<cons
 
 SUMOTime
 MSPModel_NonInteracting::MoveToNextEdge::execute(SUMOTime currentTime) {
+    if (myPerson == 0) {
+        return 0; // descheduled
+    }
     PState* state = dynamic_cast<PState*>(myParent.getPedestrianState());
     const MSEdge* old = myParent.getEdge();
     const bool arrived = myParent.moveToNextEdge(myPerson, currentTime);

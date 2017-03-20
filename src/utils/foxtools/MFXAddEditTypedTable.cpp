@@ -2,12 +2,12 @@
 /// @file    MFXAddEditTypedTable.cpp
 /// @author  Daniel Krajzewicz
 /// @date    2004-07-02
-/// @version $Id: MFXAddEditTypedTable.cpp 21314 2016-08-22 10:37:46Z namdre $
+/// @version $Id: MFXAddEditTypedTable.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // missing_desc
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2004-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2004-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

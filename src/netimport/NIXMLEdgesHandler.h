@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NIXMLEdgesHandler.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NIXMLEdgesHandler.h 22245 2016-12-09 10:19:48Z namdre $
 ///
 // Importer for network edges stored in XML
 /****************************************************************************/
@@ -236,6 +236,10 @@ private:
         SUMOReal speed;
         /// @brief The new node that is created for this split
         NBNode* node;
+        /// @brief The id for the edge before the split
+        std::string idBefore;
+        /// @brief The id for the edge after the split
+        std::string idAfter;
     };
 
     /// @brief The list of this edge's splits

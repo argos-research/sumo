@@ -5,12 +5,12 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2009-08-01
-@version $Id: osmGet.py 20687 2016-05-10 11:27:00Z behrisch $
+@version $Id: osmGet.py 22608 2017-01-17 06:28:54Z behrisch $
 
 Retrieves an area from OpenStreetMap.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2009-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

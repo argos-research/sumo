@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Wed, 10. Dec 2003
-/// @version $Id: GUIVehicleControl.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIVehicleControl.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The class responsible for building and deletion of vehicles (gui-version)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2003-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2003-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -110,9 +110,11 @@ public:
 
     /** @brief Returns the list of all known vehicles by gl-id
      * @param[fill] into The list to fill with vehicle ids
+     * @param[listParking] Whether parking vehicles shall be listed as well
+     * @param[listTeleporting] Whether teleporting vehicles shall be listed as well
      * @todo Well, what about concurrent modifications?
      */
-    void insertVehicleIDs(std::vector<GUIGlID>& into);
+    void insertVehicleIDs(std::vector<GUIGlID>& into, bool listParking, bool listTeleporting);
 
 
     /// @brief lock access to vehicle removal/additions for thread synchronization

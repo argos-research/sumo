@@ -5,14 +5,14 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2010-03-03
-@version $Id: deleteUnusedDetectors.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: deleteUnusedDetectors.py 22608 2017-01-17 06:28:54Z behrisch $
 
 This script reads a network as first parameter and a file with the positions
 of detectors as second parameter. As result the script writes a new file
 with detectors which are actually used in the given network. 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2010-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2010-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

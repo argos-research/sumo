@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_OpenDrive.h 21243 2016-07-26 14:12:28Z namdre $
+/// @version $Id: NIImporter_OpenDrive.h 22912 2017-02-10 13:36:06Z namdre $
 ///
 // Importer for networks stored in openDrive format
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -100,6 +100,7 @@ protected:
         OPENDRIVE_TAG_POLY3,
         OPENDRIVE_TAG_PARAMPOLY3,
         OPENDRIVE_TAG_LANESECTION,
+        OPENDRIVE_TAG_LANEOFFSET,
         OPENDRIVE_TAG_LEFT,
         OPENDRIVE_TAG_CENTER,
         OPENDRIVE_TAG_RIGHT,
@@ -268,6 +269,9 @@ protected:
         SUMOReal d;
     };
 
+    /// LaneOffset has the same fields as Elevation
+    typedef OpenDriveElevation OpenDriveLaneOffset;
+
 
     /**
      * @struct OpenDriveLane
@@ -420,6 +424,7 @@ protected:
         std::vector<OpenDriveLink> links;
         std::vector<OpenDriveGeometry> geometries;
         std::vector<OpenDriveElevation> elevations;
+        std::vector<OpenDriveLaneOffset> offsets;
         NBNode* from;
         NBNode* to;
         PositionVector geom;

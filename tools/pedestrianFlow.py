@@ -5,7 +5,7 @@ A script for generating a flow of pedestrians (a long list of person-walks)
 @file    pedestrianFlow.py
 @author  Jakob Erdmann
 @date    2014-01-16
-@version $Id: pedestrianFlow.py 19649 2015-12-17 21:05:20Z behrisch $
+@version $Id: pedestrianFlow.py 22767 2017-01-30 11:42:27Z behrisch $
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
 Copyright (C) 2014-2014 DLR (http://www.dlr.de/) and contributors
@@ -93,10 +93,8 @@ def write_ped(f, index, options, depart, edges):
 def main():
     options = get_options()
     with open(options.output, 'w') as f:
-        f.write('<!-- generated on %s by "%s" -->\n' %
-                (datetime.datetime.now(), os.path.basename(" ".join(sys.argv))))
-        f.write(
-            '<routes xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/routes_file.xsd">\n')
+        sumolib.writeXMLHeader(
+            fouttrips, "$Id: pedestrianFlow.py 22767 2017-01-30 11:42:27Z behrisch $", "routes")
         index = options.index
         for depart in range(options.begin, options.end):
             if random.random() < options.prob:

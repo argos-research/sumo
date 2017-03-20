@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUILane.cpp 21539 2016-09-26 10:59:27Z namdre $
+/// @version $Id: GUILane.cpp 22796 2017-01-31 14:28:20Z namdre $
 ///
 // Representation of a lane in the micro simulation (gui-version)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -301,7 +301,7 @@ GUILane::drawLinkRule(const GUIVisualizationSettings& s, const GUINet& net, MSLi
     const Position& f = shape[-2];
     const SUMOReal rot = RAD2DEG(atan2((end.x() - f.x()), (f.y() - end.y())));
     if (link == 0) {
-        GLHelper::setColor(getLinkColor(LINKSTATE_DEADEND));
+        GLHelper::setColor(GUIVisualizationSettings::getLinkColor(LINKSTATE_DEADEND));
         glPushMatrix();
         glTranslated(end.x(), end.y(), 0);
         glRotated(rot, 0, 0, 1);
@@ -335,7 +335,7 @@ GUILane::drawLinkRule(const GUIVisualizationSettings& s, const GUINet& net, MSLi
                 glPushName(getGlID());
                 break;
         }
-        GLHelper::setColor(getLinkColor(link->getState()));
+        GLHelper::setColor(GUIVisualizationSettings::getLinkColor(link->getState()));
         if (!(drawAsRailway(s) || drawAsWaterway(s)) || link->getState() != LINKSTATE_MAJOR) {
             // the white bar should be the default for most railway
             // links and looks ugly so we do not draw it
@@ -425,12 +425,12 @@ GUILane::drawLane2LaneConnections() const {
         if (connected == 0) {
             continue;
         }
-        GLHelper::setColor(getLinkColor((*i)->getState()));
+        GLHelper::setColor(GUIVisualizationSettings::getLinkColor((*i)->getState()));
         glBegin(GL_LINES);
         const Position& p1 = getShape()[-1];
         const Position& p2 = connected->getShape()[0];
-        glVertex2f(p1.x(), p1.y());
-        glVertex2f(p2.x(), p2.y());
+        glVertex2d(p1.x(), p1.y());
+        glVertex2d(p2.x(), p2.y());
         glEnd();
         GLHelper::drawTriangleAtEnd(p1, p2, (SUMOReal) .4, (SUMOReal) .2);
     }
@@ -452,7 +452,7 @@ GUILane::drawGL(const GUIVisualizationSettings& s) const {
     } else {
         exaggeration *= s.laneScaler.getScheme().getColor(getScaleValue(s.laneScaler.getActive()));
     }
-    const bool drawDetails =  s.scale * exaggeration > 5;
+    const bool drawDetails =  s.scale * exaggeration > 5 && !s.drawForSelecting;
     if (isCrossing || isWalkingArea) {
         // draw internal lanes on top of junctions
         glTranslated(0, 0, GLO_JUNCTION + 0.1);
@@ -463,9 +463,8 @@ GUILane::drawGL(const GUIVisualizationSettings& s) const {
         glTranslated(0, 0, getType());
     }
     // set lane color
-    if (!MSGlobals::gUseMesoSim) {
-        setColor(s);
-    } else {
+    setColor(s);
+    if (MSGlobals::gUseMesoSim) {
         myShapeColors.clear();
         const std::vector<RGBColor>& segmentColors = static_cast<const GUIEdge*>(myEdge)->getSegmentColors();
         if (segmentColors.size() > 0) {
@@ -502,9 +501,7 @@ GUILane::drawGL(const GUIVisualizationSettings& s) const {
                 glColor3d(1, 1, 1);
                 glTranslated(0, 0, .1);
                 GLHelper::drawBoxLines(myShape, myShapeRotations, myShapeLengths, halfRailWidth - 0.2);
-                if (!MSGlobals::gUseMesoSim) {
-                    setColor(s);
-                }
+                setColor(s);
                 drawCrossties(0.3 * exaggeration, 1 * exaggeration, 1 * exaggeration);
             } else if (isCrossing) {
                 if (s.drawCrossingsAndWalkingareas) {
@@ -535,7 +532,7 @@ GUILane::drawGL(const GUIVisualizationSettings& s) const {
             } else {
                 const SUMOReal halfWidth = isInternal ? myQuarterLaneWidth : myHalfLaneWidth;
                 mustDrawMarkings = !isInternal && myPermissions != 0 && myPermissions != SVC_PEDESTRIAN && exaggeration == 1.0 && !isWaterway(myPermissions);
-                const int cornerDetail = drawDetails && !isInternal ? s.scale * exaggeration : 0;
+                const int cornerDetail = drawDetails && !isInternal ? (int)(s.scale * exaggeration) : 0;
                 const SUMOReal offset = halfWidth * MAX2((SUMOReal)0, (exaggeration - 1));
                 if (myShapeColors.size() > 0) {
                     GLHelper::drawBoxLines(myShape, myShapeRotations, myShapeLengths, myShapeColors, halfWidth * exaggeration, cornerDetail, offset);
@@ -548,37 +545,40 @@ GUILane::drawGL(const GUIVisualizationSettings& s) const {
 #endif
             glPopMatrix();
             // draw ROWs (not for inner lanes)
-            if ((!isInternal || isCrossing) && drawDetails) {
+            if ((!isInternal || isCrossing) && (drawDetails || s.drawForSelecting)) {
                 glPushMatrix();
                 glTranslated(0, 0, GLO_JUNCTION); // must draw on top of junction shape
                 glTranslated(0, 0, .5);
-                if (MSGlobals::gLateralResolution > 0 && s.showSublanes) {
-                    // draw sublane-borders
-                    GLHelper::setColor(GLHelper::getColor().changedBrightness(51));
-                    for (SUMOReal offset = -myHalfLaneWidth; offset < myHalfLaneWidth; offset += MSGlobals::gLateralResolution) {
-                        GLHelper::drawBoxLines(myShape, myShapeRotations, myShapeLengths, 0.01, 0, offset);
+                if (drawDetails) {
+                    if (MSGlobals::gLateralResolution > 0 && s.showSublanes) {
+                        // draw sublane-borders
+                        GLHelper::setColor(GLHelper::getColor().changedBrightness(51));
+                        for (SUMOReal offset = -myHalfLaneWidth; offset < myHalfLaneWidth; offset += MSGlobals::gLateralResolution) {
+                            GLHelper::drawBoxLines(myShape, myShapeRotations, myShapeLengths, 0.01, 0, offset);
+                        }
+                    }
+                    if (s.showLinkDecals && !drawAsRailway(s) && !drawAsWaterway(s) && myPermissions != SVC_PEDESTRIAN) {
+                        drawArrows();
+                    }
+                    if (s.showLane2Lane) {
+                        // this should be independent to the geometry:
+                        //  draw from end of first to the begin of second
+                        drawLane2LaneConnections();
+                    }
+                    if (s.showLaneDirection) {
+                        drawDirectionIndicators();
+                    }
+                    glTranslated(0, 0, .1);
+                    if (s.drawLinkJunctionIndex.show) {
+                        drawLinkNo(s);
+                    }
+                    if (s.drawLinkTLIndex.show) {
+                        drawTLSLinkNo(s, *net);
                     }
                 }
+                // make sure link rules are drawn so tls can be selected via right-click
                 if (s.showLinkRules) {
                     drawLinkRules(s, *net);
-                }
-                if (s.showLinkDecals && !drawAsRailway(s) && !drawAsWaterway(s) && myPermissions != SVC_PEDESTRIAN) {
-                    drawArrows();
-                }
-                if (s.showLane2Lane) {
-                    // this should be independent to the geometry:
-                    //  draw from end of first to the begin of second
-                    drawLane2LaneConnections();
-                }
-                if (s.showLaneDirection) {
-                    drawDirectionIndicators();
-                }
-                glTranslated(0, 0, .1);
-                if (s.drawLinkJunctionIndex.show) {
-                    drawLinkNo(s);
-                }
-                if (s.drawLinkTLIndex.show) {
-                    drawTLSLinkNo(s, *net);
                 }
                 glPopMatrix();
             }
@@ -617,9 +617,7 @@ void
 GUILane::drawMarkings(const GUIVisualizationSettings& s, SUMOReal scale) const {
     glPushMatrix();
     glTranslated(0, 0, GLO_EDGE);
-    if (!MSGlobals::gUseMesoSim) {
-        setColor(s);
-    }
+    setColor(s);
     // optionally draw inverse markings
     if (myIndex > 0 && (myEdge->getLanes()[myIndex - 1]->getPermissions() & myPermissions) != 0) {
         SUMOReal mw = (myHalfLaneWidth + SUMO_const_laneOffset + .01) * scale * (MSNet::getInstance()->lefthand() ? -1 : 1);
@@ -861,9 +859,13 @@ GUILane::getLoadedEdgeWeight() const {
 
 void
 GUILane::setColor(const GUIVisualizationSettings& s) const {
-    const GUIColorer& c = s.laneColorer;
-    if (!setFunctionalColor(c.getActive()) && !setMultiColor(c)) {
-        GLHelper::setColor(c.getScheme().getColor(getColorValue(c.getActive())));
+    if (MSGlobals::gUseMesoSim) {
+        GLHelper::setColor(static_cast<const GUIEdge*>(myEdge)->getMesoColor());
+    } else {
+        const GUIColorer& c = s.laneColorer;
+        if (!setFunctionalColor(c.getActive()) && !setMultiColor(c)) {
+            GLHelper::setColor(c.getScheme().getColor(getColorValue(c.getActive())));
+        }
     }
 }
 

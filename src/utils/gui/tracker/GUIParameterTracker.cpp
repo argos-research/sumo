@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIParameterTracker.cpp 21202 2016-07-19 13:40:35Z behrisch $
+/// @version $Id: GUIParameterTracker.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A window which displays the time line of one (or more) value(s)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -40,6 +40,7 @@
 #include <utils/common/SUMOTime.h>
 #include <utils/gui/globjects/GUIGlObject.h>
 #include <utils/gui/div/GUIIOGlobals.h>
+#include <utils/gui/div/GUIDesigns.h>
 #include <utils/gui/windows/GUIAppEnum.h>
 #include <utils/gui/windows/GUIMainWindow.h>
 #include <utils/gui/images/GUIIconSubSys.h>
@@ -106,17 +107,16 @@ GUIParameterTracker::create() {
 
 void
 GUIParameterTracker::buildToolBar() {
-    myToolBarDrag = new FXToolBarShell(this, FRAME_NORMAL);
+    myToolBarDrag = new FXToolBarShell(this, GUIDesignToolBarShell3);
     myToolBar = new FXToolBar(this, myToolBarDrag, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | FRAME_RAISED);
-    new FXToolBarGrip(myToolBar, myToolBar, FXToolBar::ID_TOOLBARGRIP, TOOLBARGRIP_DOUBLE);
+    new FXToolBarGrip(myToolBar, myToolBar, FXToolBar::ID_TOOLBARGRIP, GUIDesignToolBarGrip);
     // save button
     new FXButton(myToolBar, "\t\tSave the data...",
-                 GUIIconSubSys::getIcon(ICON_SAVE), this, GUIParameterTracker::MID_SAVE,
-                 ICON_ABOVE_TEXT | BUTTON_TOOLBAR | FRAME_RAISED | LAYOUT_TOP | LAYOUT_LEFT);
+                 GUIIconSubSys::getIcon(ICON_SAVE), this, GUIParameterTracker::MID_SAVE, GUIDesignButtonToolbar);
     // aggregation interval combo
     myAggregationInterval =
         new FXComboBox(myToolBar, 8, this, MID_AGGREGATIONINTERVAL,
-                       FRAME_SUNKEN | LAYOUT_LEFT | LAYOUT_TOP | COMBOBOX_STATIC);
+                       GUIDesignComboBoxStatic);
     myAggregationInterval->appendItem("1s");
     myAggregationInterval->appendItem("1min");
     myAggregationInterval->appendItem("5min");

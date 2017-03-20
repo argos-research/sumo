@@ -2,12 +2,12 @@
 /// @file    GNEBusStop.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEBusStop.h 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNEBusStop.h 22876 2017-02-07 13:40:22Z palcraft $
 ///
 /// A class for visualizing busStop geometry (adapted from GUILaneWrapper)
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -64,9 +64,8 @@ public:
      * @param[in] startPos Start position of the StoppingPlace
      * @param[in] endPos End position of the StoppingPlace
      * @param[in] lines lines of the busStop
-     * @param[in] blocked set initial blocking state of item
      */
-    GNEBusStop(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal startPos, SUMOReal endPos, const std::vector<std::string>& lines, bool blocked);
+    GNEBusStop(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal startPos, SUMOReal endPos, const std::vector<std::string>& lines);
 
     /// @brief Destructor
     ~GNEBusStop();
@@ -77,7 +76,7 @@ public:
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element
      */
-    void writeAdditional(OutputDevice& device, const std::string&);
+    void writeAdditional(OutputDevice& device) const;
 
     /// @brief get string vector with the lines of the busStop
     std::vector<std::string> getLines() const;

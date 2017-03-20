@@ -2,12 +2,12 @@
 /// @file    GNEChange_Attribute.cpp
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEChange_Attribute.cpp 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEChange_Attribute.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A network change in which something is moved (for undo/redo)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -46,10 +46,8 @@ FXIMPLEMENT_ABSTRACT(GNEChange_Attribute, GNEChange, NULL, 0)
 // ===========================================================================
 
 GNEChange_Attribute::GNEChange_Attribute(GNEAttributeCarrier* ac,
-        SumoXMLAttr key,
-        const std::string& value,
-        bool customOrigValue,
-        const std::string& origValue) :
+        SumoXMLAttr key, const std::string& value,
+        bool customOrigValue, const std::string& origValue) :
     GNEChange(0, true),
     myAC(ac),
     myKey(key),
@@ -96,3 +94,6 @@ FXString
 GNEChange_Attribute::redoName() const {
     return ("Redo change " + myAC->getDescription() + " attribute").c_str();
 }
+
+
+/****************************************************************************/

@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 8 Nov 2010
-/// @version $Id: MSBaseVehicle.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: MSBaseVehicle.h 22812 2017-02-01 11:12:29Z namdre $
 ///
 // A base class for vehicle implementations
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2010-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2010-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -205,9 +205,10 @@ public:
      * @param[in] edges The new list of edges to pass
      * @param[in] onInit Whether the vehicle starts with this route
      * @param[in] check Whether the route should be checked for validity
+     * @param[in] addStops Parameter for replaceRoute
      * @return Whether the new route was accepted
      */
-    bool replaceRouteEdges(ConstMSEdgeVector& edges, bool onInit = false, bool check = false);
+    bool replaceRouteEdges(ConstMSEdgeVector& edges, bool onInit = false, bool check = false, bool addStops = true);
 
 
     /** @brief Returns the vehicle's acceleration

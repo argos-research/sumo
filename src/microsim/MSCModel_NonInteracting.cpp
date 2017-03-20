@@ -3,12 +3,12 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Tue, 29 July 2014
-/// @version $Id: MSCModel_NonInteracting.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSCModel_NonInteracting.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The container following model for tranship (prototype)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2014-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2014-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

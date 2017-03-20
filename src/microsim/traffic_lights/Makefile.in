@@ -99,6 +99,7 @@ am__v_AR_1 =
 libmicrosimtls_a_AR = $(AR) $(ARFLAGS)
 libmicrosimtls_a_LIBADD =
 am_libmicrosimtls_a_OBJECTS = MSActuatedTrafficLightLogic.$(OBJEXT) \
+	MSDelayBasedTrafficLightLogic.$(OBJEXT) \
 	MSOffTrafficLightLogic.$(OBJEXT) MSRailSignal.$(OBJEXT) \
 	MSPhasedTrafficLightLogic.$(OBJEXT) MSPushButton.$(OBJEXT) \
 	MSRailCrossing.$(OBJEXT) MSSimpleTrafficLightLogic.$(OBJEXT) \
@@ -349,6 +350,7 @@ top_srcdir = @top_srcdir@
 noinst_LIBRARIES = libmicrosimtls.a
 libmicrosimtls_a_SOURCES = \
 MSActuatedTrafficLightLogic.cpp MSActuatedTrafficLightLogic.h \
+MSDelayBasedTrafficLightLogic.cpp MSDelayBasedTrafficLightLogic.h \
 MSOffTrafficLightLogic.cpp MSOffTrafficLightLogic.h \
 MSRailSignal.cpp MSRailSignal.h \
 MSPhaseDefinition.h \
@@ -431,6 +433,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSActuatedTrafficLightLogic.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSDelayBasedTrafficLightLogic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSDeterministicHiLevelTrafficLightLogic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSOffTrafficLightLogic.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSPhasedTrafficLightLogic.Po@am__quote@

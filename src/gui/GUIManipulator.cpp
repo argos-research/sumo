@@ -2,12 +2,12 @@
 /// @file    GUIManipulator.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Jun 2004
-/// @version $Id: GUIManipulator.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIManipulator.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Abstract GUI manipulation class
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -33,6 +33,7 @@
 #include <gui/GUIApplicationWindow.h>
 #include "GUIManipulator.h"
 #include <gui/GUIGlobals.h>
+#include <utils/gui/div/GUIDesigns.h>
 
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
@@ -48,14 +49,11 @@ FXIMPLEMENT(GUIManipulator, FXDialogBox, NULL, 0)
 // ===========================================================================
 // method definitions
 // ===========================================================================
-GUIManipulator::GUIManipulator(GUIMainWindow& app,
-                               const std::string& name,
-                               int xpos, int ypos)
-    : FXDialogBox(&app, name.c_str(), DECOR_CLOSE | DECOR_TITLE, xpos, ypos, 0, 0) {}
+GUIManipulator::GUIManipulator(GUIMainWindow& app, const std::string& name, int xpos, int ypos) :
+    FXDialogBox(&app, name.c_str(), GUIDesignDialogBox, xpos, ypos, 0, 0) {}
 
 
 GUIManipulator::~GUIManipulator() {}
-
 
 
 /****************************************************************************/

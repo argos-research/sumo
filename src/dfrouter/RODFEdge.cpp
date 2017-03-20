@@ -5,12 +5,12 @@
 /// @author  Jakob Erdmann
 /// @author  Yun-Pang Floetteroed
 /// @date    Thu, 16.03.2006
-/// @version $Id: RODFEdge.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: RODFEdge.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // An edge within the DFROUTER
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2006-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2006-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: RONet.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: RONet.cpp 22760 2017-01-30 10:01:39Z namdre $
 ///
 // The router's network representation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -82,7 +82,7 @@ RONet::RONet()
     if (myInstance != 0) {
         throw ProcessError("A network was already constructed.");
     }
-    SUMOVTypeParameter* type = new SUMOVTypeParameter(DEFAULT_VTYPE_ID, SVC_IGNORING);
+    SUMOVTypeParameter* type = new SUMOVTypeParameter(DEFAULT_VTYPE_ID, SVC_PASSENGER);
     type->onlyReferenced = true;
     myVehicleTypes.add(type->id, type);
     SUMOVTypeParameter* defPedType = new SUMOVTypeParameter(DEFAULT_PEDTYPE_ID, SVC_PEDESTRIAN);
@@ -220,6 +220,17 @@ RONet::addContainerStop(const std::string& id, SUMOVehicleParameter::Stop* stop)
 }
 
 
+void
+RONet::addParkingArea(const std::string& id, SUMOVehicleParameter::Stop* stop) {
+    std::map<std::string, SUMOVehicleParameter::Stop*>::const_iterator it = myParkingAreas.find(id);
+    if (it != myParkingAreas.end()) {
+        WRITE_ERROR("The parking area '" + id + "' occurs at least twice.");
+        delete stop;
+    }
+    myParkingAreas[id] = stop;
+}
+
+
 bool
 RONet::addRouteDef(RORouteDef* def) {
     return myRoutes.add(def->getID(), def);
@@ -229,8 +240,9 @@ RONet::addRouteDef(RORouteDef* def) {
 void
 RONet::openOutput(const OptionsCont& options, const std::string altFilename) {
     if (options.isSet("output-file") && options.getString("output-file") != "") {
-        OutputDevice::createDeviceByOption("output-file", "routes", "routes_file.xsd");
-        myRoutesOutput = &OutputDevice::getDeviceByOption("output-file");
+        myRoutesOutput = &OutputDevice::getDevice(options.getString("output-file"));
+        myRoutesOutput->writeHeader<ROEdge>(SUMO_TAG_ROUTES);
+        myRoutesOutput->writeAttr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance").writeAttr("xsi:noNamespaceSchemaLocation", "http://sumo.dlr.de/xsd/routes_file.xsd");
     }
     if (altFilename != "") {
         myRouteAlternativesOutput = &OutputDevice::getDevice(altFilename);
@@ -238,8 +250,9 @@ RONet::openOutput(const OptionsCont& options, const std::string altFilename) {
         myRouteAlternativesOutput->writeAttr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance").writeAttr("xsi:noNamespaceSchemaLocation", "http://sumo.dlr.de/xsd/routes_file.xsd");
     }
     if (options.isSet("vtype-output") && options.getString("vtype-output") != "") {
-        OutputDevice::createDeviceByOption("vtype-output", "routes", "routes_file.xsd");
-        myTypesOutput = &OutputDevice::getDeviceByOption("vtype-output");
+        myTypesOutput = &OutputDevice::getDevice(options.getString("vtype-output"));
+        myTypesOutput->writeHeader<ROEdge>(SUMO_TAG_ROUTES);
+        myTypesOutput->writeAttr("xmlns:xsi", "http://www.w3.org/2001/XMLSchema-instance").writeAttr("xsi:noNamespaceSchemaLocation", "http://sumo.dlr.de/xsd/routes_file.xsd");
     }
 }
 
@@ -547,12 +560,19 @@ RONet::saveAndRemoveRoutesUntil(OptionsCont& options, const RORouterProvider& pr
 #ifdef HAVE_FOX
                     // add task
                     if (maxNumThreads > 0) {
-                        // add thread if necessary
                         const int numThreads = (int)myThreadPool.size();
-                        if (numThreads < maxNumThreads && myThreadPool.isFull()) {
+                        if (numThreads == 0) {
+                            // This is the very first routing. Since at least the CHRouter needs initialization
+                            // before it gets cloned, we do not do this in parallel
+                            routable->computeRoute(provider, removeLoops, myErrorHandler);
                             new WorkerThread(myThreadPool, provider);
+                        } else {
+                            // add thread if necessary
+                            if (numThreads < maxNumThreads && myThreadPool.isFull()) {
+                                new WorkerThread(myThreadPool, provider);
+                            }
+                            myThreadPool.add(new RoutingTask(routable, removeLoops, myErrorHandler));
                         }
-                        myThreadPool.add(new RoutingTask(routable, removeLoops, myErrorHandler));
                         continue;
                     }
 #endif
@@ -657,7 +677,12 @@ RONet::adaptIntermodalRouter(ROIntermodalRouter& router) {
     // fill the public transport router with pre-parsed public transport lines
     for (std::map<std::string, SUMOVehicleParameter*>::const_iterator i = myInstance->myFlows.getMyMap().begin(); i != myInstance->myFlows.getMyMap().end(); ++i) {
         if (i->second->line != "") {
-            router.addSchedule(*i->second);
+            RORouteDef* route = myInstance->getRouteDef(i->second->routeid);
+            const std::vector<SUMOVehicleParameter::Stop>* addStops = 0;
+            if (route != 0 && route->getFirstRoute() != 0) {
+                addStops = &route->getFirstRoute()->getStops();
+            }
+            router.addSchedule(*i->second, addStops);
         }
     }
     for (RoutablesMap::const_iterator i = myInstance->myRoutables.begin(); i != myInstance->myRoutables.end(); ++i) {

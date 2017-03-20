@@ -2,15 +2,12 @@
 /// @file    GNEChange_Junction.cpp
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEChange_Junction.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEChange_Junction.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A network change in which a single junction is created or deleted
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo.sourceforge.net/
-// Copyright (C) 2001-2014 DLR (http://www.dlr.de/) and contributors
-/****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -49,9 +46,9 @@ FXIMPLEMENT_ABSTRACT(GNEChange_Junction, GNEChange, NULL, 0)
 // ===========================================================================
 
 
-// Constructor for creating a junction
-GNEChange_Junction::GNEChange_Junction(GNENet* net, GNEJunction* junction, bool forward):
-    GNEChange(net, forward),
+/// @brief constructor for creating a junction
+GNEChange_Junction::GNEChange_Junction(GNEJunction* junction, bool forward):
+    GNEChange(junction->getNet(), forward),
     myJunction(junction) {
     assert(myNet);
     junction->incRef("GNEChange_Junction");
@@ -67,7 +64,8 @@ GNEChange_Junction::~GNEChange_Junction() {
 }
 
 
-void GNEChange_Junction::undo() {
+void
+GNEChange_Junction::undo() {
     if (myForward) {
         myNet->deleteSingleJunction(myJunction);
     } else {
@@ -76,7 +74,8 @@ void GNEChange_Junction::undo() {
 }
 
 
-void GNEChange_Junction::redo() {
+void
+GNEChange_Junction::redo() {
     if (myForward) {
         myNet->insertJunction(myJunction);
     } else {
@@ -85,19 +84,21 @@ void GNEChange_Junction::redo() {
 }
 
 
-FXString GNEChange_Junction::undoName() const {
+FXString
+GNEChange_Junction::undoName() const {
     if (myForward) {
-        return ("Undo create junction");
+        return ("Undo create " + toString(SUMO_TAG_JUNCTION)).c_str();
     } else {
-        return ("Undo delete junction");
+        return ("Undo delete " + toString(SUMO_TAG_JUNCTION)).c_str();
     }
 }
 
 
-FXString GNEChange_Junction::redoName() const {
+FXString
+GNEChange_Junction::redoName() const {
     if (myForward) {
-        return ("Redo create junction");
+        return ("Redo create " + toString(SUMO_TAG_JUNCTION)).c_str();
     } else {
-        return ("Redo delete junction");
+        return ("Redo delete " + toString(SUMO_TAG_JUNCTION)).c_str();
     }
 }

@@ -2,12 +2,12 @@
 /// @file    GNEChange_Edge.h
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEChange_Edge.h 21640 2016-10-09 20:28:52Z palcraft $
+/// @version $Id: GNEChange_Edge.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A network change in which a single edge is created or deleted
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -43,7 +43,6 @@ class GNENet;
 class GNEEdge;
 class GNELane;
 class GNEAdditional;
-class GNEAdditionalSet;
 
 // ===========================================================================
 // class definitions
@@ -58,11 +57,10 @@ class GNEChange_Edge : public GNEChange {
 
 public:
     /**@brief Constructor for creating/deleting an edge
-     * @param[in] net The net on which to apply changes
      * @param[in] edge The edge to be created/deleted
      * @param[in] forward Whether to create/delete (true/false)
      */
-    GNEChange_Edge(GNENet* net, GNEEdge* edge, bool forward);
+    GNEChange_Edge(GNEEdge* edge, bool forward);
 
     /// @brief Destructor
     ~GNEChange_Edge();
@@ -93,13 +91,13 @@ private:
     std::vector<GNEAdditional*> myAdditionalChilds;
 
     /// @brief we need to preserve the list of additional sets in which this edge is a child
-    std::vector<GNEAdditionalSet*> myAdditionalSetParents;
+    std::vector<GNEAdditional*> myAdditionalParents;
 
     /// @brief we need to preserve additional vinculated with the lanes of edge
     std::map<GNELane*, std::vector<GNEAdditional*> > myAdditionalLanes;
 
     /// @brief we need to preserve the additional sets in which the edge of lanes are childs
-    std::map<GNELane*, std::vector<GNEAdditionalSet*> > myAdditionalSetsLanes;
+    std::map<GNELane*, std::vector<GNEAdditional*> > myAdditionalsLanes;
 };
 
 #endif

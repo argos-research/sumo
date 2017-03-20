@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    2003-11-19
-/// @version $Id: bezier.cpp 21154 2016-07-12 14:23:01Z namdre $
+/// @version $Id: bezier.cpp 22641 2017-01-19 14:15:38Z namdre $
 ///
 // missing_desc
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2003-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2003-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -141,7 +141,7 @@ bezier(const PositionVector& init, int numPoints) {
     for (int i = 0; i < (int)init.size(); ++i) {
         // starts at index 1
         def[i * 3 + 1] = init[i].x();
-        def[i * 3 + 2] = 0;
+        def[i * 3 + 2] = init[i].z();
         def[i * 3 + 3] = init[i].y();
     }
     SUMOReal* ret_buf = new SUMOReal[numPoints * 3 + 1];
@@ -149,8 +149,8 @@ bezier(const PositionVector& init, int numPoints) {
     delete[] def;
     Position prev;
     for (int i = 0; i < (int)numPoints; i++) {
-        Position current(ret_buf[i * 3 + 1], ret_buf[i * 3 + 3], init[0].z());
-        if (prev != current && !ISNAN(current.x()) && !ISNAN(current.y())) {
+        Position current(ret_buf[i * 3 + 1], ret_buf[i * 3 + 3], ret_buf[i * 3 + 2]);
+        if (prev != current && !ISNAN(current.x()) && !ISNAN(current.y()) && !ISNAN(current.z())) {
             ret.push_back(current);
         }
         prev = current;

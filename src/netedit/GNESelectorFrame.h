@@ -2,13 +2,13 @@
 /// @file    GNESelectorFrame.h
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNESelectorFrame.h 21640 2016-10-09 20:28:52Z palcraft $
+/// @version $Id: GNESelectorFrame.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // The Widget for modifying selections of network-elements
 // (some elements adapted from GUIDialog_GLChosenEditor)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -59,10 +59,10 @@ public:
     };
 
     /**@brief Constructor
-     * @brief parent FXFrame in which this GNEFrame is placed
+     * @brief parent FXHorizontalFrame in which this GNEFrame is placed
      * @brief viewNet viewNet that uses this GNEFrame
      */
-    GNESelectorFrame(FXComposite* parent, GNEViewNet* viewNet);
+    GNESelectorFrame(FXHorizontalFrame* horizontalFrameParent, GNEViewNet* viewNet);
 
     /// @brief Destructor
     ~GNESelectorFrame();
@@ -131,13 +131,13 @@ private:
     FXDataTarget mySetOperationTarget;
 
     /// @brief tag of the sets of elements
-    FXListBox* mySetBox;
+    FXComboBox* mySetComboBox;
 
     /// @brief tag of the match box
-    FXListBox* myMatchTagBox;
+    FXComboBox* myMatchTagComboBox;
 
     /// @brief attributes of the match box
-    FXListBox* myMatchAttrBox;
+    FXComboBox* myMatchAttrComboBox;
 
     /// @brief string of the match
     FXTextField* myMatchString;

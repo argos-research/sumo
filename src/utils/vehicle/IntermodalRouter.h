@@ -2,12 +2,12 @@
 /// @file    IntermodalRouter.h
 /// @author  Jakob Erdmann
 /// @date    Mon, 03 March 2014
-/// @version $Id: IntermodalRouter.h 21206 2016-07-20 08:08:35Z behrisch $
+/// @version $Id: IntermodalRouter.h 22941 2017-02-14 07:52:36Z namdre $
 ///
 // The Pedestrian Router build a special network and (delegegates to a SUMOAbstractRouter)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -90,54 +90,6 @@ public:
         return new IntermodalRouter<E, L, N, V, INTERNALROUTER>(myIntermodalNet);
     }
 
-    int splitEdge(_IntermodalEdge* const toSplit, _IntermodalEdge* afterSplit, const SUMOReal pos,
-                  _IntermodalEdge* const fwdConn, _IntermodalEdge* const backConn = 0) {
-        int splitIndex = 1;
-        std::vector<_IntermodalEdge*>& splitList = myAccessSplits[toSplit];
-        if (splitList.empty()) {
-            splitList.push_back(toSplit);
-        }
-        typename std::vector<_IntermodalEdge*>::iterator splitIt = splitList.begin();
-        SUMOReal totalLength = 0.;
-        while (splitIt != splitList.end() && totalLength + (*splitIt)->getLength() + POSITION_EPS < pos) {
-            totalLength += (*splitIt)->getLength();
-            ++splitIt;
-            splitIndex++;
-        }
-        assert(splitIt != splitList.end());
-        _IntermodalEdge* const beforeSplit = *splitIt;
-        if (fabs(totalLength - pos) < POSITION_EPS && splitIt + 1 != splitList.end()) {
-            // don't split, use the present split edges
-            splitIndex = -1;
-            afterSplit = *(splitIt + 1);
-        } else {
-            myIntermodalNet->addEdge(afterSplit);
-            afterSplit->setSuccessors(beforeSplit->getSuccessors(SVC_IGNORING));
-            beforeSplit->clearSuccessors();
-            beforeSplit->addSuccessor(afterSplit);
-            afterSplit->setLength(totalLength - pos);
-            beforeSplit->setLength(beforeSplit->getLength() - afterSplit->getLength());
-            splitList.insert(splitIt + 1, afterSplit);
-        }
-        // add access to / from edge
-        _AccessEdge* access = new _AccessEdge(myNumericalID++, beforeSplit, fwdConn);
-        myIntermodalNet->addEdge(access);
-        beforeSplit->addSuccessor(access);
-        access->addSuccessor(fwdConn);
-        if (backConn == 0) {
-            _AccessEdge* exit = new _AccessEdge(myNumericalID++, fwdConn, afterSplit);
-            myIntermodalNet->addEdge(exit);
-            fwdConn->addSuccessor(exit);
-            exit->addSuccessor(afterSplit);
-        } else {
-            _AccessEdge* backward = new _AccessEdge(myNumericalID++, beforeSplit, backConn);
-            myIntermodalNet->addEdge(backward);
-            beforeSplit->addSuccessor(backward);
-            backward->addSuccessor(backConn);
-        }
-        return splitIndex;
-    }
-
     void addAccess(const std::string& stopId, const E* stopEdge, const SUMOReal pos) {
         assert(stopEdge != 0);
         if (myStopConnections.count(stopId) == 0) {
@@ -165,8 +117,10 @@ public:
                 _IntermodalEdge* const depConn = new _IntermodalEdge(stopEdge->getID() + "_depart_connector" + toString(pos), myNumericalID++, stopEdge, "!connector");
                 depConn->addSuccessor(fwdSplit);
                 depConn->addSuccessor(backBeforeSplit);
+                depConn->setLength(fwdSplit->getLength());
                 prevDep->removeSuccessor(backBeforeSplit);
                 prevDep->addSuccessor(backSplit);
+                prevDep->setLength(backSplit->getLength());
                 if (carSplit != 0) {
                     depConn->addSuccessor(carSplit);
                 }
@@ -182,10 +136,27 @@ public:
         }
     }
 
-    void addSchedule(const SUMOVehicleParameter& pars) {
+    void addSchedule(const SUMOVehicleParameter& pars, const std::vector<SUMOVehicleParameter::Stop>* addStops = 0) {
         SUMOTime lastUntil = 0;
         std::vector<SUMOVehicleParameter::Stop> validStops;
+        if (addStops != 0) {
+            // stops are part of a stand-alone route. until times are offsets from vehicle departure
+            for (std::vector<SUMOVehicleParameter::Stop>::const_iterator s = addStops->begin(); s != addStops->end(); ++s) {
+                if (myStopConnections.count(s->busstop) > 0) {
+                    // compute stop times for the first vehicle
+                    SUMOVehicleParameter::Stop stop = *s;
+                    stop.until += pars.depart;
+                    if (stop.until >= lastUntil) {
+                        validStops.push_back(stop);
+                        lastUntil = stop.until;
+                    } else {
+                        WRITE_WARNING("Ignoring unordered stop at '" + stop.busstop + "' at " + time2string(stop.until) + "  for vehicle '" + pars.id + "'.");
+                    }
+                }
+            }
+        }
         for (std::vector<SUMOVehicleParameter::Stop>::const_iterator s = pars.stops.begin(); s != pars.stops.end(); ++s) {
+            // stops are part of the vehicle until times are absolute times for the first vehicle
             if (myStopConnections.count(s->busstop) > 0 && s->until >= lastUntil) {
                 validStops.push_back(*s);
                 lastUntil = s->until;
@@ -205,7 +176,7 @@ public:
                 if (lastStop != 0) {
                     _PTEdge* const newEdge = new _PTEdge(s->busstop, myNumericalID++, lastStop, currStop->getEdge(), pars.line);
                     myIntermodalNet->addEdge(newEdge);
-                    newEdge->addSchedule(lastTime, pars.repetitionEnd + lastTime - pars.depart, pars.repetitionOffset, STEPS2TIME(s->until - lastTime));
+                    newEdge->addSchedule(lastTime, lastTime + pars.repetitionOffset * (pars.repetitionNumber - 1), pars.repetitionOffset, STEPS2TIME(s->until - lastTime));
                     lastStop->addSuccessor(newEdge);
                     newEdge->addSuccessor(currStop);
                     lineEdges.push_back(newEdge);
@@ -232,7 +203,7 @@ public:
             }
             SUMOTime lastTime = validStops.front().until;
             for (lineEdge = lineEdges.begin(), s = validStops.begin() + 1; lineEdge != lineEdges.end(); ++lineEdge, ++s) {
-                (*lineEdge)->addSchedule(lastTime, pars.repetitionEnd + lastTime - pars.depart, pars.repetitionOffset, STEPS2TIME(s->until - lastTime));
+                (*lineEdge)->addSchedule(lastTime, lastTime + pars.repetitionOffset * (pars.repetitionNumber - 1), pars.repetitionOffset, STEPS2TIME(s->until - lastTime));
                 lastTime = s->until;
             }
         }
@@ -315,6 +286,54 @@ private:
         SUMOAbstractRouter<E, _IntermodalTrip>(0, "PedestrianRouter"), myAmClone(true),
         myInternalRouter(new INTERNALROUTER(net->getAllEdges(), true, &_IntermodalEdge::getTravelTimeStatic)),
         myIntermodalNet(net), myNumericalID((int)net->getAllEdges().size()) {}
+
+    int splitEdge(_IntermodalEdge* const toSplit, _IntermodalEdge* afterSplit, const SUMOReal pos,
+                  _IntermodalEdge* const fwdConn, _IntermodalEdge* const backConn = 0) {
+        int splitIndex = 1;
+        std::vector<_IntermodalEdge*>& splitList = myAccessSplits[toSplit];
+        if (splitList.empty()) {
+            splitList.push_back(toSplit);
+        }
+        typename std::vector<_IntermodalEdge*>::iterator splitIt = splitList.begin();
+        SUMOReal relPos = pos;
+        while (splitIt != splitList.end() && relPos > (*splitIt)->getLength() + POSITION_EPS) {
+            relPos -= (*splitIt)->getLength();
+            ++splitIt;
+            splitIndex++;
+        }
+        assert(splitIt != splitList.end());
+        _IntermodalEdge* const beforeSplit = *splitIt;
+        if (fabs(relPos - beforeSplit->getLength()) < POSITION_EPS && splitIt + 1 != splitList.end()) {
+            // don't split, use the present split edges
+            splitIndex = -1;
+            afterSplit = *(splitIt + 1);
+        } else {
+            myIntermodalNet->addEdge(afterSplit);
+            afterSplit->setSuccessors(beforeSplit->getSuccessors(SVC_IGNORING));
+            beforeSplit->clearSuccessors();
+            beforeSplit->addSuccessor(afterSplit);
+            afterSplit->setLength(beforeSplit->getLength() - relPos);
+            beforeSplit->setLength(relPos);
+            splitList.insert(splitIt + 1, afterSplit);
+        }
+        // add access to / from edge
+        _AccessEdge* access = new _AccessEdge(myNumericalID++, beforeSplit, fwdConn);
+        myIntermodalNet->addEdge(access);
+        beforeSplit->addSuccessor(access);
+        access->addSuccessor(fwdConn);
+        if (backConn == 0) {
+            _AccessEdge* exit = new _AccessEdge(myNumericalID++, fwdConn, afterSplit);
+            myIntermodalNet->addEdge(exit);
+            fwdConn->addSuccessor(exit);
+            exit->addSuccessor(afterSplit);
+        } else {
+            _AccessEdge* backward = new _AccessEdge(myNumericalID++, beforeSplit, backConn);
+            myIntermodalNet->addEdge(backward);
+            beforeSplit->addSuccessor(backward);
+            backward->addSuccessor(backConn);
+        }
+        return splitIndex;
+    }
 
     void addCarEdges(const std::vector<E*>& edges) {
         for (typename std::vector<E*>::const_iterator i = edges.begin(); i != edges.end(); ++i) {

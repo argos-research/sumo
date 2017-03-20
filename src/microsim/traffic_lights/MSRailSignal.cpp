@@ -3,12 +3,12 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Jan 2015
-/// @version $Id: MSRailSignal.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSRailSignal.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A rail signal logic
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -75,10 +75,10 @@ MSRailSignal::init(NLDetectorBuilder&) {
             myLinkIndices[link] = (int)std::distance(myLinks.begin(), i2); //assign the index of link to link
 
             //find all lanes leading from a previous signal to link (we presume that there exists only one path from a previous signal to link)
-            std::vector<MSLane*> afferentBlock; //the vector of lanes leading from a previous signal to link
+            std::vector<const MSLane*> afferentBlock; //the vector of lanes leading from a previous signal to link
             bool noRailSignal = true;   //true if the considered lane is not outgoing from a rail signal
             //get the approaching lane of the link
-            MSLane* approachingLane = link->getApproachingLane();   //the lane this link is coming from
+            const MSLane* approachingLane = link->getLaneBefore();   //the lane this link is coming from
             afferentBlock.push_back(approachingLane);
             const MSLane* currentLane = approachingLane;
             //look recursively for all lanes that lie before approachingLane and add them to afferentBlock until a rail signal is found
@@ -200,7 +200,7 @@ MSRailSignal::getAppropriateState() {
                 bool hasOccupiedBlock = false;
                 std::vector<MSLink*>::const_iterator k;
                 for (k = myLinksToLane[lane].begin(); k != myLinksToLane[lane].end(); k++) { //for every link leading to lane
-                    std::vector<MSLane*>::const_iterator l;
+                    std::vector<const MSLane*>::const_iterator l;
                     for (l = myAfferentBlocks[(*k)].begin(); l != myAfferentBlocks[(*k)].end(); l++) {    //for every lane of the block leading from a previous signal to the link (*k)
                         if (!(*l)->isEmpty()) { //if this lane is not empty
                             hasOccupiedBlock = true;

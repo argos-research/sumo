@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    09.05.2011
-/// @version $Id: NBFrame.cpp 21739 2016-10-18 12:00:49Z namdre $
+/// @version $Id: NBFrame.cpp 22631 2017-01-18 15:26:38Z namdre $
 ///
 // Sets and checks options for netbuild
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -96,6 +96,10 @@ NBFrame::fillOptions(bool forNetgen) {
     oc.doRegister("numerical-ids", new Option_Bool(false));
     oc.addDescription("numerical-ids", "Processing", "Remaps alphanumerical IDs of nodes and edges to ensure that all IDs are integers");
 
+    /// @todo not working for netgen
+    oc.doRegister("reserved-ids", new Option_FileName());
+    oc.addDescription("reserved-ids", "Processing", "Ensures that generated ids do not included any of the typed IDs from FILE (SUMO-GUI selection file format)");
+
     if (!forNetgen) {
         oc.doRegister("dismiss-vclasses", new Option_Bool(false));
         oc.addDescription("dismiss-vclasses", "Processing", "Removes vehicle class restrictions from imported edges");
@@ -144,6 +148,15 @@ NBFrame::fillOptions(bool forNetgen) {
 
         oc.doRegister("geometry.junction-mismatch-threshold", new Option_Float(20));
         oc.addDescription("geometry.junction-mismatch-threshold", "Processing", "Warn if the junction shape is to far away from the original node position");
+
+        oc.doRegister("geometry.check-overlap", new Option_Float(0));
+        oc.addDescription("geometry.check-overlap", "Processing", "Warn if edges overlap by more than the given threshold value");
+
+        oc.doRegister("geometry.check-overlap.vertical-threshold", new Option_Float(4));
+        oc.addDescription("geometry.check-overlap.vertical-threshold", "Processing", "Ignore overlapping edges if they are separated vertically by the given threshold.");
+
+        oc.doRegister("geometry.max-grade", new Option_Float(10));
+        oc.addDescription("geometry.max-grade", "Processing", "Warn about edge geometries with a grade in % above FLOAT. The threshold applies to roads with a speed limit of 50km/h and is scaled according to road speed.");
     }
 
     oc.doRegister("offset.disable-normalization", new Option_Bool(false));
@@ -339,10 +352,10 @@ NBFrame::fillOptions(bool forNetgen) {
 
     oc.doRegister("keep-edges.explicit", new Option_String());
     oc.addSynonyme("keep-edges.explicit", "keep-edges");
-    oc.addDescription("keep-edges.explicit", "Edge Removal", "Only keep edges in STR");
+    oc.addDescription("keep-edges.explicit", "Edge Removal", "Only keep edges in STR or those which are kept due to other keep-edges or remove-edges options");
 
     oc.doRegister("keep-edges.input-file", new Option_FileName());
-    oc.addDescription("keep-edges.input-file", "Edge Removal", "Only keep edges in FILE (Each id on a single line. Selection files from SUMO-GUI are also supported)");
+    oc.addDescription("keep-edges.input-file", "Edge Removal", "Only keep edges in FILE (Each id on a single line. Selection files from SUMO-GUI are also supported) or those which are kept due to other keep-edges or remove-edges options");
 
     oc.doRegister("remove-edges.input-file", new Option_FileName());
     oc.addDescription("remove-edges.input-file", "Edge Removal", "Remove edges in FILE. (Each id on a single line. Selection files from SUMO-GUI are also supported)");

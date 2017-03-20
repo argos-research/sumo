@@ -103,10 +103,12 @@ am__netedit_SOURCES_DIST = netedit_main.cpp GNEApplicationWindow.h \
 	GNEPOI.h GNEPOI.cpp GNEPoly.h GNEPoly.cpp GNEProhibition.h \
 	GNEProhibition.cpp GNEViewNet.h GNEViewNet.cpp GNEViewParent.h \
 	GNEViewParent.cpp GNEDialog_About.h GNEDialog_About.cpp \
-	GNEDialog_Wizard.h GNEDialog_Wizard.cpp GNEAdditionalDialog.h \
-	GNEAdditionalDialog.cpp GNEChange.h GNEChange.cpp \
-	GNEChange_Junction.h GNEChange_Junction.cpp GNEChange_Edge.h \
-	GNEChange_Edge.cpp GNEChange_Lane.h GNEChange_Lane.cpp \
+	GNEDialog_Wizard.h GNEDialog_Wizard.cpp \
+	GNEDialog_AllowDisallow.h GNEDialog_AllowDisallow.cpp \
+	GNEAdditionalDialog.h GNEAdditionalDialog.cpp GNEChange.h \
+	GNEChange.cpp GNEChange_Junction.h GNEChange_Junction.cpp \
+	GNEChange_Edge.h GNEChange_Edge.cpp GNEChange_Crossing.h \
+	GNEChange_Crossing.cpp GNEChange_Lane.h GNEChange_Lane.cpp \
 	GNEChange_Connection.h GNEChange_Connection.cpp \
 	GNEChange_Attribute.h GNEChange_Attribute.cpp GNEChange_TLS.h \
 	GNEChange_TLS.cpp GNEChange_Selection.h \
@@ -117,22 +119,32 @@ am__netedit_SOURCES_DIST = netedit_main.cpp GNEApplicationWindow.h \
 	GNESelectorFrame.h GNESelectorFrame.cpp GNEConnectorFrame.h \
 	GNEConnectorFrame.cpp GNETLSEditorFrame.h \
 	GNETLSEditorFrame.cpp GNEAdditionalFrame.h \
-	GNEAdditionalFrame.cpp GNEAdditionalHandler.h \
+	GNEAdditionalFrame.cpp GNECrossingFrame.h GNECrossingFrame.cpp \
+	GNEDeleteFrame.h GNEDeleteFrame.cpp GNEAdditionalHandler.h \
 	GNEAdditionalHandler.cpp GNEAdditional.h GNEAdditional.cpp \
-	GNEAdditionalSet.h GNEAdditionalSet.cpp GNEChargingStation.h \
-	GNEChargingStation.cpp GNEStoppingPlace.h GNEStoppingPlace.cpp \
-	GNEBusStop.h GNEBusStop.cpp GNEContainerStop.h \
-	GNEContainerStop.cpp GNEDetector.h GNEDetector.cpp \
-	GNEDetectorE1.h GNEDetectorE1.cpp GNEDetectorE2.h \
-	GNEDetectorE2.cpp GNEDetectorE3.h GNEDetectorE3.cpp \
-	GNEDetectorEntry.h GNEDetectorEntry.cpp GNEDetectorExit.h \
-	GNEDetectorExit.cpp GNERerouter.h GNERerouter.cpp \
-	GNERerouterDialog.h GNERerouterDialog.cpp GNERouteProbe.h \
-	GNERouteProbe.cpp GNEVaporizer.h GNEVaporizer.cpp \
-	GNECalibrator.h GNECalibrator.cpp GNECalibratorDialog.h \
-	GNECalibratorDialog.cpp GNEVariableSpeedSignal.h \
-	GNEVariableSpeedSignal.cpp GNEVariableSpeedSignalDialog.h \
-	GNEVariableSpeedSignalDialog.cpp GNEReferenceCounter.h \
+	GNEChargingStation.h GNEChargingStation.cpp GNEStoppingPlace.h \
+	GNEStoppingPlace.cpp GNEBusStop.h GNEBusStop.cpp \
+	GNEContainerStop.h GNEContainerStop.cpp GNEDetector.h \
+	GNEDetector.cpp GNEDetectorE1.h GNEDetectorE1.cpp \
+	GNEDetectorE2.h GNEDetectorE2.cpp GNEDetectorE3.h \
+	GNEDetectorE3.cpp GNEDetectorEntry.h GNEDetectorEntry.cpp \
+	GNEDetectorExit.h GNEDetectorExit.cpp GNERerouter.h \
+	GNERerouter.cpp GNERerouterDialog.h GNERerouterDialog.cpp \
+	GNERerouterIntervalDialog.h GNERerouterIntervalDialog.cpp \
+	GNERouteProbe.h GNERouteProbe.cpp GNEVaporizer.h \
+	GNEVaporizer.cpp GNECalibrator.h GNECalibrator.cpp \
+	GNECalibratorFlow.h GNECalibratorFlow.cpp GNECalibratorRoute.h \
+	GNECalibratorRoute.cpp GNECalibratorDialog.h \
+	GNECalibratorDialog.cpp GNECalibratorFlowDialog.h \
+	GNECalibratorFlowDialog.cpp GNECalibratorRouteDialog.h \
+	GNECalibratorRouteDialog.cpp GNEVariableSpeedSign.h \
+	GNEVariableSpeedSign.cpp GNEVariableSpeedSignDialog.h \
+	GNEVariableSpeedSignDialog.cpp GNEClosingLaneReroute.h \
+	GNEClosingLaneReroute.cpp GNEClosingReroute.h \
+	GNEClosingReroute.cpp GNEDestProbReroute.h \
+	GNEDestProbReroute.cpp GNERouteProbReroute.h \
+	GNERouteProbReroute.cpp GNERerouterInterval.h \
+	GNERerouterInterval.cpp GNEReferenceCounter.h \
 	GNEEvent_NetworkLoaded.h
 @WITH_GUI_TRUE@am_netedit_OBJECTS = netedit_main.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEApplicationWindow.$(OBJEXT) \
@@ -145,10 +157,12 @@ am__netedit_SOURCES_DIST = netedit_main.cpp GNEApplicationWindow.h \
 @WITH_GUI_TRUE@	GNEViewNet.$(OBJEXT) GNEViewParent.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEDialog_About.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEDialog_Wizard.$(OBJEXT) \
+@WITH_GUI_TRUE@	GNEDialog_AllowDisallow.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEAdditionalDialog.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEChange.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEChange_Junction.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEChange_Edge.$(OBJEXT) \
+@WITH_GUI_TRUE@	GNEChange_Crossing.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEChange_Lane.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEChange_Connection.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEChange_Attribute.$(OBJEXT) \
@@ -162,9 +176,10 @@ am__netedit_SOURCES_DIST = netedit_main.cpp GNEApplicationWindow.h \
 @WITH_GUI_TRUE@	GNEConnectorFrame.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNETLSEditorFrame.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEAdditionalFrame.$(OBJEXT) \
+@WITH_GUI_TRUE@	GNECrossingFrame.$(OBJEXT) \
+@WITH_GUI_TRUE@	GNEDeleteFrame.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEAdditionalHandler.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEAdditional.$(OBJEXT) \
-@WITH_GUI_TRUE@	GNEAdditionalSet.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEChargingStation.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEStoppingPlace.$(OBJEXT) GNEBusStop.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEContainerStop.$(OBJEXT) \
@@ -173,11 +188,21 @@ am__netedit_SOURCES_DIST = netedit_main.cpp GNEApplicationWindow.h \
 @WITH_GUI_TRUE@	GNEDetectorEntry.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNEDetectorExit.$(OBJEXT) GNERerouter.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNERerouterDialog.$(OBJEXT) \
+@WITH_GUI_TRUE@	GNERerouterIntervalDialog.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNERouteProbe.$(OBJEXT) GNEVaporizer.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNECalibrator.$(OBJEXT) \
+@WITH_GUI_TRUE@	GNECalibratorFlow.$(OBJEXT) \
+@WITH_GUI_TRUE@	GNECalibratorRoute.$(OBJEXT) \
 @WITH_GUI_TRUE@	GNECalibratorDialog.$(OBJEXT) \
-@WITH_GUI_TRUE@	GNEVariableSpeedSignal.$(OBJEXT) \
-@WITH_GUI_TRUE@	GNEVariableSpeedSignalDialog.$(OBJEXT)
+@WITH_GUI_TRUE@	GNECalibratorFlowDialog.$(OBJEXT) \
+@WITH_GUI_TRUE@	GNECalibratorRouteDialog.$(OBJEXT) \
+@WITH_GUI_TRUE@	GNEVariableSpeedSign.$(OBJEXT) \
+@WITH_GUI_TRUE@	GNEVariableSpeedSignDialog.$(OBJEXT) \
+@WITH_GUI_TRUE@	GNEClosingLaneReroute.$(OBJEXT) \
+@WITH_GUI_TRUE@	GNEClosingReroute.$(OBJEXT) \
+@WITH_GUI_TRUE@	GNEDestProbReroute.$(OBJEXT) \
+@WITH_GUI_TRUE@	GNERouteProbReroute.$(OBJEXT) \
+@WITH_GUI_TRUE@	GNERerouterInterval.$(OBJEXT)
 netedit_OBJECTS = $(am_netedit_OBJECTS)
 am__DEPENDENCIES_1 =
 @WITH_GUI_TRUE@netedit_DEPENDENCIES = ../netimport/libnetimport.a \
@@ -459,10 +484,12 @@ EXTRA_DIST = netedit64.ico netedit.rc
 @WITH_GUI_TRUE@GNEViewParent.h GNEViewParent.cpp \
 @WITH_GUI_TRUE@GNEDialog_About.h GNEDialog_About.cpp \
 @WITH_GUI_TRUE@GNEDialog_Wizard.h GNEDialog_Wizard.cpp \
+@WITH_GUI_TRUE@GNEDialog_AllowDisallow.h GNEDialog_AllowDisallow.cpp \
 @WITH_GUI_TRUE@GNEAdditionalDialog.h GNEAdditionalDialog.cpp \
 @WITH_GUI_TRUE@GNEChange.h GNEChange.cpp \
 @WITH_GUI_TRUE@GNEChange_Junction.h GNEChange_Junction.cpp \
 @WITH_GUI_TRUE@GNEChange_Edge.h GNEChange_Edge.cpp \
+@WITH_GUI_TRUE@GNEChange_Crossing.h GNEChange_Crossing.cpp \
 @WITH_GUI_TRUE@GNEChange_Lane.h GNEChange_Lane.cpp \
 @WITH_GUI_TRUE@GNEChange_Connection.h GNEChange_Connection.cpp \
 @WITH_GUI_TRUE@GNEChange_Attribute.h GNEChange_Attribute.cpp \
@@ -477,9 +504,10 @@ EXTRA_DIST = netedit64.ico netedit.rc
 @WITH_GUI_TRUE@GNEConnectorFrame.h GNEConnectorFrame.cpp \
 @WITH_GUI_TRUE@GNETLSEditorFrame.h GNETLSEditorFrame.cpp \
 @WITH_GUI_TRUE@GNEAdditionalFrame.h GNEAdditionalFrame.cpp \
+@WITH_GUI_TRUE@GNECrossingFrame.h GNECrossingFrame.cpp \
+@WITH_GUI_TRUE@GNEDeleteFrame.h GNEDeleteFrame.cpp \
 @WITH_GUI_TRUE@GNEAdditionalHandler.h GNEAdditionalHandler.cpp \
 @WITH_GUI_TRUE@GNEAdditional.h GNEAdditional.cpp \
-@WITH_GUI_TRUE@GNEAdditionalSet.h GNEAdditionalSet.cpp \
 @WITH_GUI_TRUE@GNEChargingStation.h GNEChargingStation.cpp \
 @WITH_GUI_TRUE@GNEStoppingPlace.h GNEStoppingPlace.cpp \
 @WITH_GUI_TRUE@GNEBusStop.h GNEBusStop.cpp \
@@ -492,14 +520,23 @@ EXTRA_DIST = netedit64.ico netedit.rc
 @WITH_GUI_TRUE@GNEDetectorExit.h GNEDetectorExit.cpp \
 @WITH_GUI_TRUE@GNERerouter.h GNERerouter.cpp \
 @WITH_GUI_TRUE@GNERerouterDialog.h GNERerouterDialog.cpp \
+@WITH_GUI_TRUE@GNERerouterIntervalDialog.h GNERerouterIntervalDialog.cpp \
 @WITH_GUI_TRUE@GNERouteProbe.h GNERouteProbe.cpp \
 @WITH_GUI_TRUE@GNEVaporizer.h GNEVaporizer.cpp \
 @WITH_GUI_TRUE@GNECalibrator.h GNECalibrator.cpp \
+@WITH_GUI_TRUE@GNECalibratorFlow.h GNECalibratorFlow.cpp \
+@WITH_GUI_TRUE@GNECalibratorRoute.h GNECalibratorRoute.cpp \
 @WITH_GUI_TRUE@GNECalibratorDialog.h GNECalibratorDialog.cpp \
-@WITH_GUI_TRUE@GNEVariableSpeedSignal.h GNEVariableSpeedSignal.cpp \
-@WITH_GUI_TRUE@GNEVariableSpeedSignalDialog.h GNEVariableSpeedSignalDialog.cpp \
-@WITH_GUI_TRUE@GNEReferenceCounter.h \
-@WITH_GUI_TRUE@GNEEvent_NetworkLoaded.h
+@WITH_GUI_TRUE@GNECalibratorFlowDialog.h GNECalibratorFlowDialog.cpp \
+@WITH_GUI_TRUE@GNECalibratorRouteDialog.h GNECalibratorRouteDialog.cpp \
+@WITH_GUI_TRUE@GNEVariableSpeedSign.h GNEVariableSpeedSign.cpp \
+@WITH_GUI_TRUE@GNEVariableSpeedSignDialog.h GNEVariableSpeedSignDialog.cpp \
+@WITH_GUI_TRUE@GNEClosingLaneReroute.h GNEClosingLaneReroute.cpp \
+@WITH_GUI_TRUE@GNEClosingReroute.h GNEClosingReroute.cpp \
+@WITH_GUI_TRUE@GNEDestProbReroute.h GNEDestProbReroute.cpp \
+@WITH_GUI_TRUE@GNERouteProbReroute.h GNERouteProbReroute.cpp \
+@WITH_GUI_TRUE@GNERerouterInterval.h GNERerouterInterval.cpp \
+@WITH_GUI_TRUE@GNEReferenceCounter.h GNEEvent_NetworkLoaded.h
 
 @WITH_GUI_TRUE@netedit_LDADD = ../netimport/libnetimport.a \
 @WITH_GUI_TRUE@../netimport/vissim/libvissimimport.a \
@@ -631,26 +668,35 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEAdditionalDialog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEAdditionalFrame.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEAdditionalHandler.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEAdditionalSet.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEApplicationWindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEAttributeCarrier.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEBusStop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNECalibrator.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNECalibratorDialog.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNECalibratorFlow.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNECalibratorFlowDialog.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNECalibratorRoute.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNECalibratorRouteDialog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEChange.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEChange_Additional.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEChange_Attribute.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEChange_Connection.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEChange_Crossing.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEChange_Edge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEChange_Junction.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEChange_Lane.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEChange_Selection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEChange_TLS.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEChargingStation.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEClosingLaneReroute.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEClosingReroute.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEConnection.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEConnectorFrame.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEContainerStop.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNECrossing.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNECrossingFrame.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEDeleteFrame.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEDestProbReroute.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEDetector.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEDetectorE1.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEDetectorE2.Po@am__quote@
@@ -658,6 +704,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEDetectorEntry.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEDetectorExit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEDialog_About.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEDialog_AllowDisallow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEDialog_Wizard.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEEdge.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEFrame.Po@am__quote@
@@ -673,14 +720,17 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEProhibition.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNERerouter.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNERerouterDialog.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNERerouterInterval.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNERerouterIntervalDialog.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNERouteProbReroute.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNERouteProbe.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNESelectorFrame.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEStoppingPlace.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNETLSEditorFrame.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEUndoList.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEVaporizer.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEVariableSpeedSignal.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEVariableSpeedSignalDialog.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEVariableSpeedSign.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEVariableSpeedSignDialog.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEViewNet.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GNEViewParent.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/netedit_main.Po@am__quote@

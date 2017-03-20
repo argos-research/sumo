@@ -2,7 +2,7 @@
 /// @file    GNEViewParent.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEViewParent.cpp 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNEViewParent.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A single child window which contains a view of the edited network (adapted
 // from GUISUMOViewParent)
@@ -10,7 +10,7 @@
 // structures than to write everything from scratch.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -44,6 +44,7 @@
 #include <utils/gui/images/GUIIcons.h>
 #include <utils/gui/images/GUIIconSubSys.h>
 #include <utils/gui/div/GUIGlobalSelection.h>
+#include <utils/gui/div/GUIDesigns.h>
 #include <utils/gui/globjects/GUIGlObjectStorage.h>
 #include <utils/gui/div/GUIIOGlobals.h>
 #include <utils/gui/windows/GUIAppEnum.h>
@@ -60,6 +61,9 @@
 #include "GNEConnectorFrame.h"
 #include "GNETLSEditorFrame.h"
 #include "GNEAdditionalFrame.h"
+#include "GNECrossingFrame.h"
+#include "GNEDeleteFrame.h"
+
 
 #ifdef CHECK_MEMORY_LEAKS
 #include <foreign/nvwa/debug_new.h>
@@ -70,12 +74,13 @@
 // FOX callback mapping
 // ===========================================================================
 FXDEFMAP(GNEViewParent) GNEViewParentMap[] = {
-    FXMAPFUNC(SEL_COMMAND,  MID_MAKESNAPSHOT,             GNEViewParent::onCmdMakeSnapshot),
-    //FXMAPFUNC(SEL_COMMAND,  MID_ALLOWROTATION,          GNEViewParent::onCmdAllowRotation),
-    FXMAPFUNC(SEL_COMMAND,  MID_LOCATEJUNCTION,           GNEViewParent::onCmdLocate),
-    FXMAPFUNC(SEL_COMMAND,  MID_LOCATEEDGE,               GNEViewParent::onCmdLocate),
-    FXMAPFUNC(SEL_COMMAND,  MID_LOCATETLS,                GNEViewParent::onCmdLocate),
-    FXMAPFUNC(SEL_COMMAND,  FXMDIChild::ID_MDI_MENUCLOSE, GNEViewParent::onCmdClose),
+    FXMAPFUNC(SEL_COMMAND,  MID_MAKESNAPSHOT,                      GNEViewParent::onCmdMakeSnapshot),
+    //FXMAPFUNC(SEL_COMMAND,  MID_ALLOWROTATION,                   GNEViewParent::onCmdAllowRotation),
+    FXMAPFUNC(SEL_COMMAND,  MID_LOCATEJUNCTION,                    GNEViewParent::onCmdLocate),
+    FXMAPFUNC(SEL_COMMAND,  MID_LOCATEEDGE,                        GNEViewParent::onCmdLocate),
+    FXMAPFUNC(SEL_COMMAND,  MID_LOCATETLS,                         GNEViewParent::onCmdLocate),
+    FXMAPFUNC(SEL_COMMAND,  FXMDIChild::ID_MDI_MENUCLOSE,          GNEViewParent::onCmdClose),
+    FXMAPFUNC(SEL_CHANGED,  MID_GNE_SIZEOF_FRAMEAREAWIDTH_UPDATED, GNEViewParent::onCmdUpdateFrameAreaWidth),
 };
 
 // Object implementation
@@ -101,29 +106,23 @@ GNEViewParent::GNEViewParent(
     //}
 
     // add undo/redo buttons
-    new FXButton(myNavigationToolBar,
-                 "\tUndo\tUndo the last Change.",
-                 GUIIconSubSys::getIcon(ICON_UNDO), parentWindow->getUndoList(), FXUndoList::ID_UNDO,
-                 ICON_BEFORE_TEXT | BUTTON_TOOLBAR | FRAME_RAISED | LAYOUT_TOP | LAYOUT_LEFT);
-    new FXButton(myNavigationToolBar,
-                 "\tRedo\tRedo the last Change.",
-                 GUIIconSubSys::getIcon(ICON_REDO), parentWindow->getUndoList(), FXUndoList::ID_REDO,
-                 ICON_BEFORE_TEXT | BUTTON_TOOLBAR | FRAME_RAISED | LAYOUT_TOP | LAYOUT_LEFT);
+    new FXButton(myNavigationToolBar, "\tUndo\tUndo the last Change.", GUIIconSubSys::getIcon(ICON_UNDO), parentWindow->getUndoList(), FXUndoList::ID_UNDO, GUIDesignButtonToolbar);
+    new FXButton(myNavigationToolBar, "\tRedo\tRedo the last Change.", GUIIconSubSys::getIcon(ICON_REDO), parentWindow->getUndoList(), FXUndoList::ID_REDO, GUIDesignButtonToolbar);
 
-    // Create FXToolBarGrip
-    new FXToolBarGrip(myNavigationToolBar, NULL, 0, TOOLBARGRIP_SINGLE | FRAME_SUNKEN);
+    // Create Vertical separator
+    new FXVerticalSeparator(myNavigationToolBar, GUIDesignVerticalSeparator);
 
     // Create Frame Splitter
-    myFramesSplitter = new FXSplitter(myContentFrame, SPLITTER_HORIZONTAL | LAYOUT_FILL_X | LAYOUT_FILL_Y | SPLITTER_TRACKING | FRAME_RAISED | FRAME_THICK);
+    myFramesSplitter = new FXSplitter(myContentFrame, this, MID_GNE_SIZEOF_FRAMEAREAWIDTH_UPDATED, GUIDesignSplitter | SPLITTER_HORIZONTAL);
 
     // Create frames Area
-    myFramesArea = new FXHorizontalFrame(myFramesSplitter, FRAME_SUNKEN | LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0, 0, 0, 0, 0);
+    myFramesArea = new FXHorizontalFrame(myFramesSplitter, GUIDesignFrameArea);
 
-    // Set default width
-    myFramesArea->setWidth(200);
+    // Set default width of frames area
+    myFramesArea->setWidth(220);
 
     // Create view area
-    myViewArea = new FXHorizontalFrame(myFramesSplitter, FRAME_SUNKEN | LAYOUT_SIDE_TOP | LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0, 0, 0, 0, 0);
+    myViewArea = new FXHorizontalFrame(myFramesSplitter, GUIDesignViewnArea);
 
     // Add the view to a temporary parent so that we can add items to myViewArea in the desired order
     FXComposite* tmp = new FXComposite(this);
@@ -134,13 +133,20 @@ GNEViewParent::GNEViewParent(
     // Set pointer myView with the created view net
     myView = viewNet;
 
-    // creating order is important
-    myInspectorFrame = new GNEInspectorFrame(myFramesArea, viewNet);
-    mySelectorFrame = new GNESelectorFrame(myFramesArea, viewNet);
-    myConnectorFrame = new GNEConnectorFrame(myFramesArea, viewNet);
-    myTLSEditorFrame = new GNETLSEditorFrame(myFramesArea, viewNet);
-    myAdditionalFrame = new GNEAdditionalFrame(myFramesArea, viewNet);
-    myAdditionalFrame->hide();
+    // Create frames
+    myGNEFrames[MID_GNE_MODE_INSPECT] = new GNEInspectorFrame(myFramesArea, viewNet);
+    myGNEFrames[MID_GNE_MODE_SELECT] = new GNESelectorFrame(myFramesArea, viewNet);
+    myGNEFrames[MID_GNE_MODE_CONNECT] = new GNEConnectorFrame(myFramesArea, viewNet);
+    myGNEFrames[MID_GNE_MODE_TLS] = new GNETLSEditorFrame(myFramesArea, viewNet);
+    myGNEFrames[MID_GNE_MODE_ADDITIONAL] = new GNEAdditionalFrame(myFramesArea, viewNet);
+    myGNEFrames[MID_GNE_MODE_CROSSING] = new GNECrossingFrame(myFramesArea, viewNet);
+    myGNEFrames[MID_GNE_MODE_DELETE] = new GNEDeleteFrame(myFramesArea, viewNet);
+
+    // Update frame areas after creation
+    onCmdUpdateFrameAreaWidth(0, 0, 0);
+
+    // Hidde all Frames Area
+    hideFramesArea();
 
     //  Buld view toolBars
     myView->buildViewToolBars(*this);
@@ -156,67 +162,94 @@ GNEViewParent::~GNEViewParent() {
 }
 
 
+void
+GNEViewParent::hideAllFrames() {
+    for (std::map<int, GNEFrame*>::iterator i = myGNEFrames.begin(); i != myGNEFrames.end(); i++) {
+        i->second->hide();
+    }
+}
 
 GNEInspectorFrame*
 GNEViewParent::getInspectorFrame() const {
-    return myInspectorFrame;
+    return dynamic_cast<GNEInspectorFrame*>(myGNEFrames.at(MID_GNE_MODE_INSPECT));
 }
 
 
 GNESelectorFrame*
 GNEViewParent::getSelectorFrame() const {
-    return mySelectorFrame;
+    return dynamic_cast<GNESelectorFrame*>(myGNEFrames.at(MID_GNE_MODE_SELECT));
 }
 
 
 GNEConnectorFrame*
 GNEViewParent::getConnectorFrame() const {
-    return myConnectorFrame;
+    return dynamic_cast<GNEConnectorFrame*>(myGNEFrames.at(MID_GNE_MODE_CONNECT));
 }
 
 
 GNETLSEditorFrame*
 GNEViewParent::getTLSEditorFrame() const {
-    return myTLSEditorFrame;
+    return dynamic_cast<GNETLSEditorFrame*>(myGNEFrames.at(MID_GNE_MODE_TLS));
 }
 
 
 GNEAdditionalFrame*
 GNEViewParent::getAdditionalFrame() const {
-    return myAdditionalFrame;
+    return dynamic_cast<GNEAdditionalFrame*>(myGNEFrames.at(MID_GNE_MODE_ADDITIONAL));
+}
+
+
+GNECrossingFrame*
+GNEViewParent::getCrossingFrame() const {
+    return dynamic_cast<GNECrossingFrame*>(myGNEFrames.at(MID_GNE_MODE_CROSSING));
+}
+
+
+GNEDeleteFrame*
+GNEViewParent::getDeleteFrame() const {
+    return dynamic_cast<GNEDeleteFrame*>(myGNEFrames.at(MID_GNE_MODE_DELETE));
 }
 
 
 void
 GNEViewParent::showFramesArea() {
-    if (myInspectorFrame->shown()  == true ||
-            mySelectorFrame->shown()   == true ||
-            myConnectorFrame->shown()  == true ||
-            myTLSEditorFrame->shown()  == true ||
-            myAdditionalFrame->shown() == true) {
-        myFramesArea->show();
+    bool showFlag = false;
+    // Iterate over GNEFrames
+    for (std::map<int, GNEFrame*>::iterator i = myGNEFrames.begin(); i != myGNEFrames.end(); i++) {
+        // if at least one frame is shown, change showFlag
+        if (i->second->shown() == true) {
+            showFlag = true;
+        }
+    }
+    // show and recalc framesArea if showFlag is enabled
+    if (showFlag) {
         myFramesArea->recalc();
+        myFramesArea->show();
     }
 }
 
 
 void
 GNEViewParent::hideFramesArea() {
-    if (myInspectorFrame->shown()  == false &&
-            mySelectorFrame->shown()   == false &&
-            myConnectorFrame->shown()  == false &&
-            myTLSEditorFrame->shown()  == false &&
-            myAdditionalFrame->shown() == false) {
+    bool hideFlag = true;
+    // Iterate over frames
+    for (std::map<int, GNEFrame*>::iterator i = myGNEFrames.begin(); i != myGNEFrames.end(); i++) {
+        // if at least one frame is shown,  change hideflag
+        if (i->second->shown() == true) {
+            hideFlag = false;
+        }
+    }
+    // hide and recalc frames Area if hideFlag is enabled
+    if (hideFlag) {
         myFramesArea->hide();
         myFramesArea->recalc();
     }
 }
 
 
-int
-GNEViewParent::getFramesAreaWidth() {
-    std::cout << myFramesArea->getWidth() << std::endl;
-    return myFramesArea->getWidth();
+GUIMainWindow*
+GNEViewParent::getApp() const {
+    return myParent;
 }
 
 
@@ -326,6 +359,16 @@ GNEViewParent::onKeyPress(FXObject* o, FXSelector sel, void* data) {
 long
 GNEViewParent::onKeyRelease(FXObject* o, FXSelector sel, void* data) {
     myView->onKeyRelease(o, sel, data);
+    return 0;
+}
+
+
+long
+GNEViewParent::onCmdUpdateFrameAreaWidth(FXObject*, FXSelector, void*) {
+    for (std::map<int, GNEFrame*>::iterator i = myGNEFrames.begin(); i != myGNEFrames.end(); i++) {
+        // update size of all GNEFrame
+        i->second->setFrameWidth(myFramesArea->getWidth());
+    }
     return 0;
 }
 

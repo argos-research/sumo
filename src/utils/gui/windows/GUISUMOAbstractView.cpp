@@ -6,12 +6,12 @@
 /// @author  Laura Bieker
 /// @author  Andreas Gaubatz
 /// @date    Sept 2002
-/// @version $Id: GUISUMOAbstractView.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GUISUMOAbstractView.cpp 22797 2017-01-31 14:53:07Z namdre $
 ///
 // The base class for a view
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -206,7 +206,7 @@ GUISUMOAbstractView::updatePositionInformation() const {
     myApp->getCartesianLabel().setText(text.c_str());
     GeoConvHelper::getFinal().cartesian2geo(pos);
     if (GeoConvHelper::getFinal().usingGeoProjection()) {
-        text = "lat:" + toString(pos.y(), GEO_OUTPUT_ACCURACY) + ", lon:" + toString(pos.x(), GEO_OUTPUT_ACCURACY);
+        text = "lat:" + toString(pos.y(), gPrecisionGeo) + ", lon:" + toString(pos.x(), gPrecisionGeo);
     } else {
         text = "x:" + toString(pos.x()) + ", y:" + toString(pos.y());
     }

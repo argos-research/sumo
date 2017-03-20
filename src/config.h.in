@@ -11,9 +11,6 @@
 /* Define to 1 if using `alloca.c'. */
 #undef C_ALLOCA
 
-/* defines the number of digits after the comma in geo-coordinates output */
-#undef GEO_OUTPUT_ACCURACY
-
 /* Define to 1 if you have `alloca', as a function or macro. */
 #undef HAVE_ALLOCA
 
@@ -158,9 +155,6 @@
 
 /* defines the epsilon to use on general floating point comparison */
 #undef NUMERICAL_EPS
-
-/* defines the number of digits after the comma in output */
-#undef OUTPUT_ACCURACY
 
 /* Name of package */
 #undef PACKAGE

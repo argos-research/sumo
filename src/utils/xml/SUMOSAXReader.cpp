@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Nov 2012
-/// @version $Id: SUMOSAXReader.cpp 21201 2016-07-19 11:57:22Z behrisch $
+/// @version $Id: SUMOSAXReader.cpp 22623 2017-01-18 09:53:08Z behrisch $
 ///
 // SAX-reader encapsulation containing binary reader
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -121,9 +121,8 @@ bool
 SUMOSAXReader::parseFirst(std::string systemID) {
     if (systemID.substr(systemID.length() - 4) == ".sbx") {
         myBinaryInput = new BinaryInputDevice(systemID, true, myValidationScheme == XERCES_CPP_NAMESPACE::SAX2XMLReader::Val_Always);
-        char sbxVer;
-        *myBinaryInput >> sbxVer;
-        if (sbxVer != 1) {
+        *myBinaryInput >> mySbxVersion;
+        if (mySbxVersion < 1 || mySbxVersion > 2) {
             throw ProcessError("Unknown sbx version");
         }
         std::string sumoVer;
@@ -167,20 +166,31 @@ SUMOSAXReader::parseNext() {
                 myBinaryInput = 0;
                 return false;
             case BinaryFormatter::BF_XML_TAG_START: {
-                char t;
-                *myBinaryInput >> t;
-                SUMOSAXAttributesImpl_Binary attrs(myHandler->myPredefinedTagsMML, toString((SumoXMLTag)t), myBinaryInput);
-                myHandler->myStartElement(t, attrs);
+                int tag;
+                unsigned char tagByte;
+                *myBinaryInput >> tagByte;
+                tag = tagByte;
+                if (mySbxVersion > 1) {
+                    myBinaryInput->putback(BinaryFormatter::BF_BYTE);
+                    *myBinaryInput >> tagByte;
+                    tag += 256 * tagByte;
+                }
+                myXMLStack.push_back((SumoXMLTag)tag);
+                SUMOSAXAttributesImpl_Binary attrs(myHandler->myPredefinedTagsMML, toString((SumoXMLTag)tag), myBinaryInput, mySbxVersion);
+                myHandler->myStartElement(tag, attrs);
                 break;
             }
             case BinaryFormatter::BF_XML_TAG_END: {
-                char t;
-                *myBinaryInput >> t;
-                myHandler->myEndElement(t);
+                if (myXMLStack.empty()) {
+                    throw ProcessError("Binary file is invalid, unexpected tag end.");
+                }
+                myHandler->myEndElement(myXMLStack.back());
+                myXMLStack.pop_back();
+                myBinaryInput->read(mySbxVersion > 1 ? 1 : 2);
                 break;
             }
             default:
-                throw ProcessError("Invalid binary file");
+                throw ProcessError("Binary file is invalid, expected tag start or tag end.");
         }
         return true;
     } else {

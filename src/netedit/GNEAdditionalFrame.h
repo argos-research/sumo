@@ -2,12 +2,12 @@
 /// @file    GNEAdditionalFrame.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Dec 2015
-/// @version $Id: GNEAdditionalFrame.h 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNEAdditionalFrame.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 /// The Widget for add additional elements
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -38,7 +38,6 @@
 class GNEAttributeCarrier;
 class GNENetElement;
 class GNEAdditional;
-class GNEAdditionalSet;
 
 // ===========================================================================
 // class definitions
@@ -54,88 +53,124 @@ class GNEAdditionalFrame : public GNEFrame {
 public:
 
     // ===========================================================================
-    // class additionalParameter
+    // class singleAdditionalParameter
     // ===========================================================================
 
-    class additionalParameter : public FXMatrix {
+    class singleAdditionalParameter : public FXMatrix {
+        /// @brief FOX-declaration
+        FXDECLARE(GNEAdditionalFrame::singleAdditionalParameter)
 
     public:
         /// @brief constructor
-        additionalParameter(FXComposite* parent, FXObject* tgt);
+        singleAdditionalParameter(FXComposite* parent);
 
         /// @brief destructor
-        ~additionalParameter();
+        ~singleAdditionalParameter();
 
         /// @brief show name and value of attribute of type string
-        void showParameter(SumoXMLAttr attr, std::string value);
+        void showParameter(SumoXMLTag additionalTag, SumoXMLAttr additionalAttr, std::string value);
 
         /// @brief show name and value of parameters of type int
-        void showParameter(SumoXMLAttr attr, int value);
+        void showParameter(SumoXMLTag additionalTag, SumoXMLAttr additionalAttr, int value);
 
-        /// @brief show name and value of parameters of type float/real
-        void showParameter(SumoXMLAttr attr, SUMOReal value);
+        /// @brief show name and value of parameters of type float/real/time
+        void showParameter(SumoXMLTag additionalTag, SumoXMLAttr additionalAttr, SUMOReal value, bool isTime = false);
 
         /// @brief show name and value of parameters of type bool
-        void showParameter(SumoXMLAttr attr, bool value);
+        void showParameter(SumoXMLTag additionalTag, SumoXMLAttr additionalAttr, bool value);
 
         /// @brief hide all parameters
         void hideParameter();
+
+        /// @brief return tag
+        SumoXMLTag getTag() const;
 
         /// @brief return Attr
         SumoXMLAttr getAttr() const;
 
         /// @brief return value
-        std::string getValue() const ;
+        std::string getValue() const;
+
+        /// @brief check if the current value is valid
+        bool isCurrentValueValid() const;
+
+        /// @name FOX-callbacks
+        /// @{
+        /// @brief called when user set the value of an attribute of type int/float/string
+        long onCmdSetAttribute(FXObject*, FXSelector, void*);
+
+        /// @brief called when user change the value of myMenuCheck
+        long onCmdSetBooleanAttribute(FXObject*, FXSelector, void*);
+        /// @}
+
+    protected:
+        /// @brief FOX needs this
+        singleAdditionalParameter() {}
 
     private:
-        /// @brief XML attribute
-        SumoXMLAttr myAttr;
+        /// @brief current XML attribute
+        SumoXMLTag myAdditionalTag;
+
+        /// @brief current XML attribute
+        SumoXMLAttr myAdditionalAttr;
 
         /// @brief lael with the name of the parameter
         FXLabel* myLabel;
 
-        /// @brief textField to modify the value of parameter
+        /// @brief textField to modify the value of int/float/string parameters
         FXTextField* myTextField;
 
-        /// @brief menuCheck to enable/disable the value of parameter
+        /// @brief spindial  to modify the value of time parameters
+        FXSpinner* myTimeSpinDial;
+
+        /// @brief menuCheck to enable/disable the value of boolean parameters
         FXMenuCheck* myMenuCheck;
+
+        /// @brief Flag which indicates that the current value is correct
+        bool myCurrentValueValid;
     };
 
     // ===========================================================================
-    // class additionalParameterList
+    // class singleAdditionalParameterList
     // ===========================================================================
 
-    class additionalParameterList : public FXMatrix {
+    class singleAdditionalParameterList : public FXMatrix {
         /// @brief FOX-declaration
-        FXDECLARE(GNEAdditionalFrame::additionalParameterList)
+        FXDECLARE(GNEAdditionalFrame::singleAdditionalParameterList)
 
     public:
         /// @brief constructor
-        additionalParameterList(FXComposite* parent, FXObject* tgt);
+        singleAdditionalParameterList(FXComposite* parent);
 
         /// @brief destructor
-        ~additionalParameterList();
+        ~singleAdditionalParameterList();
 
         /// @brief show name and value of parameters of type int
-        void showListParameter(SumoXMLAttr attr, std::vector<int> value);
+        void showListParameter(SumoXMLTag additionalTag, SumoXMLAttr additionalAttr, std::vector<int> value);
 
         /// @brief show name and value of parameters of type float
-        void showListParameter(SumoXMLAttr attr, std::vector<SUMOReal> value);
+        void showListParameter(SumoXMLTag additionalTag, SumoXMLAttr additionalAttr, std::vector<SUMOReal> value, bool isTime = false);
 
         /// @brief show name and value of parameters of type bool
-        void showListParameter(SumoXMLAttr attr, std::vector<bool> value);
+        void showListParameter(SumoXMLTag additionalTag, SumoXMLAttr additionalAttr, std::vector<bool> value);
 
         /// @brief show name and value of parameters of type string
-        void showListParameter(SumoXMLAttr attr, std::vector<std::string> value);
+        void showListParameter(SumoXMLTag additionalTag, SumoXMLAttr additionalAttr, std::vector<std::string> value);
 
         /// @brief hide all parameters
         void hideParameter();
+
+        /// @brief return tag of list
+        SumoXMLTag getTag() const;
 
         /// @brief return attribute of list
         SumoXMLAttr getAttr() const;
 
         /// @brief return the value of list
         std::string getListValues();
+
+        /// @brief check that current list is valid
+        bool isCurrentListValid() const;
 
         /// @name FOX-callbacks
         /// @{
@@ -148,11 +183,14 @@ public:
 
     protected:
         /// @brief FOX needs this
-        additionalParameterList() {}
+        singleAdditionalParameterList() {}
 
     private:
-        /// @brief XML attribute
-        SumoXMLAttr myAttr;
+        /// @brief current XML tag
+        SumoXMLTag myAdditionalTag;
+
+        /// @brief current XML attribute
+        SumoXMLAttr myAdditionalAttr;
 
         /// @brief vector with with the name of every parameter
         std::vector<FXLabel*> myLabels;
@@ -183,7 +221,7 @@ public:
 
     public:
         /// @brief constructor
-        additionalParameters(FXComposite* parent, FXObject* tgt);
+        additionalParameters(FXComposite* parent);
 
         /// @brief destructor
         ~additionalParameters();
@@ -192,7 +230,7 @@ public:
         void clearAttributes();
 
         /// @brief add attribute
-        void addAttribute(SumoXMLTag additional, SumoXMLAttr attribute);
+        void addAttribute(SumoXMLTag additionalTag, SumoXMLAttr additionalAttribute);
 
         /// @brief show group box
         void showAdditionalParameters();
@@ -200,8 +238,11 @@ public:
         /// @brief hide group box
         void hideAdditionalParameters();
 
-        /// @brief get attributes
-        std::map<SumoXMLAttr, std::string> getAttributes() const;
+        /// @brief get attributes and their values
+        std::map<SumoXMLAttr, std::string> getAttributesAndValues() const;
+
+        /// @brief check if all values defined by user are valid
+        bool isValuesValid() const;
 
         /// @brief get number of added attributes
         int getNumberOfAddedAttributes() const;
@@ -217,17 +258,17 @@ public:
         additionalParameters() {}
 
     private:
-        /// @brief current additional
-        SumoXMLTag myAdditional;
+        /// @brief current additional tag
+        SumoXMLTag myAdditionalTag;
 
         /// @brief vector with the additional parameters
-        std::vector<additionalParameter*> myVectorOfAdditionalParameter;
+        std::vector<singleAdditionalParameter*> myVectorOfsingleAdditionalParameter;
 
-        /// @brief Index for myVectorOfAdditionalParameter
+        /// @brief Index for myVectorOfsingleAdditionalParameter
         int myIndexParameter;
 
         /// @brief vector with the additional parameters of type list
-        std::vector<additionalParameterList*> myVectorOfAdditionalParameterList;
+        std::vector<singleAdditionalParameterList*> myVectorOfsingleAdditionalParameterList;
 
         /// @brief index for myIndexParameterList
         int myIndexParameterList;
@@ -259,7 +300,7 @@ public:
         };
 
         /// @brief constructor
-        editorParameters(FXComposite* parent, FXObject* tgt);
+        editorParameters(FXComposite* parent);
 
         /// @brief destructor
         ~editorParameters();
@@ -288,12 +329,16 @@ public:
         /// @brief check if force position is enabled
         bool isForcePositionEnabled();
 
+        /// @brief check if current lenght is valid
+        bool isCurrentLenghtValid() const;
+
         /// @name FOX-callbacks
         /// @{
+        /// @brief Called when the user enters a new lenght
+        long onCmdSetLength(FXObject*, FXSelector, void*);
+
         /// @brief Called when the user enters another reference point
         long onCmdSelectReferencePoint(FXObject*, FXSelector, void*);
-
-        /*** @todo write callback for LENGTH **/
 
         /// @brief Called when help button is pressed
         long onCmdHelp(FXObject*, FXSelector, void*);
@@ -324,39 +369,39 @@ public:
 
         /// @brief checkBox for blocking movement
         FXMenuCheck* myCheckBlock;
+
+        /// @brief Flag to check if current lenght is valid
+        bool myCurrentLengthValid;
     };
 
     // ===========================================================================
-    // class additionalSet
+    // class additionalParentSelector
     // ===========================================================================
 
-    class additionalSet : public FXGroupBox {
+    class additionalParentSelector : public FXGroupBox {
         /// @brief FOX-declaration
-        FXDECLARE(GNEAdditionalFrame::additionalSet)
+        FXDECLARE(GNEAdditionalFrame::additionalParentSelector)
 
     public:
         /// @brief constructor
-        additionalSet(FXComposite* parent, FXObject* tgt, GNEViewNet* viewNet);
+        additionalParentSelector(FXComposite* parent, GNEViewNet* viewNet);
 
         /// @brief destructor
-        ~additionalSet();
+        ~additionalParentSelector();
 
         /// @brief get if currently additional Set
         std::string getIdSelected() const;
 
-        /// @brief get current tag
-        SumoXMLTag getCurrentlyTag() const;
+        /// @brief Show list of additionalParentSelector
+        void showListOfAdditionals(SumoXMLTag type, bool uniqueSelection);
 
-        /// @brief Show list of additionalSet
-        void showList(SumoXMLTag type);
-
-        /// @brief hide additionalSet
-        void hideList();
+        /// @brief hide additionalParentSelector
+        void hideListOfAdditionals();
 
         /// @name FOX-callbacks
         /// @{
-        /// @brief called when user select an additionalSet of the list
-        long onCmdSelectAdditionalSet(FXObject*, FXSelector, void*);
+        /// @brief called when user select an additionalParentSelector of the list
+        long onCmdSelectAdditionalParent(FXObject*, FXSelector, void*);
 
         /// @brief Called when help button is pressed
         long onCmdHelp(FXObject*, FXSelector, void*);
@@ -364,47 +409,48 @@ public:
 
     protected:
         /// @brief FOX needs this
-        additionalSet() {}
+        additionalParentSelector() {}
 
     private:
-        /// @brief current type
-        SumoXMLTag myType;
 
         /// @brief List of additional sets
         FXList* myList;
 
-        /// @brief Label with the name of Set
+        /// @brief Label with the name of additional
         FXLabel* mySetLabel;
 
+        /// @brief flag to check if only a single parent is allowed
+        bool myUniqueSelection;
+
         /// @brief button for help
-        FXButton* helpAdditionalSet;
+        FXButton* myHelpAdditionalParentSelector;
 
         /// @brief viewNet associated to GNEAdditionalFrame
         GNEViewNet* myViewNet;
     };
 
     // ===========================================================================
-    // class edgesSelector
+    // class edgeParentsSelector
     // ===========================================================================
 
-    class edgesSelector : public FXGroupBox {
+    class edgeParentsSelector : public FXGroupBox {
         /// @brief FOX-declaration
-        FXDECLARE(GNEAdditionalFrame::edgesSelector)
+        FXDECLARE(GNEAdditionalFrame::edgeParentsSelector)
 
     public:
         /// @brief constructor
-        edgesSelector(FXComposite* parent, GNEViewNet* viewNet);
+        edgeParentsSelector(FXComposite* parent, GNEViewNet* viewNet);
 
         /// @brief destructor
-        ~edgesSelector();
+        ~edgeParentsSelector();
 
         /// @brief get list of selecte id's in string format
         std::string getIdsSelected() const;
 
-        /// @brief Show list of edgesSelector
+        /// @brief Show list of edgeParentsSelector
         void showList(std::string search = "");
 
-        /// @brief hide edgesSelector
+        /// @brief hide edgeParentsSelector
         void hideList();
 
         /// @brief Update use selectedEdges
@@ -436,53 +482,53 @@ public:
 
     protected:
         /// @brief FOX needs this
-        edgesSelector() {}
+        edgeParentsSelector() {}
 
     private:
         /// @brief CheckBox for selected edges
         FXMenuCheck* myUseSelectedEdges;
 
-        /// @brief List of edgesSelector
+        /// @brief List of edgeParentsSelector
         FXList* myList;
 
         /// @brief text field for search edge IDs
         FXTextField* myEdgesSearch;
 
         /// @brief button for help
-        FXButton* helpEdges;
+        FXButton* myHelpedgeParentsSelector;
 
         /// @brief button for clear selection
-        FXButton* clearEdgesSelection;
+        FXButton* myClearEdgesSelection;
 
         /// @brief button for invert selection
-        FXButton* invertEdgesSelection;
+        FXButton* myInvertEdgesSelection;
 
         /// @brief viewNet associated to GNEAdditionalFrame
         GNEViewNet* myViewNet;
     };
 
     // ===========================================================================
-    // class lanesSelector
+    // class laneParentsSelector
     // ===========================================================================
 
-    class lanesSelector : public FXGroupBox {
+    class laneParentsSelector : public FXGroupBox {
         /// @brief FOX-declaration
-        FXDECLARE(GNEAdditionalFrame::lanesSelector)
+        FXDECLARE(GNEAdditionalFrame::laneParentsSelector)
 
     public:
         /// @brief constructor
-        lanesSelector(FXComposite* parent, GNEViewNet* viewNet);
+        laneParentsSelector(FXComposite* parent, GNEViewNet* viewNet);
 
         /// @brief destructor
-        ~lanesSelector();
+        ~laneParentsSelector();
 
         /// @brief get list of selecte id's in string format
         std::string getIdsSelected() const;
 
-        /// @brief Show list of lanesSelector
+        /// @brief Show list of laneParentsSelector
         void showList(std::string search = "");
 
-        /// @brief hide lanesSelector
+        /// @brief hide laneParentsSelector
         void hideList();
 
         // @brief Update use selectedLanes
@@ -514,13 +560,13 @@ public:
 
     protected:
         /// @brief FOX needs this
-        lanesSelector() {}
+        laneParentsSelector() {}
 
     private:
         /// @brief CheckBox for selected lanes
         FXMenuCheck* myUseSelectedLanes;
 
-        /// @brief List of lanesSelector
+        /// @brief List of laneParentsSelector
         FXList* myList;
 
         /// @brief text field for search lane IDs
@@ -540,10 +586,10 @@ public:
     };
 
     /**@brief Constructor
-     * @brief parent FXFrame in which this GNEFrame is placed
+     * @brief parent FXHorizontalFrame in which this GNEFrame is placed
      * @brief viewNet viewNet that uses this GNEFrame
      */
-    GNEAdditionalFrame(FXComposite* parent, GNEViewNet* viewNet);
+    GNEAdditionalFrame(FXHorizontalFrame* horizontalFrameParent, GNEViewNet* viewNet);
 
     /// @brief Destructor
     ~GNEAdditionalFrame();
@@ -551,7 +597,7 @@ public:
     /**@brief add additional element
      * @param[in] netElement clicked netElement. if user dind't clicked over a GNENetElement in view, netElement will be NULL
      * @param[in] parent AbstractView to obtain the position of the mouse over the lane.
-     * @return true if an additional (GNEAdditional or GNEAdditionalSet) was added, false in other case
+     * @return true if an additional was added, false in other case
      */
     bool addAdditional(GNENetElement* netElement, GUISUMOAbstractView* parent);
 
@@ -566,11 +612,8 @@ public:
     long onCmdSelectAdditional(FXObject*, FXSelector, void*);
     /// @}
 
-    /// @brief show additional frame
+    /// @brief show additional frame and update use selected edges/lanes
     void show();
-
-    /// @brief hidde additional frame
-    void hide();
 
     /// @brief get list of selecte id's in string format
     static std::string getIdsSelected(const FXList* list);
@@ -599,19 +642,19 @@ private:
     FXComboBox* myAdditionalMatchBox;
 
     /// @brief additional default parameters
-    GNEAdditionalFrame::additionalParameters* myAdditionalParameters;
+    GNEAdditionalFrame::additionalParameters* myadditionalParameters;
 
     /// @brief editor parameter
     GNEAdditionalFrame::editorParameters* myEditorParameters;
 
     /// @brief list of additional Set
-    GNEAdditionalFrame::additionalSet* myAdditionalSet;
+    GNEAdditionalFrame::additionalParentSelector* myAdditionalParentSelector;
 
-    /// @brief list of edgesSelector
-    GNEAdditionalFrame::edgesSelector* myEdgesSelector;
+    /// @brief list of edgeParentsSelector
+    GNEAdditionalFrame::edgeParentsSelector* myedgeParentsSelector;
 
-    /// @brief list of lanesSelector
-    GNEAdditionalFrame::lanesSelector* myLanesSelector;
+    /// @brief list of laneParentsSelector
+    GNEAdditionalFrame::laneParentsSelector* mylaneParentsSelector;
 
     /// @brief actual additional type selected in the match Box
     SumoXMLTag myActualAdditionalType;

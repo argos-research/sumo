@@ -2,12 +2,12 @@
 /// @file    GNEInternalLane.cpp
 /// @author  Jakob Erdmann
 /// @date    June 2011
-/// @version $Id: GNEInternalLane.cpp 21640 2016-10-09 20:28:52Z palcraft $
+/// @version $Id: GNEInternalLane.cpp 22796 2017-01-31 14:28:20Z namdre $
 ///
 // A class for visualizing Inner Lanes (used when editing traffic lights)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -226,7 +226,7 @@ GNEInternalLane::colorForLinksState(FXuint state) {
         // special case (default gui does not distinguish between yellow major/minor
         return RGBColor(179, 179, 0, 255);
     } else {
-        return getLinkColor((LinkState)state);
+        return GUIVisualizationSettings::getLinkColor((LinkState)state);
     }
 }
 

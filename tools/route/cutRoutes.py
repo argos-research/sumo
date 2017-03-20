@@ -4,13 +4,13 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2012-08-15
-@version $Id: cutRoutes.py 20632 2016-05-03 14:17:01Z behrisch $
+@version $Id: cutRoutes.py 22608 2017-01-17 06:28:54Z behrisch $
 
 Cut down routes from a large scenario to a sub-scenario optionally using exitTimes
 Output can be a route file or a tripfile.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

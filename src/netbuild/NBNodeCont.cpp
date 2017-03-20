@@ -8,12 +8,12 @@
 /// @author  Michael Behrisch
 /// @author  Sascha Krieg
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBNodeCont.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: NBNodeCont.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Container for nodes during the netbuilding process
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -1095,10 +1095,15 @@ NBNodeCont::clear() {
 
 std::string
 NBNodeCont::getFreeID() {
-    // !!! not guaranteed to be free
-    std::string ret = "SUMOGenerated" + toString<int>(size());
-    assert(retrieve(ret) == 0);
-    return ret;
+    int counter = 0;
+    std::string freeID = "SUMOGenerated" + toString<int>(counter);
+    // While there is a node with id equal to freeID
+    while (retrieve(freeID) != 0) {
+        // update counter and generate a new freeID
+        counter++;
+        freeID = "SUMOGenerated" + toString<int>(counter);
+    }
+    return freeID;
 }
 
 
@@ -1222,17 +1227,28 @@ NBNodeCont::discardTrafficLights(NBTrafficLightLogicCont& tlc, bool geometryLike
 
 
 int
-NBNodeCont::mapToNumericalIDs() {
-    IDSupplier idSupplier("", getAllNames());
-    std::vector<NBNode*> toChange;
+NBNodeCont::remapIDs(bool numericaIDs, bool reservedIDs) {
+    std::vector<std::string> avoid = getAllNames();
+    std::set<std::string> reserve;
+    if (reservedIDs) {
+        NBHelpers::loadPrefixedIDsFomFile(OptionsCont::getOptions().getString("reserved-ids"), "node:", reserve);
+        avoid.insert(avoid.end(), reserve.begin(), reserve.end());
+    }
+    IDSupplier idSupplier("", avoid);
+    std::set<NBNode*, Named::ComparatorIdLess> toChange;
     for (NodeCont::iterator it = myNodes.begin(); it != myNodes.end(); it++) {
-        try {
-            TplConvert::_str2int(it->first);
-        } catch (NumberFormatException&) {
-            toChange.push_back(it->second);
+        if (numericaIDs) {
+            try {
+                TplConvert::_str2long(it->first);
+            } catch (NumberFormatException&) {
+                toChange.insert(it->second);
+            }
+        }
+        if (reservedIDs && reserve.count(it->first) > 0) {
+            toChange.insert(it->second);
         }
     }
-    for (std::vector<NBNode*>::iterator it = toChange.begin(); it != toChange.end(); ++it) {
+    for (std::set<NBNode*, Named::ComparatorIdLess>::iterator it = toChange.begin(); it != toChange.end(); ++it) {
         NBNode* node = *it;
         myNodes.erase(node->getID());
         node->setID(idSupplier.getNext());

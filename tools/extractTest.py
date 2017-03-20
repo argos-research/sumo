@@ -5,14 +5,14 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2009-07-08
-@version $Id: extractTest.py 21131 2016-07-08 07:59:22Z behrisch $
+@version $Id: extractTest.py 22608 2017-01-17 06:28:54Z behrisch $
 
 Extract all files for a test case into a new dir.
 It may copy more files than needed because it copies everything
 that is mentioned in the config under copy_test_path.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2016 DLR/TS, Germany
+Copyright (C) 2009-2017 DLR/TS, Germany
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

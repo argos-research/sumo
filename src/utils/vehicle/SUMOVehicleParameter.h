@@ -5,12 +5,12 @@
 /// @author  Axel Wegener
 /// @author  Michael Behrisch
 /// @date    2006-01-24
-/// @version $Id: SUMOVehicleParameter.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: SUMOVehicleParameter.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Structure representing possible vehicle parameter
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -273,6 +273,8 @@ enum ArrivalSpeedDefinition {
  * @class SUMOVehicleParameter
  * @brief Structure representing possible vehicle parameter
  *
+ * When used within a vehicle, parameter are usually const except for selected items
+ *  adaptable via TraCI which are flagged as mutable below
  * The fields yielding with "Procedure" describe whether the according value
  *  shall be used or another procedure is used to choose the value.
  * @see DepartLaneDefinition
@@ -287,6 +289,8 @@ public:
      */
     SUMOVehicleParameter();
 
+    /// @brief Destructor
+    ~SUMOVehicleParameter();
 
     /** @brief Returns whether the given parameter was set
      * @param[in] what The parameter which one asks for
@@ -302,9 +306,10 @@ public:
      * @param[in, out] dev The device to write into
      * @param[in] oc The options to get defaults from
      * @param[in] tag The "root" tag to write (defaults to vehicle)
+     * @param[in] tag The typeID to write (defaults to member vtypeid)
      * @exception IOError not yet implemented
      */
-    void write(OutputDevice& dev, const OptionsCont& oc, const SumoXMLTag tag = SUMO_TAG_VEHICLE) const;
+    void write(OutputDevice& dev, const OptionsCont& oc, const SumoXMLTag tag = SUMO_TAG_VEHICLE, const std::string& typeID = "") const;
 
 
     /** @brief Returns whether the defaults shall be used
@@ -453,7 +458,7 @@ public:
     std::string routeid;
     /// @brief The vehicle's type id
     std::string vtypeid;
-    /// @brief The vehicle's color
+    /// @brief The vehicle's color, TraCI may change this
     mutable RGBColor color;
 
 
@@ -522,7 +527,7 @@ public:
 
 
     /// @brief The vehicle's line (mainly for public transport)
-    std::string line;
+    mutable std::string line;
 
     /// @brief The vehicle's origin zone (district)
     std::string fromTaz;
@@ -540,6 +545,8 @@ public:
         std::string busstop;
         /// @brief (Optional) container stop if one is assigned to the stop
         std::string containerstop;
+        /// @brief (Optional) parking area if one is assigned to the stop
+        std::string parkingarea;
         /// @brief (Optional) charging station if one is assigned to the stop
         std::string chargingStation;
         /// @brief The stopping position start
@@ -575,11 +582,11 @@ public:
         void write(OutputDevice& dev) const;
     };
 
-    /// @brief List of the stops the vehicle will make
-    std::vector<Stop> stops;
+    /// @brief List of the stops the vehicle will make, TraCI may add entries here
+    mutable std::vector<Stop> stops;
 
     /// @brief List of the via-edges the vehicle must visit
-    std::vector<std::string> via;
+    mutable std::vector<std::string> via;
 
     /// @brief The static number of persons in the vehicle when it departs (not including boarding persons)
     int personNumber;
@@ -587,7 +594,7 @@ public:
     /// @brief The static number of containers in the vehicle when it departs
     int containerNumber;
 
-    /// @brief Information for the router which parameter were set
+    /// @brief Information for the router which parameter were set, TraCI may modify this (whe changing color)
     mutable int setParameter;
 
 

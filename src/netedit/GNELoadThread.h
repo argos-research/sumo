@@ -2,13 +2,13 @@
 /// @file    GNELoadThread.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNELoadThread.h 21814 2016-10-27 07:23:55Z namdre $
+/// @version $Id: GNELoadThread.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The thread that performs the loading of a Netedit-net (adapted from
 // GUILoadThread)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -112,12 +112,6 @@ protected:
 
     /// @brief if true, a new net is created
     bool myNewNet;
-
-    /// @brief filename with additionals input
-    std::string myAdditionalFile;
-
-    /// @brief filename for the additionals output
-    std::string myAdditionalOutputFile;
 };
 
 

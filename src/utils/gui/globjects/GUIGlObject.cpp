@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: GUIGlObject.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GUIGlObject.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Base class for all objects that may be displayed within the openGL-gui
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

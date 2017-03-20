@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVehicle.cpp 21790 2016-10-25 12:37:24Z behrisch $
+/// @version $Id: GUIVehicle.cpp 22674 2017-01-23 12:07:23Z namdre $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -103,9 +103,9 @@ GUIParameterTableWindow*
 GUIVehicle::getParameterWindow(GUIMainWindow& app,
                                GUISUMOAbstractView&) {
     GUIParameterTableWindow* ret =
-        new GUIParameterTableWindow(app, *this, 35);
+        new GUIParameterTableWindow(app, *this, 36);
     // add items
-    ret->mkItem("lane [id]", false, myLane->getID());
+    ret->mkItem("lane [id]", false, Named::getIDSecure(myLane, "n/a"));
     if (MSGlobals::gLaneChangeDuration > 0 || MSGlobals::gLateralResolution > 0) {
         const MSLane* shadowLane = getLaneChangeModel().getShadowLane();
         ret->mkItem("shadow lane [id]", false, shadowLane == 0 ? "" : shadowLane->getID());
@@ -123,12 +123,14 @@ GUIVehicle::getParameterWindow(GUIMainWindow& app,
     if (getChosenSpeedFactor() != 1) {
         ret->mkItem("speed factor", false, getChosenSpeedFactor());
     }
-    ret->mkItem("time gap [s]", true,
-                new FunctionBinding<GUIVehicle, SUMOReal>(this, &MSVehicle::getTimeGap));
+    ret->mkItem("time gap on lane [s]", true,
+                new FunctionBinding<GUIVehicle, SUMOReal>(this, &MSVehicle::getTimeGapOnLane));
     ret->mkItem("waiting time [s]", true,
                 new FunctionBinding<GUIVehicle, SUMOReal>(this, &MSVehicle::getWaitingSeconds));
-    ret->mkItem(("waiting time (accumlated, " + time2string(MSGlobals::gWaitingTimeMemory) + "s) [s]").c_str(), true,
+    ret->mkItem(("waiting time (accumulated, " + time2string(MSGlobals::gWaitingTimeMemory) + "s) [s]").c_str(), true,
                 new FunctionBinding<GUIVehicle, SUMOReal>(this, &MSVehicle::getAccumulatedWaitingSeconds));
+    ret->mkItem("time loss [s]", true,
+                new FunctionBinding<GUIVehicle, SUMOReal>(this, &MSVehicle::getTimeLossSeconds));
     ret->mkItem("impatience", true,
                 new FunctionBinding<GUIVehicle, SUMOReal>(this, &MSVehicle::getImpatience));
     ret->mkItem("last lane change [s]", true,
@@ -412,11 +414,13 @@ GUIVehicle::getColorValue(int activeScheme) const {
         case 23:
             return getAcceleration();
         case 24:
-            return getTimeGap();
+            return getTimeGapOnLane();
         case 25:
             return STEPS2TIME(getDepartDelay());
         case 26:
             return getElectricityConsumption();
+        case 27:
+            return getTimeLossSeconds();
     }
     return 0;
 }
@@ -469,7 +473,12 @@ GUIVehicle::drawRouteHelper(const MSRoute& r, SUMOReal exaggeration) const {
             lane = static_cast<GUILane*>(bestLaneConts[bestLaneIndex]);
             ++bestLaneIndex;
         } else {
-            lane = static_cast<GUILane*>((*i)->getLanes()[0]);
+            const std::vector<MSLane*>* allowed = (*i)->allowedLanes(getVClass());
+            if (allowed != 0 && allowed->size() != 0) {
+                lane = static_cast<GUILane*>((*allowed)[0]);
+            } else {
+                lane = static_cast<GUILane*>((*i)->getLanes()[0]);
+            }
         }
         GLHelper::drawBoxLines(lane->getShape(), lane->getShapeRotations(), lane->getShapeLengths(), exaggeration);
     }
@@ -668,7 +677,7 @@ GUIVehicle::selectBlockingFoes() const {
             gSelected.select(static_cast<const GUIVehicle*>(*it)->getGlID());
         }
 #ifdef HAVE_INTERNAL_LANES
-        const MSLink::LinkLeaders linkLeaders = (dpi.myLink)->getLeaderInfo(dist, getVehicleType().getMinGap(), &blockingPersons);
+        const MSLink::LinkLeaders linkLeaders = (dpi.myLink)->getLeaderInfo(this, dist, &blockingPersons);
         for (MSLink::LinkLeaders::const_iterator it = linkLeaders.begin(); it != linkLeaders.end(); ++it) {
             // the vehicle to enter the junction first has priority
             const GUIVehicle* leader = dynamic_cast<const GUIVehicle*>(it->vehAndGap.first);

@@ -2,12 +2,12 @@
 /// @file    GNEBusStop.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEBusStop.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEBusStop.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 /// A lane area vehicles can halt at (GNE version)
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -64,8 +64,8 @@
 // method definitions
 // ===========================================================================
 
-GNEBusStop::GNEBusStop(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal startPos, SUMOReal endPos, const std::vector<std::string>& lines, bool blocked) :
-    GNEStoppingPlace(id, viewNet, SUMO_TAG_BUS_STOP, lane, startPos, endPos, blocked),
+GNEBusStop::GNEBusStop(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal startPos, SUMOReal endPos, const std::vector<std::string>& lines) :
+    GNEStoppingPlace(id, viewNet, SUMO_TAG_BUS_STOP, ICON_BUSSTOP, lane, startPos, endPos),
     myLines(lines) {
     // When a new additional element is created, updateGeometry() must be called
     updateGeometry();
@@ -148,7 +148,7 @@ GNEBusStop::updateGeometry() {
 
 
 void
-GNEBusStop::writeAdditional(OutputDevice& device, const std::string&) {
+GNEBusStop::writeAdditional(OutputDevice& device) const {
     // Write parameters
     device.openTag(getTag());
     device.writeAttr(SUMO_ATTR_ID, getID());
@@ -318,7 +318,7 @@ GNEBusStop::getAttribute(SumoXMLAttr key) const {
         case GNE_ATTR_BLOCK_MOVEMENT:
             return toString(myBlocked);
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -339,7 +339,7 @@ GNEBusStop::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoList*
             updateGeometry();
             break;
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -367,8 +367,9 @@ GNEBusStop::isValid(SumoXMLAttr key, const std::string& value) {
                 if (parse<SUMOReal>(value) > myLane->getLaneParametricLenght()) {
                     // Ask user if want to assign the lenght of lane as endPosition
                     FXuint answer = FXMessageBox::question(getViewNet()->getApp(), MBOX_YES_NO,
-                                                           "EndPosition exceeds the size of the lane", "%s",
-                                                           "EndPosition exceeds the size of the lane. You want to assign the size of the lane as endPosition?");
+                                                           (toString(SUMO_ATTR_ENDPOS) + " exceeds the size of the " + toString(SUMO_TAG_LANE)).c_str(), "%s",
+                                                           (toString(SUMO_ATTR_ENDPOS) + " exceeds the size of the " + toString(SUMO_TAG_LANE) +
+                                                            ". Do you want to assign the lenght of the " + toString(SUMO_TAG_LANE) + " as " + toString(SUMO_ATTR_ENDPOS) + "?").c_str());
                     if (answer == 1) { //1:yes, 2:no, 4:esc
                         return true;
                     } else {
@@ -386,7 +387,7 @@ GNEBusStop::isValid(SumoXMLAttr key, const std::string& value) {
         case GNE_ATTR_BLOCK_MOVEMENT:
             return canParse<bool>(value);
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -427,8 +428,9 @@ GNEBusStop::setAttribute(SumoXMLAttr key, const std::string& value) {
             getViewNet()->update();
             break;
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
+
 
 /****************************************************************************/

@@ -7,12 +7,12 @@
 @author  Daniel Krajzewicz
 @author  Jakob Erdmann
 @date    2008-10-09
-@version $Id: domain.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: domain.py 22929 2017-02-13 14:38:39Z behrisch $
 
 Python implementation of the TraCI interface.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -24,6 +24,7 @@ from __future__ import print_function
 from __future__ import absolute_import
 import copy
 import struct
+import warnings
 
 import traci
 from . import constants as tc
@@ -81,7 +82,7 @@ class Domain:
     def __init__(self, name, cmdGetID, cmdSetID,
                  subscribeID, subscribeResponseID,
                  contextID, contextResponseID,
-                 retValFunc):
+                 retValFunc, deprecatedFor=None):
         self._name = name
         self._cmdGetID = cmdGetID
         self._cmdSetID = cmdSetID
@@ -92,6 +93,7 @@ class Domain:
         self._retValFunc = {tc.ID_LIST: Storage.readStringList,
                             tc.ID_COUNT: Storage.readInt}
         self._retValFunc.update(retValFunc)
+        self._deprecatedFor = deprecatedFor
         self._connection = None
         _defaultDomains.append(self)
         setattr(traci, name, self)
@@ -109,6 +111,9 @@ class Domain:
         self._connection = connection
 
     def _getUniversal(self, varID, objectID=""):
+        if self._deprecatedFor:
+            warnings.warn("The domain %s is deprecated, use %s instead." % (
+                self._name, self._deprecatedFor))  # , DeprecationWarning)
         result = self._connection._sendReadOneStringCmd(
             self._cmdGetID, varID, objectID)
         return self._retValFunc[varID](result)
@@ -140,6 +145,14 @@ class Domain:
         self._connection._subscribe(
             self._subscribeID, begin, end, objectID, varIDs)
 
+    def unsubscribe(self, objectID):
+        """unsubscribe(string) -> None
+
+        Unsubscribe from receiving object values.
+        """
+        self._connection._subscribe(
+            self._subscribeID, 0, 2**31 - 1, objectID, [])
+
     def getSubscriptionResults(self, objectID=None):
         """getSubscriptionResults(string) -> dict(integer: <value_type>)
 
@@ -160,6 +173,10 @@ class Domain:
                 varIDs = (tc.ID_LIST,)
         self._connection._subscribeContext(
             self._contextID, begin, end, objectID, domain, dist, varIDs)
+
+    def unsubscribeContext(self, objectID, domain, dist):
+        self._connection._subscribeContext(
+            self._contextID, 0, 2**31 - 1, objectID, domain, dist, [])
 
     def getContextSubscriptionResults(self, objectID=None):
         return self._connection._getSubscriptionResults(self._contextResponseID).getContext(objectID)

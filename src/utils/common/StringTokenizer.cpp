@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    ?
-/// @version $Id: StringTokenizer.cpp 21316 2016-08-22 13:08:50Z behrisch $
+/// @version $Id: StringTokenizer.cpp 22649 2017-01-20 10:08:30Z namdre $
 ///
 // A java-style StringTokenizer for c++ (stl)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -47,6 +47,7 @@
 const int StringTokenizer::NEWLINE = -256;
 const int StringTokenizer::WHITECHARS = -257;
 const int StringTokenizer::SPACE = 32;
+const int StringTokenizer::TAB = 9;
 
 
 // ===========================================================================
@@ -69,6 +70,9 @@ StringTokenizer::StringTokenizer(std::string tosplit, int special)
     switch (special) {
         case NEWLINE:
             prepare(tosplit, "\r\n", true);
+            break;
+        case TAB:
+            prepare(tosplit, "\t", true);
             break;
         case WHITECHARS:
             prepareWhitechar(tosplit);

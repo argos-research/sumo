@@ -5,12 +5,12 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    Thu, 06 Jun 2002
-/// @version $Id: marouter_main.cpp 20838 2016-06-01 11:21:46Z behrisch $
+/// @version $Id: marouter_main.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Main for MAROUTER
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -231,9 +231,9 @@ computeRoutes(RONet& net, OptionsCont& oc, ODMatrix& matrix) {
             const SUMOTime weightPeriod = (oc.isSet("weight-files") ?
                                            string2time(oc.getString("weight-period")) :
                                            std::numeric_limits<int>::max());
-
             router = new CHRouterWrapper<ROEdge, ROVehicle, prohibited_withPermissions<ROEdge, ROVehicle> >(
-                ROEdge::getAllEdges(), oc.getBool("ignore-errors"), &ROEdge::getTravelTimeStatic, begin, weightPeriod);
+                ROEdge::getAllEdges(), oc.getBool("ignore-errors"), &ROEdge::getTravelTimeStatic,
+                begin, end, weightPeriod, oc.getInt("routing-threads"));
         } else {
             throw ProcessError("Unknown routing Algorithm '" + routingAlgorithm + "'!");
         }
@@ -317,7 +317,7 @@ computeRoutes(RONet& net, OptionsCont& oc, ODMatrix& matrix) {
                 const ODCell* const c = *i;
                 if (lastEnd >= 0 && lastEnd <= c->begin) {
                     for (std::map<SUMOTime, std::string>::const_iterator desc = sortedOut.begin(); desc != sortedOut.end(); ++desc) {
-                        (*dev) << desc->second;
+                        dev->writePreformattedTag(desc->second);
                     }
                     sortedOut.clear();
                 }
@@ -367,7 +367,7 @@ computeRoutes(RONet& net, OptionsCont& oc, ODMatrix& matrix) {
                 }
             }
             for (std::map<SUMOTime, std::string>::const_iterator desc = sortedOut.begin(); desc != sortedOut.end(); ++desc) {
-                (*dev) << desc->second;
+                dev->writePreformattedTag(desc->second);
             }
             haveOutput = true;
         }

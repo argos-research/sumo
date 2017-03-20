@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-07-10
-@version $Id: statisticsElements.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: statisticsElements.py 22608 2017-01-17 06:28:54Z behrisch $
 
 This script is to define classes, functions, parse-reader and output files/format for
 - calculating network performances
@@ -12,7 +12,7 @@ This script is to define classes, functions, parse-reader and output files/forma
 - writing results into files.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

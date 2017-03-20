@@ -2,12 +2,12 @@
 /// @file    MSPModel_NonInteracting.h
 /// @author  Jakob Erdmann
 /// @date    Mon, 13 Jan 2014
-/// @version $Id: MSPModel_NonInteracting.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSPModel_NonInteracting.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // The pedestrian following model (prototype)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2014-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2014-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -64,6 +64,9 @@ public:
     /// @brief register the given person as a pedestrian
     PedestrianState* add(MSPerson* person, MSPerson::MSPersonStage_Walking* stage, SUMOTime now);
 
+    /// @brief remove the specified person from the pedestrian simulation
+    void remove(PedestrianState* state);
+
     /// @brief whether a pedestrian is blocking the crossing of lane at offset distToCrossing
     bool blockedAtDist(const MSLane* lane, SUMOReal distToCrossing, std::vector<const MSPerson*>* collectBlockers);
 
@@ -73,6 +76,9 @@ private:
         MoveToNextEdge(MSPerson* person, MSPerson::MSPersonStage_Walking& walk) : myParent(walk), myPerson(person) {}
         ~MoveToNextEdge() {}
         SUMOTime execute(SUMOTime currentTime);
+        void abortWalk() {
+            myPerson = 0;
+        }
 
     private:
         MSPerson::MSPersonStage_Walking& myParent;
@@ -85,7 +91,7 @@ private:
     /// @brief abstract base class for managing callbacks to retrieve various state information from the model
     class PState : public PedestrianState {
     public:
-        PState() {};
+        PState(MoveToNextEdge* cmd): myCommand(cmd) {};
 
         /// @brief abstract methods inherited from PedestrianState
         /// @{
@@ -99,13 +105,16 @@ private:
 
         /// @brief compute walking time on edge and update state members
         SUMOTime computeWalkingTime(const MSEdge* prev, const MSPerson::MSPersonStage_Walking& stage, SUMOTime currentTime);
-
+        MoveToNextEdge* getCommand() {
+            return myCommand;
+        }
 
     private:
         SUMOTime myLastEntryTime;
         SUMOTime myCurrentDuration;
         SUMOReal myCurrentBeginPos;
         SUMOReal myCurrentEndPos;
+        MoveToNextEdge* myCommand;
 
     };
 

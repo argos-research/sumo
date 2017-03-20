@@ -5,12 +5,12 @@
 /// @author  Mario Krumnow
 /// @author  Michael Behrisch
 /// @date    2012-04-26
-/// @version $Id: MSFCDExport.cpp 20911 2016-06-08 06:59:31Z namdre $
+/// @version $Id: MSFCDExport.cpp 22797 2017-01-31 14:53:07Z namdre $
 ///
 // Realises dumping Floating Car Data (FCD) Data
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -65,7 +65,7 @@ MSFCDExport::write(OutputDevice& of, SUMOTime timestep, bool elevation) {
         if (veh->isOnRoad() || veh->isParking() || veh->isRemoteControlled()) {
             Position pos = veh->getPosition();
             if (useGeo) {
-                of.setPrecision(GEO_OUTPUT_ACCURACY);
+                of.setPrecision(gPrecisionGeo);
                 GeoConvHelper::getFinal().cartesian2geo(pos);
             }
             of.openTag(SUMO_TAG_VEHICLE);
@@ -130,7 +130,7 @@ void
 MSFCDExport::writeTransportable(OutputDevice& of, const MSEdge* e, MSTransportable* p, SumoXMLTag tag, bool useGeo, bool elevation) {
     Position pos = p->getPosition();
     if (useGeo) {
-        of.setPrecision(GEO_OUTPUT_ACCURACY);
+        of.setPrecision(gPrecisionGeo);
         GeoConvHelper::getFinal().cartesian2geo(pos);
     }
     of.openTag(tag);

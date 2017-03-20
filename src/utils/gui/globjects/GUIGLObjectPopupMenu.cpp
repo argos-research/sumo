@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIGLObjectPopupMenu.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GUIGLObjectPopupMenu.cpp 22797 2017-01-31 14:53:07Z namdre $
 ///
 // The popup menu of a globject
 /****************************************************************************/
@@ -147,7 +147,7 @@ GUIGLObjectPopupMenu::onCmdCopyCursorGeoPosition(FXObject*, FXSelector, void*) {
     Position pos = myNetworkPosition;
     GeoConvHelper::getFinal().cartesian2geo(pos);
     // formated for pasting into google maps
-    const std::string posString = toString(pos.y(), GEO_OUTPUT_ACCURACY) + ", " + toString(pos.x(), GEO_OUTPUT_ACCURACY);
+    const std::string posString = toString(pos.y(), gPrecisionGeo) + ", " + toString(pos.x(), gPrecisionGeo);
     GUIUserIO::copyToClipboard(*myParent->getApp(), posString);
     return 1;
 }

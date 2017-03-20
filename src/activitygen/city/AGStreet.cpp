@@ -5,12 +5,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    July 2010
-/// @version $Id: AGStreet.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: AGStreet.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Represents a SUMO edge and contains people and work densities
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2010-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2010-2017 DLR (http://www.dlr.de/) and contributors
 // activitygen module
 // Copyright 2010 TUM (Technische Universitaet Muenchen, http://www.tum.de/)
 /****************************************************************************/

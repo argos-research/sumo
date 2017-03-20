@@ -2,12 +2,12 @@
 /// @file    MSTransportable.h
 /// @author  Michael Behrisch
 /// @date    Tue, 21 Apr 2015
-/// @version $Id: MSTransportable.h 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: MSTransportable.h 22715 2017-01-26 14:55:39Z namdre $
 ///
 // The common superclass for modelling transportable objects like persons and containers
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -30,6 +30,7 @@
 #endif
 
 #include <set>
+#include <cassert>
 #include <utils/common/SUMOTime.h>
 #include <utils/geom/Position.h>
 
@@ -46,6 +47,7 @@ class OutputDevice;
 class SUMOVehicleParameter;
 class SUMOVehicle;
 
+typedef std::vector<const MSEdge*> ConstMSEdgeVector;
 
 // ===========================================================================
 // class definitions
@@ -58,10 +60,10 @@ class SUMOVehicle;
 class MSTransportable {
 public:
     enum StageType {
-        DRIVING = 0,
+        WAITING_FOR_DEPART = 0,
         WAITING = 1,
         MOVING_WITHOUT_VEHICLE = 2, // walking for persons, tranship for containers
-        WAITING_FOR_DEPART = 3
+        DRIVING = 3
     };
 
     /**
@@ -107,8 +109,14 @@ public:
         /// @brief return string representation of the current stage
         virtual std::string getStageDescription() const = 0;
 
-        /// proceeds to the next step
+        /// proceeds to this stage
         virtual void proceed(MSNet* net, MSTransportable* transportable, SUMOTime now, Stage* previous) = 0;
+
+        /// abort this stage (TraCI)
+        virtual void abort(MSTransportable*) {};
+
+        /// sets the walking speed (ignored in other stages)
+        virtual void setSpeed(SUMOReal) {};
 
         /// logs end of the step
         void setDeparted(SUMOTime now);
@@ -134,6 +142,9 @@ public:
 
         /// @brief the speed of the transportable
         virtual SUMOReal getSpeed() const = 0;
+
+        /// @brief the edges of the current stage
+        virtual ConstMSEdgeVector getEdges() const = 0;
 
         /// @brief get position on edge e at length at with orthogonal offset
         Position getEdgePosition(const MSEdge* e, SUMOReal at, SUMOReal offset) const;
@@ -223,6 +234,8 @@ public:
 
         SUMOReal getSpeed() const;
 
+        ConstMSEdgeVector getEdges() const;
+
         std::string getStageDescription() const {
             return "waiting (" + myActType + ")";
         }
@@ -291,6 +304,9 @@ public:
         /// destructor
         virtual ~Stage_Driving();
 
+        /// abort this stage (TraCI)
+        void abort(MSTransportable*);
+
         /// Returns the current edge
         const MSEdge* getEdge() const;
         const MSEdge* getFromEdge() const;
@@ -316,6 +332,8 @@ public:
         SUMOTime getWaitingTime(SUMOTime now) const;
 
         SUMOReal getSpeed() const;
+
+        ConstMSEdgeVector getEdges() const;
 
         void setVehicle(SUMOVehicle* v) {
             myVehicle = v;
@@ -425,6 +443,13 @@ public:
         return (*myStep)->getStageType();
     }
 
+    /// @brief the stage type for the nth next stage
+    StageType getStageType(int next) const {
+        assert(myStep + next < myPlan->end());
+        assert(myStep + next >= myPlan->begin());
+        return (*(myStep + next))->getStageType();
+    }
+
     /// Returns the current stage description as a string
     std::string getCurrentStageDescription() const {
         return (*myStep)->getStageDescription();
@@ -434,6 +459,19 @@ public:
     MSTransportable::Stage* getCurrentStage() const {
         return *myStep;
     }
+
+    /// @brief Return the edges of the nth next stage
+    ConstMSEdgeVector getEdges(int next) const {
+        assert(myStep + next < myPlan->end());
+        assert(myStep + next >= myPlan->begin());
+        return (*(myStep + next))->getEdges();
+    }
+
+    /// @brief Return the number of remaining stages (including the current)
+    int getNumRemainingStages() const;
+
+    /// @brief Return the total number stages in this persons plan
+    int getNumStages() const;
 
     /** @brief Called on writing tripinfo output
      *
@@ -449,20 +487,42 @@ public:
      */
     virtual void routeOutput(OutputDevice& os) const = 0;
 
-    /// Whether the transportable waits for a vehicle of the line specified.
+    /// @brief Whether the transportable waits for a vehicle of the line specified.
     bool isWaitingFor(const std::string& line) const {
         return (*myStep)->isWaitingFor(line);
     }
 
-    /// Whether the transportable waits for a vehicle
+    /// @brief Whether the transportable waits for a vehicle
     bool isWaiting4Vehicle() const {
         return (*myStep)->isWaiting4Vehicle();
     }
 
-    /// The vehicle associated with this transportable
+    /// @brief The vehicle associated with this transportable
     SUMOVehicle* getVehicle() const {
         return (*myStep)->getVehicle();
     }
+
+    /// @brief Appends the given stage to the current plan
+    void appendStage(Stage* stage);
+
+    /// @brief removes the nth next stage
+    void removeStage(int next);
+
+    /// sets the walking speed (ignored in other stages)
+    void setSpeed(SUMOReal speed);
+
+    /// @brief returns the final arrival pos
+    SUMOReal getArrivalPos() const {
+        return myPlan->back()->getArrivalPos();
+    }
+
+    /// @brief returns the final arrival edge
+    const MSEdge* getArrivalEdge() const {
+        return myPlan->back()->getEdges().back();
+    }
+
+    /// @brief replace myVType
+    void replaceVehicleType(MSVehicleType* type);
 
 protected:
     /// @brief the offset for computing positions when standing at an edge

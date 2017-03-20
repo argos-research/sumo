@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: PositionVector.h 21575 2016-09-29 09:27:12Z namdre $
+/// @version $Id: PositionVector.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A list of positions
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -33,6 +33,7 @@
 #endif
 
 #include <vector>
+#include <limits>
 #include "AbstractPoly.h"
 
 
@@ -130,6 +131,9 @@ public:
     /// @brief Returns the information whether the given polygon overlaps with this
     /// @note Again a boundary may be specified
     bool overlapsWith(const AbstractPoly& poly, SUMOReal offset = 0) const;
+
+    /// @brief Returns the maximum overlaps between this and the given polygon (when not separated by at least zThreshold)
+    SUMOReal getOverlapWith(const PositionVector& poly, SUMOReal zThreshold) const;
 
     /// @brief Returns the information whether this list of points interesects the given line
     bool intersects(const Position& p1, const Position& p2) const;
@@ -358,6 +362,16 @@ public:
      * @param[out] distToClosest Distance between the intersection point and the closest geometry point
      */
     PositionVector getOrthogonal(const Position& p, SUMOReal extend, SUMOReal& distToClosest) const;
+
+
+    /// @brief returned vector that is smoothed at the front (within dist)
+    PositionVector smoothedZFront(SUMOReal dist = std::numeric_limits<SUMOReal>::max()) const;
+
+    /// @brief return the offset at the given index
+    SUMOReal offsetAtIndex2D(int index) const;
+
+    /// @brief return the maximum grade of all segments as a fraction of zRange/length2D
+    SUMOReal getMaxGrade() const;
 
 private:
     /// @brief return whether the line segments defined by Line p11,p12 and Line p21,p22 intersect

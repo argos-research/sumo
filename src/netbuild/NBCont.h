@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Sascha Krieg
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: NBCont.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: NBCont.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
-// Some list definitions
+// Some typedef definitions fir containers
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -44,15 +44,13 @@ class NBEdge;
 // ===========================================================================
 // container definitions
 // ===========================================================================
-/** container for (sorted) edges */
+/// @brief container for (sorted) edges
 typedef std::vector<NBEdge*> EdgeVector;
 
-/** container for unique edges */
+/// @brief container for unique edges
 typedef std::set<NBEdge*> EdgeSet;
 
-
-/** container for (sorted) lanes.
-    The lanes are sorted from rightmost (id=0) to leftmost (id=nolanes-1) */
+/// @brief container for (sorted) lanes. The lanes are sorted from rightmost (id=0) to leftmost (id=nolanes-1)
 typedef std::vector<int> LaneVector;
 
 

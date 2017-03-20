@@ -2,12 +2,12 @@
 /// @file    GNEDetectorE1.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetectorE1.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEDetectorE1.cpp 22915 2017-02-10 14:05:44Z palcraft $
 ///
 ///
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -62,8 +62,8 @@
 // member method definitions
 // ===========================================================================
 
-GNEDetectorE1::GNEDetectorE1(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal pos, SUMOReal freq, const std::string& filename, bool splitByType, bool blocked) :
-    GNEDetector(id, viewNet, SUMO_TAG_E1DETECTOR, lane, pos, freq, filename, blocked),
+GNEDetectorE1::GNEDetectorE1(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal pos, SUMOReal freq, const std::string& filename, bool splitByType) :
+    GNEDetector(id, viewNet, SUMO_TAG_E1DETECTOR, ICON_E1, lane, pos, freq, filename),
     mySplitByType(splitByType) {
     // Update geometry;
     updateGeometry();
@@ -122,7 +122,7 @@ GNEDetectorE1::getPositionInView() const {
 
 
 void
-GNEDetectorE1::writeAdditional(OutputDevice& device, const std::string&) {
+GNEDetectorE1::writeAdditional(OutputDevice& device) const {
     // Write parameters
     device.openTag(getTag());
     device.writeAttr(SUMO_ATTR_ID, getID());
@@ -197,7 +197,7 @@ GNEDetectorE1::drawGL(const GUIVisualizationSettings& s) const {
     // Check if the distance is enought to draw details
     if (s.scale * exaggeration >= 10) {
         // Add a draw matrix
-        drawDetectorIcon(GUITextureSubSys::getGif(GNETEXTURE_E1));
+        drawDetectorIcon(GUITextureSubSys::getTexture(GNETEXTURE_E1));
 
         // Show Lock icon depending of the Edit mode
         drawLockIcon();
@@ -227,7 +227,7 @@ GNEDetectorE1::getAttribute(SumoXMLAttr key) const {
         case GNE_ATTR_BLOCK_MOVEMENT:
             return toString(myBlocked);
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -249,7 +249,7 @@ GNEDetectorE1::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoLi
             updateGeometry();
             break;
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 
 }
@@ -273,7 +273,7 @@ GNEDetectorE1::isValid(SumoXMLAttr key, const std::string& value) {
         case SUMO_ATTR_POSITION:
             return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) >= 0 && parse<SUMOReal>(value) <= (myLane->getLaneParametricLenght()));
         case SUMO_ATTR_FREQUENCY:
-            return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) >= 0);
+            return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) > 0);
         case SUMO_ATTR_FILE:
             return isValidFileValue(value);
         case SUMO_ATTR_SPLIT_VTYPE:
@@ -281,7 +281,7 @@ GNEDetectorE1::isValid(SumoXMLAttr key, const std::string& value) {
         case GNE_ATTR_BLOCK_MOVEMENT:
             return canParse<bool>(value);
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -317,7 +317,7 @@ GNEDetectorE1::setAttribute(SumoXMLAttr key, const std::string& value) {
             getViewNet()->update();
             break;
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 

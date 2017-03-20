@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIDanielPerspectiveChanger.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GUIDanielPerspectiveChanger.cpp 22949 2017-02-15 08:09:21Z namdre $
 ///
 // A class that allows to steer the visual output in dependence to
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -198,17 +198,26 @@ GUIDanielPerspectiveChanger::onRightBtnRelease(void* data) {
 void
 GUIDanielPerspectiveChanger::onMouseWheel(void* data) {
     FXEvent* e = (FXEvent*) data;
-    SUMOReal diff = 0.1;
-    if ((e->state & CONTROLMASK) != 0) {
-        diff /= 2;
-    } else if ((e->state & SHIFTMASK) != 0) {
-        diff *= 2;
+    // catch empty ghost events after scroll (seem to occur only on Ubuntu)
+    if (e->code == 0) {
+        return;
     }
+    // zoom scale relative delta and its inverse; is optimized (all literals)
+    const SUMOReal zScale_rDelta_norm = 0.1;
+    const SUMOReal zScale_rDelta_inv = -zScale_rDelta_norm / (1. + zScale_rDelta_norm);
+    SUMOReal zScale_rDelta = zScale_rDelta_norm ;
     if (e->code < 0) {
-        diff = -diff;
+        // for inverse zooming direction
+        zScale_rDelta = zScale_rDelta_inv;
+    }
+    // keyboard modifier: slow, fast mouse-zoom
+    if ((e->state & CONTROLMASK) != 0) {
+        zScale_rDelta /= 4;
+    } else if ((e->state & SHIFTMASK) != 0) {
+        zScale_rDelta *= 4;
     }
     myZoomBase = myCallback.getPositionInformation();
-    zoom(1.0 + diff);
+    zoom(1.0 + zScale_rDelta);
     myCallback.updateToolTip();
 }
 
@@ -269,7 +278,7 @@ GUIDanielPerspectiveChanger::setViewportFrom(SUMOReal xPos, SUMOReal yPos, SUMOR
 
 
 void
-GUIDanielPerspectiveChanger::changeCanvassLeft(int change) {
+GUIDanielPerspectiveChanger::changeCanvasSizeLeft(int change) {
     myViewPort = Boundary(
                      myViewPort.xmin() - myCallback.p2m(change),
                      myViewPort.ymin(),
@@ -280,6 +289,10 @@ GUIDanielPerspectiveChanger::changeCanvassLeft(int change) {
 
 long
 GUIDanielPerspectiveChanger::onKeyPress(void* data) {
+    // ignore key events in gaming mode
+    if (gSchemeStorage.getDefault().gaming) {
+        return 0;
+    }
     FXEvent* e = (FXEvent*) data;
     SUMOReal zoomDiff = 0.1;
     SUMOReal moveX = 0;

@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2011-03-15
-@version $Id: _simulation.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: _simulation.py 22794 2017-01-31 13:47:43Z namdre $
 
 Python implementation of the TraCI interface.
 
@@ -176,8 +176,7 @@ class SimulationDomain(Domain):
 
     def getBusStopWaiting(self):
         """getBusStopWaiting() -> integer
-
-        .
+        Get the total number of waiting persons at the named bus stop.
         """
         return self._getUniversal(tc.VAR_BUS_STOP_WAITING)
 
@@ -211,8 +210,7 @@ class SimulationDomain(Domain):
 
     def getDeltaT(self):
         """getDeltaT() -> integer
-
-        .
+        Returns the length of one simulation step in milliseconds
         """
         return self._getUniversal(tc.VAR_DELTA_T)
 

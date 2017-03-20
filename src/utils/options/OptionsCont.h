@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: OptionsCont.h 21204 2016-07-20 07:42:26Z behrisch $
+/// @version $Id: OptionsCont.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A storage for options (typed value containers)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -183,9 +183,11 @@ public:
      * @param[in] filled Whether only set (and not default) options shall be written
      * @param[in] complete Whether all options shall be written
      * @param[in] addComments Whether comments (option descriptions) shall be written
+     * @param[in] maskDoubleHyphen Whether -- in input shall be converted to &#45;&#45; (semantically equivalent but allowed in XML comments)
      */
-    void writeConfiguration(std::ostream& os, bool filled,
-                            bool complete, bool addComments) const;
+    void writeConfiguration(std::ostream& os, const bool filled,
+                            const bool complete, const bool addComments,
+                            const bool maskDoubleHyphen = false) const;
 
 
     /** @brief Writes the xml schema for the configuration

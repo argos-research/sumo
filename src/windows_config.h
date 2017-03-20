@@ -7,12 +7,12 @@
 /// @author  Felix Brack
 /// @author  Jakob Erdmann
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: windows_config.h 21852 2016-10-31 12:26:19Z behrisch $
+/// @version $Id: windows_config.h 22969 2017-02-15 20:40:27Z behrisch $
 ///
 // The general windows configuration file
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -29,6 +29,8 @@
 #error This file is for MSVC compilation only. GCC should use configure generated config.h.
 #endif
 
+/* Disable "decorated name length exceeded, name was truncated" warnings. */
+#pragma warning(disable: 4503)
 /* Disable "identifier truncated in debug info" warnings. */
 #pragma warning(disable: 4786)
 /* Disable "C++ Exception Specification ignored" warnings */
@@ -57,18 +59,12 @@
 /* defines the epsilon to use on general floating point comparison */
 #define NUMERICAL_EPS (SUMOReal)0.001
 
-/* defines the number of digits after the comma in output */
-#define OUTPUT_ACCURACY 2
-
-/* defines the number of digits after the comma in output of geo-coordinates */
-#define GEO_OUTPUT_ACCURACY 6
-
 /* Define if auto-generated version.h should be used. */
 //#define HAVE_VERSION_H 1
 
 /* Version number of package */
 #ifndef HAVE_VERSION_H
-#define VERSION_STRING "0.28.0"
+#define VERSION_STRING "0.29.0"
 #endif
 
 /* Define if junction internal lanes should be used. */

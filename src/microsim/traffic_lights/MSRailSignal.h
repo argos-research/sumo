@@ -3,12 +3,12 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Jan 2015
-/// @version $Id: MSRailSignal.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSRailSignal.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A rail signal logic
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -219,7 +219,7 @@ protected:
     std::map<MSLane*, std::vector<MSLink*> > myLinksToLane;
 
     /// A map that maps a link from the junction to its vector of lanes leading from a previous signal to this link
-    std::map<MSLink*, std::vector<MSLane*> > myAfferentBlocks;
+    std::map<MSLink*, std::vector<const MSLane*> > myAfferentBlocks;
 
     /// A map that maps an outgoing lane from the junction to its vector of lanes leading to the next signal
     std::map<MSLane*, std::vector<const MSLane*> > mySucceedingBlocks;

@@ -8,13 +8,13 @@
 /// @author  Laura Bieker
 /// @author  Leonhard Luecken
 /// @date    Fri, 08.10.2013
-/// @version $Id: MSLCM_LC2013.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: MSLCM_LC2013.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A lane change model developed by J. Erdmann
 // based on the model of D. Krajzewicz developed between 2004 and 2011 (MSLCM_DK2004)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -495,7 +495,7 @@ MSLCM_LC2013::informLeader(MSAbstractLaneChangeModel::MSLCMessager& msgPass,
         }
 #endif
 
-        if (dv < 0
+        if ((dv < 0
                 // overtaking on the right on an uncongested highway is forbidden (noOvertakeLCLeft)
                 || (dir == LCA_MLEFT && !myVehicle.congested() && !myAllowOvertakingRight)
                 // not enough space to overtake?
@@ -503,7 +503,9 @@ MSLCM_LC2013::informLeader(MSAbstractLaneChangeModel::MSLCMessager& msgPass,
                 // using brakeGap() without headway seems adequate in a situation where the obstacle (the lane end) is not moving [XXX implemented in branch ticket860, can be used in general if desired, refs. #2575] (Leo).
                 || (!MSGlobals::gSemiImplicitEulerUpdate && myLeftSpace - myLeadingBlockerLength - myVehicle.getCarFollowModel().brakeGap(myVehicle.getSpeed(), myCarFollowModel.getMaxDecel(), 0.) < overtakeDist)
                 // not enough time to overtake?        (skipped for a stopped leader [currently only for ballistic update XXX: check if appropriate for euler, too, refs. #2575] to ensure that it can be overtaken if only enough space is exists) (Leo)
-                || (remainingSeconds < overtakeTime && (MSGlobals::gSemiImplicitEulerUpdate || !nv->isStopped()))) {
+                || (remainingSeconds < overtakeTime && (MSGlobals::gSemiImplicitEulerUpdate || !nv->isStopped())))
+                // opposite driving and must overtake
+                && !(isOpposite() && neighLead.second < 0 && neighLead.first->isStopped())) {
             // cannot overtake
             msgPass.informNeighLeader(new Info(std::numeric_limits<SUMOReal>::max(), dir | LCA_AMBLOCKINGLEADER), &myVehicle);
             // slow down smoothly to follow leader
@@ -1096,7 +1098,7 @@ MSLCM_LC2013::_wantsChange(
         neighDist = neigh.length;
         currentDist = curr.length;
     }
-    const SUMOReal posOnLane = isOpposite() ? myVehicle.getLane()->getLength() - myVehicle.getPositionOnLane() : myVehicle.getPositionOnLane();
+    const SUMOReal posOnLane = isOpposite() ? myVehicle.getLane()->getOppositePos(myVehicle.getPositionOnLane()) : myVehicle.getPositionOnLane();
     const int lca = (right ? LCA_RIGHT : LCA_LEFT);
     const int myLca = (right ? LCA_MRIGHT : LCA_MLEFT);
     const int lcaCounter = (right ? LCA_LEFT : LCA_RIGHT);
@@ -1178,11 +1180,13 @@ MSLCM_LC2013::_wantsChange(
     // Next we assign to roundabout edges a larger distance than to normal edges
     // in order to decrease sense of lc urgency and induce higher usage of inner roundabout lanes.
     // 1) get information about the next upcoming roundabout
-    SUMOReal roundaboutDistanceAhead;
-    SUMOReal roundaboutDistanceAheadNeigh;
-    int roundaboutEdgesAhead;
-    int roundaboutEdgesAheadNeigh;
-    getRoundaboutAheadInfo(this, curr, neigh, roundaboutDistanceAhead, roundaboutDistanceAheadNeigh, roundaboutEdgesAhead, roundaboutEdgesAheadNeigh);
+    SUMOReal roundaboutDistanceAhead = 0;
+    SUMOReal roundaboutDistanceAheadNeigh = 0;
+    int roundaboutEdgesAhead = 0;
+    int roundaboutEdgesAheadNeigh = 0;
+    if (!isOpposite()) {
+        getRoundaboutAheadInfo(this, curr, neigh, roundaboutDistanceAhead, roundaboutDistanceAheadNeigh, roundaboutEdgesAhead, roundaboutEdgesAheadNeigh);
+    }
     // 2) add a distance bonus for roundabout edges
     currentDist += roundaboutDistBonus(roundaboutDistanceAhead, roundaboutEdgesAhead);
     neighDist += roundaboutDistBonus(roundaboutDistanceAheadNeigh, roundaboutEdgesAheadNeigh);
@@ -1713,7 +1717,7 @@ MSLCM_LC2013::getRoundaboutAheadInfo(const MSLCM_LC2013* lcm, const MSVehicle::L
     roundaboutDistanceAheadNeigh += distanceAlongNextRoundabout(neighPosition, neigh.lane, neigh.bestContinuations);
 
 #ifdef DEBUG_WANTS_CHANGE
-    if (DEBUG_COND) {
+    if (lcm->debugVehicle()) {
         std::cout << "roundaboutDistanceAhead = " << roundaboutDistanceAhead
                   << " roundaboutDistanceAheadNeigh = " << roundaboutDistanceAheadNeigh
                   << "\n";

@@ -3,7 +3,7 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    2004-11-23
-/// @version $Id: Helper_ConvexHull.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: Helper_ConvexHull.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Copyright 2002, softSurfer (www.softsurfer.com)
 // This code may be freely used and modified for any purpose
@@ -13,7 +13,7 @@
 // Users of this code must verify correctness for their application.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2004-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2004-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

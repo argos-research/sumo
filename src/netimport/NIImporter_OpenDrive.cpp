@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_OpenDrive.cpp 21744 2016-10-18 13:02:24Z namdre $
+/// @version $Id: NIImporter_OpenDrive.cpp 22965 2017-02-15 16:05:04Z namdre $
 ///
 // Importer for networks stored in openDrive format
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -66,6 +66,9 @@
 // definitions
 // ===========================================================================
 #define C_LENGTH 10.
+#define POLY_RES 2.
+#define PARAMPOLY3_RES 2.
+#define SPIRAL_RES 1.
 
 // ===========================================================================
 // static variables
@@ -82,6 +85,7 @@ StringBijection<int>::Entry NIImporter_OpenDrive::openDriveTags[] = {
     { "poly3",            NIImporter_OpenDrive::OPENDRIVE_TAG_POLY3 },
     { "paramPoly3",       NIImporter_OpenDrive::OPENDRIVE_TAG_PARAMPOLY3 },
     { "laneSection",      NIImporter_OpenDrive::OPENDRIVE_TAG_LANESECTION },
+    { "laneOffset",       NIImporter_OpenDrive::OPENDRIVE_TAG_LANEOFFSET },
     { "left",             NIImporter_OpenDrive::OPENDRIVE_TAG_LEFT },
     { "center",           NIImporter_OpenDrive::OPENDRIVE_TAG_CENTER },
     { "right",            NIImporter_OpenDrive::OPENDRIVE_TAG_RIGHT },
@@ -212,6 +216,7 @@ NIImporter_OpenDrive::loadNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
     }
     //   build nodes
     for (std::map<std::string, Boundary>::iterator i = posMap.begin(); i != posMap.end(); ++i) {
+        //std::cout << " import node=" << (*i).first << " z=" << (*i).second.getCenter() << " boundary=" << (*i).second << "\n";
         if (!nb.getNodeCont().insert((*i).first, (*i).second.getCenter())) {
             throw ProcessError("Could not add node '" + (*i).first + "'.");
         }
@@ -384,9 +389,6 @@ NIImporter_OpenDrive::loadNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
             if ((*j).rightLaneNumber > 0) {
                 currRight = new NBEdge("-" + id, sFrom, sTo, (*j).rightType, defaultSpeed, (*j).rightLaneNumber, priorityR,
                                        NBEdge::UNSPECIFIED_WIDTH, NBEdge::UNSPECIFIED_OFFSET, geom, e->streetName, id, LANESPREAD_RIGHT, true);
-                if (!nb.getEdgeCont().insert(currRight, myImportAllTypes)) {
-                    throw ProcessError("Could not add edge '" + currRight->getID() + "'.");
-                }
                 lanesBuilt = true;
                 const std::vector<OpenDriveLane>& lanes = (*j).lanesByDir[OPENDRIVE_TAG_RIGHT];
                 for (std::vector<OpenDriveLane>::const_iterator k = lanes.begin(); k != lanes.end(); ++k) {
@@ -396,20 +398,27 @@ NIImporter_OpenDrive::loadNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
                         NBEdge::Lane& sumoLane = currRight->getLaneStruct(sumoLaneIndex);
                         const OpenDriveLane& odLane = *k;
 
-                        sumoLane.origID = e->id + " -" + toString((*k).id);
+                        sumoLane.origID = e->id + "_" + toString((*k).id);
                         sumoLane.speed = odLane.speed != 0 ? odLane.speed : tc.getSpeed(odLane.type);
                         sumoLane.permissions = tc.getPermissions(odLane.type);
                         sumoLane.width = myImportWidths && odLane.width != 0 ? odLane.width : tc.getWidth(odLane.type);
                     }
                 }
-                // connect lane sections
-                if (prevRight != 0) {
-                    std::map<int, int> connections = (*j).getInnerConnections(OPENDRIVE_TAG_RIGHT, *(j - 1));
-                    for (std::map<int, int>::const_iterator k = connections.begin(); k != connections.end(); ++k) {
-                        prevRight->addLane2LaneConnection((*k).first, currRight, (*k).second, NBEdge::L2L_VALIDATED);
-                    }
+                if (!nb.getEdgeCont().insert(currRight, myImportAllTypes)) {
+                    throw ProcessError("Could not add edge '" + currRight->getID() + "'.");
                 }
-                prevRight = currRight;
+                if (nb.getEdgeCont().wasIgnored(id)) {
+                    prevRight = 0;
+                } else {
+                    // connect lane sections
+                    if (prevRight != 0) {
+                        std::map<int, int> connections = (*j).getInnerConnections(OPENDRIVE_TAG_RIGHT, *(j - 1));
+                        for (std::map<int, int>::const_iterator k = connections.begin(); k != connections.end(); ++k) {
+                            prevRight->addLane2LaneConnection((*k).first, currRight, (*k).second, NBEdge::L2L_VALIDATED);
+                        }
+                    }
+                    prevRight = currRight;
+                }
             }
 
             // build lanes to left
@@ -417,9 +426,6 @@ NIImporter_OpenDrive::loadNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
             if ((*j).leftLaneNumber > 0) {
                 currLeft = new NBEdge(id, sTo, sFrom, (*j).leftType, defaultSpeed, (*j).leftLaneNumber, priorityL,
                                       NBEdge::UNSPECIFIED_WIDTH, NBEdge::UNSPECIFIED_OFFSET, geom.reverse(), e->streetName, id, LANESPREAD_RIGHT, true);
-                if (!nb.getEdgeCont().insert(currLeft, myImportAllTypes)) {
-                    throw ProcessError("Could not add edge '" + currLeft->getID() + "'.");
-                }
                 lanesBuilt = true;
                 const std::vector<OpenDriveLane>& lanes = (*j).lanesByDir[OPENDRIVE_TAG_LEFT];
                 for (std::vector<OpenDriveLane>::const_iterator k = lanes.begin(); k != lanes.end(); ++k) {
@@ -429,20 +435,27 @@ NIImporter_OpenDrive::loadNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
                         NBEdge::Lane& sumoLane = currLeft->getLaneStruct(sumoLaneIndex);
                         const OpenDriveLane& odLane = *k;
 
-                        sumoLane.origID = e->id + " " + toString((*k).id);
+                        sumoLane.origID = e->id + "_" + toString((*k).id);
                         sumoLane.speed = odLane.speed != 0 ? odLane.speed : tc.getSpeed(odLane.type);
                         sumoLane.permissions = tc.getPermissions(odLane.type);
                         sumoLane.width = myImportWidths && odLane.width != 0 ? odLane.width : tc.getWidth(odLane.type);
                     }
                 }
-                // connect lane sections
-                if (prevLeft != 0) {
-                    std::map<int, int> connections = (*j).getInnerConnections(OPENDRIVE_TAG_LEFT, *(j - 1));
-                    for (std::map<int, int>::const_iterator k = connections.begin(); k != connections.end(); ++k) {
-                        currLeft->addLane2LaneConnection((*k).first, prevLeft, (*k).second, NBEdge::L2L_VALIDATED);
-                    }
+                if (!nb.getEdgeCont().insert(currLeft, myImportAllTypes)) {
+                    throw ProcessError("Could not add edge '" + currLeft->getID() + "'.");
                 }
-                prevLeft = currLeft;
+                if (nb.getEdgeCont().wasIgnored(id)) {
+                    prevLeft = 0;
+                } else {
+                    // connect lane sections
+                    if (prevLeft != 0) {
+                        std::map<int, int> connections = (*j).getInnerConnections(OPENDRIVE_TAG_LEFT, *(j - 1));
+                        for (std::map<int, int>::const_iterator k = connections.begin(); k != connections.end(); ++k) {
+                            currLeft->addLane2LaneConnection((*k).first, prevLeft, (*k).second, NBEdge::L2L_VALIDATED);
+                        }
+                    }
+                    prevLeft = currLeft;
+                }
             }
             (*j).sumoID = id;
 
@@ -535,7 +548,7 @@ NIImporter_OpenDrive::loadNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
             std::vector<NBEdge::Connection>& cons = from->getConnections();
             for (std::vector<NBEdge::Connection>::iterator k = cons.begin(); k != cons.end(); ++k) {
                 if ((*k).fromLane == fromLane && (*k).toEdge == to && (*k).toLane == toLane) {
-                    (*k).origID = (*i).origID + " " + toString((*i).origLane);
+                    (*k).origID = (*i).origID + "_" + toString((*i).origLane);
                     break;
                 }
             }
@@ -831,6 +844,7 @@ NIImporter_OpenDrive::computeShapes(std::map<std::string, OpenDriveEdge*>& edges
                 }
                 e.geom.pop_back();
             }
+            //std::cout << " adding geometry to road=" << e.id << " old=" << e.geom << " new=" << geom << "\n";
             for (PositionVector::iterator k = geom.begin(); k != geom.end(); ++k) {
                 e.geom.push_back_noDoublePos(*k);
             }
@@ -839,10 +853,8 @@ NIImporter_OpenDrive::computeShapes(std::map<std::string, OpenDriveEdge*>& edges
         if (oc.exists("geometry.min-dist") && !oc.isDefault("geometry.min-dist")) {
             e.geom.removeDoublePoints(oc.getFloat("geometry.min-dist"), true);
         }
-        for (int j = 0; j < (int)e.geom.size(); ++j) {
-            if (!NBNetBuilder::transformCoordinates(e.geom[j])) {
-                WRITE_ERROR("Unable to project coordinates for.");
-            }
+        if (!NBNetBuilder::transformCoordinates(e.geom)) {
+            WRITE_ERROR("Unable to project coordinates for edge '" + e.id + "'.");
         }
         // add z-data
         int k = 0;
@@ -853,7 +865,7 @@ NIImporter_OpenDrive::computeShapes(std::map<std::string, OpenDriveEdge*>& edges
             while (k < (int)e.geom.size() && pos < sNext) {
                 const SUMOReal ds = pos - el.s;
                 const SUMOReal z = el.a + el.b * ds + el.c * ds * ds + el.d * ds * ds * ds;
-                //std::cout << " edge=" << e.id << " k=" << k << " sNext=" << sNext << " pos=" << pos << " z=" << z << " pos=" << pos << " ds=" << ds << " el.s=" << el.s << "el.a=" << el.a << " el.b=" << el.b << " el.c=" << el.c << " el.d=" << el.d <<  "\n";
+                //std::cout << " edge=" << e.id << " k=" << k << " sNext=" << sNext << " pos=" << pos << " z=" << z << " ds=" << ds << " el.s=" << el.s << "el.a=" << el.a << " el.b=" << el.b << " el.c=" << el.c << " el.d=" << el.d <<  "\n";
                 e.geom[k].add(0, 0, z);
                 k++;
                 if (k < (int)e.geom.size()) {
@@ -863,6 +875,57 @@ NIImporter_OpenDrive::computeShapes(std::map<std::string, OpenDriveEdge*>& edges
                 }
             }
         }
+        // add laneoffset
+        if (e.offsets.size() > 0) {
+            // make sure there are intermediate points for each offset-section
+            for (std::vector<OpenDriveLaneOffset>::iterator j = e.offsets.begin(); j != e.offsets.end(); ++j) {
+                const OpenDriveLaneOffset& el = *j;
+                // check wether we need to insert a new point at dist
+                Position pS = e.geom.positionAtOffset2D(el.s);
+                int iS = e.geom.indexOfClosest(pS);
+                // prevent close spacing to reduce impact of rounding errors in z-axis
+                if (pS.distanceTo2D(e.geom[iS]) > POSITION_EPS) {
+                    e.geom.insertAtClosest(pS);
+                    //std::cout << " edge=" << e.id << " inserting pos=" << pS << " s=" << el.s << " iS=" << iS << " dist=" << pS.distanceTo2D(e.geom[iS]) << "\n";
+                }
+            }
+            // XXX add further points for sections with non-constant offset
+            // shift each point orthogonally by the specified offset
+            int k = 0;
+            SUMOReal pos = 0;
+            PositionVector geom2;
+            for (std::vector<OpenDriveLaneOffset>::iterator j = e.offsets.begin(); j != e.offsets.end(); ++j) {
+                const OpenDriveLaneOffset& el = *j;
+                const SUMOReal sNext = (j + 1) == e.offsets.end() ? std::numeric_limits<SUMOReal>::max() : (*(j + 1)).s;
+                while (k < (int)e.geom.size() && pos < sNext) {
+                    const SUMOReal ds = pos - el.s;
+                    const SUMOReal offset = el.a + el.b * ds + el.c * ds * ds + el.d * ds * ds * ds;
+                    //std::cout << " edge=" << e.id << " k=" << k << " sNext=" << sNext << " pos=" << pos << " offset=" << offset << " ds=" << ds << " el.s=" << el.s << "el.a=" << el.a << " el.b=" << el.b << " el.c=" << el.c << " el.d=" << el.d <<  "\n";
+                    if (fabs(offset) > POSITION_EPS) {
+                        try {
+                            PositionVector tmp = e.geom;
+                            // XXX shifting the whole geometry is inefficient.  could also use positionAtOffset(lateralOffset=...)
+                            tmp.move2side(-offset);
+                            //std::cout << " edge=" << e.id << " k=" << k << " offset=" << offset << " geom[k]=" << e.geom[k] << " tmp[k]=" << tmp[k] << " gSize=" << e.geom.size() << " tSize=" << tmp.size() <<  " geom=" << e.geom << " tmp=" << tmp << "\n";
+                            geom2.push_back(tmp[k]);
+                        } catch (InvalidArgument&) { 
+                            geom2.push_back(e.geom[k]);
+                        }
+                    } else {
+                        geom2.push_back(e.geom[k]);
+                    }
+                    k++;
+                    if (k < (int)e.geom.size()) {
+                        // XXX pos understimates the actual position since the
+                        // actual geometry between k-1 and k could be curved
+                        pos += e.geom[k - 1].distanceTo2D(e.geom[k]);
+                    }
+                }
+            }
+            assert(e.geom.size() == geom2.size());
+            e.geom = geom2;
+        }
+        //std::cout << " loaded geometry " << e.id << "=" << e.geom << "\n";
     }
 }
 
@@ -936,7 +999,7 @@ NIImporter_OpenDrive::geomFromSpiral(const OpenDriveEdge& e, const OpenDriveGeom
     try {
         EulerSpiral s(Point2D<double>(g.x, g.y), g.hdg, curveStart, (curveEnd - curveStart) / g.length, g.length);
         std::vector<Point2D<double> > into;
-        s.computeSpiral(into, 1.);
+        s.computeSpiral(into, SPIRAL_RES);
         for (std::vector<Point2D<double> >::iterator i = into.begin(); i != into.end(); ++i) {
             ret.push_back(Position((*i).getX(), (*i).getY()));
         }
@@ -999,7 +1062,7 @@ NIImporter_OpenDrive::geomFromPoly(const OpenDriveEdge& e, const OpenDriveGeomet
     const SUMOReal s = sin(g.hdg);
     const SUMOReal c = cos(g.hdg);
     PositionVector ret;
-    for (SUMOReal off = 0; off < g.length + 2.; off += 2.) {
+    for (SUMOReal off = 0; off < g.length + 2.; off += POLY_RES) {
         SUMOReal x = off;
         SUMOReal y = g.params[0] + g.params[1] * off + g.params[2] * pow(off, 2.) + g.params[3] * pow(off, 3.);
         SUMOReal xnew = x * c - y * s;
@@ -1016,10 +1079,9 @@ NIImporter_OpenDrive::geomFromParamPoly(const OpenDriveEdge& e, const OpenDriveG
     const SUMOReal s = sin(g.hdg);
     const SUMOReal c = cos(g.hdg);
     const SUMOReal pMax = g.params[8];
-    // import with 2m resolution
-    const SUMOReal pStep = pMax / ceil(g.length / 2.0);
+    const SUMOReal pStep = pMax / ceil(g.length / PARAMPOLY3_RES);
     PositionVector ret;
-    for (SUMOReal p = 0; p < pMax + pStep; p += pStep) {
+    for (SUMOReal p = 0; p <= pMax + pStep; p += pStep) {
         SUMOReal x = g.params[0] + g.params[1] * p + g.params[2] * pow(p, 2.) + g.params[3] * pow(p, 3.);
         SUMOReal y = g.params[4] + g.params[5] * p + g.params[6] * pow(p, 2.) + g.params[7] * pow(p, 3.);
         SUMOReal xnew = x * c - y * s;
@@ -1414,6 +1476,15 @@ NIImporter_OpenDrive::myStartElement(int element,
         case OPENDRIVE_TAG_LANESECTION: {
             SUMOReal s = attrs.get<SUMOReal>(OPENDRIVE_ATTR_S, myCurrentEdge.id.c_str(), ok);
             myCurrentEdge.laneSections.push_back(OpenDriveLaneSection(s));
+        }
+        break;
+        case OPENDRIVE_TAG_LANEOFFSET: {
+            SUMOReal s = attrs.get<SUMOReal>(OPENDRIVE_ATTR_S, myCurrentEdge.id.c_str(), ok);
+            SUMOReal a = attrs.get<SUMOReal>(OPENDRIVE_ATTR_A, myCurrentEdge.id.c_str(), ok);
+            SUMOReal b = attrs.get<SUMOReal>(OPENDRIVE_ATTR_B, myCurrentEdge.id.c_str(), ok);
+            SUMOReal c = attrs.get<SUMOReal>(OPENDRIVE_ATTR_C, myCurrentEdge.id.c_str(), ok);
+            SUMOReal d = attrs.get<SUMOReal>(OPENDRIVE_ATTR_D, myCurrentEdge.id.c_str(), ok);
+            myCurrentEdge.offsets.push_back(OpenDriveLaneOffset(s, a, b, c, d));
         }
         break;
         case OPENDRIVE_TAG_LEFT:

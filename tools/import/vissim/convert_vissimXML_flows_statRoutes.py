@@ -4,14 +4,14 @@
 @file    convert_vissimXML_flows_statRoutes.py
 @author  Lukas Grohmann <Lukas.Grohmann@ait.ac.at>
 @date    Jun 09 2015
-@version $Id: convert_vissimXML_flows_statRoutes.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: convert_vissimXML_flows_statRoutes.py 22608 2017-01-17 06:28:54Z behrisch $
 
 Parses flows and static routes from a VISSIM .inpx file
 and writes converted information to a given .rou.xml file.
 see documentation (TODO ref.)
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2009-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

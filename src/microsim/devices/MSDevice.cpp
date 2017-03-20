@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    14.08.2013
-/// @version $Id: MSDevice.cpp 20890 2016-06-06 12:29:01Z namdre $
+/// @version $Id: MSDevice.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Abstract in-vehicle device
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2013-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2013-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

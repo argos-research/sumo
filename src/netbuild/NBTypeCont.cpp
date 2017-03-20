@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBTypeCont.cpp 21492 2016-09-19 07:21:24Z behrisch $
+/// @version $Id: NBTypeCont.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A storage for the available types of an edge
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -2,12 +2,12 @@
 /// @file    GNEEvent_NetworkLoaded.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEEvent_NetworkLoaded.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEEvent_NetworkLoaded.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Event to send when the network has been loaded by GNELoadThread
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

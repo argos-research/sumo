@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_Vehicle.h 20969 2016-06-15 08:02:52Z namdre $
+/// @version $Id: TraCIServerAPI_Vehicle.h 22778 2017-01-30 15:55:21Z namdre $
 ///
 // APIs for getting/setting vehicle values via TraCI
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -83,7 +83,6 @@ private:
     static MSVehicleType& getSingularType(SUMOVehicle* const veh);
 
 
-    static const std::map<std::string, std::vector<MSLane*> >& getOrBuildVTDMap();
     static bool vtdMap(const Position& pos, SUMOReal maxRouteDistance, const std::string& origID, const SUMOReal angle, MSVehicle& v, TraCIServer& server,
                        SUMOReal& bestDistance, MSLane** lane, SUMOReal& lanePos, int& routeOffset, ConstMSEdgeVector& edges);
 

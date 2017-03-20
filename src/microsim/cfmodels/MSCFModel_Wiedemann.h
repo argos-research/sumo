@@ -3,12 +3,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    June 2011
-/// @version $Id: MSCFModel_Wiedemann.h 21649 2016-10-10 13:24:35Z luecken $
+/// @version $Id: MSCFModel_Wiedemann.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The psycho-physical model of Wiedemann
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -6,13 +6,13 @@
 /// @author  Walter Bamberger
 /// @author  Jakob Erdmann
 /// @date    July 2010
-/// @version $Id: AGCity.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: AGCity.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // City class that contains all other objects of the city: in particular
 // streets, households, bus lines, work positions and school
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2010-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2010-2017 DLR (http://www.dlr.de/) and contributors
 // activitygen module
 // Copyright 2010 TUM (Technische Universitaet Muenchen, http://www.tum.de/)
 /****************************************************************************/
@@ -41,6 +41,7 @@
 #include <map>
 #include <iomanip>
 #include <utils/common/RandHelper.h>
+#include <utils/options/OptionsCont.h>
 #include <router/RONet.h>
 #include <router/ROEdge.h>
 #include "AGStreet.h"
@@ -290,6 +291,7 @@ AGCity::schoolAllocation() {
 
 void
 AGCity::workAllocation() {
+    const bool debug = OptionsCont::getOptions().getBool("debug");
     statData.AdultNbr = 0;
     //end tests
     /**
@@ -297,6 +299,10 @@ AGCity::workAllocation() {
      */
     std::list<AGHousehold>::iterator it;
     bool shortage;
+
+    if (debug) {
+        std::cout << "\n";
+    }
 
     for (it = households.begin(); it != households.end(); ++it) {
         if (it->retiredHouseholders()) {
@@ -307,6 +313,9 @@ AGCity::workAllocation() {
             std::cout << "===> ERROR: Not enough work positions in the city for all working people..." << std::endl;
         }
         statData.AdultNbr += it->getAdultNbr(); //TESTING
+        if (debug) {
+            std::cout << " processed " << statData.AdultNbr << " adults\r";
+        }
     }
 
     /**

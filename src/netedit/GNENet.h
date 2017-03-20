@@ -2,7 +2,7 @@
 /// @file    GNENet.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNENet.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNENet.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // The lop level container for GNE-network-components such as GNEEdge and
 // GNEJunction.  Contains an internal instances of NBNetBuilder GNE components
@@ -16,7 +16,7 @@
 //
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -68,7 +68,6 @@ class GNELane;
 class GNEJunction;
 class GNEUndoList;
 class GNEAdditional;
-class GNEAdditionalSet;
 class GNEBusStop;
 class GNEChargingStation;
 class GNEDetectorE1;
@@ -76,6 +75,7 @@ class GNEDetectorE2;
 class GNEDetectorE3;
 class GNEDetectorE3EntryExit;
 class GNEConnection;
+class GNECrossing;
 
 // ===========================================================================
 // class definitions
@@ -197,11 +197,17 @@ public:
      */
     void deleteLane(GNELane* lane, GNEUndoList* undoList);
 
-    /**@brief remove connectino
+    /**@brief remove connection
      * @param[in] connection The connection to be removed
      * @param[in] undoList The undolist in which to mark changes
      */
     void deleteConnection(GNEConnection* connection, GNEUndoList* undoList);
+
+    /**@brief remove crossing
+     * @param[in] crossing The crossing to be removed
+     * @param[in] undoList The undolist in which to mark changes
+     */
+    void deleteCrossing(GNECrossing* crossing, GNEUndoList* undoList);
 
     /**@brief duplicates lane
      * @param[in] lane The lane to be duplicated
@@ -209,9 +215,10 @@ public:
      */
     void duplicateLane(GNELane* lane, GNEUndoList* undoList);
 
+
     /**@brief transform lane to restricted lane
      * @param[in] vclass vehicle class to restrict
-     * @param[in] lane The lane to be trasformed
+     * @param[in] lane The lane to be transformed
      * @param[in] undoList The undolist in which to mark changes
      */
     bool restrictLane(SUMOVehicleClass vclass, GNELane* lane, GNEUndoList* undoList);
@@ -389,13 +396,10 @@ public:
      */
     void joinSelectedJunctions(GNEUndoList* undoList);
 
-    /* @brief removes junctions that have no edges
-     */
+    /// @brief removes junctions that have no edges
     void removeSolitaryJunctions(GNEUndoList* undoList);
 
-    /* @brief replace the selected junction by geometry node(s)
-     * and merge the edges
-     */
+    /// @brief replace the selected junction by geometry node(s) and merge the edges
     void replaceJunctionByGeometry(GNEJunction* junction, GNEUndoList* undoList);
 
     /* @brief trigger recomputation of junction shape and logic
@@ -403,14 +407,17 @@ public:
      */
     void computeJunction(GNEJunction* junction);
 
-    /// @brief update junction shapes
-    void updateJunctionShapes();
-
     /// @brief inform the net about the need for recomputation
     void requireRecompute();
 
+    /// @brief check if net has crossings
+    bool netHasCrossings() const;
+
     /// @brief get pointer to the main App
     FXApp* getApp();
+
+    /// @brief get net builder
+    NBNetBuilder* getNetBuilder() const;
 
     /// @brief add edge id to the list of explicit turnarounds
     void addExplicitTurnaround(std::string id);
@@ -428,14 +435,6 @@ public:
     /// @brief get shape container
     ShapeContainer& getShapeContainer();
 
-    /// @brief set additionals File
-    /// @note used to load additionals throught command line
-    void setAdditionalsFile(const std::string& additionalFile);
-
-    /// @brief set additionals File
-    /// @note used to set additionals output file throught command line
-    void setAdditionalsOutputFile(const std::string& additionalOutputFile);
-
     /**@brief Insert a additional element previously created in GNEAdditionalHandler
      * @param[in] additional pointer to the additional element to add
      * @param[in] hardFail enable or disable exception if additional to insert is duplicated
@@ -450,6 +449,12 @@ public:
     /// @brief update additional ID in container
     /// @note this function is automatically called when user changes the ID of an additional
     void updateAdditionalID(const std::string& oldID, GNEAdditional* additional);
+
+    /**@brief Returns the named additional
+     * @param[in] id The id of the additional to return.
+     * @param[in] hardFail enable or disable exception if additional to insert is duplicated
+     */
+    GNEAdditional* retrieveAdditional(const std::string& idl, bool hardFail = true) const;
 
     /**@brief Returns the named additional
      * @param[in] type tag with the type of additional
@@ -531,8 +536,6 @@ private:
 
     /// @brief inserts a single edge into the net and into the underlying netbuild-container
     void insertEdge(GNEEdge* edge);
-
-
 
     /// @brief registers a junction with GNENet containers
     GNEJunction* registerJunction(GNEJunction* junction);

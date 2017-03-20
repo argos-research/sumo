@@ -2,12 +2,12 @@
 /// @file    GNEChargingStation.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEChargingStation.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEChargingStation.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 /// A class for visualizing chargingStation geometry (adapted from GUILaneWrapper)
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -64,8 +64,8 @@
 // member method definitions
 // ===========================================================================
 
-GNEChargingStation::GNEChargingStation(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal startPos, SUMOReal endPos, SUMOReal chargingPower, SUMOReal efficiency, bool chargeInTransit, int chargeDelay, bool blocked) :
-    GNEStoppingPlace(id, viewNet, SUMO_TAG_CHARGING_STATION, lane, startPos, endPos, blocked),
+GNEChargingStation::GNEChargingStation(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal startPos, SUMOReal endPos, SUMOReal chargingPower, SUMOReal efficiency, bool chargeInTransit, const SUMOReal chargeDelay) :
+    GNEStoppingPlace(id, viewNet, SUMO_TAG_CHARGING_STATION, ICON_CHARGINGSTATION, lane, startPos, endPos),
     myChargingPower(chargingPower),
     myEfficiency(efficiency),
     myChargeInTransit(chargeInTransit),
@@ -152,7 +152,7 @@ GNEChargingStation::updateGeometry() {
 
 
 void
-GNEChargingStation::writeAdditional(OutputDevice& device, const std::string&) {
+GNEChargingStation::writeAdditional(OutputDevice& device) const {
     // Write additional
     device.openTag(getTag());
     device.writeAttr(SUMO_ATTR_ID, getID());
@@ -200,7 +200,7 @@ GNEChargingStation::setChargingPower(SUMOReal chargingPower) {
     if (chargingPower > 0) {
         myChargingPower = chargingPower;
     } else {
-        throw InvalidArgument("Value of charging Power must be greather than 0");
+        throw InvalidArgument("Value of charging Power must be greater than 0");
     }
 }
 
@@ -224,10 +224,9 @@ GNEChargingStation::setChargeInTransit(bool chargeInTransit) {
 void
 GNEChargingStation::setChargeDelay(SUMOReal chargeDelay) {
     if (chargeDelay < 0) {
-        myChargeDelay = chargeDelay;
-    } else {
         throw InvalidArgument("Value of chargeDelay cannot be negative");
     }
+    myChargeDelay = chargeDelay;
 }
 
 
@@ -381,7 +380,7 @@ GNEChargingStation::getAttribute(SumoXMLAttr key) const {
         case GNE_ATTR_BLOCK_MOVEMENT:
             return toString(myBlocked);
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -404,7 +403,7 @@ GNEChargingStation::setAttribute(SumoXMLAttr key, const std::string& value, GNEU
             undoList->p_add(new GNEChange_Attribute(this, key, value));
             break;
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -432,8 +431,9 @@ GNEChargingStation::isValid(SumoXMLAttr key, const std::string& value) {
                 if (parse<SUMOReal>(value) > myLane->getLaneParametricLenght()) {
                     // Ask user if want to assign the lenght of lane as endPosition
                     FXuint answer = FXMessageBox::question(getViewNet()->getApp(), MBOX_YES_NO,
-                                                           "EndPosition exceeds the size of the lane", "%s",
-                                                           "EndPosition exceeds the size of the lane. You want to assign the size of the lane as endPosition?");
+                                                           (toString(SUMO_ATTR_ENDPOS) + " exceeds the size of the " + toString(SUMO_TAG_LANE)).c_str(), "%s",
+                                                           (toString(SUMO_ATTR_ENDPOS) + " exceeds the size of the " + toString(SUMO_TAG_LANE) +
+                                                            ". Do you want to assign the lenght of the " + toString(SUMO_TAG_LANE) + " as " + toString(SUMO_ATTR_ENDPOS) + "?").c_str());
                     if (answer == 1) { //1:yes, 2:no, 4:esc
                         return true;
                     } else {
@@ -453,11 +453,11 @@ GNEChargingStation::isValid(SumoXMLAttr key, const std::string& value) {
         case SUMO_ATTR_CHARGEINTRANSIT:
             return canParse<bool>(value);
         case SUMO_ATTR_CHARGEDELAY:
-            return (canParse<int>(value) && parse<int>(value) >= 0);
+            return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) >= 0);
         case GNE_ATTR_BLOCK_MOVEMENT:
             return canParse<bool>(value);
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -498,15 +498,16 @@ GNEChargingStation::setAttribute(SumoXMLAttr key, const std::string& value) {
             myChargeInTransit = parse<bool>(value);
             break;
         case SUMO_ATTR_CHARGEDELAY:
-            myChargeDelay = parse<int>(value);
+            myChargeDelay = parse<SUMOReal>(value);
             break;
         case GNE_ATTR_BLOCK_MOVEMENT:
             myBlocked = parse<bool>(value);
             getViewNet()->update();
             break;
         default:
-            throw InvalidArgument(toString(getType()) + "attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + "attribute '" + toString(key) + "' not allowed");
     }
 }
+
 
 /****************************************************************************/

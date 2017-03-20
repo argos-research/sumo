@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    08.10.2009
-/// @version $Id: GUIShapeContainer.cpp 21148 2016-07-12 08:47:10Z behrisch $
+/// @version $Id: GUIShapeContainer.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Storage for geometrical objects extended by mutexes
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -2,12 +2,12 @@
 /// @file    GNEStoppingPlace.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Dec 2015
-/// @version $Id: GNEStoppingPlace.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEStoppingPlace.h 22876 2017-02-07 13:40:22Z palcraft $
 ///
 /// A abstract class to define common parameters of lane area in which vehicles can halt (GNE version)
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -53,12 +53,12 @@ public:
      * @param[in] id Gl-id of the stopping place (Must be unique)
      * @param[in] viewNet pointer to GNEViewNet of this additional element belongs
      * @param[in] tag Type of xml tag that define the StoppingPlace (SUMO_TAG_BUS_STOP, SUMO_TAG_CHARGING_STATION, etc...)
+     * @param[in] icon GUIIcon associated to the stopping place
      * @param[in] lane Lane of this StoppingPlace belongs
      * @param[in] startPos Start position of the StoppingPlace
      * @param[in] endPos End position of the StoppingPlace
-     * @param[in] blocked set initial blocking state of item
      */
-    GNEStoppingPlace(const std::string& id, GNEViewNet* viewNet, SumoXMLTag tag, GNELane* lane, SUMOReal startPos, SUMOReal endPos, bool blocked = false);
+    GNEStoppingPlace(const std::string& id, GNEViewNet* viewNet, SumoXMLTag tag, GUIIcon icon, GNELane* lane, SUMOReal startPos, SUMOReal endPos);
 
     /// @brief Destructor
     ~GNEStoppingPlace();
@@ -79,7 +79,7 @@ public:
      * @param[in] device device in which write parameters of additional element
      * @param[in] currentDirectory current directory in which this additional are writted
      */
-    virtual void writeAdditional(OutputDevice& device, const std::string& currentDirectory) = 0;
+    virtual void writeAdditional(OutputDevice& device) const = 0;
 
     /// @brief Returns the Start position of the stoppingPlace
     SUMOReal getStartPosition() const;

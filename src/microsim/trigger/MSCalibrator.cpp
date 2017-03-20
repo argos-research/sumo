@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, May 2005
-/// @version $Id: MSCalibrator.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: MSCalibrator.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Calibrates the flow on an edge by removing an inserting vehicles
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -84,7 +84,7 @@ MSCalibrator::MSCalibrator(const std::string& id,
     myAmActive(false) {
     if (outputFilename != "") {
         myOutput = &OutputDevice::getDevice(outputFilename);
-        myOutput->writeXMLHeader("calibratorstats");
+        myOutput->writeXMLHeader("calibratorstats", "calibratorstats_file.xsd");
     }
     if (aXMLFilename != "") {
         XMLSubSys::runParser(*this, aXMLFilename);
@@ -210,7 +210,7 @@ MSCalibrator::writeXMLOutput() {
         assert(discrepancy >= 0);
         const std::string ds = (discrepancy > 0 ? "\" vaporizedOnNextEdge=\"" + toString(discrepancy) : "");
         const SUMOReal durationSeconds = STEPS2TIME(myCurrentStateInterval->end - myCurrentStateInterval->begin);
-        (*myOutput) << "   <interval begin=\"" << time2string(myCurrentStateInterval->begin) <<
+        (*myOutput) << "    <interval begin=\"" << time2string(myCurrentStateInterval->begin) <<
                     "\" end=\"" << time2string(myCurrentStateInterval->end) <<
                     "\" id=\"" << myID <<
                     "\" nVehContrib=\"" << p <<

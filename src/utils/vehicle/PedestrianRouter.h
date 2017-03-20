@@ -2,12 +2,12 @@
 /// @file    PedestrianRouter.h
 /// @author  Jakob Erdmann
 /// @date    Mon, 03 March 2014
-/// @version $Id: PedestrianRouter.h 21206 2016-07-20 08:08:35Z behrisch $
+/// @version $Id: PedestrianRouter.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The Pedestrian Router builds a special network and delegates to a SUMOAbstractRouter.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

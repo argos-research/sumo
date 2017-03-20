@@ -20,7 +20,7 @@ So far POIs are situated in the middle on all edges without regard to the type o
  Output is written in file 'pois.add.xml'
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2009-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -82,7 +82,7 @@ for edge in net._edges:
             data.append(edge._id)
             data.append(edge._from._id)
             data.append(edge._to._id)
-            data.append(edge._shape)
+            data.append(edge.getShape())
             nodeList.append(data)
 
 # find connected edges
@@ -134,8 +134,10 @@ for elm in connEdges:
         dX = x2 - x1
         dY = y2 - y1
         eucDist = pow(pow(dX, 2) + pow(dY, 2), 0.5)  # Euclidean distance
-        normAscX = dX / eucDist						# normalized Euclidean distance in x
-        normAscY = dY / eucDist						# normalized Euclidean distance in y
+        # normalized Euclidean distance in x
+        normAscX = 0 if dX == 0 else dX / eucDist
+        # normalized Euclidean distance in y
+        normAscY = 0 if dY == 0 else dY / eucDist
         xCur = x1									# the current POI position
         yCur = y1
         if i == 0:

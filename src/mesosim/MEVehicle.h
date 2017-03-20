@@ -2,12 +2,12 @@
 /// @file    MEVehicle.h
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: MEVehicle.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MEVehicle.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A vehicle from the mesoscopic point of view
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -177,6 +177,18 @@ public:
      */
     const ConstMSEdgeVector getStopEdges() const;
 
+    /** @brief replace the current parking area stop with a new stop with merge duration
+     */
+    bool replaceParkingArea(MSParkingArea* /* parkingArea = 0 */, std::string& /*errorMsg*/) {
+        throw ProcessError("parkingZoneReroute not implemented for meso");
+    }
+
+    /** @brief get the current parking area stop
+     */
+    MSParkingArea* getNextParkingArea() {
+        throw ProcessError("parkingZoneReroute not implemented for meso");
+    }
+
     /** @brief Sets the (planned) time at which the vehicle leaves his current cell
      * @param[in] t The leaving time
      */
@@ -288,12 +300,12 @@ public:
         return STEPS2TIME(getBlockTime());
     }
 
-    /// @brief Returns the delay that is accrued due to option --meso-tls-penalty
-    SUMOReal getCurrentTLSPenaltySeconds() const;
+    /// @brief Returns the delay that is accrued due to option --meso-tls-penalty or --meso-minor-penalty
+    SUMOReal getCurrentLinkPenaltySeconds() const;
 
 
     /// Replaces the current route by the given one
-    bool replaceRoute(const MSRoute* route, bool onInit = false, int offset = 0);
+    bool replaceRoute(const MSRoute* route, bool onInit = false, int offset = 0, bool addStops = true);
 
     /** @brief Returns whether the vehicle is allowed to pass the next junction
      * @return true iff the vehicle may drive over the next junction

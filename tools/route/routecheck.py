@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Yun-Pang Floetteroed
 @date    2007-03-09
-@version $Id: routecheck.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: routecheck.py 22608 2017-01-17 06:28:54Z behrisch $
 
 This script does simple checks for the routes on a given network.
 Warnings will be issued if there is an unknown edge in the route,
@@ -22,7 +22,7 @@ this is changed without adding comments. The same is true for camelCase
 changes of attributes.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2007-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

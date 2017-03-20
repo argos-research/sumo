@@ -7,12 +7,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    2004-11-23
-/// @version $Id: MSInductLoop.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: MSInductLoop.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // An unextended detector measuring at a fixed position on a fixed lane.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -220,7 +220,7 @@ MSInductLoop::getTimestepsSinceLastDetection() const {
 
 void
 MSInductLoop::writeXMLDetectorProlog(OutputDevice& dev) const {
-    dev.writeXMLHeader("detector", "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://sumo.dlr.de/xsd/det_e1_file.xsd\"");
+    dev.writeXMLHeader("detector", "det_e1_file.xsd");
 }
 
 

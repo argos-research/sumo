@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Oct 2003
-/// @version $Id: MS_E2_ZS_CollectorOverLanes.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: MS_E2_ZS_CollectorOverLanes.cpp 22689 2017-01-24 10:37:24Z behrisch $
 ///
 // A detector which joins E2Collectors over consecutive lanes (backward)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2003-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2003-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -109,20 +109,20 @@ MS_E2_ZS_CollectorOverLanes::extendTo(SUMOReal length) {
                 // get the lane to look before
                 MSLane* toExtend = lv.back();
                 // and her predecessors
-                std::vector<MSLane*> predeccessors = getLanePredeccessorLanes(toExtend);
-                if (predeccessors.size() == 0) {
+                std::vector<MSLane*> predecessors = getLanePredecessorLanes(toExtend);
+                if (predecessors.empty()) {
                     int off = 1;
                     MSEdge& e = toExtend->getEdge();
                     const std::vector<MSLane*>& lanes = e.getLanes();
                     int idx = (int) distance(lanes.begin(), find(lanes.begin(), lanes.end(), toExtend));
-                    while (predeccessors.size() == 0) {
+                    while (predecessors.empty() && off < (int)lanes.size()) {
                         if (idx - off >= 0) {
                             MSLane* tryMe = lanes[idx - off];
-                            predeccessors = getLanePredeccessorLanes(tryMe);
+                            predecessors = getLanePredecessorLanes(tryMe);
                         }
-                        if (predeccessors.size() == 0 && idx + off < (int) lanes.size()) {
+                        if (predecessors.size() == 0 && idx + off < (int) lanes.size()) {
                             MSLane* tryMe = lanes[idx + off];
-                            predeccessors = getLanePredeccessorLanes(tryMe);
+                            predecessors = getLanePredecessorLanes(tryMe);
                         }
                         off++;
                     }
@@ -134,7 +134,7 @@ MS_E2_ZS_CollectorOverLanes::extendTo(SUMOReal length) {
                                 const std::vector<std::string> &predeccessors =
                                     (*conts).second;*/
                 // go through the predeccessors and extend the detector
-                for (std::vector<MSLane*>::const_iterator i = predeccessors.begin(); i != predeccessors.end(); i++) {
+                for (std::vector<MSLane*>::const_iterator i = predecessors.begin(); i != predecessors.end(); i++) {
                     // get the lane
                     MSLane* l = *i;
                     // compute detector length
@@ -168,10 +168,10 @@ MS_E2_ZS_CollectorOverLanes::extendTo(SUMOReal length) {
 
 
 std::vector<MSLane*>
-MS_E2_ZS_CollectorOverLanes::getLanePredeccessorLanes(MSLane* l) {
+MS_E2_ZS_CollectorOverLanes::getLanePredecessorLanes(MSLane* l) {
     std::string eid = l->getEdge().getID();
     // get predecessing edges
-    const MSEdgeVector& predEdges = l->getEdge().getIncomingEdges();
+    const MSEdgeVector& predEdges = l->getEdge().getPredecessors();
     std::vector<MSLane*> ret;
     // find predecessing lanes
     MSEdgeVector::const_iterator i = predEdges.begin();
@@ -231,7 +231,7 @@ MS_E2_ZS_CollectorOverLanes::writeXMLOutput(OutputDevice& /*&dev*/,
 
 void
 MS_E2_ZS_CollectorOverLanes::writeXMLDetectorProlog(OutputDevice& dev) const {
-    dev.writeXMLHeader("detector");
+    dev.writeXMLHeader("detector", "det_e2_file.xsd");
 }
 
 

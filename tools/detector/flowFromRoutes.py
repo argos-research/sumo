@@ -5,12 +5,12 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2007-06-28
-@version $Id: flowFromRoutes.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: flowFromRoutes.py 22608 2017-01-17 06:28:54Z behrisch $
 
 This script recreates a flow file from routes and emitters.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2007-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -23,6 +23,7 @@ from __future__ import print_function
 import math
 import string
 import sys
+import os
 
 from xml.sax import saxutils, make_parser, handler
 from optparse import OptionParser
@@ -45,18 +46,27 @@ class DetectorRouteEmitterReader(handler.ContentHandler):
         self._parser = make_parser()
         self._parser.setContentHandler(self)
 
-    def addEdgeFlow(self, edge, flow):
-        if not edge in self._edgeFlow:
-            self._edgeFlow[edge] = 0
-        self._edgeFlow[edge] += flow
+    def addRouteFlow(self, route, flow):
+        for edge in self._routes[route]:
+            if not edge in self._edgeFlow:
+                self._edgeFlow[edge] = 0
+            self._edgeFlow[edge] += flow
 
     def startElement(self, name, attrs):
         if name == 'route':
             if 'id' in attrs:
                 self._routes[attrs['id']] = attrs['edges'].split()
         if name == 'vehicle':
-            for edge in self._routes[attrs['route']]:
-                self.addEdgeFlow(edge, 1)
+            self.addRouteFlow(attrs['route'], 1)
+        if name == 'flow':
+            if 'route' in attrs:
+                self.addRouteFlow(attrs['route'], float(attrs['number']))
+        if name == 'routeDistribution':
+            if 'routes' in attrs:
+                routes = attrs['routes'].split()
+                nums = attrs['probabilities'].split()
+                for r, n in zip(routes, nums):
+                    self.addRouteFlow(r, float(n))
 
     def readDetFlows(self, flowFile):
         self._detReader.readFlows(flowFile)
@@ -97,7 +107,10 @@ class DetectorRouteEmitterReader(handler.ContentHandler):
             dFlow = []
             for group in detData:
                 if group.isValid:
-                    detString.append(string.join(sorted(group.ids), ';'))
+                    groupName = os.path.commonprefix(group.ids)
+                    if groupName == "":
+                        groupName = ';'.join(sorted(group.ids))
+                    detString.append(groupName)
                     dFlow.append(group.totalFlow)
             rFlow = len(detString) * [self._edgeFlow.get(edge, 0)]
             if includeDets:
@@ -107,7 +120,7 @@ class DetectorRouteEmitterReader(handler.ContentHandler):
         if includeDets:
             for group, rflow, dflow in sorted(output):
                 if dflow > 0 or options.respectzero:
-                    print(group, rflow, dflow)
+                    print(group, rflow, dflow, (rflow - dflow) / dflow)
         else:
             for group, flow in sorted(output):
                 print(group, flow)

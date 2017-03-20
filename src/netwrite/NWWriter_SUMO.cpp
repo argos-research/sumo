@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 04.05.2011
-/// @version $Id: NWWriter_SUMO.cpp 21714 2016-10-17 11:21:44Z namdre $
+/// @version $Id: NWWriter_SUMO.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Exporter writing networks using the SUMO format
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -67,15 +67,19 @@ NWWriter_SUMO::writeNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
         return;
     }
     OutputDevice& device = OutputDevice::getDevice(oc.getString("output-file"));
-    const std::string lefthand = oc.getBool("lefthand") ? " " + toString(SUMO_ATTR_LEFTHAND) + "=\"true\"" : "";
+    std::map<SumoXMLAttr, std::string> attrs;
+    attrs[SUMO_ATTR_VERSION] = NWFrame::MAJOR_VERSION;
+    if (oc.getBool("lefthand")) {
+        attrs[SUMO_ATTR_LEFTHAND] = "true";
+    }
     const int cornerDetail = oc.getInt("junctions.corner-detail");
-    const int linkDetail = oc.getInt("junctions.internal-link-detail");
-    const std::string junctionCornerDetail = (cornerDetail > 0
-            ? " " + toString(SUMO_ATTR_CORNERDETAIL) + "=\"" + toString(cornerDetail) + "\"" : "");
-    const std::string junctionLinkDetail = (oc.isDefault("junctions.internal-link-detail") ? "" :
-                                            " " + toString(SUMO_ATTR_LINKDETAIL) + "=\"" + toString(linkDetail) + "\"");
-    device.writeXMLHeader("net", NWFrame::MAJOR_VERSION + lefthand + junctionCornerDetail + junctionLinkDetail +
-                          " xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://sumo.dlr.de/xsd/net_file.xsd\""); // street names may contain non-ascii chars
+    if (cornerDetail > 0) {
+        attrs[SUMO_ATTR_CORNERDETAIL] = toString(cornerDetail);
+    }
+    if (!oc.isDefault("junctions.internal-link-detail")) {
+        attrs[SUMO_ATTR_LINKDETAIL] = toString(oc.getInt("junctions.internal-link-detail"));
+    }
+    device.writeXMLHeader("net", "net_file.xsd", attrs); // street names may contain non-ascii chars
     device.lf();
     // get involved container
     const NBNodeCont& nc = nb.getNodeCont();
@@ -181,8 +185,8 @@ NWWriter_SUMO::writeNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
                 device.writeAttr(SUMO_ATTR_TO, (*it).nextCrossing);
                 device.writeAttr(SUMO_ATTR_FROM_LANE, 0);
                 device.writeAttr(SUMO_ATTR_TO_LANE, 0);
-                if (node->isTLControlled()) {
-                    device.writeAttr(SUMO_ATTR_TLID, (*node->getControllingTLS().begin())->getID());
+                if (nextCrossing.tlID != "") {
+                    device.writeAttr(SUMO_ATTR_TLID, nextCrossing.tlID);
                     assert(nextCrossing.tlLinkNo >= 0);
                     device.writeAttr(SUMO_ATTR_TLLINKINDEX, nextCrossing.tlLinkNo);
                 }
@@ -778,13 +782,7 @@ NWWriter_SUMO::writeTrafficLights(OutputDevice& into, const NBTrafficLightLogicC
         into.writeAttr(SUMO_ATTR_PROGRAMID, (*it)->getProgramID());
         into.writeAttr(SUMO_ATTR_OFFSET, writeSUMOTime((*it)->getOffset()));
         // write params
-        const std::map<std::string, std::string>& params = (*it)->getMap();
-        for (std::map<std::string, std::string>::const_iterator i = params.begin(); i != params.end(); ++i) {
-            into.openTag(SUMO_TAG_PARAM);
-            into.writeAttr(SUMO_ATTR_KEY, (*i).first);
-            into.writeAttr(SUMO_ATTR_VALUE, (*i).second);
-            into.closeTag();
-        }
+        (*it)->writeParams(into);
         // write the phases
         const std::vector<NBTrafficLightLogic::PhaseDefinition>& phases = (*it)->getPhases();
         for (std::vector<NBTrafficLightLogic::PhaseDefinition>::const_iterator j = phases.begin(); j != phases.end(); ++j) {

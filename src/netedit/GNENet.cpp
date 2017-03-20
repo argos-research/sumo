@@ -2,7 +2,7 @@
 /// @file    GNENet.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNENet.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNENet.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A visual container for GNE-network-components such as GNEEdge and GNEJunction.
 // GNE components wrap netbuild-components and supply visualisation and editing
@@ -15,7 +15,7 @@
 //
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -36,48 +36,50 @@
 #include <config.h>
 #endif
 
-#include <utility>
+#include <map>
 #include <set>
 #include <vector>
-#include <map>
 
-#include <utils/shapes/ShapeContainer.h>
-#include <utils/xml/SUMOXMLDefinitions.h>
-#include <utils/common/RGBColor.h>
-#include <utils/common/TplConvert.h>
-#include <utils/common/MsgHandler.h>
-#include <utils/gui/windows/GUIMainWindow.h>
-#include <utils/gui/globjects/GUIGlObject_AbstractAdd.h>
-#include <utils/gui/globjects/GUIGlObjectStorage.h>
-#include <utils/gui/globjects/GUIGLObjectPopupMenu.h>
-#include <utils/gui/div/GUIGlobalSelection.h>
-#include <utils/gui/div/GUIParameterTableWindow.h>
-#include <utils/gui/images/GUITextureSubSys.h>
-#include <utils/common/StringUtils.h>
-#include <netbuild/NBEdgeCont.h>
-#include <netbuild/NBNodeCont.h>
 #include <netbuild/NBAlgorithms.h>
 #include <netwrite/NWFrame.h>
 #include <netwrite/NWWriter_XML.h>
-#include "GNENet.h"
-#include "GNEApplicationWindow.h"
-#include "GNEJunction.h"
-#include "GNEEdge.h"
-#include "GNELane.h"
-#include "GNEConnection.h"
-#include "GNEUndoList.h"
-#include "GNEChange_Attribute.h"
-#include "GNEChange_Junction.h"
-#include "GNEChange_Edge.h"
-#include "GNEChange_Lane.h"
-#include "GNEChange_Connection.h"
-#include "GNEChange_Selection.h"
-#include "GNEChange_Additional.h"
+#include <utility>
+#include <utils/common/MsgHandler.h>
+#include <utils/common/RGBColor.h>
+#include <utils/common/StringUtils.h>
+#include <utils/common/TplConvert.h>
+#include <utils/gui/div/GUIGlobalSelection.h>
+#include <utils/gui/div/GUIParameterTableWindow.h>
+#include <utils/gui/globjects/GUIGLObjectPopupMenu.h>
+#include <utils/gui/globjects/GUIGlObjectStorage.h>
+#include <utils/gui/globjects/GUIGlObject_AbstractAdd.h>
+#include <utils/gui/images/GUITextureSubSys.h>
+#include <utils/gui/windows/GUIMainWindow.h>
+#include <utils/shapes/ShapeContainer.h>
+#include <utils/xml/SUMOXMLDefinitions.h>
+
 #include "GNEAdditional.h"
-#include "GNEAdditionalSet.h"
-#include "GNEStoppingPlace.h"
+#include "GNEAdditionalFrame.h"
+#include "GNEApplicationWindow.h"
+#include "GNEChange_Additional.h"
+#include "GNEChange_Attribute.h"
+#include "GNEChange_Connection.h"
+#include "GNEChange_Crossing.h"
+#include "GNEChange_Edge.h"
+#include "GNEChange_Junction.h"
+#include "GNEChange_Lane.h"
+#include "GNEChange_Selection.h"
+#include "GNEConnection.h"
+#include "GNECrossing.h"
 #include "GNEDetector.h"
+#include "GNEEdge.h"
+#include "GNEJunction.h"
+#include "GNELane.h"
+#include "GNENet.h"
+#include "GNEStoppingPlace.h"
+#include "GNEUndoList.h"
 #include "GNEViewNet.h"
+#include "GNEViewParent.h"
 
 
 #ifdef CHECK_MEMORY_LEAKS
@@ -108,6 +110,14 @@ GNENet::GNENet(NBNetBuilder* netBuilder) :
     myNeedRecompute(true) {
     GUIGlObjectStorage::gIDStorage.setNetObject(this);
 
+    // init junctions (by default Crossing and walking areas aren't created)
+    NBNodeCont& nc = myNetBuilder->getNodeCont();
+    const std::vector<std::string>& nodeNames = nc.getAllNames();
+    for (std::vector<std::string>::const_iterator name_it = nodeNames.begin(); name_it != nodeNames.end(); ++name_it) {
+        NBNode* nbn = nc.retrieve(*name_it);
+        registerJunction(new GNEJunction(*nbn, this, true));
+    }
+
     // init edges
     NBEdgeCont& ec = myNetBuilder->getEdgeCont();
     const std::vector<std::string>& edgeNames = ec.getAllNames();
@@ -119,13 +129,6 @@ GNENet::GNENet(NBNetBuilder* netBuilder) :
         }
     }
 
-    // init junctions
-    NBNodeCont& nc = myNetBuilder->getNodeCont();
-    const std::vector<std::string>& nodeNames = nc.getAllNames();
-    for (std::vector<std::string>::const_iterator name_it = nodeNames.begin(); name_it != nodeNames.end(); ++name_it) {
-        NBNode* nbn = nc.retrieve(*name_it);
-        registerJunction(new GNEJunction(*nbn, this, true));
-    }
     // make sure myGrid is initialized even for an empty net
     if (myEdges.size() == 0) {
         myGrid.add(Boundary(0, 0, 100, 100));
@@ -149,7 +152,6 @@ GNENet::GNENet(NBNetBuilder* netBuilder) :
     if (myZBoundary.ymin() != Z_INITIALIZED) {
         myZBoundary.add(0, 0);
     }
-
 }
 
 
@@ -191,8 +193,7 @@ GNENet::getBoundary() const {
 
 
 GUIGLObjectPopupMenu*
-GNENet::getPopUpMenu(GUIMainWindow& app,
-                     GUISUMOAbstractView& parent) {
+GNENet::getPopUpMenu(GUIMainWindow& app, GUISUMOAbstractView& parent) {
     GUIGLObjectPopupMenu* ret = new GUIGLObjectPopupMenu(app, parent, *this);
     buildPopupHeader(ret, app);
     buildCenterPopupEntry(ret);
@@ -241,7 +242,7 @@ GNENet::createJunction(const Position& pos, GNEUndoList* undoList) {
     std::string id = myJunctionIDSupplier.getNext();
     NBNode* nbn = new NBNode(id, pos);
     GNEJunction* junction = new GNEJunction(*nbn, this);
-    undoList->add(new GNEChange_Junction(this, junction, true), true);
+    undoList->add(new GNEChange_Junction(junction, true), true);
     assert(myJunctions[id]);
     return junction;
 }
@@ -291,8 +292,8 @@ GNENet::createEdge(
                                  defaultOffset);
         edge = new GNEEdge(*nbe, this, wasSplit);
     }
-    undoList->p_begin("create edge");
-    undoList->add(new GNEChange_Edge(this, edge, true), true);
+    undoList->p_begin("create " + toString(SUMO_TAG_EDGE));
+    undoList->add(new GNEChange_Edge(edge, true), true);
     src->setLogicValid(false, undoList);
     dest->setLogicValid(false, undoList);
     requireRecompute();
@@ -307,7 +308,12 @@ GNENet::deleteJunction(GNEJunction* junction, GNEUndoList* undoList) {
     // we have to delete all incident edges because they cannot exist without that junction
     // all deletions must be undone/redone together so we start a new command group
     // @todo if any of those edges are dead-ends should we remove their orphan junctions as well?
-    undoList->p_begin("delete junction");
+    undoList->p_begin("delete " + toString(SUMO_TAG_JUNCTION));
+
+    // delete all crossings vinculated with junction
+    while (junction->getGNECrossings().size() > 0) {
+        deleteCrossing(junction->getGNECrossings().front(), undoList);
+    }
 
     // deleting edges changes in the underlying EdgeVector so we have to make a copy
     const EdgeVector incident = junction->getNBNode()->getEdges();
@@ -317,7 +323,7 @@ GNENet::deleteJunction(GNEJunction* junction, GNEUndoList* undoList) {
 
     // remove any traffic lights from the traffic light container (avoids lots of warnings)
     junction->setAttribute(SUMO_ATTR_TYPE, toString(NODETYPE_PRIORITY), undoList);
-    undoList->add(new GNEChange_Junction(this, junction, false), true);
+    undoList->add(new GNEChange_Junction(junction, false), true);
     if (gSelected.isSelected(GLO_JUNCTION, junction->getGlID())) {
         std::set<GUIGlID> deselected;
         deselected.insert(junction->getGlID());
@@ -329,16 +335,28 @@ GNENet::deleteJunction(GNEJunction* junction, GNEUndoList* undoList) {
 
 void
 GNENet::deleteEdge(GNEEdge* edge, GNEUndoList* undoList) {
-    undoList->p_begin("delete edge");
+    undoList->p_begin("delete " + toString(SUMO_TAG_EDGE));
+    // delete additionals childs of edge
+    std::vector<GNEAdditional*> copyOfEdgeAdditionals = edge->getAdditionalChilds();
+    for (std::vector<GNEAdditional*>::iterator i = copyOfEdgeAdditionals.begin(); i != copyOfEdgeAdditionals.end(); i++) {
+        undoList->add(new GNEChange_Additional((*i), false), true);
+    }
+    // delete additionals childs of lane
+    for (std::vector<GNELane*>::const_iterator i = edge->getLanes().begin(); i != edge->getLanes().end(); i++) {
+        std::vector<GNEAdditional*> copyOfLaneAdditionals = (*i)->getAdditionalChilds();
+        for (std::vector<GNEAdditional*>::iterator j = copyOfLaneAdditionals.begin(); j != copyOfLaneAdditionals.end(); j++) {
+            undoList->add(new GNEChange_Additional((*j), false), true);
+        }
+    }
 
     // invalidate junction (saving connections)
     edge->getGNEJunctionSource()->removeFromCrossings(edge, undoList);
-    edge->getGNEJunctionDest()->removeFromCrossings(edge, undoList);
+    edge->getGNEJunctionDestiny()->removeFromCrossings(edge, undoList);
     edge->getGNEJunctionSource()->setLogicValid(false, undoList);
-    edge->getGNEJunctionDest()->setLogicValid(false, undoList);
+    edge->getGNEJunctionDestiny()->setLogicValid(false, undoList);
 
     // Delete edge
-    undoList->add(new GNEChange_Edge(this, edge, false), true);
+    undoList->add(new GNEChange_Edge(edge, false), true);
 
     // If previously was selected
     if (gSelected.isSelected(GLO_EDGE, edge->getGlID())) {
@@ -359,12 +377,17 @@ GNENet::deleteLane(GNELane* lane, GNEUndoList* undoList) {
         // remove the whole edge instead
         deleteEdge(edge, undoList);
     } else {
-        undoList->p_begin("delete lane");
+        undoList->p_begin("delete " + toString(SUMO_TAG_LANE));
+        // delete additionals childs of lane
+        std::vector<GNEAdditional*> copyOfAdditionals = lane->getAdditionalChilds();
+        for (std::vector<GNEAdditional*>::const_iterator i = copyOfAdditionals.begin(); i != copyOfAdditionals.end(); i++) {
+            undoList->add(new GNEChange_Additional((*i), false), true);
+        }
         // invalidate junctions (saving connections)
         edge->getGNEJunctionSource()->removeFromCrossings(edge, undoList);
-        edge->getGNEJunctionDest()->removeFromCrossings(edge, undoList);
+        edge->getGNEJunctionDestiny()->removeFromCrossings(edge, undoList);
         edge->getGNEJunctionSource()->setLogicValid(false, undoList);
-        edge->getGNEJunctionDest()->setLogicValid(false, undoList);
+        edge->getGNEJunctionDestiny()->setLogicValid(false, undoList);
 
         // delete lane
         const NBEdge::Lane& laneAttrs = edge->getNBEdge()->getLaneStruct(lane->getIndex());
@@ -382,12 +405,12 @@ GNENet::deleteLane(GNELane* lane, GNEUndoList* undoList) {
 
 void
 GNENet::deleteConnection(GNEConnection* connection, GNEUndoList* undoList) {
-    undoList->p_begin("delete connection");
+    undoList->p_begin("delete " + toString(SUMO_TAG_CONNECTION));
     NBConnection deleted = connection->getNBConnection();
-    undoList->add(new GNEChange_Connection(connection->getEdgeFrom(), connection->getNBEdgeConnection(), false), true);
-    GNEJunction* affected = connection->getEdgeFrom()->getGNEJunctionDest();
-    affected->invalidateTLS(myViewNet->getUndoList(), deleted);
+    GNEJunction* affected = connection->getEdgeFrom()->getGNEJunctionDestiny();
     affected->markAsModified(undoList);
+    undoList->add(new GNEChange_Connection(connection->getEdgeFrom(), connection->getNBEdgeConnection(), false), true);
+    affected->invalidateTLS(myViewNet->getUndoList(), deleted);
     if (gSelected.isSelected(GLO_CONNECTION, connection->getGlID())) {
         std::set<GUIGlID> deselected;
         deselected.insert(connection->getGlID());
@@ -399,8 +422,22 @@ GNENet::deleteConnection(GNEConnection* connection, GNEUndoList* undoList) {
 
 
 void
+GNENet::deleteCrossing(GNECrossing* crossing, GNEUndoList* undoList) {
+    undoList->p_begin("delete crossing");
+    undoList->add(new GNEChange_Crossing(crossing->getParentJunction(), crossing->getNBCrossing().edges,
+                                         crossing->getNBCrossing().width, crossing->getNBCrossing().priority, false), true);
+    if (gSelected.isSelected(GLO_CROSSING, crossing->getGlID())) {
+        std::set<GUIGlID> deselected;
+        deselected.insert(crossing->getGlID());
+        undoList->add(new GNEChange_Selection(this, std::set<GUIGlID>(), deselected, true), true);
+    }
+    requireRecompute();
+    undoList->p_end();
+}
+
+void
 GNENet::duplicateLane(GNELane* lane, GNEUndoList* undoList) {
-    undoList->p_begin("duplicate lane");
+    undoList->p_begin("duplicate " + toString(SUMO_TAG_LANE));
     GNEEdge* edge = &lane->getParentEdge();
     const NBEdge::Lane& laneAttrs = edge->getNBEdge()->getLaneStruct(lane->getIndex());
     GNELane* newLane = new GNELane(*edge, lane->getIndex());
@@ -412,28 +449,27 @@ GNENet::duplicateLane(GNELane* lane, GNEUndoList* undoList) {
 
 bool
 GNENet::restrictLane(SUMOVehicleClass vclass, GNELane* lane, GNEUndoList* undoList) {
-    // First check that edge don't have a sidewalk
-    GNEEdge& edge = lane->getParentEdge();
-    for (std::vector<GNELane*>::const_iterator i = edge.getLanes().begin(); i != edge.getLanes().end(); i++) {
-        if ((*i)->isRestricted(vclass)) {
-            return false;
+    bool addRestriction = true;
+    if (vclass == SVC_PEDESTRIAN) {
+        GNEEdge& edge = lane->getParentEdge();
+        for (std::vector<GNELane*>::const_iterator i = edge.getLanes().begin(); i != edge.getLanes().end(); i++) {
+            if ((*i)->isRestricted(SVC_PEDESTRIAN)) {
+                // prevent adding a 2nd sidewalk
+                addRestriction = false;
+            } else {
+                // ensure that the sidewalk is used exclusively
+                const SVCPermissions allOldWithoutPeds = edge.getNBEdge()->getPermissions((*i)->getIndex()) & ~SVC_PEDESTRIAN;
+                (*i)->setAttribute(SUMO_ATTR_ALLOW, getVehicleClassNames(allOldWithoutPeds), undoList);
+            }
         }
     }
-    // Get all possible vehicle classes
-    std::vector<std::string> VClasses = SumoVehicleClassStrings.getStrings();
-    std::vector<std::string> disallowedVClasses;
-    std::string restriction = toString(vclass);
-    std::string ignoring = toString(SVC_IGNORING);
-    // Iterate over vehicle classes to filter
-    for (int i = 0; i < (int)VClasses.size(); i++) {
-        if ((VClasses.at(i) != restriction) && (VClasses.at(i) != ignoring)) {
-            disallowedVClasses.push_back(VClasses.at(i));
-        }
+    // restrict the lane
+    if (addRestriction) {
+        lane->setAttribute(SUMO_ATTR_ALLOW, toString(vclass), undoList);
+        return true;
+    } else {
+        return false;
     }
-    // Change allow and disallow attributes of lane
-    lane->setAttribute(SUMO_ATTR_ALLOW, restriction, undoList);
-    lane->setAttribute(SUMO_ATTR_DISALLOW, joinToString(disallowedVClasses, " "), undoList);
-    return true;
 }
 
 
@@ -466,7 +502,7 @@ GNENet::addSRestrictedLane(SUMOVehicleClass vclass, GNEEdge& edge, GNEUndoList* 
     // duplicate last lane
     duplicateLane(edge.getLanes().at(0), undoList);
     // transform the created (last) lane to a sidewalk
-    return restrictLane(vclass, edge.getLanes().at(0), undoList);
+    return restrictLane(vclass, edge.getLanes()[0], undoList);
 }
 
 
@@ -494,7 +530,7 @@ GNENet::deleteGeometryOrEdge(GNEEdge* edge, const Position& pos, GNEUndoList* un
 
 GNEJunction*
 GNENet::splitEdge(GNEEdge* edge, const Position& pos, GNEUndoList* undoList, GNEJunction* newJunction) {
-    undoList->p_begin("split edge");
+    undoList->p_begin("split " + toString(SUMO_TAG_EDGE));
     deleteEdge(edge, undoList); // still exists. we delete it so we can reuse the name in case of resplit
     // compute geometry
     const PositionVector& oldGeom = edge->getNBEdge()->getGeometry();
@@ -521,7 +557,7 @@ GNENet::splitEdge(GNEEdge* edge, const Position& pos, GNEUndoList* undoList, GNE
     }
     GNEEdge* firstPart = createEdge(edge->getGNEJunctionSource(), newJunction, edge,
                                     undoList, baseName + toString(posBase), true);
-    GNEEdge* secondPart = createEdge(newJunction, edge->getGNEJunctionDest(), edge,
+    GNEEdge* secondPart = createEdge(newJunction, edge->getGNEJunctionDestiny(), edge,
                                      undoList, baseName + toString(posBase + (int)linePos), true);
     // fix geometry
     firstPart->setAttribute(GNE_ATTR_SHAPE_START, toString(newGeoms.first[0]), undoList);
@@ -548,7 +584,7 @@ GNENet::splitEdge(GNEEdge* edge, const Position& pos, GNEUndoList* undoList, GNE
 void
 GNENet::splitEdgesBidi(const std::set<GNEEdge*>& edges, const Position& pos, GNEUndoList* undoList) {
     GNEJunction* newJunction = 0;
-    undoList->p_begin("split edges");
+    undoList->p_begin("split " + toString(SUMO_TAG_EDGE) + "s");
     for (std::set<GNEEdge*>::const_iterator it = edges.begin(); it != edges.end(); ++it) {
         newJunction = splitEdge(*it, pos, undoList, newJunction);
     }
@@ -558,9 +594,9 @@ GNENet::splitEdgesBidi(const std::set<GNEEdge*>& edges, const Position& pos, GNE
 
 void
 GNENet::reverseEdge(GNEEdge* edge, GNEUndoList* undoList) {
-    undoList->p_begin("reverse edge");
+    undoList->p_begin("reverse " + toString(SUMO_TAG_EDGE));
     deleteEdge(edge, undoList); // still exists. we delete it so we can reuse the name in case of resplit
-    GNEEdge* reversed = createEdge(edge->getGNEJunctionDest(), edge->getGNEJunctionSource(), edge, undoList, edge->getID(), false, true);
+    GNEEdge* reversed = createEdge(edge->getGNEJunctionDestiny(), edge->getGNEJunctionSource(), edge, undoList, edge->getID(), false, true);
     assert(reversed != 0);
     reversed->setAttribute(SUMO_ATTR_SHAPE, toString(edge->getNBEdge()->getInnerGeometry().reverse()), undoList);
     undoList->p_end();
@@ -569,10 +605,10 @@ GNENet::reverseEdge(GNEEdge* edge, GNEUndoList* undoList) {
 
 GNEEdge*
 GNENet::addReversedEdge(GNEEdge* edge, GNEUndoList* undoList) {
-    undoList->p_begin("add reversed edge");
+    undoList->p_begin("add reversed " + toString(SUMO_TAG_EDGE));
     GNEEdge* reversed = 0;
     if (edge->getNBEdge()->getLaneSpreadFunction() == LANESPREAD_RIGHT) {
-        GNEEdge* reversed = createEdge(edge->getGNEJunctionDest(), edge->getGNEJunctionSource(), edge, undoList, "-" + edge->getID(), false, true);
+        GNEEdge* reversed = createEdge(edge->getGNEJunctionDestiny(), edge->getGNEJunctionSource(), edge, undoList, "-" + edge->getID(), false, true);
         assert(reversed != 0);
         reversed->setAttribute(SUMO_ATTR_SHAPE, toString(edge->getNBEdge()->getInnerGeometry().reverse()), undoList);
     } else {
@@ -602,7 +638,7 @@ GNENet::addReversedEdge(GNEEdge* edge, GNEUndoList* undoList) {
 
 void
 GNENet::mergeJunctions(GNEJunction* moved, GNEJunction* target, GNEUndoList* undoList) {
-    undoList->p_begin("merge junctions");
+    undoList->p_begin("merge " + toString(SUMO_TAG_JUNCTION) + "s");
     // position of moved and target are probably a bit different (snap radius)
     moved->move(target->getNBNode()->getPosition());
     // register the move with undolist (must happend within the undo group)
@@ -617,7 +653,7 @@ GNENet::mergeJunctions(GNEJunction* moved, GNEJunction* target, GNEUndoList* und
     const EdgeVector outgoing = moved->getNBNode()->getOutgoingEdges();
     for (EdgeVector::const_iterator it = outgoing.begin(); it != outgoing.end(); it++) {
         GNEEdge* oldEdge = myEdges[(*it)->getID()];
-        remapEdge(oldEdge, target, oldEdge->getGNEJunctionDest(), undoList);
+        remapEdge(oldEdge, target, oldEdge->getGNEJunctionDestiny(), undoList);
     }
     deleteJunction(moved, undoList);
     undoList->p_end();
@@ -641,25 +677,19 @@ GNENet::remapEdge(GNEEdge* oldEdge, GNEJunction* from, GNEJunction* to, GNEUndoL
 
 void
 GNENet::save(OptionsCont& oc) {
+    // compute and update network
     computeAndUpdate(oc);
+    // write network
     NWFrame::writeNetwork(oc, *myNetBuilder);
 }
 
 
 void
 GNENet::saveAdditionals(const std::string& filename) {
-    // Extract path of filename
-    std::string path = filename;
-    while (!path.empty() && path[path.size() - 1] != '\\') {
-        path = path.substr(0, path.size() - 1);
-    }
     OutputDevice& device = OutputDevice::getDevice(filename);
     device.openTag("additionals");
     for (GNEAdditionals::const_iterator i = myAdditionals.begin(); i != myAdditionals.end(); ++i) {
-        // Only write additional if don't belong to another additionalSet
-        if (i->second->getAdditionalSetParent() == NULL) {
-            i->second->writeAdditional(device, path);
-        }
+        i->second->writeAdditional(device);
     }
     device.close();
 }
@@ -753,7 +783,7 @@ GNENet::retrieveLane(const std::string& id, bool failHard) {
         }
         if (failHard) {
             // Throw exception if failHard is enabled
-            throw UnknownElement("lane " + id);
+            throw UnknownElement(toString(SUMO_TAG_LANE) + " " + id);
         }
     }
     return 0;
@@ -812,11 +842,7 @@ GNENet::retrieveAttributeCarriers(const std::set<GUIGlID>& ids, GUIGlObjectType 
                     ac = dynamic_cast<GNELane*>(object);
                     break;
                 case GLO_ADDITIONAL:
-                    if (dynamic_cast<GNEAdditional*>(object)) {
-                        ac = dynamic_cast<GNEAdditional*>(object);
-                    } else if (dynamic_cast<GNEAdditionalSet*>(object)) {
-                        ac = dynamic_cast<GNEAdditionalSet*>(object);
-                    }
+                    ac = dynamic_cast<GNEAdditional*>(object);
                     break;
                 default:
                     break;
@@ -949,19 +975,19 @@ GNENet::computeJunction(GNEJunction* junction) {
 
 
 void
-GNENet::updateJunctionShapes() {
-    // Update shapes of all junctions
-    for (GNEJunctions::iterator i = myJunctions.begin(); i != myJunctions.end(); i++) {
-        i->second->updateShapesAndGeometries();
-    }
-    // Update view to show the new shapes
-    myViewNet->update();
+GNENet::requireRecompute() {
+    myNeedRecompute = true;
 }
 
 
-void
-GNENet::requireRecompute() {
-    myNeedRecompute = true;
+bool
+GNENet::netHasCrossings() const {
+    for (std::map<std::string, NBNode*>::const_iterator i = myNetBuilder->getNodeCont().begin(); i != myNetBuilder->getNodeCont().end() ; i++) {
+        if (i->second->getCrossings().size() > 0) {
+            return true;
+        }
+    }
+    return false;
 }
 
 
@@ -971,13 +997,19 @@ GNENet::getApp() {
 }
 
 
+NBNetBuilder*
+GNENet::getNetBuilder() const {
+    return myNetBuilder;
+}
+
+
 void
 GNENet::joinSelectedJunctions(GNEUndoList* undoList) {
     std::vector<GNEJunction*> selected = retrieveJunctions(true);
     if (selected.size() < 2) {
         return;
     }
-    undoList->p_begin("Join selected junctions");
+    undoList->p_begin("Join selected " + toString(SUMO_TAG_JUNCTION) + "s");
 
     EdgeVector allIncoming;
     EdgeVector allOutgoing;
@@ -1010,7 +1042,7 @@ GNENet::joinSelectedJunctions(GNEUndoList* undoList) {
     }
     for (EdgeVector::const_iterator it = allOutgoing.begin(); it != allOutgoing.end(); it++) {
         GNEEdge* oldEdge = myEdges[(*it)->getID()];
-        remapEdge(oldEdge, joined, oldEdge->getGNEJunctionDest(), undoList, true);
+        remapEdge(oldEdge, joined, oldEdge->getGNEJunctionDestiny(), undoList, true);
     }
     // delete original junctions
     for (std::vector<GNEJunction*>::iterator it = selected.begin(); it != selected.end(); it++) {
@@ -1023,7 +1055,7 @@ GNENet::joinSelectedJunctions(GNEUndoList* undoList) {
 
 void
 GNENet::removeSolitaryJunctions(GNEUndoList* undoList) {
-    undoList->p_begin("Clean junctions");
+    undoList->p_begin("Clean " + toString(SUMO_TAG_JUNCTION) + "s");
     std::vector<GNEJunction*> toRemove;
     for (GNEJunctions::const_iterator it = myJunctions.begin(); it != myJunctions.end(); it++) {
         GNEJunction* junction = it->second;
@@ -1048,7 +1080,7 @@ GNENet::replaceJunctionByGeometry(GNEJunction* junction, GNEUndoList* undoList) 
         GNEEdge* continuation = myEdges[(*j).second->getID()];
         deleteEdge(begin, undoList);
         deleteEdge(continuation, undoList);
-        GNEEdge* newEdge = createEdge(begin->getGNEJunctionSource(), continuation->getGNEJunctionDest(), begin, undoList, begin->getMicrosimID(), false, true);
+        GNEEdge* newEdge = createEdge(begin->getGNEJunctionSource(), continuation->getGNEJunctionDestiny(), begin, undoList, begin->getMicrosimID(), false, true);
         PositionVector newShape = begin->getNBEdge()->getInnerGeometry();
         newShape.push_back(junction->getNBNode()->getPosition());
         newShape.append(continuation->getNBEdge()->getInnerGeometry());
@@ -1129,7 +1161,7 @@ GNENet::moveSelection(const Position& moveSrc, const Position& moveDest) {
         GNEEdge* edge = *it;
         if (edge) {
             if (junctionSet.count(edge->getGNEJunctionSource()) > 0 &&
-                    junctionSet.count(edge->getGNEJunctionDest()) > 0) {
+                    junctionSet.count(edge->getGNEJunctionDestiny()) > 0) {
                 // edge and its endpoints are selected, move all the inner points as well
                 edge->moveGeometry(delta);
             } else {
@@ -1172,39 +1204,16 @@ GNENet::getShapeContainer() {
 
 
 void
-GNENet::setAdditionalsFile(const std::string& additionalFile) {
-    OptionsCont::getOptions().set("sumo-additionals-file", additionalFile);
-}
-
-
-void
-GNENet::setAdditionalsOutputFile(const std::string& additionalOutputFile) {
-    OptionsCont::getOptions().set("additionals-output", additionalOutputFile);
-}
-
-
-void
 GNENet::insertAdditional(GNEAdditional* additional, bool hardFail) {
     // Check if additional element exists before insertion
     if (myAdditionals.find(std::pair<std::string, SumoXMLTag>(additional->getID(), additional->getTag())) != myAdditionals.end()) {
         // Throw exception only if hardFail is enabled
         if (hardFail) {
-            throw ProcessError("additional element with ID='" + additional->getID() + "' already exist");
+            throw ProcessError(toString(additional->getTag()) + "  with ID='" + additional->getID() + "' already exist");
         }
     } else {
         myAdditionals[std::pair<std::string, SumoXMLTag>(additional->getID(), additional->getTag())] = additional;
         myGrid.addAdditionalGLObject(additional);
-        // If additional is vinculated with a lane, add a reference
-        if (additional->getEdge()) {
-            additional->getEdge()->addAdditionalChild(additional);
-        }
-        // If additional is vinculated with an edge, add a reference
-        if (additional->getLane()) {
-            additional->getLane()->addAdditionalChild(additional);
-        }
-        if (additional->getAdditionalSetParent() != NULL) {
-            additional->getAdditionalSetParent()->addAdditionalChild(additional);
-        }
         update();
     }
 }
@@ -1212,24 +1221,13 @@ GNENet::insertAdditional(GNEAdditional* additional, bool hardFail) {
 
 void
 GNENet::deleteAdditional(GNEAdditional* additional) {
-    GNEAdditionals::iterator positionToRemove = myAdditionals.find(std::pair<std::string, SumoXMLTag>(additional->getID(), additional->getTag()));
+    GNEAdditionals::iterator additionalToRemove = myAdditionals.find(std::pair<std::string, SumoXMLTag>(additional->getID(), additional->getTag()));
     // Check if additional element exists before deletion
-    if (positionToRemove == myAdditionals.end()) {
-        throw ProcessError("additional element with ID='" + additional->getID() + "' don't exist");
+    if (additionalToRemove == myAdditionals.end()) {
+        throw ProcessError(toString(additional->getTag()) + "  with ID='" + additional->getID() + "' doesn't exist");
     } else {
-        myAdditionals.erase(positionToRemove);
+        myAdditionals.erase(additionalToRemove);
         myGrid.removeAdditionalGLObject(additional);
-        // If additional is vinculated with an edge, remove reference
-        if (additional->getEdge()) {
-            additional->getEdge()->removeAdditionalChild(additional);
-        }
-        // If additional is vinculated with a lane, remove reference
-        if (additional->getLane()) {
-            additional->getLane()->removeAdditionalChild(additional);
-        }
-        if (additional->getAdditionalSetParent() != NULL) {
-            additional->getAdditionalSetParent()->removeAdditionalGeometryChild(additional);
-        }
         update();
     }
 }
@@ -1238,10 +1236,27 @@ GNENet::deleteAdditional(GNEAdditional* additional) {
 void
 GNENet::updateAdditionalID(const std::string& oldID, GNEAdditional* additional) {
     GNEAdditionals::iterator additionalToUpdate = myAdditionals.find(std::pair<std::string, SumoXMLTag>(oldID, additional->getTag()));
-    if (additionalToUpdate != myAdditionals.end()) {
+    if (additionalToUpdate == myAdditionals.end()) {
+        throw ProcessError(toString(additional->getTag()) + "  with old ID='" + oldID + "' doesn't exist");
+    } else {
         // remove an insert additional again into container
         myAdditionals.erase(additionalToUpdate);
         myAdditionals[std::pair<std::string, SumoXMLTag>(additional->getID(), additional->getTag())] = additional;
+    }
+}
+
+
+GNEAdditional*
+GNENet::retrieveAdditional(const std::string& id, bool hardFail) const {
+    for (GNEAdditionals::const_iterator i = myAdditionals.begin(); i != myAdditionals.end(); i++) {
+        if (i->second->getID() == id) {
+            return i->second;
+        }
+    }
+    if (hardFail) {
+        throw ProcessError("Attempted to retrieve non-existant additional");
+    } else {
+        return NULL;
     }
 }
 
@@ -1307,8 +1322,7 @@ void
 GNENet::insertEdge(GNEEdge* edge) {
     NBEdge* nbe = edge->getNBEdge();
     myNetBuilder->getEdgeCont().insert(nbe); // should we ignore pruning double edges?
-    // if this edge was previouls extracted from the edgeContainer we have to
-    // rewire the nodes
+    // if this edge was previouls extracted from the edgeContainer we have to rewire the nodes
     nbe->getFromNode()->addOutgoingEdge(nbe);
     nbe->getToNode()->addIncomingEdge(nbe);
     registerEdge(edge);
@@ -1336,9 +1350,15 @@ GNEEdge*
 GNENet::registerEdge(GNEEdge* edge) {
     edge->incRef("GNENet::registerEdge");
     edge->setResponsible(false);
+    // add edge to internal container of GNENet
     myEdges[edge->getMicrosimID()] = edge;
+    // add edge to grid
     myGrid.add(edge->getBoundary());
     myGrid.addAdditionalGLObject(edge);
+    // Add references into GNEJunctions
+    edge->getGNEJunctionSource()->addOutgoingGNEEdge(edge);
+    edge->getGNEJunctionDestiny()->addIncomingGNEEdge(edge);
+    // update view
     update();
     return edge;
 }
@@ -1359,14 +1379,18 @@ GNENet::deleteSingleJunction(GNEJunction* junction) {
 
 void
 GNENet::deleteSingleEdge(GNEEdge* edge) {
+    // remove edge from visual grid and container
     myGrid.removeAdditionalGLObject(edge);
     myEdges.erase(edge->getMicrosimID());
-    myNetBuilder->getEdgeCont().extract(
-        myNetBuilder->getDistrictCont(), edge->getNBEdge());
+    // extract edge of district container
+    myNetBuilder->getEdgeCont().extract(myNetBuilder->getDistrictCont(), edge->getNBEdge());
     edge->decRef("GNENet::deleteSingleEdge");
     edge->setResponsible(true);
     // selection status is lost when removing edge via undo and the selection operation was not part of a command group
     gSelected.deselect(edge->getGlID());
+    // Remove refrences from GNEJunctions
+    edge->getGNEJunctionSource()->removeOutgoingGNEEdge(edge);
+    edge->getGNEJunctionDestiny()->removeIncomingGNEEdge(edge);
     // invalidate junction logic
     update();
 }
@@ -1412,15 +1436,39 @@ GNENet::computeAndUpdate(OptionsCont& oc) {
         }
     }
     myNetBuilder->compute(oc, liveExplicitTurnarounds, false);
+    // update ids if necessary
+    if (oc.getBool("numerical-ids") || oc.isSet("reserved-ids")) {
+        GNEEdges newEdgeMap;
+        GNEJunctions newJunctionMap;
+        for (GNEEdges::const_iterator it = myEdges.begin(); it != myEdges.end(); it++) {
+            it->second->setMicrosimID(it->second->getNBEdge()->getID());
+            newEdgeMap[it->second->getNBEdge()->getID()] = it->second;
+        }
+        for (GNEJunctions::const_iterator it = myJunctions.begin(); it != myJunctions.end(); it++) {
+            newJunctionMap[it->second->getNBNode()->getID()] = it->second;
+            it->second->setMicrosimID(it->second->getNBNode()->getID());
+        }
+        myEdges = newEdgeMap;
+        myJunctions = newJunctionMap;
+    }
+    // update rtree if necessary
+    if (!oc.getBool("offset.disable-normalization")) {
+        for (GNEEdges::const_iterator it = myEdges.begin(); it != myEdges.end(); it++) {
+            refreshElement(it->second);
+        }
+    }
+    myGrid.reset();
+    myGrid.add(GeoConvHelper::getProcessing().getConvBoundary());
     // update precomputed geometries
     initGNEConnections();
+
     for (GNEJunctions::const_iterator it = myJunctions.begin(); it != myJunctions.end(); it++) {
         it->second->setLogicValid(true);
         // updated shape
         it->second->updateGeometry();
         refreshElement(it->second);
     }
-    // Set flag to false
+
     myNeedRecompute = false;
 }
 

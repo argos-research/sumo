@@ -7,12 +7,12 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    20 Nov 2001
-/// @version $Id: NBNetBuilder.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: NBNetBuilder.cpp 22923 2017-02-13 12:03:50Z palcraft $
 ///
 // Instance responsible for building networks
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -66,7 +66,8 @@
 // ===========================================================================
 NBNetBuilder::NBNetBuilder() :
     myEdgeCont(myTypeCont),
-    myHaveLoadedNetworkWithoutInternalEdges(false) {
+    myHaveLoadedNetworkWithoutInternalEdges(false),
+    myNetworkHaveCrossings(false) {
 }
 
 
@@ -88,7 +89,7 @@ NBNetBuilder::applyOptions(OptionsCont& oc) {
 void
 NBNetBuilder::compute(OptionsCont& oc,
                       const std::set<std::string>& explicitTurnarounds,
-                      bool removeElements) {
+                      bool mayAddOrRemove) {
     GeoConvHelper& geoConvHelper = GeoConvHelper::getProcessing();
 
 
@@ -163,7 +164,7 @@ NBNetBuilder::compute(OptionsCont& oc,
         WRITE_MESSAGE(" Joined " + toString(numJoined) + " junction cluster(s).");
     }
     //
-    if (removeElements) {
+    if (mayAddOrRemove) {
         int no = 0;
         const bool removeGeometryNodes = oc.exists("geometry.remove") && oc.getBool("geometry.remove");
         before = SysUtils::getCurrentMillis();
@@ -199,7 +200,7 @@ NBNetBuilder::compute(OptionsCont& oc,
     }
     // @note: removing geometry can create similar edges so joinSimilarEdges  must come afterwards
     // @note: likewise splitting can destroy similarities so joinSimilarEdges must come before
-    if (removeElements && oc.getBool("edges.join")) {
+    if (mayAddOrRemove && oc.getBool("edges.join")) {
         before = SysUtils::getCurrentMillis();
         PROGRESS_BEGIN_MESSAGE("Joining similar edges");
         myNodeCont.joinSimilarEdges(myDistrictCont, myEdgeCont, myTLLCont);
@@ -211,7 +212,7 @@ NBNetBuilder::compute(OptionsCont& oc,
         PROGRESS_DONE_MESSAGE();
     }
     //
-    if (oc.exists("geometry.split") && oc.getBool("geometry.split")) {
+    if (mayAddOrRemove && oc.exists("geometry.split") && oc.getBool("geometry.split")) {
         before = SysUtils::getCurrentMillis();
         PROGRESS_BEGIN_MESSAGE("Splitting geometry edges");
         myEdgeCont.splitGeometry(myNodeCont);
@@ -225,12 +226,14 @@ NBNetBuilder::compute(OptionsCont& oc,
     // correct edge geometries to avoid overlap
     myNodeCont.avoidOverlap();
     // guess ramps
-    if ((oc.exists("ramps.guess") && oc.getBool("ramps.guess")) || (oc.exists("ramps.set") && oc.isSet("ramps.set"))) {
-        before = SysUtils::getCurrentMillis();
-        PROGRESS_BEGIN_MESSAGE("Guessing and setting on-/off-ramps");
-        NBNodesEdgesSorter::sortNodesEdges(myNodeCont);
-        NBRampsComputer::computeRamps(*this, oc);
-        PROGRESS_TIME_MESSAGE(before);
+    if (mayAddOrRemove) {
+        if ((oc.exists("ramps.guess") && oc.getBool("ramps.guess")) || (oc.exists("ramps.set") && oc.isSet("ramps.set"))) {
+            before = SysUtils::getCurrentMillis();
+            PROGRESS_BEGIN_MESSAGE("Guessing and setting on-/off-ramps");
+            NBNodesEdgesSorter::sortNodesEdges(myNodeCont);
+            NBRampsComputer::computeRamps(*this, oc);
+            PROGRESS_TIME_MESSAGE(before);
+        }
     }
     // guess sidewalks
     if (oc.getBool("sidewalks.guess") || oc.getBool("sidewalks.guess.from-permissions")) {
@@ -245,12 +248,10 @@ NBNetBuilder::compute(OptionsCont& oc,
     myEdgeCont.recheckPostProcessConnections();
 
     // remap ids if wished
-    if (oc.getBool("numerical-ids")) {
-        int numChangedEdges = myEdgeCont.mapToNumericalIDs();
-        int numChangedNodes = myNodeCont.mapToNumericalIDs();
-        if (numChangedEdges + numChangedNodes > 0) {
-            WRITE_MESSAGE("Remapped " + toString(numChangedEdges) + " edge IDs and " + toString(numChangedNodes) + " node IDs.");
-        }
+    int numChangedEdges = myEdgeCont.remapIDs(oc.getBool("numerical-ids"), oc.isSet("reserved-ids"));
+    int numChangedNodes = myNodeCont.remapIDs(oc.getBool("numerical-ids"), oc.isSet("reserved-ids"));
+    if (numChangedEdges + numChangedNodes > 0) {
+        WRITE_MESSAGE("Remapped " + toString(numChangedEdges) + " edge IDs and " + toString(numChangedNodes) + " node IDs.");
     }
 
     //
@@ -309,27 +310,31 @@ NBNetBuilder::compute(OptionsCont& oc,
     NBNodeTypeComputer::computeNodeTypes(myNodeCont);
     PROGRESS_TIME_MESSAGE(before);
     //
-    bool haveCrossings = false;
+    myNetworkHaveCrossings = false;
     if (oc.getBool("crossings.guess")) {
-        haveCrossings = true;
+        myNetworkHaveCrossings = true;
         int crossings = 0;
         for (std::map<std::string, NBNode*>::const_iterator i = myNodeCont.begin(); i != myNodeCont.end(); ++i) {
             crossings += (*i).second->guessCrossings();
         }
         WRITE_MESSAGE("Guessed " + toString(crossings) + " pedestrian crossings.");
     }
-    if (!haveCrossings) {
+    if (!myNetworkHaveCrossings) {
         // recheck whether we had crossings in the input
         for (std::map<std::string, NBNode*>::const_iterator i = myNodeCont.begin(); i != myNodeCont.end(); ++i) {
             if (i->second->getCrossings().size() > 0) {
-                haveCrossings = true;
+                myNetworkHaveCrossings = true;
                 break;
             }
         }
     }
 
-    if (oc.isDefault("no-internal-links") && !haveCrossings && myHaveLoadedNetworkWithoutInternalEdges) {
+    if (oc.isDefault("no-internal-links") && !myNetworkHaveCrossings && myHaveLoadedNetworkWithoutInternalEdges) {
         oc.set("no-internal-links", "true");
+    } else if (!mayAddOrRemove && myNetworkHaveCrossings) {
+        // crossings added via netedit
+        oc.resetWritable();
+        oc.set("no-internal-links", "false");
     }
 
     //
@@ -379,7 +384,7 @@ NBNetBuilder::compute(OptionsCont& oc,
     myEdgeCont.recheckLanes();
     PROGRESS_TIME_MESSAGE(before);
 
-    if (haveCrossings && !oc.getBool("no-internal-links")) {
+    if (myNetworkHaveCrossings && !oc.getBool("no-internal-links")) {
         for (std::map<std::string, NBNode*>::const_iterator i = myNodeCont.begin(); i != myNodeCont.end(); ++i) {
             i->second->buildCrossingsAndWalkingAreas();
         }
@@ -454,8 +459,8 @@ NBNetBuilder::compute(OptionsCont& oc,
         PROGRESS_TIME_MESSAGE(before);
     }
     // PATCH NODE SHAPES
-    if (OptionsCont::getOptions().getFloat("junctions.scurve-stretch") > 0) {
-        // @note: notes have collected correction hints in buildInnerEdges()
+    if (oc.getFloat("junctions.scurve-stretch") > 0) {
+        // @note: nodes have collected correction hints in buildInnerEdges()
         before = SysUtils::getCurrentMillis();
         PROGRESS_BEGIN_MESSAGE("stretching junctions to smooth geometries");
         myEdgeCont.computeLaneShapes();
@@ -469,6 +474,20 @@ NBNetBuilder::compute(OptionsCont& oc,
     if (lefthand) {
         mirrorX();
     };
+
+    if (oc.exists("geometry.check-overlap")  && oc.getFloat("geometry.check-overlap") > 0) {
+        before = SysUtils::getCurrentMillis();
+        PROGRESS_BEGIN_MESSAGE("Checking overlapping edges");
+        myEdgeCont.checkOverlap(oc.getFloat("geometry.check-overlap"), oc.getFloat("geometry.check-overlap.vertical-threshold"));
+        PROGRESS_TIME_MESSAGE(before);
+    }
+    if (oc.exists("geometry.max-grade") && oc.getFloat("geometry.max-grade") > 0 && geoConvHelper.getConvBoundary().getZRange() > 0) {
+        before = SysUtils::getCurrentMillis();
+        PROGRESS_BEGIN_MESSAGE("Checking edge grade");
+        // user input is in %
+        myEdgeCont.checkGrade(oc.getFloat("geometry.max-grade") / 100);
+        PROGRESS_TIME_MESSAGE(before);
+    }
 
     // report
     WRITE_MESSAGE("-----------------------------------------------------");
@@ -528,7 +547,7 @@ NBNetBuilder::mirrorX() {
 
 
 bool
-NBNetBuilder::transformCoordinates(Position& from, bool includeInBoundary, GeoConvHelper* from_srs) {
+NBNetBuilder::transformCoordinate(Position& from, bool includeInBoundary, GeoConvHelper* from_srs) {
     Position orig(from);
     bool ok = GeoConvHelper::getProcessing().x2cartesian(from, includeInBoundary);
     if (ok) {
@@ -552,7 +571,7 @@ NBNetBuilder::transformCoordinates(PositionVector& from, bool includeInBoundary,
         // transformation to cartesian coordinates must happen before we can check segment length
         PositionVector copy = from;
         for (int i = 0; i < (int) from.size(); i++) {
-            transformCoordinates(copy[i], false);
+            transformCoordinate(copy[i], false);
         }
         // check lengths and insert new points where needed (in the original
         // coordinate system)
@@ -575,7 +594,7 @@ NBNetBuilder::transformCoordinates(PositionVector& from, bool includeInBoundary,
     }
     bool ok = true;
     for (int i = 0; i < (int) from.size(); i++) {
-        ok = ok && transformCoordinates(from[i], includeInBoundary, from_srs);
+        ok = ok && transformCoordinate(from[i], includeInBoundary, from_srs);
     }
     return ok;
 }

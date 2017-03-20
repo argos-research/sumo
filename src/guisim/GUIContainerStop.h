@@ -3,12 +3,12 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Wed, 01.08.2014
-/// @version $Id: GUIContainerStop.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIContainerStop.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A lane area vehicles can halt at (gui-version)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

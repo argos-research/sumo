@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 26.04.2004
-/// @version $Id: GUITriggerBuilder.h 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: GUITriggerBuilder.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Builds trigger objects for guisim
 /****************************************************************************/
@@ -118,6 +118,29 @@ protected:
     virtual void buildStoppingPlace(MSNet& net, const std::string& id,
                                     const std::vector<std::string>& lines, MSLane* lane,
                                     SUMOReal frompos, SUMOReal topos, const SumoXMLTag element);
+
+
+    /** @brief Builds a parking area
+     *
+     * Simply calls the GUIParkingArea constructor.
+     *
+     * @param[in] net The net the parking area belongs to
+     * @param[in] id The id of the parking area
+     * @param[in] lines Names of the lines that halt on this parking area
+     * @param[in] lane The lane the parking area is placed on
+     * @param[in] frompos Begin position of the parking area on the lane
+     * @param[in] topos End position of the parking area on the lane
+     * @param[in] capacity Capacity of the parking area
+     * @param[in] width Width of the default lot rectangle
+     * @param[in] length Length of the default lot rectangle
+     * @param[in] angle Angle of the default lot rectangle
+     * @exception InvalidArgument If the parking area can not be added to the net (is duplicate)
+     */
+    virtual void beginParkingArea(MSNet& net, const std::string& id,
+                                  const std::vector<std::string>& lines, MSLane* lane,
+                                  SUMOReal frompos, SUMOReal topos,
+                                  unsigned int capacity,
+                                  SUMOReal width, SUMOReal length, SUMOReal angle);
 
 
     /** @brief Builds a charging station

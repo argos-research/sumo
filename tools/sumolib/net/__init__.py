@@ -7,13 +7,13 @@
 @author  Jakob Erdmann
 @author  Robert Hilbrich
 @date    2008-03-27
-@version $Id: __init__.py 21646 2016-10-10 12:49:13Z rhilbrich $
+@version $Id: __init__.py 22929 2017-02-13 14:38:39Z behrisch $
 
 This file contains a content handler for parsing sumo network xml files.
 It uses other classes from this module to represent the road network.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -383,12 +383,13 @@ class Net:
             y -= y_off
         return self.getGeoProj()(x, y, inverse=True)
 
-    def move(self, dx, dy):
+    def move(self, dx, dy, dz=0):
         for n in self._nodes:
-            n._coord = (n._coord[0] + dx, n._coord[1] + dy)
+            n._coord = (n._coord[0] + dx, n._coord[1] + dy, n._coord[2] + dz)
         for e in self._edges:
             for l in e._lanes:
-                l._shape = [(p[0] + dx, p[1] + dy) for p in l._shape]
+                l._shape = [(p[0] + dx, p[1] + dy, p[2] + dz)
+                            for p in l.getShape3D()]
             e.rebuildShape()
 
 
@@ -401,7 +402,6 @@ class NetReader(handler.ContentHandler):
         self._currentEdge = None
         self._currentNode = None
         self._currentLane = None
-        self._currentShape = ""
         self._withPhases = others.get('withPrograms', False)
         self._withConnections = others.get('withConnections', True)
         self._withFoes = others.get('withFoes', True)
@@ -417,13 +417,12 @@ class NetReader(handler.ContentHandler):
                 prio = -1
                 if 'priority' in attrs:
                     prio = int(attrs['priority'])
-                name = ""
-                if 'name' in attrs:
-                    name = attrs['name']
                 self._currentEdge = self._net.addEdge(attrs['id'],
-                                                      attrs.get('from', None), attrs.get('to', None), prio, function, name)
-                if 'shape' in attrs:
-                    self.processShape(self._currentEdge, attrs['shape'])
+                                                      attrs.get('from', None), attrs.get(
+                                                          'to', None),
+                                                      prio, function, attrs.get('name', ''))
+                self._currentEdge.setRawShape(
+                    convertShape(attrs.get('shape', '')))
             else:
                 if function in ['crossing', 'walkingarea']:
                     self._net._crossings_and_walkingAreas.add(attrs['id'])
@@ -435,18 +434,18 @@ class NetReader(handler.ContentHandler):
                 float(attrs['length']),
                 attrs.get('allow'),
                 attrs.get('disallow'))
-            if 'shape' in attrs:
-                # deprecated: at some time, this is mandatory
-                self._currentShape = attrs['shape']
-            else:
-                self._currentShape = ""
+            self._currentLane.setShape(convertShape(attrs.get('shape', '')))
         if name == 'junction':
             if attrs['id'][0] != ':':
                 intLanes = None
                 if self._withInternal:
                     intLanes = attrs["intLanes"].split(" ")
-                self._currentNode = self._net.addNode(attrs['id'], attrs['type'], (float(
-                    attrs['x']), float(attrs['y'])), attrs['incLanes'].split(" "), intLanes)
+                self._currentNode = self._net.addNode(attrs['id'], attrs['type'],
+                                                      tuple(
+                                                          map(float, [attrs['x'], attrs['y'], attrs['z'] if 'z' in attrs else '0'])),
+                                                      attrs['incLanes'].split(" "), intLanes)
+                self._currentNode.setShape(
+                    convertShape(attrs.get('shape', '')))
         if name == 'succ' and self._withConnections:  # deprecated
             if attrs['edge'][0] != ':':
                 self._currentEdge = self._net.getEdge(attrs['edge'])
@@ -528,19 +527,10 @@ class NetReader(handler.ContentHandler):
             if self._currentLane != None:
                 self._currentLane.setParam(attrs['key'], attrs['value'])
 
-    def characters(self, content):
-        if self._currentLane != None:
-            self._currentShape = self._currentShape + content
-
     def endElement(self, name):
         if name == 'lane':
-            if self._currentLane:
-                self.processShape(self._currentLane, self._currentShape)
-                self._currentShape = ""
             self._currentLane = None
         if name == 'edge':
-            if self._currentEdge and self._currentEdge._shape is None:
-                self._currentEdge.rebuildShape()
             self._currentEdge = None
         # 'row-logic' is deprecated!!!
         if name == 'ROWLogic' or name == 'row-logic':
@@ -549,16 +539,29 @@ class NetReader(handler.ContentHandler):
         if self._withPhases and (name == 'tlLogic' or name == 'tl-logic'):
             self._currentProgram = None
 
-    def processShape(self, object, shapeString):
-        cshape = []
-        es = shapeString.rstrip().split(" ")
-        for e in es:
-            p = e.split(",")
-            cshape.append((float(p[0]), float(p[1])))
-        object.setShape(cshape)
-
     def getNet(self):
         return self._net
+
+
+def convertShape(shapeString):
+    """ Convert xml shape string into float tuples.
+
+    This method converts the 2d or 3d shape string from SUMO's xml file
+    into a list containing 3d float-tuples. Non existant z coordinates default
+    to zero. If shapeString is empty, an empty list will be returned.
+    """
+
+    cshape = []
+    for pointString in shapeString.split():
+        p = [float(e) for e in pointString.split(",")]
+        if len(p) == 2:
+            cshape.append((p[0], p[1], 0.))
+        elif len(p) == 3:
+            cshape.append(tuple(p))
+        else:
+            raise ValueError(
+                'Invalid shape point "%s", should be either 2d or 3d' % pointString)
+    return cshape
 
 
 def readNet(filename, **others):

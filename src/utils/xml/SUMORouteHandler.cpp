@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: SUMORouteHandler.cpp 20596 2016-04-29 08:47:23Z palcraft $
+/// @version $Id: SUMORouteHandler.cpp 22956 2017-02-15 10:19:46Z namdre $
 ///
 // Parser for routes during their loading
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -287,12 +287,15 @@ SUMORouteHandler::parseStop(SUMOVehicleParameter::Stop& stop, const SUMOSAXAttri
     stop.busstop = attrs.getOpt<std::string>(SUMO_ATTR_BUS_STOP, 0, ok, "");
     stop.chargingStation = attrs.getOpt<std::string>(SUMO_ATTR_CHARGING_STATION, 0, ok, "");
     stop.containerstop = attrs.getOpt<std::string>(SUMO_ATTR_CONTAINER_STOP, 0, ok, "");
+    stop.parkingarea = attrs.getOpt<std::string>(SUMO_ATTR_PARKING_AREA, 0, ok, "");
     if (stop.busstop != "") {
         errorSuffix = " at '" + stop.busstop + "'" + errorSuffix;
     } else if (stop.chargingStation != "") {
         errorSuffix = " at '" + stop.chargingStation + "'" + errorSuffix;
     } else if (stop.containerstop != "") {
         errorSuffix = " at '" + stop.containerstop + "'" + errorSuffix;
+    } else if (stop.parkingarea != "") {
+        errorSuffix = " at '" + stop.parkingarea + "'" + errorSuffix;
     } else {
         errorSuffix = " on lane '" + stop.lane + "'" + errorSuffix;
     }
@@ -317,7 +320,10 @@ SUMORouteHandler::parseStop(SUMOVehicleParameter::Stop& stop, const SUMOSAXAttri
         stop.triggered = attrs.getOpt<bool>(SUMO_ATTR_TRIGGERED, 0, ok, false);
         stop.containerTriggered = attrs.getOpt<bool>(SUMO_ATTR_CONTAINER_TRIGGERED, 0, ok, false);
     }
-    stop.parking = attrs.getOpt<bool>(SUMO_ATTR_PARKING, 0, ok, stop.triggered || stop.containerTriggered);
+    stop.parking = attrs.getOpt<bool>(SUMO_ATTR_PARKING, 0, ok, stop.triggered || stop.containerTriggered || stop.parkingarea != "");
+    if (stop.parkingarea != "" && !stop.parking) {
+        ok = false;
+    }
     if (!ok) {
         errorOutput->inform("Invalid bool for 'triggered', 'containerTriggered' or 'parking' for stop" + errorSuffix);
         return false;

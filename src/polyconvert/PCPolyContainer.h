@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 05 Dec 2005
-/// @version $Id: PCPolyContainer.h 20801 2016-05-28 05:31:30Z behrisch $
+/// @version $Id: PCPolyContainer.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A storage for loaded polygons and pois
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -105,6 +105,11 @@ public:
      */
     void save(const std::string& file, bool useGeo);
 
+    /** @brief Saves the stored polygons and pois into the given file in dlrTDP format
+     * @param[in] prefix The prefix of the file to write stored objects' definitions into
+     */
+    void saveDlrTDP(const std::string& prefix);
+
 
     /** @brief Retuns a unique id for a given name
      *
@@ -133,6 +138,7 @@ private:
     /// @brief List of names of polygons/pois that shall be removed
     std::vector<std::string> myRemoveByNames;
 
+    static void writeDlrTDPHeader(OutputDevice& device, const OptionsCont& oc);
 
 private:
     /// @brief Invalidated copy constructor

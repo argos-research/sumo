@@ -4,12 +4,12 @@
 /// @author  Laura Bieker
 /// @author  Michael Behrisch
 /// @date    Sept 2011
-/// @version $Id: NBHeightMapper.cpp 21440 2016-09-07 11:06:14Z behrisch $
+/// @version $Id: NBHeightMapper.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Set z-values for all network positions based on data from a height map
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2011-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2011-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

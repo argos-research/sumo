@@ -4,12 +4,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Tue, 04 Dec 2007
-/// @version $Id: MSDevice_Routing.h 20890 2016-06-06 12:29:01Z namdre $
+/// @version $Id: MSDevice_Routing.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A device that performs vehicle rerouting based on current edge speeds
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2007-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

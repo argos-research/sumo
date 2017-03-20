@@ -85,18 +85,27 @@
     <Filter Include="Quellcodedateien\Frames">
       <UniqueIdentifier>{25dc7873-d099-418e-9340-579db01c9035}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header-Dateien\Items\Additionals\Rerouter">
+      <UniqueIdentifier>{d78f8503-f28f-4a62-a34a-71a7627f0b5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quellcodedateien\Items\Additionals\Rerouter">
+      <UniqueIdentifier>{a89f84a4-21ee-48f4-a70a-cb6545593ff2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header-Dateien\Items\Additionals\Calibrator">
+      <UniqueIdentifier>{a41bc2cc-a179-4e89-92bc-e1ca9d731cc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quellcodedateien\Items\Additionals\Calibrator">
+      <UniqueIdentifier>{bb370bbf-896a-4108-9725-037cf33131f6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header-Dateien\Dialogs\AdditionalDialogs\CalibratorDialog">
+      <UniqueIdentifier>{1dd91376-dd79-4198-a839-be27b17af8bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quellcodedateien\Dialogs\AdditionalDialogs\Calibrator">
+      <UniqueIdentifier>{371666ad-29e9-4b55-9eea-a8af4be2e96c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\src\netedit\GNEAdditional.cpp">
-      <Filter>Quellcodedateien\Items\Additionals</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\netedit\GNEAdditionalSet.cpp">
-      <Filter>Quellcodedateien\Items\Additionals</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\netedit\GNECalibrator.cpp">
-      <Filter>Quellcodedateien\Items\Additionals</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\netedit\GNERerouter.cpp">
       <Filter>Quellcodedateien\Items\Additionals</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\netedit\GNEChange.cpp">
@@ -198,23 +207,14 @@
     <ClCompile Include="..\..\..\src\netedit\GNEAttributeCarrier.cpp">
       <Filter>Quellcodedateien\Items</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\netedit\GNEVariableSpeedSignal.cpp">
-      <Filter>Quellcodedateien\Items\Additionals</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\netedit\GNEAdditionalDialog.cpp">
       <Filter>Quellcodedateien\Dialogs\AdditionalDialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\netedit\GNERerouterDialog.cpp">
       <Filter>Quellcodedateien\Dialogs\AdditionalDialogs</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\src\netedit\GNEVariableSpeedSignalDialog.cpp">
-      <Filter>Quellcodedateien\Dialogs\AdditionalDialogs</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\src\netedit\GNERouteProbe.cpp">
       <Filter>Quellcodedateien\Items\Additionals</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\src\netedit\GNECalibratorDialog.cpp">
-      <Filter>Quellcodedateien\Dialogs\AdditionalDialogs</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\src\netedit\GNEConnection.cpp">
       <Filter>Quellcodedateien\Items\NetElement</Filter>
@@ -257,6 +257,63 @@
     </ClCompile>
     <ClCompile Include="..\..\..\src\netedit\GNEVaporizer.cpp">
       <Filter>Quellcodedateien\Items\Additionals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNEChange_Crossing.cpp">
+      <Filter>Quellcodedateien\Items\Changes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNECrossingFrame.cpp">
+      <Filter>Quellcodedateien\Frames</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNEDeleteFrame.cpp">
+      <Filter>Quellcodedateien\Frames</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNERerouter.cpp">
+      <Filter>Quellcodedateien\Items\Additionals\Rerouter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNEDestProbReroute.cpp">
+      <Filter>Quellcodedateien\Items\Additionals\Rerouter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNERouteProbReroute.cpp">
+      <Filter>Quellcodedateien\Items\Additionals\Rerouter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNEClosingLaneReroute.cpp">
+      <Filter>Quellcodedateien\Items\Additionals\Rerouter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNEClosingReroute.cpp">
+      <Filter>Quellcodedateien\Items\Additionals\Rerouter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNERerouterInterval.cpp">
+      <Filter>Quellcodedateien\Items\Additionals\Rerouter</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNEVariableSpeedSign.cpp">
+      <Filter>Quellcodedateien\Items\Additionals</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNEVariableSpeedSignDialog.cpp">
+      <Filter>Quellcodedateien\Dialogs\AdditionalDialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNERerouterIntervalDialog.cpp">
+      <Filter>Quellcodedateien\Dialogs\AdditionalDialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNEDialog_AllowDisallow.cpp">
+      <Filter>Quellcodedateien\Dialogs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNECalibrator.cpp">
+      <Filter>Quellcodedateien\Items\Additionals\Calibrator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNECalibratorFlow.cpp">
+      <Filter>Quellcodedateien\Items\Additionals\Calibrator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNECalibratorRoute.cpp">
+      <Filter>Quellcodedateien\Items\Additionals\Calibrator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNECalibratorDialog.cpp">
+      <Filter>Quellcodedateien\Dialogs\AdditionalDialogs\Calibrator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNECalibratorRouteDialog.cpp">
+      <Filter>Quellcodedateien\Dialogs\AdditionalDialogs\Calibrator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\netedit\GNECalibratorFlowDialog.cpp">
+      <Filter>Quellcodedateien\Dialogs\AdditionalDialogs\Calibrator</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -301,17 +358,8 @@
     <ClInclude Include="..\..\..\src\netedit\GNELane.h">
       <Filter>Header-Dateien\Items\NetElement</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\netedit\GNERerouter.h">
-      <Filter>Header-Dateien\Items\Additionals</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\netedit\GNEEdge.h">
       <Filter>Header-Dateien\Items\NetElement</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\netedit\GNECalibrator.h">
-      <Filter>Header-Dateien\Items\Additionals</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\netedit\GNEAdditionalSet.h">
-      <Filter>Header-Dateien\Items\Additionals</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\netedit\GNEAdditionalFrame.h">
       <Filter>Header-Dateien\Frames</Filter>
@@ -379,23 +427,14 @@
     <ClInclude Include="..\..\..\src\netedit\GNEAttributeCarrier.h">
       <Filter>Header-Dateien\Items</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\netedit\GNEVariableSpeedSignal.h">
-      <Filter>Header-Dateien\Items\Additionals</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\netedit\GNEAdditionalDialog.h">
       <Filter>Header-Dateien\Dialogs\AdditionalDialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\netedit\GNERerouterDialog.h">
       <Filter>Header-Dateien\Dialogs\AdditionalDialogs</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\src\netedit\GNEVariableSpeedSignalDialog.h">
-      <Filter>Header-Dateien\Dialogs\AdditionalDialogs</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\..\src\netedit\GNERouteProbe.h">
       <Filter>Header-Dateien\Items\Additionals</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\src\netedit\GNECalibratorDialog.h">
-      <Filter>Header-Dateien\Dialogs\AdditionalDialogs</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\src\netedit\GNENet.h">
       <Filter>Header-Dateien\Main</Filter>
@@ -438,6 +477,63 @@
     </ClInclude>
     <ClInclude Include="..\..\..\src\netedit\GNEVaporizer.h">
       <Filter>Header-Dateien\Items\Additionals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNEChange_Crossing.h">
+      <Filter>Header-Dateien\Items\Changes</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNECrossingFrame.h">
+      <Filter>Header-Dateien\Frames</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNEDeleteFrame.h">
+      <Filter>Header-Dateien\Frames</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNERerouter.h">
+      <Filter>Header-Dateien\Items\Additionals\Rerouter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNEDestProbReroute.h">
+      <Filter>Header-Dateien\Items\Additionals\Rerouter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNERouteProbReroute.h">
+      <Filter>Header-Dateien\Items\Additionals\Rerouter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNEClosingLaneReroute.h">
+      <Filter>Header-Dateien\Items\Additionals\Rerouter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNEClosingReroute.h">
+      <Filter>Header-Dateien\Items\Additionals\Rerouter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNERerouterInterval.h">
+      <Filter>Header-Dateien\Items\Additionals\Rerouter</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNEVariableSpeedSign.h">
+      <Filter>Header-Dateien\Items\Additionals</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNEVariableSpeedSignDialog.h">
+      <Filter>Header-Dateien\Dialogs\AdditionalDialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNERerouterIntervalDialog.h">
+      <Filter>Header-Dateien\Dialogs\AdditionalDialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNEDialog_AllowDisallow.h">
+      <Filter>Header-Dateien\Dialogs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNECalibrator.h">
+      <Filter>Header-Dateien\Items\Additionals\Calibrator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNECalibratorFlow.h">
+      <Filter>Header-Dateien\Items\Additionals\Calibrator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNECalibratorRoute.h">
+      <Filter>Header-Dateien\Items\Additionals\Calibrator</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNECalibratorDialog.h">
+      <Filter>Header-Dateien\Dialogs\AdditionalDialogs\CalibratorDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNECalibratorRouteDialog.h">
+      <Filter>Header-Dateien\Dialogs\AdditionalDialogs\CalibratorDialog</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\netedit\GNECalibratorFlowDialog.h">
+      <Filter>Header-Dateien\Dialogs\AdditionalDialogs\CalibratorDialog</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

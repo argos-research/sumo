@@ -2,13 +2,13 @@
 /// @file    GNEPOI.cpp
 /// @author  Jakob Erdmann
 /// @date    Sept 2012
-/// @version $Id: GNEPOI.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GNEPOI.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A class for visualizing and editing POIS in netedit (adapted from
 // GUIPointOfInterest and NLHandler)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -70,30 +70,25 @@
 // ===========================================================================
 // method definitions
 // ===========================================================================
-GNEPOI::GNEPOI(const std::string& id, const std::string& type,
+GNEPOI::GNEPOI(GNENet* net, const std::string& id, const std::string& type,
                const RGBColor& color, SUMOReal layer, SUMOReal angle, const std::string& imgFile,
                const Position& pos, SUMOReal width, SUMOReal height) :
     GUIPointOfInterest(id, type, color, pos, layer, angle, imgFile, width, height),
-    GNEAttributeCarrier(SUMO_TAG_POI) {
+    GNEAttributeCarrier(SUMO_TAG_POI, ICON_LOCATEPOI),
+    myNet(net) {
 }
 
 
 GNEPOI::~GNEPOI() { }
 
 
-//void
-//GNEPOI::move(Position pos) {
-//    const Position orig = myNBNode.getPosition();
-//    setPosition(pos);
-//    myNet->refreshElement(this);
-//    const EdgeVector& incident = getNBNode()->getEdges();
-//    for (EdgeVector::const_iterator it = incident.begin(); it != incident.end(); it++) {
-//        GNEEdge *edge = myNet->retrieveEdge((*it)->getID());
-//        edge->updateJunctionPosition(this, orig);
-//    }
-//}
-//
-//
+void
+GNEPOI::move(Position pos) {
+    set(pos);
+    myNet->refreshElement(this);
+}
+
+
 //void
 //GNEPOI::registerMove(GNEUndoList *undoList) {
 //    Position newPos = myNBNode.getPosition();
@@ -182,7 +177,7 @@ GNEPOI::isValid(SumoXMLAttr key, const std::string& /* value */) {
 void
 GNEPOI::saveToFile(const std::string& file) {
     OutputDevice& out = OutputDevice::getDevice(file);
-    out.writeXMLHeader("pois");
+    out.writeXMLHeader("additional", "additional_file.xsd");
     GeoConvHelper::writeLocation(out);
     const std::vector<GUIGlObject_AbstractAdd*>& additionals = GUIGlObject_AbstractAdd::getObjectList();
     for (std::vector<GUIGlObject_AbstractAdd*>::const_iterator it = additionals.begin(); it != additionals.end(); ++it) {

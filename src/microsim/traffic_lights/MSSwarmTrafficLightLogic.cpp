@@ -3,12 +3,12 @@
 /// @author  Gianfilippo Slager
 /// @author  Federico Caselli
 /// @date    Mar 2010
-/// @version $Id: MSSwarmTrafficLightLogic.cpp 21217 2016-07-22 10:57:44Z behrisch $
+/// @version $Id: MSSwarmTrafficLightLogic.cpp 22627 2017-01-18 12:56:36Z behrisch $
 ///
 // The class for Swarm-based logics
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright 2001-2009 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2010-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

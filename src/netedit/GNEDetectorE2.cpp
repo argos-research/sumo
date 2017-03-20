@@ -2,12 +2,12 @@
 /// @file    GNEDetectorE2.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetectorE2.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEDetectorE2.cpp 22915 2017-02-10 14:05:44Z palcraft $
 ///
 ///
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -63,8 +63,8 @@
 // ===========================================================================
 
 GNEDetectorE2::GNEDetectorE2(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal pos, SUMOReal length, SUMOReal freq, const std::string& filename,
-                             bool cont, SUMOTime timeThreshold, SUMOReal speedThreshold, SUMOReal jamThreshold, bool blocked) :
-    GNEDetector(id, viewNet, SUMO_TAG_E2DETECTOR, lane, pos, freq, filename, blocked),
+                             bool cont, const SUMOReal timeThreshold, SUMOReal speedThreshold, SUMOReal jamThreshold) :
+    GNEDetector(id, viewNet, SUMO_TAG_E2DETECTOR, ICON_E2, lane, pos, freq, filename),
     myLength(length),
     myCont(cont),
     myTimeThreshold(timeThreshold),
@@ -145,7 +145,7 @@ GNEDetectorE2::getPositionInView() const {
 
 
 void
-GNEDetectorE2::writeAdditional(OutputDevice& device, const std::string&) {
+GNEDetectorE2::writeAdditional(OutputDevice& device) const {
     // Write parameters
     device.openTag(getTag());
     device.writeAttr(SUMO_ATTR_ID, getID());
@@ -157,7 +157,7 @@ GNEDetectorE2::writeAdditional(OutputDevice& device, const std::string&) {
         device.writeAttr(SUMO_ATTR_FILE, myFilename);
     }
     device.writeAttr(SUMO_ATTR_CONT, myCont);
-    device.writeAttr(SUMO_ATTR_HALTING_TIME_THRESHOLD, time2string(myTimeThreshold));
+    device.writeAttr(SUMO_ATTR_HALTING_TIME_THRESHOLD, myTimeThreshold);
     device.writeAttr(SUMO_ATTR_HALTING_SPEED_THRESHOLD, mySpeedThreshold);
     device.writeAttr(SUMO_ATTR_JAM_DIST_THRESHOLD, myJamThreshold);
     if (myBlocked) {
@@ -198,7 +198,7 @@ GNEDetectorE2::drawGL(const GUIVisualizationSettings& s) const {
     // Check if the distance is enought to draw details
     if (s.scale * exaggeration >= 10) {
         // Draw icon
-        this->drawDetectorIcon(GUITextureSubSys::getGif(GNETEXTURE_E2));
+        this->drawDetectorIcon(GUITextureSubSys::getTexture(GNETEXTURE_E2));
 
         // Show Lock icon depending of the Edit mode
         drawLockIcon();
@@ -230,7 +230,7 @@ GNEDetectorE2::getAttribute(SumoXMLAttr key) const {
         case SUMO_ATTR_CONT:
             return toString(myCont);
         case SUMO_ATTR_HALTING_TIME_THRESHOLD:
-            return time2string(myTimeThreshold);
+            return toString(myTimeThreshold);
         case SUMO_ATTR_HALTING_SPEED_THRESHOLD:
             return toString(mySpeedThreshold);
         case SUMO_ATTR_JAM_DIST_THRESHOLD:
@@ -238,7 +238,7 @@ GNEDetectorE2::getAttribute(SumoXMLAttr key) const {
         case GNE_ATTR_BLOCK_MOVEMENT:
             return toString(myBlocked);
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -264,7 +264,7 @@ GNEDetectorE2::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoLi
             updateGeometry();
             break;
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -287,7 +287,7 @@ GNEDetectorE2::isValid(SumoXMLAttr key, const std::string& value) {
         case SUMO_ATTR_POSITION:
             return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) >= 0 && parse<SUMOReal>(value) <= (myLane->getLaneParametricLenght()));
         case SUMO_ATTR_FREQUENCY:
-            return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) >= 0);
+            return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) > 0);
         case SUMO_ATTR_LENGTH:
             return (canParse<SUMOReal>(value) && parse<SUMOReal>(value) >= 0);
         case SUMO_ATTR_FILE:
@@ -295,7 +295,7 @@ GNEDetectorE2::isValid(SumoXMLAttr key, const std::string& value) {
         case SUMO_ATTR_CONT:
             return canParse<bool>(value);
         case SUMO_ATTR_HALTING_TIME_THRESHOLD:
-            return canParse<int>(value);
+            return canParse<SUMOReal>(value);
         case SUMO_ATTR_HALTING_SPEED_THRESHOLD:
             return canParse<SUMOReal>(value);
         case SUMO_ATTR_JAM_DIST_THRESHOLD:
@@ -303,7 +303,7 @@ GNEDetectorE2::isValid(SumoXMLAttr key, const std::string& value) {
         case GNE_ATTR_BLOCK_MOVEMENT:
             return canParse<bool>(value);
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -340,7 +340,7 @@ GNEDetectorE2::setAttribute(SumoXMLAttr key, const std::string& value) {
             myCont = parse<bool>(value);
             break;
         case SUMO_ATTR_HALTING_TIME_THRESHOLD:
-            myTimeThreshold = string2time(value);
+            myTimeThreshold = parse<SUMOReal>(value);
             break;
         case SUMO_ATTR_HALTING_SPEED_THRESHOLD:
             mySpeedThreshold = parse<SUMOReal>(value);
@@ -353,7 +353,7 @@ GNEDetectorE2::setAttribute(SumoXMLAttr key, const std::string& value) {
             getViewNet()->update();
             break;
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 

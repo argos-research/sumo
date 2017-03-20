@@ -5,11 +5,11 @@
 /// @author  Anna Chiara Bellini
 /// @author  Federico Caselli
 /// @date    Jun 2013
-/// @version $Id: MSSOTLHiLevelTrafficLightLogic.h 21206 2016-07-20 08:08:35Z behrisch $
+/// @version $Id: MSSOTLHiLevelTrafficLightLogic.h 22627 2017-01-18 12:56:36Z behrisch $
 ///
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright 2001-2013 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2013-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

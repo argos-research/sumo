@@ -2,12 +2,12 @@
 /// @file    GNEAdditionalDialog.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    April 2016
-/// @version $Id: GNEAdditionalDialog.cpp 21320 2016-08-23 11:11:18Z behrisch $
+/// @version $Id: GNEAdditionalDialog.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 /// A abstract class for editing additional elements
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -29,6 +29,9 @@
 
 #include <iostream>
 #include <utils/gui/windows/GUIAppEnum.h>
+#include <utils/gui/div/GUIDesigns.h>
+#include <utils/gui/images/GUIIconSubSys.h>
+
 #include "GNEAdditionalDialog.h"
 #include "GNEAdditional.h"
 #include "GNEViewNet.h"
@@ -56,21 +59,32 @@ FXIMPLEMENT_ABSTRACT(GNEAdditionalDialog, FXDialogBox, GNEAdditionalDialogMap, A
 // ===========================================================================
 
 GNEAdditionalDialog::GNEAdditionalDialog(GNEAdditional* parent, int width, int height) :
-    FXDialogBox(parent->getViewNet(), ("Edit '" + parent->getID() + "' data").c_str(), LAYOUT_EXPLICIT | DECOR_TITLE | DECOR_BORDER, 0, 0, width, height) {
-    // Create frames
-    myContentFrame = new FXVerticalFrame(this, LAYOUT_EXPLICIT, 0, 0, width, height - 30);
-    myButtonFrame = new FXHorizontalFrame(this, LAYOUT_EXPLICIT, 0, height - 30, width, 30);
-    // create buttons
-    new FXHorizontalFrame(myButtonFrame, LAYOUT_FILL_X);
-    myAcceptButton = new FXButton(myButtonFrame, "accept\t\tclose", 0, this, MID_GNE_MODE_ADDITIONALDIALOG_ACCEPT, ICON_BEFORE_TEXT | LAYOUT_FIX_WIDTH | LAYOUT_FIX_HEIGHT | FRAME_THICK | FRAME_RAISED, 0, 0, 75, 23, 2, 2, 2, 2);
-    myCancelButton = new FXButton(myButtonFrame, "cancel\t\tclose", 0, this, MID_GNE_MODE_ADDITIONALDIALOG_CANCEL, ICON_BEFORE_TEXT | LAYOUT_FIX_WIDTH | LAYOUT_FIX_HEIGHT | FRAME_THICK | FRAME_RAISED, 0, 0, 75, 23, 2, 2, 2, 2);
-    myResetButton = new FXButton(myButtonFrame,  "reset\t\tclose",  0, this, MID_GNE_MODE_ADDITIONALDIALOG_RESET,  ICON_BEFORE_TEXT | LAYOUT_FIX_WIDTH | LAYOUT_FIX_HEIGHT | FRAME_THICK | FRAME_RAISED, 0, 0, 75, 23, 2, 2, 2, 2);
-    new FXHorizontalFrame(myButtonFrame, LAYOUT_FILL_X);
+    FXDialogBox(parent->getViewNet(), ("Edit '" + parent->getID() + "' data").c_str(), GUIDesignDialogBoxExplicit, 0, 0, width, height, 0, 0, 0, 0) {
+    // check that parent isn't NULL
+    assert(parent != NULL);
+    // set icon
+    setIcon(parent->getIcon());
+    // create main frame
+    FXVerticalFrame* mainFrame = new FXVerticalFrame(this, GUIDesignAuxiliarFrame);
+    // Create frame for contents
+    myContentFrame = new FXVerticalFrame(mainFrame, GUIDesignContentsFrame);
+    // create buttons centered
+    FXHorizontalFrame* buttonsFrame = new FXHorizontalFrame(mainFrame, GUIDesignHorizontalFrameButton);
+    new FXHorizontalFrame(buttonsFrame, GUIDesignHorizontalFrameButton);
+    myAcceptButton = new FXButton(buttonsFrame, "accept\t\tclose", GUIIconSubSys::getIcon(ICON_ACCEPT), this, MID_GNE_MODE_ADDITIONALDIALOG_ACCEPT, GUIDesignButtonAccept);
+    myCancelButton = new FXButton(buttonsFrame, "cancel\t\tclose", GUIIconSubSys::getIcon(ICON_CANCEL), this, MID_GNE_MODE_ADDITIONALDIALOG_CANCEL, GUIDesignButtonCancel);
+    myResetButton = new FXButton(buttonsFrame,  "reset\t\tclose",  GUIIconSubSys::getIcon(ICON_RESET), this, MID_GNE_MODE_ADDITIONALDIALOG_RESET,  GUIDesignButtonReset);
+    new FXHorizontalFrame(buttonsFrame, GUIDesignHorizontalFrameButton);
 }
 
 
-GNEAdditionalDialog::~GNEAdditionalDialog() {
-}
+GNEAdditionalDialog::~GNEAdditionalDialog() {}
 
+
+void
+GNEAdditionalDialog::changeAdditionalDialogHeader(const std::string& newHeader) {
+    // change FXDialogBox title
+    setTitle(newHeader.c_str());
+}
 
 /****************************************************************************/

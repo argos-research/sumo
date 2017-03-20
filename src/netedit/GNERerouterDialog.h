@@ -2,12 +2,12 @@
 /// @file    GNERerouterDialog.h
 /// @author  Pablo Alvarez Lopez
 /// @date    April 2016
-/// @version $Id: GNERerouterDialog.h 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNERerouterDialog.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 /// Dialog for edit rerouters
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -38,6 +38,8 @@
 // ===========================================================================
 
 class GNERerouter;
+class GNERerouterInterval;
+class GNERerouterIntervalDialog;
 
 // ===========================================================================
 // class definitions
@@ -47,17 +49,28 @@ class GNERerouter;
  * @class GNERerouterDialog
  * @brief Dialog for edit rerouters
  */
-
 class GNERerouterDialog : public GNEAdditionalDialog {
     /// @brief FOX-declaration
     FXDECLARE(GNERerouterDialog)
 
 public:
-    // Constructor
+    /// @brief Constructor
     GNERerouterDialog(GNERerouter* rerouterParent);
 
-    // destructor
+    /// @brief destructor
     ~GNERerouterDialog();
+
+    /// @brief get rerouter parent
+    GNERerouter* getRerouterParent() const;
+
+    /// @brief check if a interval exists
+    bool findInterval(SUMOReal begin, SUMOReal end) const;
+
+    /// @brief check begin and end of an new interval
+    bool checkInterval(SUMOReal begin, SUMOReal end) const;
+
+    /// @brief check if begin and end of an existent interval can be modified
+    bool checkModifyInterval(SUMOReal oldBegin, SUMOReal oldEnd, SUMOReal newBegin, SUMOReal newEnd) const;
 
     /// @name FOX-callbacks
     /// @{
@@ -69,6 +82,12 @@ public:
 
     /// @brief event after press reset button
     long onCmdReset(FXObject*, FXSelector, void*);
+
+    /// @brief add new interval
+    long onCmdAddInterval(FXObject*, FXSelector, void*);
+
+    /// @brief remove or edit interval
+    long onCmdClickedInterval(FXObject*, FXSelector, void*);
     /// @}
 
 protected:
@@ -78,10 +97,19 @@ protected:
     /// @brief pointer to rerouter parent
     GNERerouter* myRerouterParent;
 
-private:
-    /// @brief update data table
-    void updateTable();
+    /// @brief button for add new interval
+    FXButton* myAddInterval;
 
+    /// @brief list with intervals
+    FXTable* myIntervalList;
+
+    /// @brief set with a copy of rerouter intervals
+    std::vector<GNERerouterInterval> myCopyOfRerouterIntervals;
+
+    /// @brief update data table
+    void updateIntervalTable();
+
+private:
     /// @brief Invalidated copy constructor.
     GNERerouterDialog(const GNERerouterDialog&);
 

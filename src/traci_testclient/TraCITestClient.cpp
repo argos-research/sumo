@@ -7,12 +7,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    2008/04/07
-/// @version $Id: TraCITestClient.cpp 21671 2016-10-12 11:12:57Z namdre $
+/// @version $Id: TraCITestClient.cpp 22716 2017-01-26 15:25:31Z namdre $
 ///
 /// A test execution class
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2008-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -167,13 +167,13 @@ TraCITestClient::run(std::string fileName, int port, std::string host) {
             msg << "Error in definition file: " << lineCommand << " is not a valid command";
             errorMsg(msg);
             commandClose();
-            close();
+            closeSocket();
             return false;
         }
     }
     defFile.close();
     commandClose();
-    close();
+    closeSocket();
     return true;
 }
 
@@ -697,10 +697,16 @@ TraCITestClient::testAPI() {
     vehicletype.setHeight("t1", 1.8);
     answerLog << "    getHeight: " << vehicletype.getHeight("t1") << "\n";
     answerLog << "  vehicle:\n";
+    vehicle.setLine("0", "S42");
+    std::vector<std::string> via;
+    via.push_back("e_m1");
+    vehicle.setVia("0", via);
     answerLog << "    getRoadID: " << vehicle.getRoadID("0") << "\n";
     answerLog << "    getLaneID: " << vehicle.getLaneID("0") << "\n";
     answerLog << "    getSpeedMode: " << vehicle.getSpeedMode("0") << "\n";
     answerLog << "    getSlope: " << vehicle.getSlope("0") << "\n";
+    answerLog << "    getLine: " << vehicle.getLine("0") << "\n";
+    answerLog << "    getVia: " << joinToString(vehicle.getVia("0"), ",") << "\n";
     TraCIColor col1;
     col1.r = 255;
     col1.g = 255;
@@ -725,6 +731,8 @@ TraCITestClient::testAPI() {
     simulationStep();
     answerLog << "    getIDList: " << joinToString(vehicle.getIDList(), " ") << "\n";
     answerLog << "    getWaitingTime: " << vehicle.getWaitingTime("0") << "\n";
+    vehicle.setShapeClass("0", "bicycle");
+    answerLog << "    getShapeClass: " << vehicle.getShapeClass("0") << "\n";
     answerLog << "    remove:\n";
     vehicle.remove("0");
     answerLog << "    getIDCount: " << vehicle.getIDCount() << "\n";
@@ -762,11 +770,38 @@ TraCITestClient::testAPI() {
     }
 
     answerLog << "  person:\n";
+    person.setWidth("p0", 1);
+    person.setMinGap("p0", 2);
+    person.setLength("p0", 3);
+    person.setHeight("p0", 4);
+    person.setColor("p0", col1);
+    person.setType("p0", "stilts");
     answerLog << "    getIDList: " << joinToString(person.getIDList(), " ") << "\n";
     answerLog << "    getRoadID: " << person.getRoadID("p0") << "\n";
     answerLog << "    getTypeID: " << person.getTypeID("p0") << "\n";
     answerLog << "    getWaitingTime: " << person.getWaitingTime("p0") << "\n";
     answerLog << "    getNextEdge: " << person.getNextEdge("p0") << "\n";
+    answerLog << "    getStage: " << person.getStage("p0") << "\n";
+    answerLog << "    getRemainingStages: " << person.getRemainingStages("p0") << "\n";
+    answerLog << "    getVehicle: " << person.getVehicle("p0") << "\n";
+    answerLog << "    getEdges: " << joinToString(person.getEdges("p0"), " ") << "\n";
+    person.setSpeed("p0", 3);
+    simulationStep();
+    answerLog << "    getSpeed: " << person.getSpeed("p0") << "\n";
+    person.add("p1", "e_u1", 10);
+    std::vector<std::string> walkEdges;
+    walkEdges.push_back("e_u1");
+    walkEdges.push_back("e_shape1");
+    person.appendWalkingStage("p1", walkEdges, -20);
+    person.appendWaitingStage("p1", 5);
+    person.appendDrivingStage("p1", "e_vu2", "BusLine42");
+    // expect 4 stages due to the initial waiting-for-departure stage
+    answerLog << "    getRemainingStages: " << person.getRemainingStages("p1") << "\n";
+    person.removeStage("p1", 3);
+    answerLog << "    getRemainingStages: " << person.getRemainingStages("p1") << "\n";
+    person.removeStages("p1");
+    answerLog << "    getRemainingStages: " << person.getRemainingStages("p1") << "\n";
+    answerLog << "    getStage: " << person.getStage("p1") << "\n";
 
     answerLog << "  gui:\n";
     try {

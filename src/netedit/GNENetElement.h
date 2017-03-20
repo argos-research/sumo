@@ -2,12 +2,12 @@
 /// @file    GNENetElement.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNENetElement.h 21640 2016-10-09 20:28:52Z palcraft $
+/// @version $Id: GNENetElement.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A abstract class for net elements
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -60,8 +60,9 @@ public:
      * @param[in] id of the element
      * @param[in] type type of GL object
      * @param[in] tag sumo xml tag of the element
+     * @param[in] icon GUIIcon associated to the additional
      */
-    GNENetElement(GNENet* net, const std::string& id, GUIGlObjectType type, SumoXMLTag tag);
+    GNENetElement(GNENet* net, const std::string& id, GUIGlObjectType type, SumoXMLTag tag, GUIIcon icon);
 
     /// @brief Destructor
     ~GNENetElement();

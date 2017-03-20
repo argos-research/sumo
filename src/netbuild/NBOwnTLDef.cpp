@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Tue, 29.05.2005
-/// @version $Id: NBOwnTLDef.cpp 21210 2016-07-21 10:02:38Z behrisch $
+/// @version $Id: NBOwnTLDef.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A traffic light logics which must be computed (only nodes/edges are given)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -231,7 +231,7 @@ NBOwnTLDef::computeLogicAndConts(int brakingTimeSeconds, bool onlyConts) {
         const std::vector<NBNode::Crossing>& c = (*i)->getCrossings();
         if (!onlyConts) {
             // set tl indices for crossings
-            (*i)->setCrossingTLIndices(noLinksAll);
+            (*i)->setCrossingTLIndices(getID(), noLinksAll);
         }
         copy(c.begin(), c.end(), std::back_inserter(crossings));
         noLinksAll += (int)c.size();

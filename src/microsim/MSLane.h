@@ -8,12 +8,12 @@
 /// @author  Michael Behrisch
 /// @author  Mario Krumnow
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSLane.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: MSLane.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Representation of a lane in the micro simulation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -278,10 +278,10 @@ public:
     // XXX: Documentation?
     bool checkFailure(MSVehicle* aVehicle, SUMOReal& speed, SUMOReal& dist, const SUMOReal nspeed, const bool patchSpeed, const std::string errorMsg) const;
 
-    /** @todo documentation
-     *
+    /** @brief inserts vehicle as close as possible to the last vehicle on this
+     * lane (or at the end of the lane if there is no leader)
      */
-    bool lastInsertion(MSVehicle& veh, SUMOReal mspeed);
+    bool lastInsertion(MSVehicle& veh, SUMOReal mspeed, bool patchSpeed);
 
     /** @brief Tries to insert the given vehicle on any place
      *
@@ -576,7 +576,7 @@ public:
     /** @brief Returns the lane's follower if it is an internal lane, the edge of the lane otherwise
      * @return This lane's follower
      */
-    const MSEdge* getInternalFollower() const;
+    const MSEdge* getNextNormal() const;
 
 
     /// @brief Static (sic!) container methods
@@ -718,7 +718,7 @@ public:
 
     /// @brief return the follower with the largest missing rear gap among all predecessor lanes (within dist)
     std::pair<MSVehicle* const, SUMOReal> getFollowerOnConsecutive(
-        SUMOReal backOffset, SUMOReal leaderSpeed, SUMOReal leaderMaxDecel, SUMOReal dist = -1) const;
+        SUMOReal backOffset, SUMOReal leaderSpeed, SUMOReal leaderMaxDecel, SUMOReal dist = -1, bool ignoreMinorLinks = false) const;
 
     /// @brief return the sublane followers with the largest missing rear gap among all predecessor lanes (within dist)
     MSLeaderDistanceInfo getFollowersOnConsecutive(const MSVehicle* ego, bool allSublanes) const;
@@ -915,8 +915,18 @@ public:
     /// @brief return the corresponding position on the opposite lane
     SUMOReal getOppositePos(SUMOReal pos) const;
 
-    std::pair<MSVehicle* const, SUMOReal> getOppositeLeader(const MSVehicle* ego, SUMOReal dist) const;
+    /* @brief find leader for a vehicle depending the relative driving direction
+     * @param[in] ego The ego vehicle
+     * @param[in] dist The look-ahead distance when looking at consecutive lanes
+     * @param[in] oppositeDir Whether the lane has the opposite driving direction of ego
+     * @return the leader vehicle and it's gap to ego
+     */
+    std::pair<MSVehicle* const, SUMOReal> getOppositeLeader(const MSVehicle* ego, SUMOReal dist, bool oppositeDir) const;
 
+    /* @brief find follower for a vehicle that is located on the opposite of this lane
+     * @param[in] ego The ego vehicle
+     * @return the follower vehicle and it's gap to ego
+     */
     std::pair<MSVehicle* const, SUMOReal> getOppositeFollower(const MSVehicle* ego) const;
 
 
@@ -924,9 +934,10 @@ public:
      * @param[in] ego The ego vehicle
      * @param[in] egoPos The ego position mapped to the current lane
      * @param[in] dist The look-back distance when looking at consecutive lanes
+     * @param[in] ignoreMinorLinks Whether backward search should stop at minor links
      * @return the follower vehicle and it's gap to ego
      */
-    std::pair<MSVehicle* const, SUMOReal> getFollower(const MSVehicle* ego, SUMOReal egoPos, SUMOReal dist) const;
+    std::pair<MSVehicle* const, SUMOReal> getFollower(const MSVehicle* ego, SUMOReal egoPos, SUMOReal dist, bool ignoreMinorLinks) const;
 
     /// @name State saving/loading
     /// @{

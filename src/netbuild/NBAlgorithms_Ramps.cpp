@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    29. March 2012
-/// @version $Id: NBAlgorithms_Ramps.cpp 21179 2016-07-16 10:00:39Z namdre $
+/// @version $Id: NBAlgorithms_Ramps.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Algorithms for highway on-/off-ramps computation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

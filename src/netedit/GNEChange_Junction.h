@@ -2,12 +2,12 @@
 /// @file    GNEChange_Junction.h
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEChange_Junction.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEChange_Junction.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A network change in which a single junction is created or deleted
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -52,11 +52,10 @@ class GNEChange_Junction : public GNEChange {
 
 public:
     /**@brief Constructor for creating/deleting a junction
-     * @param[in] net The net on which to apply changes
      * @param[in] junction The junction to be created/deleted
      * @param[in] forward Whether to create/delete (true/false)
      */
-    GNEChange_Junction(GNENet* net, GNEJunction* junction, bool forward);
+    GNEChange_Junction(GNEJunction* junction, bool forward);
 
     /// @brief Destructor
     ~GNEChange_Junction();
@@ -78,9 +77,8 @@ public:
 
 
 private:
-
     /**@brief full information regarding the junction that is to be created/deleted
-     * we assume shared responsibility for the pointer (via reference counting)
+     * @note we assume shared responsibility for the pointer (via reference counting)
      */
     GNEJunction* myJunction;
 };

@@ -4,12 +4,12 @@
 /// @author  Alessio Bonfietti
 /// @author  Federico Caselli
 /// @date    2010-02-25
-/// @version $Id: MSSOTLE2Sensors.cpp 21577 2016-09-29 09:58:48Z behrisch $
+/// @version $Id: MSSOTLE2Sensors.cpp 22627 2017-01-18 12:56:36Z behrisch $
 ///
 // The class for SOTL sensors of "E2" type
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright 2001-2009 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2010-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIDanielPerspectiveChanger.h 21824 2016-10-27 13:03:52Z behrisch $
+/// @version $Id: GUIDanielPerspectiveChanger.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A class that allows to steer the visual output in dependence to
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -109,7 +109,7 @@ public:
      *
      * @param[in] change The horizontal change in canvas size in pixels
      */
-    void changeCanvassLeft(int change);
+    void changeCanvasSizeLeft(int change);
 
     /* @brief avoid unwanted flicker
      * @param[in] delay The minimum time delay in nanoseconds after

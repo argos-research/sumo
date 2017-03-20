@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Nov 2012
-/// @version $Id: SUMOSAXReader.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: SUMOSAXReader.h 22623 2017-01-18 09:53:08Z behrisch $
 ///
 // SAX-reader encapsulation containing binary reader
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -115,6 +115,11 @@ private:
     XERCES_CPP_NAMESPACE::SAX2XMLReader* myXMLReader;
 
     BinaryInputDevice* myBinaryInput;
+
+    char mySbxVersion;
+
+    /// @brief The stack of begun xml elements
+    std::vector<SumoXMLTag> myXMLStack;
 
     LocalSchemaResolver mySchemaResolver;
 

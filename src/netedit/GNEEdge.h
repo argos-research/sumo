@@ -2,13 +2,13 @@
 /// @file    GNEEdge.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEEdge.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEEdge.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A road/street connecting two junctions (netedit-version, adapted from GUIEdge)
 // Basically a container for an NBEdge with drawing and editing capabilities
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -41,7 +41,6 @@ class GNEJunction;
 class GNELane;
 class GNEConnection;
 class GNEAdditional;
-class GNEAdditionalSet;
 
 // ===========================================================================
 // class definitions
@@ -67,9 +66,6 @@ public:
 
     /// @brief Definition of the additionals vector
     typedef std::vector<GNEAdditional*> AdditionalVector;
-
-    /// @brief Definition of the additionalSets vector
-    typedef std::vector<GNEAdditionalSet*> AdditionalSetVector;
 
     /**@brief Constructor.
      * @param[in] nbe The represented edge
@@ -132,7 +128,7 @@ public:
     GNEJunction* getGNEJunctionSource() const;
 
     /// @brief returns the destination-junction
-    GNEJunction* getGNEJunctionDest() const;
+    GNEJunction* getGNEJunctionDestiny() const;
 
     /**@brief change the edge geometry
      * It is up to the Edge to decide whether an new geometry node should be
@@ -236,15 +232,6 @@ public:
     /// @brief return list of additionals associated with this edge
     const std::vector<GNEAdditional*>& getAdditionalChilds() const;
 
-    /// @brief add GNEAdditionalSet to this edge
-    bool addAdditionalSet(GNEAdditionalSet* additionalSet);
-
-    /// @brief remove GNEAdditionalSet from this edge
-    bool removeAdditionalGeometrySet(GNEAdditionalSet* additionalSet);
-
-    /// @brief return list of additionalSets associated with this edge
-    const std::vector<GNEAdditionalSet*>& getAdditionalSets();
-
     /// @brief check if edge has a restricted lane
     bool hasRestrictedLane(SUMOVehicleClass vclass) const;
 
@@ -256,6 +243,12 @@ public:
 protected:
     /// @brief the underlying NBEdge
     NBEdge& myNBEdge;
+
+    /// @brief pointer to GNEJunction source
+    GNEJunction* myGNEJunctionSource;
+
+    /// @brief pointer to GNEJunction destiny
+    GNEJunction* myGNEJunctionDestiny;
 
     /// @brief restore point for undo
     PositionVector myOrigShape;
@@ -277,9 +270,6 @@ protected:
 
     /// @brief list with the additonals vinculated with this edge
     AdditionalVector myAdditionals;
-
-    /// @brief list with the additonalSets vinculated with this edge
-    AdditionalSetVector myAdditionalSets;
 
 private:
     /// @brief set attribute after validation

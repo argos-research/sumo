@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 07.04.2008
-/// @version $Id: SUMOVehicleParserHelper.h 20687 2016-05-10 11:27:00Z behrisch $
+/// @version $Id: SUMOVehicleParserHelper.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Helper methods for parsing vehicle attributes
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2008-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

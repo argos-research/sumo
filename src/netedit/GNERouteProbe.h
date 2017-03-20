@@ -2,12 +2,12 @@
 /// @file    GNERouteProbe.h
 /// @author  Pablo Alvarez Lopez
 /// @date    May 2016
-/// @version $Id: GNERouteProbe.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNERouteProbe.h 22876 2017-02-07 13:40:22Z palcraft $
 ///
 ///
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -54,9 +54,8 @@ public:
      * @param[in] frequency The frequency in which to report the distribution
      * @param[in] filename The file for generated output
      * @param[in] begin The time at which to start generating output
-     * @param[in] blocked set initial blocking state of item
      */
-    GNERouteProbe(const std::string& id, GNEViewNet* viewNet, GNEEdge* edge, int frequency, const std::string& filename, int begin, bool blocked);
+    GNERouteProbe(const std::string& id, GNEViewNet* viewNet, GNEEdge* edge, SUMOReal frequency, const std::string& filename, SUMOReal begin);
 
     /// @brief Destructor
     ~GNERouteProbe();
@@ -77,7 +76,7 @@ public:
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element
      */
-    void writeAdditional(OutputDevice& device, const std::string&);
+    void writeAdditional(OutputDevice& device) const;
 
     /// @brief remove reference to edge
     /// @note this function will be called automatically in destructor of GNEEdge
@@ -87,19 +86,19 @@ public:
     std::string getFilename() const;
 
     /// @brief get frequency of RouteProbe
-    int getFrequency() const;
+    SUMOReal getFrequency() const;
 
     /// @brief get begin of RouteProbe
-    int getBegin() const;
+    SUMOReal getBegin() const;
 
     /// @brief set filename of RouteProbe
     void setFilename(std::string filename);
 
     /// @brief set frequency of RouteProbe
-    void setFrequency(int frequency);
+    void setFrequency(SUMOReal frequency);
 
     /// @brief set begin of RouteProbe
-    void setBegin(int begin);
+    void setBegin(SUMOReal begin);
 
     /// @name inherited from GUIGlObject
     /// @{
@@ -139,13 +138,13 @@ public:
 
 protected:
     /// @brief Frequency of RouteProbe
-    int myFrequency;
+    SUMOReal myFrequency;
 
     /// @brief filename of RouteProbe
     std::string myFilename;
 
     /// @brief begin of rerouter
-    int myBegin;
+    SUMOReal myBegin;
 
     /// @brief route probe logo offset
     Position myRouteProbeLogoOffset;

@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Jun 2004
-/// @version $Id: Polygon.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: Polygon.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A 2D-polygon
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2004-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2004-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -78,12 +78,7 @@ Polygon::writeXML(OutputDevice& out, bool geo) {
     if (getImgFile() != Shape::DEFAULT_IMG_FILE) {
         out.writeAttr(SUMO_ATTR_IMGFILE, getImgFile());
     }
-    for (std::map<std::string, std::string>::const_iterator j = getMap().begin(); j != getMap().end(); ++j) {
-        out.openTag(SUMO_TAG_PARAM);
-        out.writeAttr(SUMO_ATTR_KEY, (*j).first);
-        out.writeAttr(SUMO_ATTR_VALUE, (*j).second);
-        out.closeTag();
-    }
+    writeParams(out);
     out.closeTag();
 }
 

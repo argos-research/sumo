@@ -2,12 +2,12 @@
 /// @file    NWWriter_OpenDrive.h
 /// @author  Daniel Krajzewicz
 /// @date    Tue, 04.05.2011
-/// @version $Id: NWWriter_OpenDrive.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: NWWriter_OpenDrive.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Exporter writing networks using the openDRIVE format
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -66,8 +66,12 @@ protected:
     /// @brief write geometry as sequence of lines (sumo style)
     static SUMOReal writeGeomLines(const PositionVector& shape, OutputDevice& device, OutputDevice& elevationDevice, SUMOReal offset = 0);
 
-    /// @brief write geometry as sequence of lines and bezier curves
-    static bool writeGeomSmooth(const PositionVector& shape, SUMOReal speed, OutputDevice& device, OutputDevice& elevationDevice);
+    /* @brief write geometry as sequence of lines and bezier curves
+     *
+     * @param[in] straightThresh angular changes below threshold are considered to be straight and no curve will be fitted between the segments
+     * @param[out] length Return the total length of the reference line
+     */
+    static bool writeGeomSmooth(const PositionVector& shape, SUMOReal speed, OutputDevice& device, OutputDevice& elevationDevice, SUMOReal straightThresh, SUMOReal& length);
 
     /// @brief write geometry as a single bezier curve (paramPoly3)
     static SUMOReal writeGeomPP3(OutputDevice& device,
@@ -85,6 +89,9 @@ protected:
 
     /// @brief get the left border of the given lane (the leftmost one by default)
     static PositionVector getLeftLaneBorder(const NBEdge* edge, int laneIndex = -1);
+
+    /// @brief check if the lane geometries are compatible with OpenDRIVE assumptions (colinear stop line)
+    static void checkLaneGeometries(const NBEdge* e);
 };
 
 

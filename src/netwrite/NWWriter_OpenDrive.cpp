@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Tue, 04.05.2011
-/// @version $Id: NWWriter_OpenDrive.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: NWWriter_OpenDrive.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Exporter writing networks using the openDRIVE format
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2011-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2011-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -68,10 +68,13 @@ NWWriter_OpenDrive::writeNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
     if (!oc.isSet("opendrive-output")) {
         return;
     }
+    const NBNodeCont& nc = nb.getNodeCont();
+    const NBEdgeCont& ec = nb.getEdgeCont();
     const bool origNames = oc.getBool("output.original-names");
+    const SUMOReal straightThresh = DEG2RAD(oc.getFloat("opendrive-output.straight-threshold"));
     // some internal mapping containers
-    int edgeID = 1;
     int nodeID = 1;
+    int edgeID = nc.size() * 10; // distinct from node ids
     StringBijection<int> edgeMap;
     StringBijection<int> nodeMap;
     //
@@ -80,8 +83,6 @@ NWWriter_OpenDrive::writeNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
     device.openTag("OpenDRIVE");
     time_t now = time(0);
     std::string dstr(ctime(&now));
-    const NBNodeCont& nc = nb.getNodeCont();
-    const NBEdgeCont& ec = nb.getEdgeCont();
     const Boundary& b = GeoConvHelper::getFinal().getConvBoundary();
     // write header
     device.openTag("header");
@@ -104,24 +105,16 @@ NWWriter_OpenDrive::writeNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
     // write normal edges (road)
     for (std::map<std::string, NBEdge*>::const_iterator i = ec.begin(); i != ec.end(); ++i) {
         const NBEdge* e = (*i).second;
-        device.openTag("road");
-        device.writeAttr("name", StringUtils::escapeXML(e->getStreetName()));
-        device.writeAttr("length", e->getLength());
-        device.writeAttr("id", getID(e->getID(), edgeMap, edgeID));
-        device.writeAttr("junction", -1);
-        device.openTag("link");
-        device.openTag("predecessor");
-        device.writeAttr("elementType", "junction");
-        device.writeAttr("elementId", getID(e->getFromNode()->getID(), nodeMap, nodeID));
-        device.closeTag();
-        device.openTag("successor");
-        device.writeAttr("elementType", "junction");
-        device.writeAttr("elementId", getID(e->getToNode()->getID(), nodeMap, nodeID));
-        device.closeTag();
-        device.closeTag();
-        device.openTag("type").writeAttr("s", 0).writeAttr("type", "town").closeTag();
-        device.openTag("planView");
-        device.setPrecision(8); // geometry hdg requires higher precision
+
+        // buffer output because some fields are computed out of order
+        OutputDevice_String elevationOSS(false, 3);
+        elevationOSS.setPrecision(8);
+        OutputDevice_String planViewOSS(false, 2);
+        planViewOSS.setPrecision(8);
+        SUMOReal length = 0;
+
+        planViewOSS.openTag("planView");
+        planViewOSS.setPrecision(8); // geometry hdg requires higher precision
         // for the shape we need to use the leftmost border of the leftmost lane
         const std::vector<NBEdge::Lane>& lanes = e->getLanes();
         PositionVector ls = getLeftLaneBorder(e);
@@ -130,39 +123,45 @@ NWWriter_OpenDrive::writeNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
             std::cout << "write planview for edge " << e->getID() << "\n";
         }
 #endif
-        OutputDevice_String elevationOSS(false, 3);
-        elevationOSS.setPrecision(8);
+
         if (ls.size() == 2 || e->getPermissions() == SVC_PEDESTRIAN) {
             // foot paths may contain sharp angles
-            writeGeomLines(ls, device, elevationOSS);
+            length = writeGeomLines(ls, planViewOSS, elevationOSS);
         } else {
-            bool ok = writeGeomSmooth(ls, e->getSpeed(), device, elevationOSS);
+            bool ok = writeGeomSmooth(ls, e->getSpeed(), planViewOSS, elevationOSS, straightThresh, length);
             if (!ok) {
                 WRITE_WARNING("Could not compute smooth shape for edge '" + e->getID() + "'.");
             }
         }
-        // check if the lane geometries are compatible with OpenDRIVE assumptions (colinear stop line)
-        if (e->getNumLanes() > 1) {
-            // compute 'stop line' of rightmost lane
-            const PositionVector shape0 = e->getLaneShape(0);
-            assert(shape0.size() >= 2);
-            const Position& from = shape0[-2];
-            const Position& to = shape0[-1];
-            PositionVector stopLine;
-            stopLine.push_back(to);
-            stopLine.push_back(to - PositionVector::sideOffset(from, to, -1000.0));
-            // endpoints of all other lanes should be on the stop line
-            for (int lane = 1; lane < e->getNumLanes(); ++lane) {
-                const SUMOReal dist = stopLine.distance2D(e->getLaneShape(lane)[-1]);
-                if (dist > NUMERICAL_EPS) {
-                    WRITE_WARNING("Uneven stop line at lane '" + e->getLaneID(lane) + "' (dist=" + toString(dist) + ") cannot be represented in OpenDRIVE.");
-                }
+        planViewOSS.closeTag();
+
+        device.openTag("road");
+        device.writeAttr("name", StringUtils::escapeXML(e->getStreetName()));
+        device.setPrecision(8); // length requires higher precision
+        device.writeAttr("length", MAX2(POSITION_EPS, length));
+        device.setPrecision(gPrecision);
+        device.writeAttr("id", getID(e->getID(), edgeMap, edgeID));
+        device.writeAttr("junction", -1);
+        const bool hasSucc = e->getConnections().size() > 0;
+        const bool hasPred = e->getIncomingEdges().size() > 0;
+        if (hasPred || hasSucc) {
+            device.openTag("link");
+            if (hasPred) {
+                device.openTag("predecessor");
+                device.writeAttr("elementType", "junction");
+                device.writeAttr("elementId", getID(e->getFromNode()->getID(), nodeMap, nodeID));
+                device.closeTag();
             }
+            if (hasSucc) {
+                device.openTag("successor");
+                device.writeAttr("elementType", "junction");
+                device.writeAttr("elementId", getID(e->getToNode()->getID(), nodeMap, nodeID));
+                device.closeTag();
+            }
+            device.closeTag();
         }
-
-
-        device.setPrecision(OUTPUT_ACCURACY);
-        device.closeTag();
+        device.openTag("type").writeAttr("s", 0).writeAttr("type", "town").closeTag();
+        device << planViewOSS.getString();
         writeElevationProfile(ls, device, elevationOSS);
         device << "        <lateralProfile/>\n";
         device << "        <lanes>\n";
@@ -197,8 +196,10 @@ NWWriter_OpenDrive::writeNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
             device << "        <userData code=\"sumoId\" value=\"" << e->getID() << "\"/>\n";
         }
         device.closeTag();
+        checkLaneGeometries(e);
     }
     device.lf();
+
     // write junction-internal edges (road). In OpenDRIVE these are called 'paths' or 'connecting roads'
     for (std::map<std::string, NBNode*>::const_iterator i = nc.begin(); i != nc.end(); ++i) {
         NBNode* n = (*i).second;
@@ -219,12 +220,12 @@ NWWriter_OpenDrive::writeNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
 
                 SUMOReal length;
                 PositionVector fallBackShape;
+                fallBackShape.push_back(begShape.back());
+                fallBackShape.push_back(endShape.front());
                 const bool turnaround = inEdge->isTurningDirectionAt(outEdge);
                 bool ok = true;
-                PositionVector init = NBNode::bezierControlPoints(begShape, endShape, turnaround, 25, 25, ok);
+                PositionVector init = NBNode::bezierControlPoints(begShape, endShape, turnaround, 25, 25, ok, 0, straightThresh);
                 if (init.size() == 0) {
-                    fallBackShape.push_back(begShape.back());
-                    fallBackShape.push_back(endShape.front());
                     length = fallBackShape.length2D();
                     // problem with turnarounds is known, method currently returns 'ok' (#2539)
                     if (!ok) {
@@ -236,7 +237,9 @@ NWWriter_OpenDrive::writeNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
 
                 device.openTag("road");
                 device.writeAttr("name", c.getInternalLaneID());
-                device.writeAttr("length", length);
+                device.setPrecision(8); // length requires higher precision
+                device.writeAttr("length", MAX2(POSITION_EPS, length));
+                device.setPrecision(gPrecision);
                 device.writeAttr("id", getID(c.getInternalLaneID(), edgeMap, edgeID));
                 device.writeAttr("junction", getID(n->getID(), nodeMap, nodeID));
                 device.openTag("link");
@@ -255,12 +258,17 @@ NWWriter_OpenDrive::writeNetwork(const OptionsCont& oc, NBNetBuilder& nb) {
                 device.openTag("planView");
                 device.setPrecision(8); // geometry hdg requires higher precision
                 OutputDevice_String elevationOSS(false, 3);
+#ifdef DEBUG_SMOOTH_GEOM
+                if (DEBUGCOND) {
+                    std::cout << "write planview for internal edge " << c.getInternalLaneID() << " init=" << init << " fallback=" << fallBackShape << "\n";
+                }
+#endif
                 if (init.size() == 0) {
                     writeGeomLines(fallBackShape, device, elevationOSS);
                 } else {
                     writeGeomPP3(device, elevationOSS, init, length);
                 }
-                device.setPrecision(OUTPUT_ACCURACY);
+                device.setPrecision(gPrecision);
                 device.closeTag();
                 writeElevationProfile(fallBackShape, device, elevationOSS);
                 device << "        <lateralProfile/>\n";
@@ -448,6 +456,9 @@ NWWriter_OpenDrive::writeGeomPP3(
 
     const Position p = init.front();
     const SUMOReal hdg = init.angleAt2D(0);
+
+    // backup elevation values
+    const PositionVector initZ = init;
     // translate to u,v coordinates
     init.add(-p.x(), -p.y(), -p.z());
     init.rotate2D(-hdg);
@@ -471,9 +482,9 @@ NWWriter_OpenDrive::writeGeomPP3(
         dV = 0;
 
         // elevation is not parameteric on [0:1] but on [0:length]
-        aZ = init[0].z();
-        bZ = (2 * init[1].z() - 2 * init[0].z()) / length;
-        cZ = (init[0].z() - 2 * init[1].z() + init[2].z()) / (length * length);
+        aZ = initZ[0].z();
+        bZ = (2 * initZ[1].z() - 2 * initZ[0].z()) / length;
+        cZ = (initZ[0].z() - 2 * initZ[1].z() + initZ[2].z()) / (length * length);
         dZ = 0;
 
     } else {
@@ -489,10 +500,10 @@ NWWriter_OpenDrive::writeGeomPP3(
         dV = -init[0].y() + 3 * init[1].y() - 3 * init[2].y() + init[3].y();
 
         // elevation is not parameteric on [0:1] but on [0:length]
-        aZ = init[0].z();
-        bZ = (3 * init[1].z() - 3 * init[0].z()) / length;
-        cZ = (3 * init[0].z() - 6 * init[1].z() + 3 * init[2].z()) / (length * length);
-        dZ = (-init[0].z() + 3 * init[1].z() - 3 * init[2].z() + init[3].z()) / (length * length * length);
+        aZ = initZ[0].z();
+        bZ = (3 * initZ[1].z() - 3 * initZ[0].z()) / length;
+        cZ = (3 * initZ[0].z() - 6 * initZ[1].z() + 3 * initZ[2].z()) / (length * length);
+        dZ = (-initZ[0].z() + 3 * initZ[1].z() - 3 * initZ[2].z() + initZ[3].z()) / (length * length * length);
     }
 
     device.openTag("geometry");
@@ -528,14 +539,13 @@ NWWriter_OpenDrive::writeGeomPP3(
 
 
 bool
-NWWriter_OpenDrive::writeGeomSmooth(const PositionVector& shape, SUMOReal speed, OutputDevice& device, OutputDevice& elevationDevice) {
+NWWriter_OpenDrive::writeGeomSmooth(const PositionVector& shape, SUMOReal speed, OutputDevice& device, OutputDevice& elevationDevice, SUMOReal straightThresh, SUMOReal& length) {
 #ifdef DEBUG_SMOOTH_GEOM
     if (DEBUGCOND) {
         std::cout << "writeGeomSmooth\n  n=" << shape.size() << " shape=" << toString(shape) << "\n";
     }
 #endif
     bool ok = true;
-    const SUMOReal angleThresh = DEG2RAD(5); // changes below thresh are considered to be straight (make configurable)
     const SUMOReal longThresh = speed; //  16.0; // make user-configurable (should match the sampling rate of the source data)
     const SUMOReal curveCutout = longThresh / 2; // 8.0; // make user-configurable (related to the maximum turning rate)
     // the length of the segment that is added for cutting a corner can be bounded by 2*curveCutout (prevent the segment to be classified as 'long')
@@ -560,7 +570,7 @@ NWWriter_OpenDrive::writeGeomSmooth(const PositionVector& shape, SUMOReal speed,
             std::cout << "   j=" << j << " dAngle=" << RAD2DEG(dAngle) << " length1=" << length1 << " length2=" << length2 << "\n";
         }
 #endif
-        if (dAngle > angleThresh
+        if (dAngle > straightThresh
                 && (length1 > longThresh || j == 1)
                 && (length2 > longThresh || j == (int)shape.size() - 2)) {
             shape2.insertAtClosest(shape.positionAtOffset2D(offset + length1 - MIN2(length1 - POSITION_EPS, curveCutout)));
@@ -576,8 +586,8 @@ NWWriter_OpenDrive::writeGeomSmooth(const PositionVector& shape, SUMOReal speed,
     }
 #endif
 
-    if (maxAngleDiff < angleThresh) {
-        writeGeomLines(shape2, device, elevationDevice, 0);
+    if (maxAngleDiff < straightThresh) {
+        length = writeGeomLines(shape2, device, elevationDevice, 0);
 #ifdef DEBUG_SMOOTH_GEOM
         if (DEBUGCOND) {
             std::cout << "   special case: all lines. maxAngleDiff=" << maxAngleDiff << "\n";
@@ -606,8 +616,8 @@ NWWriter_OpenDrive::writeGeomSmooth(const PositionVector& shape, SUMOReal speed,
             // find control points
             PositionVector begShape;
             PositionVector endShape;
-            if (j == 0) {
-                // keep the angle of the first segment but end at the front of the shape
+            if (j == 0 || j == numPoints - 2) {
+                // keep the angle of the first/last segment but end at the front of the shape
                 begShape = line;
                 begShape.add(p0 - begShape.back());
             } else if (j == 1 || p0.distanceTo2D(shape2[j - 1]) > longThresh) {
@@ -620,8 +630,9 @@ NWWriter_OpenDrive::writeGeomSmooth(const PositionVector& shape, SUMOReal speed,
                 begShape.push_back(p1);
                 begShape.add(p0 - begShape.back());
             }
-            if (j == numPoints - 2) {
-                // keep the angle of the last segment but start at the end of the shape
+
+            if (j == 0 || j == numPoints - 2) {
+                // keep the angle of the first/last segment but start at the end of the shape
                 endShape = line;
                 endShape.add(p1 - endShape.front());
             } else if (j == numPoints - 3 || p1.distanceTo2D(shape2[j + 2]) > longThresh) {
@@ -634,13 +645,14 @@ NWWriter_OpenDrive::writeGeomSmooth(const PositionVector& shape, SUMOReal speed,
                 endShape.push_back(shape2[j + 2]);
                 endShape.add(p1 - endShape.front());
             }
-            PositionVector init = NBNode::bezierControlPoints(begShape, endShape, false, 25, 25, ok);
+            const SUMOReal extrapolateLength = MIN2((SUMOReal)25, lineLength / 4);
+            PositionVector init = NBNode::bezierControlPoints(begShape, endShape, false, extrapolateLength, extrapolateLength, ok, 0, straightThresh);
             if (init.size() == 0) {
                 // could not compute control points, write line
                 offset = writeGeomLines(line, device, elevationDevice, offset);
 #ifdef DEBUG_SMOOTH_GEOM
                 if (DEBUGCOND) {
-                    std::cout << "      writeLine lineLength=" << lineLength << " begShape=" << toString(begShape) << " endShape=" << toString(endShape) << " init=" << toString(init) << "\n";
+                    std::cout << "      writeLine lineLength=" << lineLength << " begShape" << j << "=" << toString(begShape) << " endShape" << j << "=" << toString(endShape) << " init" << j << "=" << toString(init) << "\n";
                 }
 #endif
             } else {
@@ -649,12 +661,13 @@ NWWriter_OpenDrive::writeGeomSmooth(const PositionVector& shape, SUMOReal speed,
                 offset = writeGeomPP3(device, elevationDevice, init, curveLength, offset);
 #ifdef DEBUG_SMOOTH_GEOM
                 if (DEBUGCOND) {
-                    std::cout << "      writeCurve lineLength=" << lineLength << " curveLength=" << curveLength << " begShape=" << toString(begShape) << " endShape=" << toString(endShape) << " init=" << toString(init) << "\n";
+                    std::cout << "      writeCurve lineLength=" << lineLength << " curveLength=" << curveLength << " begShape" << j << "=" << toString(begShape) << " endShape" << j << "=" << toString(endShape) << " init" << j << "=" << toString(init) << "\n";
                 }
 #endif
             }
         }
     }
+    length = offset;
     return ok;
 }
 
@@ -680,6 +693,27 @@ NWWriter_OpenDrive::writeElevationProfile(const PositionVector& shape, OutputDev
 
 }
 
+
+void
+NWWriter_OpenDrive::checkLaneGeometries(const NBEdge* e) {
+    if (e->getNumLanes() > 1) {
+        // compute 'stop line' of rightmost lane
+        const PositionVector shape0 = e->getLaneShape(0);
+        assert(shape0.size() >= 2);
+        const Position& from = shape0[-2];
+        const Position& to = shape0[-1];
+        PositionVector stopLine;
+        stopLine.push_back(to);
+        stopLine.push_back(to - PositionVector::sideOffset(from, to, -1000.0));
+        // endpoints of all other lanes should be on the stop line
+        for (int lane = 1; lane < e->getNumLanes(); ++lane) {
+            const SUMOReal dist = stopLine.distance2D(e->getLaneShape(lane)[-1]);
+            if (dist > NUMERICAL_EPS) {
+                WRITE_WARNING("Uneven stop line at lane '" + e->getLaneID(lane) + "' (dist=" + toString(dist) + ") cannot be represented in OpenDRIVE.");
+            }
+        }
+    }
+}
 
 /****************************************************************************/
 

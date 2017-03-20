@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Thu, 17 Jun 2004
-/// @version $Id: GUIDialog_Breakpoints.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GUIDialog_Breakpoints.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Editor for simulation breakpoints
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -48,6 +48,7 @@
 #include <utils/common/MsgHandler.h>
 #include <utils/options/OptionsCont.h>
 #include <utils/gui/div/GUIIOGlobals.h>
+#include <utils/gui/div/GUIDesigns.h>
 #include <utils/gui/images/GUIIconSubSys.h>
 #include <utils/iodevices/OutputDevice.h>
 #include "GUIDialog_Breakpoints.h"
@@ -75,13 +76,13 @@ FXIMPLEMENT(GUIDialog_Breakpoints, FXMainWindow, GUIDialog_BreakpointsMap, ARRAY
 // ===========================================================================
 // method definitions
 // ===========================================================================
-GUIDialog_Breakpoints::GUIDialog_Breakpoints(GUIMainWindow* parent, std::vector<SUMOTime>& breakpoints, FXMutex& breakpointLock)
-    : FXMainWindow(parent->getApp(), "Breakpoints Editor", NULL, NULL, DECOR_ALL, 20, 20, 170, 300),
-      myParent(parent), myBreakpoints(&breakpoints), myBreakpointLock(&breakpointLock) {
-    FXHorizontalFrame* hbox = new FXHorizontalFrame(this, LAYOUT_FILL_X | LAYOUT_FILL_Y, 0, 0, 0, 0, 0, 0, 0, 0);
+GUIDialog_Breakpoints::GUIDialog_Breakpoints(GUIMainWindow* parent, std::vector<SUMOTime>& breakpoints, FXMutex& breakpointLock) :
+    FXMainWindow(parent->getApp(), "Breakpoints Editor", NULL, NULL, DECOR_ALL, 20, 20, 170, 300),
+    myParent(parent), myBreakpoints(&breakpoints), myBreakpointLock(&breakpointLock) {
+    FXHorizontalFrame* hbox = new FXHorizontalFrame(this, GUIDesignAuxiliarFrame);
 
     // build the table
-    myTable = new FXTable(hbox, this, MID_TABLE, LAYOUT_FILL_X | LAYOUT_FILL_Y);
+    myTable = new FXTable(hbox, this, MID_TABLE, GUIDesignTable);
     myTable->setVisibleRows(20);
     myTable->setVisibleColumns(1);
     myTable->setTableSize(20, 1);
@@ -95,15 +96,15 @@ GUIDialog_Breakpoints::GUIDialog_Breakpoints(GUIMainWindow* parent, std::vector<
 
     // create buttons ('&' in the label creates a hot key)
     // "Load"
-    new FXButton(layout, "&Load\t\t", 0, this, MID_CHOOSEN_LOAD, ICON_BEFORE_TEXT | LAYOUT_FILL_X | FRAME_THICK | FRAME_RAISED, 0, 0, 0, 0, 4, 4, 3, 3);
+    new FXButton(layout, "&Load\t\t", 0, this, MID_CHOOSEN_LOAD, GUIDesignButtonBreakpoint);
     // "Save"
-    new FXButton(layout, "&Save\t\t", 0, this, MID_CHOOSEN_SAVE, ICON_BEFORE_TEXT | LAYOUT_FILL_X | FRAME_THICK | FRAME_RAISED, 0, 0, 0, 0, 4, 4, 3, 3);
-    new FXHorizontalSeparator(layout, SEPARATOR_GROOVE | LAYOUT_FILL_X);
+    new FXButton(layout, "&Save\t\t", 0, this, MID_CHOOSEN_SAVE, GUIDesignButtonBreakpoint);
+    new FXHorizontalSeparator(layout, GUIDesignHorizontalSeparator);
     // "Clear List"
-    new FXButton(layout, "Clea&r\t\t", 0, this, MID_CHOOSEN_CLEAR, ICON_BEFORE_TEXT | LAYOUT_FILL_X | FRAME_THICK | FRAME_RAISED, 0, 0, 0, 0, 4, 4, 3, 3);
-    new FXHorizontalSeparator(layout, SEPARATOR_GROOVE | LAYOUT_FILL_X);
+    new FXButton(layout, "Clea&r\t\t", 0, this, MID_CHOOSEN_CLEAR, GUIDesignButtonBreakpoint);
+    new FXHorizontalSeparator(layout, GUIDesignHorizontalSeparator);
     // "Close"
-    new FXButton(layout, "&Close\t\t", 0, this, MID_CANCEL, ICON_BEFORE_TEXT | LAYOUT_FILL_X | FRAME_THICK | FRAME_RAISED, 0, 0, 0, 0, 4, 4, 3, 3);
+    new FXButton(layout, "&Close\t\t", 0, this, MID_CANCEL, GUIDesignButtonBreakpoint);
 
     //
     setIcon(GUIIconSubSys::getIcon(ICON_APP_BREAKPOINTS));

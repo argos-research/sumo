@@ -4,12 +4,12 @@
 @file    vehrouteDiff.py
 @author  Jakob Erdmann
 @date    2016-15-04
-@version $Id: tripinfoDiff.py 20687 2016-05-10 11:27:00Z behrisch $
+@version $Id: tripinfoDiff.py 22819 2017-02-01 14:28:25Z namdre $
 
 Compute differences between two tripinfo-output files
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -27,13 +27,7 @@ from sumolib.output import parse
 from sumolib.miscutils import uMax, Statistics
 
 
-def update_earliest(earliest_diffs, diff, timestamp, tag):
-    if timestamp < earliest_diffs[diff][0]:
-        earliest_diffs[diff] = (timestamp, tag)
-
-
-def write_diff(orig, new, out, earliest_out=None):
-    earliest_diffs = defaultdict(lambda: (uMax, None))  # diff -> (time, veh)
+def write_diff(orig, new, out):
     vehicles_orig = dict([(v.id, v) for v in parse(orig, 'tripinfo')])
     origDurations = Statistics('original durations')
     durations = Statistics('new durations')
@@ -62,11 +56,6 @@ def write_diff(orig, new, out, earliest_out=None):
         for id in vehicles_orig.keys():
             f.write('    <vehicle id="%s" comment="missing"/>\n' % id)
         f.write("</tripDiffs>\n")
-
-    if earliest_out is not None:
-        with open(earliest_out, 'w') as f:
-            for diff in reversed(sorted(earliest_diffs.keys())):
-                f.write("%s, %s\n" % (diff, earliest_diffs[diff]))
 
     print(origDurations)
     print(durations)

@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIDialog_GLObjChooser.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GUIDialog_GLObjChooser.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Class for the window that allows to choose a street, junction or vehicle
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -40,6 +40,7 @@
 #include <utils/gui/globjects/GUIGlObjectStorage.h>
 #include <utils/gui/images/GUIIconSubSys.h>
 #include <utils/gui/div/GUIGlobalSelection.h>
+#include <utils/gui/div/GUIDesigns.h>
 #include <utils/gui/globjects/GUIGlObject_AbstractAdd.h>
 #include "GUIDialog_GLObjChooser.h"
 
@@ -58,6 +59,7 @@ FXDEFMAP(GUIDialog_GLObjChooser) GUIDialog_GLObjChooserMap[] = {
     FXMAPFUNC(SEL_COMMAND,  MID_CHOOSER_TEXT,   GUIDialog_GLObjChooser::onCmdText),
     FXMAPFUNC(SEL_KEYPRESS, MID_CHOOSER_LIST,   GUIDialog_GLObjChooser::onListKeyPress),
     FXMAPFUNC(SEL_COMMAND,  MID_CHOOSER_FILTER, GUIDialog_GLObjChooser::onCmdFilter),
+    FXMAPFUNC(SEL_COMMAND,  MID_CHOOSEN_INVERT,  GUIDialog_GLObjChooser::onCmdToggleSelection),
 };
 
 FXIMPLEMENT(GUIDialog_GLObjChooser, FXMainWindow, GUIDialog_GLObjChooserMap, ARRAYNUMBER(GUIDialog_GLObjChooserMap))
@@ -97,11 +99,14 @@ GUIDialog_GLObjChooser::GUIDialog_GLObjChooser(
     myCenterButton = new FXButton(layout, "Center\t\t", GUIIconSubSys::getIcon(ICON_RECENTERVIEW),
                                   this, MID_CHOOSER_CENTER, ICON_BEFORE_TEXT | LAYOUT_FILL_X | FRAME_THICK | FRAME_RAISED,
                                   0, 0, 0, 0, 4, 4, 4, 4);
-    new FXHorizontalSeparator(layout, SEPARATOR_GROOVE | LAYOUT_FILL_X);
+    new FXHorizontalSeparator(layout, GUIDesignHorizontalSeparator);
     new FXButton(layout, "&Hide Unselected\t\t", GUIIconSubSys::getIcon(ICON_FLAG),
                  this, MID_CHOOSER_FILTER, ICON_BEFORE_TEXT | LAYOUT_FILL_X | FRAME_THICK | FRAME_RAISED,
                  0, 0, 0, 0, 4, 4, 4, 4);
-    new FXHorizontalSeparator(layout, SEPARATOR_GROOVE | LAYOUT_FILL_X);
+    new FXButton(layout, "&Select/deselect\tSelect/deselect current object\t", GUIIconSubSys::getIcon(ICON_FLAG),
+                 this, MID_CHOOSEN_INVERT, ICON_BEFORE_TEXT | LAYOUT_FILL_X | FRAME_THICK | FRAME_RAISED,
+                 0, 0, 0, 0, 4, 4, 4, 4);
+    new FXHorizontalSeparator(layout, GUIDesignHorizontalSeparator);
     new FXButton(layout, "&Close\t\t", GUIIconSubSys::getIcon(ICON_NO),
                  this, MID_CANCEL, ICON_BEFORE_TEXT | LAYOUT_FILL_X | FRAME_THICK | FRAME_RAISED,
                  0, 0, 0, 0, 4, 4, 4, 4);
@@ -202,6 +207,24 @@ GUIDialog_GLObjChooser::onCmdFilter(FXObject*, FXSelector, void*) {
         myList->appendItem(selectedMicrosimIDs[i], flag, (void*) & (*myIDs.find(selectedGlIDs[i])));
     }
     myList->update();
+    return 1;
+}
+
+long
+GUIDialog_GLObjChooser::onCmdToggleSelection(FXObject*, FXSelector, void*) {
+    FXIcon* flag = GUIIconSubSys::getIcon(ICON_FLAG);
+    int i = myList->getCurrentItem();
+    if (i >= 0) {
+        GUIGlID* glID = static_cast<GUIGlID*>(myList->getItemData(i));
+        gSelected.toggleSelection(*glID);
+        if (myList->getItemIcon(i) == flag) {
+            myList->setItemIcon(i, 0);
+        } else {
+            myList->setItemIcon(i, flag);
+        }
+    }
+    myList->update();
+    myParent->getView()->update();
     return 1;
 }
 

@@ -2,12 +2,12 @@
 /// @file    GNECrossing.h
 /// @author  Jakob Erdmann
 /// @date    June 2011
-/// @version $Id: GNECrossing.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNECrossing.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A class for visualizing Inner Lanes (used when editing traffic lights)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -49,22 +49,25 @@ class GNEJunction;
  * editor (hence inheritance from FXDelegator)
  */
 class GNECrossing : public GNENetElement {
-
 public:
 
     /**@brief Constructor
-     * @param[in] editor The editor to notify about changes
-     * @param[in] id The id of this internal lane
-     * @param[in] shape The shape of the lane
-     * @param[in] tlIndex The tl-index of the lane
+     * @param[in] parentJunction GNEJunction in which this crossing is placed
+     * @param[in] id The id of the crossing (inmutable)
      */
-    GNECrossing(GNEJunction& parentJunction, const std::string& id);
+    GNECrossing(GNEJunction* parentJunction, const std::string& id);
 
     /// @brief Destructor
     virtual ~GNECrossing();
 
     /// @brief update pre-computed geometry information
     void updateGeometry();
+
+    /// @brief get parent Junction
+    GNEJunction* getParentJunction() const;
+
+    ///@brief get referente to NBode::Crossing
+    NBNode::Crossing& getNBCrossing() const;
 
     /// @name inherited from GUIGlObject
     /// @{
@@ -125,10 +128,10 @@ public:
 
 private:
     /// @brief the parent junction of this crossing
-    GNEJunction& myParentJunction;
+    GNEJunction* myParentJunction;
 
     /// @brief the data for this crossing
-    NBNode::Crossing myCrossing;
+    NBNode::Crossing& myCrossing;
 
     /// @brief the shape of the edge
     const PositionVector myShape;
@@ -154,7 +157,6 @@ private:
 
     /// @brief Invalidated assignment operator.
     GNECrossing& operator=(const GNECrossing&);
-
 };
 
 

@@ -6,12 +6,12 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-04-01
-@version $Id: QuantityOverDay.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: QuantityOverDay.py 22608 2017-01-17 06:28:54Z behrisch $
 
 Counts for an given interval all unique taxis in an FCD file and draws the result as a bar chart. 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

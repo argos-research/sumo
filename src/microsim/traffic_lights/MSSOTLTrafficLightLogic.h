@@ -4,12 +4,12 @@
 /// @author	 Anna Chiara Bellini
 /// @author  Federico Caselli
 /// @date    Apr 2013
-/// @version $Id: MSSOTLTrafficLightLogic.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSSOTLTrafficLightLogic.h 22628 2017-01-18 12:58:45Z behrisch $
 ///
 // The base abstract class for SOTL logics
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright 2001-2013 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2013-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

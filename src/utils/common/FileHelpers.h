@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: FileHelpers.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: FileHelpers.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Functions for an easier usage of files
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -145,15 +145,6 @@ public:
     static std::ostream& writeInt(std::ostream& strm, int value);
 
 
-    /** @brief Writes an integer binary
-     *
-     * @param[in, out] strm The stream to write into
-     * @param[in] value The integer to write
-     * @return Reference to the stream
-     */
-    static std::ostream& writeUInt(std::ostream& strm, int value);
-
-
     /** @brief Writes a float binary
      *
      * This method behaves differently depending on the definition of SUMOReal at compile time.
@@ -225,7 +216,7 @@ public:
 
 template <typename E>
 std::ostream& FileHelpers::writeEdgeVector(std::ostream& os, const std::vector<E>& edges) {
-    FileHelpers::writeUInt(os, (int)edges.size());
+    FileHelpers::writeInt(os, (int)edges.size());
     std::vector<int> follow;
     int maxFollow = 0;
     E prev = edges.front();
@@ -257,14 +248,14 @@ std::ostream& FileHelpers::writeEdgeVector(std::ostream& os, const std::vector<E
         const int bits = maxFollow > 3 ? 4 : 2;
         const int numFields = 8 * sizeof(int) / bits;
         FileHelpers::writeInt(os, -bits);
-        FileHelpers::writeUInt(os, edges.front()->getNumericalID());
+        FileHelpers::writeInt(os, edges.front()->getNumericalID());
         int data = 0;
         int field = 0;
         for (std::vector<int>::const_iterator i = follow.begin(); i != follow.end(); ++i) {
             data |= *i;
             field++;
             if (field == numFields) {
-                FileHelpers::writeUInt(os, data);
+                FileHelpers::writeInt(os, data);
                 data = 0;
                 field = 0;
             } else {
@@ -272,7 +263,7 @@ std::ostream& FileHelpers::writeEdgeVector(std::ostream& os, const std::vector<E
             }
         }
         if (field > 0) {
-            FileHelpers::writeUInt(os, data << ((numFields - field - 1) * bits));
+            FileHelpers::writeInt(os, data << ((numFields - field - 1) * bits));
         }
     }
     return os;

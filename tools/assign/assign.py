@@ -4,13 +4,13 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2007-11-25
-@version $Id: assign.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: assign.py 22608 2017-01-17 06:28:54Z behrisch $
 
 This script is for executing traffic assignment according to the required assignment model.
 The incremental assignment model, the C-Logit assignment model and the Lohse assignment model are included in this script. 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2007-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

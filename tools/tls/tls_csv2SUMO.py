@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2009-08-01
-@version $Id: tls_csv2SUMO.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: tls_csv2SUMO.py 22608 2017-01-17 06:28:54Z behrisch $
 
 Converts a csv-tls-description into one SUMO can read as additional file.
 Format of the csv-file:
@@ -22,7 +22,7 @@ time;<PHASE_LENGTH>[;<PHASE_LENGTH>]+
 
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2009-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 01 Feb 2002
-/// @version $Id: MSLaneChanger.h 21734 2016-10-18 10:59:35Z namdre $
+/// @version $Id: MSLaneChanger.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Performs lane changing of vehicles
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

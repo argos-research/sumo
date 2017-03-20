@@ -3,12 +3,12 @@
 /// @author  Gianfilippo Slager
 /// @author  Anna Chiara Bellini
 /// @date    2013-02-25
-/// @version $Id: MSSOTLRequestTrafficLightLogic.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSSOTLRequestTrafficLightLogic.h 22627 2017-01-18 12:56:36Z behrisch $
 ///
 // The class for SOTL Request logics
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright 2001-2009 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2010-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

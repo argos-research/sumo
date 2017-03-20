@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NWFrame.cpp 21569 2016-09-29 07:09:35Z namdre $
+/// @version $Id: NWFrame.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Sets and checks options for netwrite
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -53,7 +53,7 @@
 // ===========================================================================
 // static members
 // ===========================================================================
-const std::string NWFrame::MAJOR_VERSION = "version=\"0.27\"";
+const std::string NWFrame::MAJOR_VERSION = "0.27";
 
 
 // ===========================================================================
@@ -96,6 +96,9 @@ NWFrame::fillOptions(bool forNetgen) {
     oc.doRegister("dlr-navteq-output", new Option_FileName());
     oc.addDescription("dlr-navteq-output", "Output", "The generated net will be written to dlr-navteq files with the given PREFIX");
 
+    oc.doRegister("dlr-navteq.precision", new Option_Integer(2));
+    oc.addDescription("dlr-navteq.precision", "Output", "The network coordinates are written with the specified level of output precision");
+
     oc.doRegister("output.street-names", new Option_Bool(false));
     oc.addDescription("output.street-names", "Output", "Street names will be included in the output (if available)");
 
@@ -104,6 +107,10 @@ NWFrame::fillOptions(bool forNetgen) {
 
     oc.doRegister("street-sign-output", new Option_FileName());
     oc.addDescription("street-sign-output", "Output", "Writes street signs as POIs to FILE");
+
+    // register opendrive options
+    oc.doRegister("opendrive-output.straight-threshold", new Option_Float(0.00000001)); // matching the angular output precision in NWWriter_OpenDrive
+    oc.addDescription("opendrive-output.straight-threshold", "Output", "Builds parameterized curves whenever the angular change  between straight segments exceeds FLOAT degrees");
 }
 
 
@@ -134,6 +141,9 @@ NWFrame::checkOptions() {
     }
     if (oc.isSet("opendrive-output") && !oc.getBool("rectangular-lane-cut")) {
         WRITE_WARNING("OpenDRIVE cannot represent oblique lane cuts and should use option 'rectangular-lane-cut'.");
+    }
+    if (oc.isSet("dlr-navteq-output") && oc.isDefault("numerical-ids")) {
+        oc.set("numerical-ids", "true");
     }
     return ok;
 }

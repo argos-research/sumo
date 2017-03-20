@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    ?
-/// @version $Id: StringTokenizer.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: StringTokenizer.h 22649 2017-01-20 10:08:30Z namdre $
 ///
 // A java-style StringTokenizer for c++ (stl)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -78,6 +78,9 @@ public:
 
     /** the ascii index of the highest whitespace character */
     static const int SPACE;
+
+    /** the ascii index of the tab character */
+    static const int TAB;
 
 public:
     /** default constructor */

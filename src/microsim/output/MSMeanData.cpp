@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSMeanData.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: MSMeanData.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Data collector for edges/lanes
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -539,7 +539,7 @@ MSMeanData::writeXMLOutput(OutputDevice& dev,
 
 void
 MSMeanData::writeXMLDetectorProlog(OutputDevice& dev) const {
-    dev.writeXMLHeader("meandata", "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://sumo.dlr.de/xsd/meandata_file.xsd\"");
+    dev.writeXMLHeader("meandata", "meandata_file.xsd");
 }
 
 

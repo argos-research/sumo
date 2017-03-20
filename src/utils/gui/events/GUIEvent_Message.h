@@ -2,12 +2,12 @@
 /// @file    GUIEvent_Message.h
 /// @author  Daniel Krajzewicz
 /// @date    Wed 18 Jun 2003
-/// @version $Id: GUIEvent_Message.h 20995 2016-06-17 14:06:28Z behrisch $
+/// @version $Id: GUIEvent_Message.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Event send when a message (message, warning, error) has to besubmitted
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

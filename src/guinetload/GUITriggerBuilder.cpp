@@ -4,7 +4,7 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 26.04.2004
-/// @version $Id: GUITriggerBuilder.cpp 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GUITriggerBuilder.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Builds trigger objects for guisim
 /****************************************************************************/
@@ -37,6 +37,7 @@
 #include <guisim/GUITriggeredRerouter.h>
 #include <guisim/GUIBusStop.h>
 #include <guisim/GUIContainerStop.h>
+#include <guisim/GUIParkingArea.h>
 #include <guisim/GUICalibrator.h>
 #include <guisim/GUIChargingStation.h>
 #include "GUITriggerBuilder.h"
@@ -99,6 +100,25 @@ GUITriggerBuilder::buildStoppingPlace(MSNet& net, const std::string& id, const s
     static_cast<GUINet&>(net).getVisualisationSpeedUp().addAdditionalGLObject(o);
 }
 
+
+void
+GUITriggerBuilder::beginParkingArea(MSNet& net, const std::string& id,
+                                    const std::vector<std::string>& lines,
+                                    MSLane* lane,
+                                    SUMOReal frompos, SUMOReal topos,
+                                    unsigned int capacity,
+                                    SUMOReal width, SUMOReal length, SUMOReal angle) {
+    assert(myParkingArea == 0);
+
+    GUIParkingArea* stop = new GUIParkingArea(id, lines, *lane, frompos, topos, capacity, width, length, angle);
+    if (!net.addParkingArea(stop)) {
+        delete stop;
+        throw InvalidArgument("Could not build parking area '" + id + "'; probably declared twice.");
+    } else {
+        myParkingArea = stop;
+    }
+    static_cast<GUINet&>(net).getVisualisationSpeedUp().addAdditionalGLObject(stop);
+}
 
 void
 GUITriggerBuilder::buildChargingStation(MSNet& net, const std::string& id, MSLane* lane, SUMOReal frompos, SUMOReal topos,

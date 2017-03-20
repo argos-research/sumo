@@ -6,12 +6,12 @@
 /// @author  Laura Bieker
 /// @author  Yun-Pang Floetteroed
 /// @date    Thu, 12 September 2002
-/// @version $Id: od2trips_main.cpp 20834 2016-06-01 07:22:25Z behrisch $
+/// @version $Id: od2trips_main.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Main for OD2TRIPS
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -112,6 +112,9 @@ fillOptions() {
 
     oc.doRegister("flow-output", new Option_FileName());
     oc.addDescription("flow-output", "Output", "Writes flow definitions into FILE");
+
+    oc.doRegister("flow-output.probability", new Option_Bool(false));
+    oc.addDescription("flow-output.probability", "Output", "Writes probabilistic flow instead of evenly spaced flow");
 
     oc.doRegister("ignore-vehicle-type", new Option_Bool(false));
     oc.addSynonyme("ignore-vehicle-type", "no-vtype", true);
@@ -292,7 +295,8 @@ main(int argc, char** argv) {
         if (OutputDevice::createDeviceByOption("flow-output", "routes", "routes_file.xsd")) {
             matrix.writeFlows(string2time(oc.getString("begin")), string2time(oc.getString("end")),
                               OutputDevice::getDeviceByOption("flow-output"),
-                              oc.getBool("ignore-vehicle-type"), oc.getString("prefix"));
+                              oc.getBool("ignore-vehicle-type"), oc.getString("prefix"),
+                              oc.getBool("flow-output.probability"));
             haveOutput = true;
         }
         if (!haveOutput) {

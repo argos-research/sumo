@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 29.05.2005
-/// @version $Id: GUIMainWindow.cpp 21217 2016-07-22 10:57:44Z behrisch $
+/// @version $Id: GUIMainWindow.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 //
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -33,11 +33,21 @@
 #include <string>
 #include <algorithm>
 #include <fx.h>
+// fx3d includes windows.h so we need to guard against macro pollution
+#ifdef WIN32
+#define NOMINMAX
+#endif
 #include <fx3d.h>
-#include <utils/foxtools/MFXImageHelper.h>
-#include <utils/gui/images/GUITexturesHelper.h>
+#ifdef WIN32
+#undef NOMINMAX
+#endif
 #include <utils/common/StringUtils.h>
 #include <utils/common/MsgHandler.h>
+#include <utils/common/TplCheck.h>
+#include <utils/common/TplConvert.h>
+#include <utils/foxtools/MFXImageHelper.h>
+#include <utils/gui/images/GUITexturesHelper.h>
+#include <utils/options/OptionsCont.h>
 #include "GUIAppEnum.h"
 #include "GUIMainWindow.h"
 #include "GUIGlChildWindow.h"
@@ -55,10 +65,13 @@ GUIMainWindow* GUIMainWindow::myInstance = 0;
 // ===========================================================================
 // member method definitions
 // ===========================================================================
-GUIMainWindow::GUIMainWindow(FXApp* a)
-    : FXMainWindow(a, "SUMO-gui main window", NULL, NULL, DECOR_ALL, 20, 20, 600, 400),
-      myGLVisual(new FXGLVisual(a, VISUAL_DOUBLEBUFFER)),
-      myAmGaming(false), myListInternal(false) {
+GUIMainWindow::GUIMainWindow(FXApp* a) :
+    FXMainWindow(a, "SUMO-gui main window", NULL, NULL, DECOR_ALL, 20, 20, 600, 400),
+    myGLVisual(new FXGLVisual(a, VISUAL_DOUBLEBUFFER)),
+    myAmGaming(false),
+    myListInternal(false),
+    myListParking(true),
+    myListTeleporting(false) {
 
     FXFontDesc fdesc;
     getApp()->getNormalFont()->getFontDesc(fdesc);
@@ -193,6 +206,45 @@ GUIMainWindow::getActiveView() const {
         return w->getView();
     }
     return 0;
+}
+
+void
+GUIMainWindow::setWindowSizeAndPos() {
+    int windowWidth = getApp()->reg().readIntEntry("SETTINGS", "width", 600);
+    int windowHeight = getApp()->reg().readIntEntry("SETTINGS", "height", 400);
+    const OptionsCont& oc = OptionsCont::getOptions();
+    if (oc.isSet("window-size")) {
+        std::vector<std::string> windowSize = oc.getStringVector("window-size");
+        if (windowSize.size() != 2
+                || !TplCheck::_str2int(windowSize[0])
+                || !TplCheck::_str2int(windowSize[1])) {
+            WRITE_ERROR("option window-size requires INT,INT");
+        } else {
+            windowWidth = TplConvert::_str2int(windowSize[0]);
+            windowHeight = TplConvert::_str2int(windowSize[1]);
+        }
+    }
+    if (oc.isSet("window-size") || getApp()->reg().readIntEntry("SETTINGS", "maximized", 0) == 0 || oc.isSet("window-pos")) {
+        // when restoring previous pos, make sure the window fits fully onto the current screen
+        int x = MAX2(0, MIN2(getApp()->reg().readIntEntry("SETTINGS", "x", 150), getApp()->getRootWindow()->getWidth() - windowWidth));
+        int y = MAX2(0, MIN2(getApp()->reg().readIntEntry("SETTINGS", "y", 150), getApp()->getRootWindow()->getHeight() - windowHeight));
+        if (oc.isSet("window-pos")) {
+            std::vector<std::string> windowPos = oc.getStringVector("window-pos");
+            if (windowPos.size() != 2
+                    || !TplCheck::_str2int(windowPos[0])
+                    || !TplCheck::_str2int(windowPos[1])
+               ) {
+                WRITE_ERROR("option window-pos requires INT,INT");
+            } else {
+                x = TplConvert::_str2int(windowPos[0]);
+                y = TplConvert::_str2int(windowPos[1]);
+            }
+        }
+        setX(x);
+        setY(y);
+        setWidth(windowWidth);
+        setHeight(windowHeight);
+    }
 }
 
 /****************************************************************************/

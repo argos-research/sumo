@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Mon, 13.12.2005
-/// @version $Id: MSStoppingPlace.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: MSStoppingPlace.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A lane area vehicles can halt at
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

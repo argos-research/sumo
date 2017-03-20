@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Yun-Pang Floetteroed
 /// @date    05 Apr. 2006
-/// @version $Id: ODMatrix.cpp 21206 2016-07-20 08:08:35Z behrisch $
+/// @version $Id: ODMatrix.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // An O/D (origin/destination) matrix
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2006-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2006-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -290,7 +290,8 @@ ODMatrix::write(SUMOTime begin, const SUMOTime end,
 void
 ODMatrix::writeFlows(const SUMOTime begin, const SUMOTime end,
                      OutputDevice& dev, bool noVtype,
-                     const std::string& prefix) {
+                     const std::string& prefix,
+                     bool asProbability) {
     if (myContainer.size() == 0) {
         return;
     }
@@ -302,7 +303,20 @@ ODMatrix::writeFlows(const SUMOTime begin, const SUMOTime end,
         if (c->end > begin && c->begin < end) {
             dev.openTag(SUMO_TAG_FLOW).writeAttr(SUMO_ATTR_ID, prefix + toString(flowName++));
             dev.writeAttr(SUMO_ATTR_BEGIN, time2string(c->begin));
-            dev.writeAttr(SUMO_ATTR_END, time2string(c->end)).writeAttr(SUMO_ATTR_NUMBER, int(c->vehicleNumber));
+            dev.writeAttr(SUMO_ATTR_END, time2string(c->end));
+            if (!asProbability) {
+                dev.writeAttr(SUMO_ATTR_NUMBER, int(c->vehicleNumber));
+            } else {
+                const SUMOReal probability = float(c->vehicleNumber) / STEPS2TIME(c->end - c->begin);
+                if (probability > 1) {
+                    WRITE_WARNING("Flow density of " + toString(probability) + " vehicles per second, cannot be represented with a simple probability. Falling back to even spacing.");
+                    dev.writeAttr(SUMO_ATTR_NUMBER, int(c->vehicleNumber));
+                } else {
+                    dev.setPrecision(6);
+                    dev.writeAttr(SUMO_ATTR_PROB, probability);
+                    dev.setPrecision();
+                }
+            }
             writeDefaultAttrs(dev, noVtype, *i);
             dev.closeTag();
         }

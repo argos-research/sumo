@@ -107,8 +107,9 @@ am_libmicrosimoutput_a_OBJECTS = MSDetectorControl.$(OBJEXT) \
 	MSRouteProbe.$(OBJEXT) MSVTypeProbe.$(OBJEXT) \
 	MSXMLRawOut.$(OBJEXT) MSFCDExport.$(OBJEXT) \
 	MSAmitranTrajectories.$(OBJEXT) MSBatteryExport.$(OBJEXT) \
-	MSEmissionExport.$(OBJEXT) MSVTKExport.$(OBJEXT) \
-	MSFullExport.$(OBJEXT) MSQueueExport.$(OBJEXT)
+	MSStopOut.$(OBJEXT) MSEmissionExport.$(OBJEXT) \
+	MSVTKExport.$(OBJEXT) MSFullExport.$(OBJEXT) \
+	MSQueueExport.$(OBJEXT)
 libmicrosimoutput_a_OBJECTS = $(am_libmicrosimoutput_a_OBJECTS)
 AM_V_P = $(am__v_P_@AM_V@)
 am__v_P_ = $(am__v_P_@AM_DEFAULT_V@)
@@ -357,6 +358,7 @@ MSXMLRawOut.cpp MSXMLRawOut.h \
 MSFCDExport.cpp MSFCDExport.h \
 MSAmitranTrajectories.cpp MSAmitranTrajectories.h  \
 MSBatteryExport.cpp MSBatteryExport.h  \
+MSStopOut.cpp MSStopOut.h  \
 MSEmissionExport.cpp MSEmissionExport.h  \
 MSVTKExport.cpp MSVTKExport.h \
 MSFullExport.cpp MSFullExport.h \
@@ -428,6 +430,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSMeanData_Net.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSQueueExport.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSRouteProbe.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSStopOut.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSVTKExport.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSVTypeProbe.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/MSXMLRawOut.Po@am__quote@

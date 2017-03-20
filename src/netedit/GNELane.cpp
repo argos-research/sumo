@@ -2,12 +2,12 @@
 /// @file    GNELane.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNELane.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNELane.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A class for visualizing Lane geometry (adapted from GNELaneWrapper)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -77,7 +77,7 @@ FXIMPLEMENT(GNELane, FXDelegator, 0, 0)
 // ===========================================================================
 
 GNELane::GNELane(GNEEdge& edge, const int index) :
-    GNENetElement(edge.getNet(), edge.getNBEdge()->getLaneID(index), GLO_LANE, SUMO_TAG_LANE),
+    GNENetElement(edge.getNet(), edge.getNBEdge()->getLaneID(index), GLO_LANE, SUMO_TAG_LANE, ICON_LANE),
     myParentEdge(edge),
     myIndex(index),
     mySpecialColor(0),
@@ -86,7 +86,7 @@ GNELane::GNELane(GNEEdge& edge, const int index) :
 }
 
 GNELane::GNELane() :
-    GNENetElement(NULL, "dummyConstructorGNELane", GLO_LANE, SUMO_TAG_LANE),
+    GNENetElement(NULL, "dummyConstructorGNELane", GLO_LANE, SUMO_TAG_LANE, ICON_LOCATEEDGE),
     myParentEdge(*static_cast<GNEEdge*>(0)),
     myIndex(-1),
     mySpecialColor(0),
@@ -321,7 +321,7 @@ GNELane::drawGL(const GUIVisualizationSettings& s) const {
             drawMarkings(selectedEdge, exaggeration);
         }
         // draw ROWs only if target junction has a valid logic)
-        if (myParentEdge.getGNEJunctionDest()->isLogicValid() && s.scale > 3) {
+        if (myParentEdge.getGNEJunctionDestiny()->isLogicValid() && s.scale > 3) {
             drawArrows();
         }
         // Draw direction indicators if the correspondient option is enabled
@@ -349,11 +349,11 @@ GNELane::drawGL(const GUIVisualizationSettings& s) const {
                 glRotated(90, 0, 0, 1);
                 // draw texture box depending of type of restriction
                 if (isRestricted(SVC_PEDESTRIAN)) {
-                    GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_LANEPEDESTRIAN), iconWidth);
+                    GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getTexture(GNETEXTURE_LANEPEDESTRIAN), iconWidth);
                 } else if (isRestricted(SVC_BICYCLE)) {
-                    GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_LANEBIKE), iconWidth);
+                    GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getTexture(GNETEXTURE_LANEBIKE), iconWidth);
                 } else if (isRestricted(SVC_BUS)) {
-                    GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_LANEBUS), iconWidth);
+                    GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getTexture(GNETEXTURE_LANEBUS), iconWidth);
                 }
                 // Pop draw matrix 2
                 glPopMatrix();
@@ -415,7 +415,7 @@ GNELane::getPopUpMenu(GUIMainWindow& app, GUISUMOAbstractView& parent) {
     GUIGLObjectPopupMenu* ret = new GUIGLObjectPopupMenu(app, parent, *this);
     buildPopupHeader(ret, app);
     buildCenterPopupEntry(ret);
-    new FXMenuCommand(ret, "Copy edge name to clipboard", 0, ret, MID_COPY_EDGE_NAME);
+    new FXMenuCommand(ret, ("Copy " + toString(SUMO_TAG_EDGE) + " name to clipboard").c_str(), 0, ret, MID_COPY_EDGE_NAME);
     buildNameCopyPopupEntry(ret);
     buildSelectionPopupEntry(ret);
     buildPositionCopyEntry(ret, false);
@@ -427,19 +427,19 @@ GNELane::getPopUpMenu(GUIMainWindow& app, GUISUMOAbstractView& parent) {
         FXIcon* bikeIcon = GUIIconSubSys::getIcon(ICON_LANEBIKE);
         FXIcon* busIcon = GUIIconSubSys::getIcon(ICON_LANEBUS);
         // Create basic commands
-        new FXMenuCommand(ret, "Split edge here", 0, &parent, MID_GNE_SPLIT_EDGE);
-        new FXMenuCommand(ret, "Split edges in both direction here", 0, &parent, MID_GNE_SPLIT_EDGE_BIDI);
-        new FXMenuCommand(ret, "Reverse edge", 0, &parent, MID_GNE_REVERSE_EDGE);
+        new FXMenuCommand(ret, ("Split " + toString(SUMO_TAG_EDGE) + " here").c_str(), 0, &parent, MID_GNE_SPLIT_EDGE);
+        new FXMenuCommand(ret, ("Split " + toString(SUMO_TAG_EDGE) + "s in both direction here").c_str(), 0, &parent, MID_GNE_SPLIT_EDGE_BIDI);
+        new FXMenuCommand(ret, ("Reverse " + toString(SUMO_TAG_EDGE)).c_str(), 0, &parent, MID_GNE_REVERSE_EDGE);
         new FXMenuCommand(ret, "Add reverse direction", 0, &parent, MID_GNE_ADD_REVERSE_EDGE);
         new FXMenuCommand(ret, "Set geometry endpoint here", 0, &parent, MID_GNE_SET_EDGE_ENDPOINT);
         new FXMenuCommand(ret, "Restore geometry endpoint", 0, &parent, MID_GNE_RESET_EDGE_ENDPOINT);
         if (gSelected.isSelected(GLO_LANE, getGlID())) {
-            new FXMenuCommand(ret, "Straighten selected Edges", 0, &parent, MID_GNE_STRAIGHTEN);
+            new FXMenuCommand(ret, ("Straighten selected " + toString(SUMO_TAG_EDGE) + "s").c_str(), 0, &parent, MID_GNE_STRAIGHTEN);
         } else {
-            new FXMenuCommand(ret, "Straighten edge", 0, &parent, MID_GNE_STRAIGHTEN);
+            new FXMenuCommand(ret, ("Straighten " + toString(SUMO_TAG_EDGE)).c_str(), 0, &parent, MID_GNE_STRAIGHTEN);
         }
         if (gSelected.isSelected(GLO_LANE, getGlID())) {
-            new FXMenuCommand(ret, "Duplicate selected lanes", 0, &parent, MID_GNE_DUPLICATE_LANE);
+            new FXMenuCommand(ret, ("Duplicate selected" + toString(SUMO_TAG_LANE) + "s").c_str(), 0, &parent, MID_GNE_DUPLICATE_LANE);
             // Create panel for lane operations
             FXMenuPane* addSpecialLanes = new FXMenuPane(ret);
             ret->insertMenuPaneChild(addSpecialLanes);
@@ -456,16 +456,16 @@ GNELane::getPopUpMenu(GUIMainWindow& app, GUISUMOAbstractView& parent) {
             new FXMenuCommand(removeSpecialLanes, "Bikelanes", bikeIcon, &parent, MID_GNE_REMOVE_LANE_BIKE);
             new FXMenuCommand(removeSpecialLanes, "Buslanes", busIcon, &parent, MID_GNE_REMOVE_LANE_BUS);
             // Create menu comands for all trasform special lanes and disable it
-            new FXMenuCommand(transformSlanes, "Sidewalsk", pedestrianIcon, &parent, MID_GNE_TRANSFORM_LANE_SIDEWALK);
+            new FXMenuCommand(transformSlanes, "Sidewalks", pedestrianIcon, &parent, MID_GNE_TRANSFORM_LANE_SIDEWALK);
             new FXMenuCommand(transformSlanes, "Bikelanes", bikeIcon, &parent, MID_GNE_TRANSFORM_LANE_BIKE);
             new FXMenuCommand(transformSlanes, "Buslanes", busIcon, &parent, MID_GNE_TRANSFORM_LANE_BUS);
             new FXMenuCommand(transformSlanes, "revert transformations", 0, &parent, MID_GNE_REVERT_TRANSFORMATION);
             // add menuCascade for lane operations
-            new FXMenuCascade(ret, "add special lanes", 0, addSpecialLanes);
-            new FXMenuCascade(ret, "remove special lanes", 0, removeSpecialLanes);
-            new FXMenuCascade(ret, "transform to special lanes", 0, transformSlanes);
+            new FXMenuCascade(ret, ("add special" + toString(SUMO_TAG_LANE) + "s").c_str(), 0, addSpecialLanes);
+            new FXMenuCascade(ret, ("remove special" + toString(SUMO_TAG_LANE) + "s").c_str(), 0, removeSpecialLanes);
+            new FXMenuCascade(ret, ("transform to special" + toString(SUMO_TAG_LANE) + "s").c_str(), 0, transformSlanes);
         } else {
-            new FXMenuCommand(ret, "Duplicate lane", 0, &parent, MID_GNE_DUPLICATE_LANE);
+            new FXMenuCommand(ret, ("Duplicate" + toString(SUMO_TAG_LANE)).c_str(), 0, &parent, MID_GNE_DUPLICATE_LANE);
             // Declare flags
             bool edgeHasSidewalk = myParentEdge.hasRestrictedLane(SVC_PEDESTRIAN);
             bool edgeHasBikelane = myParentEdge.hasRestrictedLane(SVC_BICYCLE);
@@ -494,9 +494,9 @@ GNELane::getPopUpMenu(GUIMainWindow& app, GUISUMOAbstractView& parent) {
             FXMenuCommand* transformLaneToBuslane = new FXMenuCommand(transformSlanes, "Buslane", busIcon, &parent, MID_GNE_TRANSFORM_LANE_BUS);
             FXMenuCommand* revertTransformation = new FXMenuCommand(transformSlanes, "revert transformation", 0, &parent, MID_GNE_REVERT_TRANSFORMATION);
             // add menuCascade for lane operations
-            FXMenuCascade* cascadeAddSpecialLane = new FXMenuCascade(ret, "add special lane", 0, addSpecialLanes);
-            FXMenuCascade* cascadeRemoveSpecialLane = new FXMenuCascade(ret, "remove special lane", 0, removeSpecialLanes);
-            new FXMenuCascade(ret, "transform to special lane", 0, transformSlanes);
+            FXMenuCascade* cascadeAddSpecialLane = new FXMenuCascade(ret, ("add special" + toString(SUMO_TAG_LANE)).c_str(), 0, addSpecialLanes);
+            FXMenuCascade* cascadeRemoveSpecialLane = new FXMenuCascade(ret, ("remove special" + toString(SUMO_TAG_LANE)).c_str(), 0, removeSpecialLanes);
+            new FXMenuCascade(ret, ("transform to special" + toString(SUMO_TAG_LANE)).c_str(), 0, transformSlanes);
             // Enable and disable options depending of current transform of the lane
             if (edgeHasSidewalk) {
                 transformLaneToSidewalk->disable();
@@ -629,10 +629,6 @@ GNELane::updateGeometry() {
     for (AdditionalVector::iterator i = myAdditionals.begin(); i != myAdditionals.end(); i++) {
         (*i)->updateGeometry();
     }
-    // Update geometry of additionalSets vinculated to this lane
-    for (AdditionalSetVector::iterator i = myAdditionalSetParents.begin(); i != myAdditionalSetParents.end(); ++i) {
-        (*i)->updateGeometry();
-    }
     // In Move mode, connections aren't updated
     if (myNet->getViewNet() && myNet->getViewNet()->getCurrentEditMode() != GNE_MODE_MOVE) {
         // Update incoming connections of this lane
@@ -706,7 +702,7 @@ GNELane::addAdditionalChild(GNEAdditional* additional) {
     // First check that additional wasn't already inserted
     for (AdditionalVector::iterator i = myAdditionals.begin(); i != myAdditionals.end(); i++) {
         if (*i == additional) {
-            throw ProcessError("additional element with ID='" + additional->getID() + "' was already inserted in lane with ID='" + getID() + "'");
+            throw ProcessError(toString(getTag()) + "  with ID='" + additional->getID() + "' was already inserted in lane with ID='" + getID() + "'");
         }
     }
     myAdditionals.push_back(additional);
@@ -723,7 +719,7 @@ GNELane::removeAdditionalChild(GNEAdditional* additional) {
     }
     // If additional was found, remove it
     if (i == myAdditionals.end()) {
-        throw ProcessError("additional element with ID='" + additional->getID() + "' doesn't exist in lane with ID='" + getID() + "'");
+        throw ProcessError(toString(getTag()) + "  with ID='" + additional->getID() + "' doesn't exist in lane with ID='" + getID() + "'");
     } else {
         myAdditionals.erase(i);
     }
@@ -737,50 +733,8 @@ GNELane::getAdditionalChilds() const {
 
 
 bool
-GNELane::addAdditionalSet(GNEAdditionalSet* additionalSet) {
-    // Check if additionalSet already exists before insertion
-    for (AdditionalSetVector::iterator i = myAdditionalSetParents.begin(); i != myAdditionalSetParents.end(); i++) {
-        if ((*i) == additionalSet) {
-            return false;
-        }
-    }
-    // Insert it and retur true
-    myAdditionalSetParents.push_back(additionalSet);
-    return true;
-}
-
-
-bool
-GNELane::removeAdditionalGeometrySet(GNEAdditionalSet* additionalSet) {
-    // search additionalSet and remove it
-    for (AdditionalSetVector::iterator i = myAdditionalSetParents.begin(); i != myAdditionalSetParents.end(); i++) {
-        if ((*i) == additionalSet) {
-            myAdditionalSetParents.erase(i);
-            return true;
-        }
-    }
-    // If additionalSet wasn't found, return false
-    return false;
-}
-
-
-const std::vector<GNEAdditionalSet*>&
-GNELane::getAdditionalSetParents() {
-    return myAdditionalSetParents;
-}
-
-
-bool
 GNELane::isRestricted(SUMOVehicleClass vclass) const {
-    if (vclass == SVC_PEDESTRIAN) {
-        return (myParentEdge.getNBEdge()->getPermissions(myIndex) == 1048576);
-    } else if (vclass == SVC_BICYCLE) {
-        return (myParentEdge.getNBEdge()->getPermissions(myIndex) == 524288);
-    } else if (vclass == SVC_BUS) {
-        return (myParentEdge.getNBEdge()->getPermissions(myIndex) == 256);
-    } else {
-        return false;
-    }
+    return myParentEdge.getNBEdge()->getPermissions(myIndex) == vclass;
 }
 
 
@@ -799,13 +753,17 @@ GNELane::getAttribute(SumoXMLAttr key) const {
             // return all disallowed classes (may differ from the written attributes)
             return getVehicleClassNames(~(edge->getPermissions(myIndex)));
         case SUMO_ATTR_WIDTH:
-            return toString(edge->getLaneStruct(myIndex).width);
+            if (edge->getLaneStruct(myIndex).width == NBEdge::UNSPECIFIED_WIDTH) {
+                return "default";
+            } else {
+                return toString(edge->getLaneStruct(myIndex).width);
+            }
         case SUMO_ATTR_ENDOFFSET:
             return toString(edge->getLaneStruct(myIndex).endOffset);
         case SUMO_ATTR_INDEX:
             return toString(myIndex);
         default:
-            throw InvalidArgument("lane attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -814,7 +772,7 @@ void
 GNELane::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoList* undoList) {
     switch (key) {
         case SUMO_ATTR_ID:
-            throw InvalidArgument("modifying lane attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument("Modifying attribute '" + toString(key) + "' of " + toString(getTag()) + " isn't allowed");
         case SUMO_ATTR_SPEED:
         case SUMO_ATTR_ALLOW:
         case SUMO_ATTR_DISALLOW:
@@ -825,7 +783,7 @@ GNELane::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoList* un
             undoList->p_add(new GNEChange_Attribute(this, key, value));
             break;
         default:
-            throw InvalidArgument("lane attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -841,13 +799,17 @@ GNELane::isValid(SumoXMLAttr key, const std::string& value) {
         case SUMO_ATTR_DISALLOW:
             return canParseVehicleClasses(value);
         case SUMO_ATTR_WIDTH:
-            return canParse<SUMOReal>(value) && (isPositive<SUMOReal>(value) || parse<SUMOReal>(value) == NBEdge::UNSPECIFIED_WIDTH);
+            if (value == "default") {
+                return true;
+            } else {
+                return canParse<SUMOReal>(value) && (isPositive<SUMOReal>(value) || parse<SUMOReal>(value) == NBEdge::UNSPECIFIED_WIDTH);
+            }
         case SUMO_ATTR_ENDOFFSET:
             return canParse<SUMOReal>(value);
         case SUMO_ATTR_INDEX:
             return value == toString(myIndex);
         default:
-            throw InvalidArgument("lane attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -866,7 +828,7 @@ GNELane::setAttribute(SumoXMLAttr key, const std::string& value) {
     NBEdge* edge = myParentEdge.getNBEdge();
     switch (key) {
         case SUMO_ATTR_ID:
-            throw InvalidArgument("modifying lane attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument("Modifying attribute '" + toString(key) + "' of " + toString(getTag()) + " isn't allowed");
         case SUMO_ATTR_SPEED:
             edge->setSpeed(myIndex, parse<SUMOReal>(value));
             break;
@@ -881,13 +843,17 @@ GNELane::setAttribute(SumoXMLAttr key, const std::string& value) {
             myNet->getViewNet()->update();
             break;
         case SUMO_ATTR_WIDTH:
-            edge->setLaneWidth(myIndex, parse<SUMOReal>(value));
+            if (value == "default") {
+                edge->setLaneWidth(myIndex, NBEdge::UNSPECIFIED_WIDTH);
+            } else {
+                edge->setLaneWidth(myIndex, parse<SUMOReal>(value));
+            }
             break;
         case SUMO_ATTR_ENDOFFSET:
             edge->setEndOffset(myIndex, parse<SUMOReal>(value));
             break;
         default:
-            throw InvalidArgument("lane attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -1070,9 +1036,8 @@ GNELane::getGNEIncomingConnections() {
     // Obtain incoming edges if junction source was already created
     GNEJunction* junctionSource =  myParentEdge.getGNEJunctionSource();
     if (junctionSource) {
-        std::vector<GNEEdge*> incomingEdges = junctionSource->getGNEIncomingEdges();
-        // Iterate over incoming edges
-        for (std::vector<GNEEdge*>::iterator i = incomingEdges.begin(); i != incomingEdges.end(); i++) {
+        // Iterate over incoming GNEEdges of junction
+        for (std::vector<GNEEdge*>::const_iterator i = junctionSource->getGNEIncomingEdges().begin(); i != junctionSource->getGNEIncomingEdges().end(); i++) {
             // Iterate over connection of incoming edges
             for (std::vector<GNEConnection*>::const_iterator j = (*i)->getGNEConnections().begin(); j != (*i)->getGNEConnections().end(); j++) {
                 if ((*j)->getNBEdgeConnection().fromLane == getIndex()) {

@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Jan 2004
-/// @version $Id: GUIE3Collector.h 21496 2016-09-19 10:39:08Z behrisch $
+/// @version $Id: GUIE3Collector.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The gui-version of a MSE3Collector
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

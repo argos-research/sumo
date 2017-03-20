@@ -4,13 +4,13 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2012-11-15
-@version $Id: route2poly.py 21131 2016-07-08 07:59:22Z behrisch $
+@version $Id: route2poly.py 22608 2017-01-17 06:28:54Z behrisch $
 
 From a sumo network and a route file, this script generates a polygon (polyline) for every route
 which can be loaded with sumo-gui for visualization
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

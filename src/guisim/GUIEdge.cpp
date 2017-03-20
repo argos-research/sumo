@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: GUIEdge.cpp 21232 2016-07-25 13:06:55Z namdre $
+/// @version $Id: GUIEdge.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A road/street connecting two junctions (gui-version)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -188,7 +188,7 @@ GUIParameterTableWindow*
 GUIEdge::getParameterWindow(GUIMainWindow& app,
                             GUISUMOAbstractView& parent) {
     GUIParameterTableWindow* ret = 0;
-    ret = new GUIParameterTableWindow(app, *this, 16);
+    ret = new GUIParameterTableWindow(app, *this, 18);
     // add edge items
     ret->mkItem("length [m]", false, (*myLanes)[0]->getLength());
     ret->mkItem("allowed speed [m/s]", false, getAllowedSpeed());
@@ -201,6 +201,7 @@ GUIEdge::getParameterWindow(GUIMainWindow& app,
     // add segment items
     MESegment* segment = getSegmentAtPosition(parent.getPositionInformation());
     ret->mkItem("segment index", false, segment->getIndex());
+    ret->mkItem("segment queues", false, segment->numQueues());
     ret->mkItem("segment length [m]", false, segment->getLength());
     ret->mkItem("segment allowed speed [m/s]", false, segment->getEdge().getSpeedLimit());
     ret->mkItem("segment jam threshold [%]", false, segment->getRelativeJamThreshold() * 100);
@@ -209,6 +210,7 @@ GUIEdge::getParameterWindow(GUIMainWindow& app,
     ret->mkItem("segment flow [veh/h/lane]", true, new FunctionBinding<MESegment, SUMOReal>(segment, &MESegment::getFlow));
     ret->mkItem("segment #vehicles", true, new CastingFunctionBinding<MESegment, SUMOReal, int>(segment, &MESegment::getCarNumber));
     ret->mkItem("segment leader leave time", true, new FunctionBinding<MESegment, SUMOReal>(segment, &MESegment::getEventTimeSeconds));
+    ret->mkItem("segment headway [s]", true, new FunctionBinding<MESegment, SUMOReal>(segment, &MESegment::getLastHeadwaySeconds));
 
     // close building
     ret->closeBuilding();
@@ -407,9 +409,10 @@ GUIEdge::getRelativeSpeed() const {
 
 void
 GUIEdge::setColor(const GUIVisualizationSettings& s) const {
+    myMesoColor = RGBColor(0, 0, 0); // default background color when using multiColor
     const GUIColorer& c = s.edgeColorer;
     if (!setFunctionalColor(c.getActive()) && !setMultiColor(c)) {
-        GLHelper::setColor(c.getScheme().getColor(getColorValue(c.getActive())));
+        myMesoColor = c.getScheme().getColor(getColorValue(c.getActive()));
     }
 }
 
@@ -420,7 +423,7 @@ GUIEdge::setFunctionalColor(int activeScheme) const {
         case 9: {
             const PositionVector& shape = getLanes()[0]->getShape();
             SUMOReal hue = GeomHelper::naviDegree(shape.beginEndAngle()); // [0-360]
-            GLHelper::setColor(RGBColor::fromHSV(hue, 1., 1.));
+            myMesoColor = RGBColor::fromHSV(hue, 1., 1.);
             return true;
         }
         default:

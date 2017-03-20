@@ -2,12 +2,12 @@
 /// @file    GNEChange_Connection.cpp
 /// @author  Jakob Erdmann
 /// @date    May 2011
-/// @version $Id: GNEChange_Connection.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEChange_Connection.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A network change in which a single connection is created or deleted
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -48,22 +48,21 @@ FXIMPLEMENT_ABSTRACT(GNEChange_Connection, GNEChange, NULL, 0)
 
 
 GNEChange_Connection::GNEChange_Connection(GNEEdge* edge, NBEdge::Connection nbCon, bool forward) :
-    GNEChange(0, forward),
+    GNEChange(edge->getNet(), forward),
     myEdge(edge),
     myNBEdgeConnection(nbCon),
     myConnection(myEdge->retrieveConnection(nbCon.fromLane, nbCon.toEdge, nbCon.toLane)) {
     assert(myEdge);
-    //myEdge->incRef("GNEChange_Connection");
 }
 
 
 GNEChange_Connection::~GNEChange_Connection() {
     assert(myEdge);
-    //myEdge->decRef("GNEChange_Connection");
 }
 
 
-void GNEChange_Connection::undo() {
+void
+GNEChange_Connection::undo() {
     if (myForward) {
         myEdge->removeConnection(myNBEdgeConnection);
     } else {
@@ -72,7 +71,8 @@ void GNEChange_Connection::undo() {
 }
 
 
-void GNEChange_Connection::redo() {
+void
+GNEChange_Connection::redo() {
     if (myForward) {
         myEdge->addConnection(myNBEdgeConnection, myConnection);
     } else {
@@ -81,19 +81,21 @@ void GNEChange_Connection::redo() {
 }
 
 
-FXString GNEChange_Connection::undoName() const {
+FXString
+GNEChange_Connection::undoName() const {
     if (myForward) {
-        return ("Undo create connection");
+        return ("Undo create " + toString(SUMO_TAG_CONNECTION)).c_str();
     } else {
-        return ("Undo delete connection");
+        return ("Undo delete " + toString(SUMO_TAG_CONNECTION)).c_str();
     }
 }
 
 
-FXString GNEChange_Connection::redoName() const {
+FXString
+GNEChange_Connection::redoName() const {
     if (myForward) {
-        return ("Redo create connection");
+        return ("Redo create " + toString(SUMO_TAG_CONNECTION)).c_str();
     } else {
-        return ("Redo delete connection");
+        return ("Redo delete " + toString(SUMO_TAG_CONNECTION)).c_str();
     }
 }

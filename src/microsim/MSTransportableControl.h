@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: MSTransportableControl.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSTransportableControl.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Stores all persons or containers in the net and handles their waiting for cars.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

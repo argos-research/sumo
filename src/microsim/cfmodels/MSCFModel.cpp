@@ -7,12 +7,12 @@
 /// @author  Laura Bieker
 /// @author  Leonhard Lücken
 /// @date    Mon, 27 Jul 2009
-/// @version $Id: MSCFModel.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: MSCFModel.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The car-following model abstraction
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

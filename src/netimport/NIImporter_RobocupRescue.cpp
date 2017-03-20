@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_RobocupRescue.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: NIImporter_RobocupRescue.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Importer for networks stored in robocup rescue league format
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -166,7 +166,7 @@ NIImporter_RobocupRescue::loadNodes(const std::string& file) {
         }
 
         Position pos((SUMOReal)(posX / 1000.), -(SUMOReal)(posY / 1000.));
-        NBNetBuilder::transformCoordinates(pos);
+        NBNetBuilder::transformCoordinate(pos);
         NBNode* node = new NBNode(toString(id), pos);
         myNodeCont.insert(node);
         --noNodes;

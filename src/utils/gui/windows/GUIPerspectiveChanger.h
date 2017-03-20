@@ -4,12 +4,12 @@
 /// @brief @author  Jakob Erdmann
 /// @brief @author  Michael Behrisch
 /// @brief @date    Sept 2002
-/// @brief @version $Id: GUIPerspectiveChanger.h 21186 2016-07-18 12:04:16Z namdre $
+/// @brief @version $Id: GUIPerspectiveChanger.h 22608 2017-01-17 06:28:54Z behrisch $
 /// @brief
 // A virtual class that allows to steer the visual output in dependence to
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -145,7 +145,7 @@ public:
      *
      * @param[in] change The horizontal change in canvas size in pixels
      */
-    virtual void changeCanvassLeft(int change) = 0;
+    virtual void changeCanvasSizeLeft(int change) = 0;
 
     /// @brief get viewport
     Boundary getViewport(bool fixRatio = true);

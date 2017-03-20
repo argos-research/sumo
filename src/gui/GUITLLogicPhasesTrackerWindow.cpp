@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Oct/Nov 2003
-/// @version $Id: GUITLLogicPhasesTrackerWindow.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GUITLLogicPhasesTrackerWindow.cpp 22796 2017-01-31 14:28:20Z namdre $
 ///
 // A window displaying the phase diagram of a tl-logic
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -42,6 +42,8 @@
 #include <guisim/GUITrafficLightLogicWrapper.h>
 #include <utils/gui/windows/GUIAppEnum.h>
 #include <utils/gui/images/GUIIconSubSys.h>
+#include <utils/gui/settings/GUIVisualizationSettings.h>
+#include <utils/gui/div/GUIDesigns.h>
 #include <foreign/polyfonts/polyfonts.h>
 #include <utils/gui/globjects/GLIncludes.h>
 
@@ -159,9 +161,9 @@ GUITLLogicPhasesTrackerWindow::GUITLLogicPhasesTrackerWindow(
                    20, 20, 300, 200),
       myApplication(&app), myTLLogic(&logic), myAmInTrackingMode(true) {
     // build the toolbar
-    myToolBarDrag = new FXToolBarShell(this, FRAME_NORMAL);
+    myToolBarDrag = new FXToolBarShell(this, GUIDesignToolBarShell3);
     myToolBar = new FXToolBar(this, myToolBarDrag, LAYOUT_SIDE_TOP | LAYOUT_FILL_X | FRAME_RAISED);
-    new FXToolBarGrip(myToolBar, myToolBar, FXToolBar::ID_TOOLBARGRIP, TOOLBARGRIP_DOUBLE);
+    new FXToolBarGrip(myToolBar, myToolBar, FXToolBar::ID_TOOLBARGRIP, GUIDesignToolBarGrip);
     // interval manipulation
     myBeginOffset = new FXRealSpinDial(myToolBar, 10, this, MID_SIMSTEP, LAYOUT_TOP | FRAME_SUNKEN | FRAME_THICK);
     myBeginOffset->setFormatString("%.0f");
@@ -371,7 +373,7 @@ GUITLLogicPhasesTrackerWindow::drawValues(GUITLLogicPhasesTrackerPanel& caller) 
             // determine the current link's color
             LinkState state = pi->getSignalState(j);
             // draw the bar (red is drawn as a line)
-            GLHelper::setColor(getLinkColor(state));
+            GLHelper::setColor(GUIVisualizationSettings::getLinkColor(state));
             switch (state) {
                 case LINKSTATE_TL_RED:
                 case LINKSTATE_TL_REDYELLOW:

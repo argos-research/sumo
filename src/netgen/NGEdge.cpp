@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mar, 2003
-/// @version $Id: NGEdge.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NGEdge.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A netgen-representation of an edge
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2003-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2003-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

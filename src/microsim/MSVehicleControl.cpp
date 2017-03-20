@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Wed, 10. Dec 2003
-/// @version $Id: MSVehicleControl.cpp 21472 2016-09-14 08:50:06Z behrisch $
+/// @version $Id: MSVehicleControl.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The class responsible for building and deletion of vehicles
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -6,12 +6,12 @@
 /// @author  Christoph Sommer
 /// @author  Jakob Erdmann
 /// @date    Tue, 04 Dec 2007
-/// @version $Id: MSDevice_Routing.cpp 21488 2016-09-16 11:20:06Z namdre $
+/// @version $Id: MSDevice_Routing.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A device that performs vehicle rerouting based on current edge speeds
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2007-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -128,11 +128,31 @@ MSDevice_Routing::insertOptions(OptionsCont& oc) {
 
 bool
 MSDevice_Routing::checkOptions(OptionsCont& oc) {
+    bool ok = true;
     if (oc.getInt("device.rerouting.adaptation-steps") > 0 && !oc.isDefault("device.rerouting.adaptation-weight")) {
         WRITE_ERROR("Only one of the options 'device.rerouting.adaptation-steps' or 'device.rerouting.adaptation-weight' may be given.");
-        return false;
+        ok = false;
     }
-    return true;
+    if (oc.getFloat("weights.random-factor") < 1) {
+        WRITE_ERROR("weights.random-factor cannot be less than 1");
+        ok = false;
+    }
+    if (string2time(oc.getString("device.rerouting.adaptation-interval")) < 0) {
+        WRITE_ERROR("Negative value for device.rerouting.adaptation-interval!");
+        ok = false;
+    }
+    if (oc.getFloat("device.rerouting.adaptation-weight") < 0.  ||
+            oc.getFloat("device.rerouting.adaptation-weight") > 1.) {
+        WRITE_ERROR("The value for device.rerouting.adaptation-weight must be between 0 and 1!");
+        ok = false;
+    }
+#ifndef HAVE_FOX
+    if (oc.getInt("device.rerouting.threads") > 1) {
+        WRITE_ERROR("Parallel routing is only possible when compiled with Fox.");
+        ok = false;
+    }
+#endif
+    return ok;
 }
 
 
@@ -174,25 +194,11 @@ MSDevice_Routing::buildVehicleDevices(SUMOVehicle& v, std::vector<MSDevice*>& in
             }
             myLastAdaptation = MSNet::getInstance()->getCurrentTimeStep();
             myRandomizeWeightsFactor = oc.getFloat("weights.random-factor");
-            if (myRandomizeWeightsFactor < 1) {
-                WRITE_ERROR("weights.random-factor cannot be less than 1");
-            }
-#ifndef HAVE_FOX
-            if (oc.getInt("device.rerouting.threads") > 1) {
-                WRITE_ERROR("Parallel routing is only possible when compiled with Fox.");
-            }
-#endif
         }
         // make the weights be updated
         if (myAdaptationInterval == -1) {
             myAdaptationInterval = string2time(oc.getString("device.rerouting.adaptation-interval"));
-            if (myAdaptationInterval < 0) {
-                WRITE_ERROR("Negative value for device.rerouting.adaptation-interval!");
-            }
             myAdaptationWeight = oc.getFloat("device.rerouting.adaptation-weight");
-            if (myAdaptationWeight < 0. || myAdaptationWeight > 1.) {
-                WRITE_ERROR("The value for device.rerouting.adaptation-weight must be between 0 and 1!");
-            }
             if (myAdaptationWeight < 1. && myAdaptationInterval > 0) {
                 myEdgeWeightSettingCommand = new StaticCommand<MSDevice_Routing>(&MSDevice_Routing::adaptEdgeEfforts);
                 MSNet::getInstance()->getEndOfTimestepEvents()->addEvent(
@@ -289,7 +295,7 @@ SUMOReal
 MSDevice_Routing::getEffort(const MSEdge* const e, const SUMOVehicle* const v, SUMOReal) {
     const int id = e->getNumericalID();
     if (id < (int)myEdgeSpeeds.size()) {
-        SUMOReal effort = MAX2(e->getLength() / myEdgeSpeeds[id], e->getMinimumTravelTime(v));
+        SUMOReal effort = MAX2(e->getLength() / MAX2(myEdgeSpeeds[id], NUMERICAL_EPS), e->getMinimumTravelTime(v));
         if (myRandomizeWeightsFactor != 1) {
             effort *= RandHelper::rand((SUMOReal)1, myRandomizeWeightsFactor);
         }
@@ -406,10 +412,10 @@ MSDevice_Routing::reroute(const SUMOTime currentTime, const bool onInit) {
                     MSEdge::getAllEdges(), true, &MSDevice_Routing::getEffort, myHolder.getVClass(), weightPeriod, false);
             }
         } else if (routingAlgorithm == "CHWrapper") {
-            const SUMOTime begin = string2time(oc.getString("begin"));
             const SUMOTime weightPeriod = myAdaptationInterval > 0 ? myAdaptationInterval : std::numeric_limits<int>::max();
             myRouter = new CHRouterWrapper<MSEdge, SUMOVehicle, prohibited_withPermissions<MSEdge, SUMOVehicle> >(
-                MSEdge::getAllEdges(), true, &MSDevice_Routing::getEffort, begin, weightPeriod);
+                MSEdge::getAllEdges(), true, &MSDevice_Routing::getEffort,
+                string2time(oc.getString("begin")), string2time(oc.getString("end")), weightPeriod, oc.getInt("device.rerouting.threads"));
         } else {
             throw ProcessError("Unknown routing algorithm '" + routingAlgorithm + "'!");
         }

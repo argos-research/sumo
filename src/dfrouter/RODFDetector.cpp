@@ -8,12 +8,12 @@
 /// @author  Laura Bieker
 /// @author  Melanie Knocke
 /// @date    Thu, 16.03.2006
-/// @version $Id: RODFDetector.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: RODFDetector.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Class representing a detector within the DFROUTER
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2006-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2006-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -206,7 +206,7 @@ RODFDetector::buildDestinationDistribution(const RODFDetectorCon& detectors,
                     ++j;
                     continue;
                 }
-                const std::map<RODFEdge*, SUMOReal>& tprobs = probs[(time - startTime) / stepOffset];
+                const std::map<RODFEdge*, SUMOReal>& tprobs = probs[(int)((time - startTime) / stepOffset)];
                 RODFEdge* splitEdge = 0;
                 for (std::map<RODFEdge*, SUMOReal>::const_iterator k = tprobs.begin(); k != tprobs.end(); ++k) {
                     if (find(j, (*ri).edges2Pass.end(), (*k).first) != (*ri).edges2Pass.end()) {
@@ -294,7 +294,7 @@ RODFDetector::writeEmitterDefinition(const std::string& file,
     OutputDevice& out = OutputDevice::getDevice(file);
     OptionsCont& oc = OptionsCont::getOptions();
     if (getType() != SOURCE_DETECTOR) {
-        out.writeXMLHeader("calibrator");
+        out.writeXMLHeader("additional", "additional_file.xsd");
     }
     // routes
     if (myRoutes != 0 && myRoutes->get().size() != 0) {
@@ -438,7 +438,7 @@ RODFDetector::writeSingleSpeedTrigger(const std::string& file,
                                       SUMOTime startTime, SUMOTime endTime,
                                       SUMOTime stepOffset, SUMOReal defaultSpeed) {
     OutputDevice& out = OutputDevice::getDevice(file);
-    out.writeXMLHeader("vss");
+    out.writeXMLHeader("additional", "additional_file.xsd");
     const std::vector<FlowDef>& mflows = flows.getFlowDefs(myID);
     int index = 0;
     for (SUMOTime t = startTime; t < endTime; t += stepOffset, index++) {
@@ -521,7 +521,7 @@ RODFDetectorCon::getDetectors() const {
 void
 RODFDetectorCon::save(const std::string& file) const {
     OutputDevice& out = OutputDevice::getDevice(file);
-    out.writeXMLHeader("detectors");
+    out.writeXMLHeader("detectors", "detectors_file.xsd");
     for (std::vector<RODFDetector*>::const_iterator i = myDetectors.begin(); i != myDetectors.end(); ++i) {
         out.openTag(SUMO_TAG_DETECTOR_DEFINITION).writeAttr(SUMO_ATTR_ID, StringUtils::escapeXML((*i)->getID())).writeAttr(SUMO_ATTR_LANE, (*i)->getLaneID()).writeAttr(SUMO_ATTR_POSITION, (*i)->getPos());
         switch ((*i)->getType()) {
@@ -549,7 +549,7 @@ RODFDetectorCon::save(const std::string& file) const {
 void
 RODFDetectorCon::saveAsPOIs(const std::string& file) const {
     OutputDevice& out = OutputDevice::getDevice(file);
-    out.writeXMLHeader("pois");
+    out.writeXMLHeader("additional", "additional_file.xsd");
     for (std::vector<RODFDetector*>::const_iterator i = myDetectors.begin(); i != myDetectors.end(); ++i) {
         out.openTag(SUMO_TAG_POI).writeAttr(SUMO_ATTR_ID, StringUtils::escapeXML((*i)->getID()));
         switch ((*i)->getType()) {
@@ -577,7 +577,7 @@ RODFDetectorCon::saveAsPOIs(const std::string& file) const {
 void
 RODFDetectorCon::saveRoutes(const std::string& file) const {
     OutputDevice& out = OutputDevice::getDevice(file);
-    out.writeXMLHeader("routes");
+    out.writeXMLHeader("routes", "routes_file.xsd");
     std::vector<std::string> saved;
     // write for source detectors
     bool lastWasSaved = true;
@@ -629,12 +629,12 @@ RODFDetectorCon::writeEmitters(const std::string& file,
     }
     //
     OutputDevice& out = OutputDevice::getDevice(file);
-    out.writeXMLHeader("additional", "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://sumo.dlr.de/xsd/additional_file.xsd\"");
+    out.writeXMLHeader("additional", "additional_file.xsd");
     // write vType(s)
     const bool separateVTypeOutput = OptionsCont::getOptions().getString("vtype-output") != "";
     OutputDevice& vTypeOut = separateVTypeOutput ? OutputDevice::getDevice(OptionsCont::getOptions().getString("vtype-output")) : out;
     if (separateVTypeOutput) {
-        vTypeOut.writeXMLHeader("additional", "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://sumo.dlr.de/xsd/additional_file.xsd\"");
+        vTypeOut.writeXMLHeader("additional", "additional_file.xsd");
     }
     const bool forceDev = !OptionsCont::getOptions().isDefault("speeddev");
     const SUMOReal speedDev = OptionsCont::getOptions().getFloat("speeddev");
@@ -718,7 +718,7 @@ void
 RODFDetectorCon::writeEmitterPOIs(const std::string& file,
                                   const RODFDetectorFlows& flows) {
     OutputDevice& out = OutputDevice::getDevice(file);
-    out.writeXMLHeader("additional", "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://sumo.dlr.de/xsd/additional_file.xsd\"");
+    out.writeXMLHeader("additional", "additional_file.xsd");
     for (std::vector<RODFDetector*>::const_iterator i = myDetectors.begin(); i != myDetectors.end(); ++i) {
         RODFDetector* det = *i;
         SUMOReal flow = flows.getFlowSumSecure(det->getID());
@@ -797,7 +797,7 @@ RODFDetectorCon::writeSpeedTrigger(const RODFNet* const net,
                                    SUMOTime startTime, SUMOTime endTime,
                                    SUMOTime stepOffset) {
     OutputDevice& out = OutputDevice::getDevice(file);
-    out.writeXMLHeader("additional", "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://sumo.dlr.de/xsd/additional_file.xsd\"");
+    out.writeXMLHeader("additional", "additional_file.xsd");
     for (std::vector<RODFDetector*>::const_iterator i = myDetectors.begin(); i != myDetectors.end(); ++i) {
         RODFDetector* det = *i;
         // write the declaration into the file
@@ -815,7 +815,7 @@ RODFDetectorCon::writeSpeedTrigger(const RODFNet* const net,
 void
 RODFDetectorCon::writeEndRerouterDetectors(const std::string& file) {
     OutputDevice& out = OutputDevice::getDevice(file);
-    out.writeXMLHeader("additional", "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://sumo.dlr.de/xsd/additional_file.xsd\"");
+    out.writeXMLHeader("additional", "additional_file.xsd");
     for (std::vector<RODFDetector*>::const_iterator i = myDetectors.begin(); i != myDetectors.end(); ++i) {
         RODFDetector* det = *i;
         // write the declaration into the file
@@ -833,7 +833,7 @@ RODFDetectorCon::writeValidationDetectors(const std::string& file,
         bool includeSources,
         bool singleFile, bool friendly) {
     OutputDevice& out = OutputDevice::getDevice(file);
-    out.writeXMLHeader("additional");
+    out.writeXMLHeader("additional", "additional_file.xsd");
     for (std::vector<RODFDetector*>::const_iterator i = myDetectors.begin(); i != myDetectors.end(); ++i) {
         RODFDetector* det = *i;
         // write the declaration into the file

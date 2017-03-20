@@ -2,12 +2,12 @@
 /// @file    GNEChange_TLS.cpp
 /// @author  Jakob Erdmann
 /// @date    July 2011
-/// @version $Id: GNEChange_TLS.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: GNEChange_TLS.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A network change in which a traffic light is created or deleted
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -49,13 +49,13 @@ FXIMPLEMENT_ABSTRACT(GNEChange_TLS, GNEChange, NULL, 0)
 // ===========================================================================
 
 
-// Constructor for creating an edge
-GNEChange_TLS::GNEChange_TLS(
-    GNEJunction* junction, NBTrafficLightDefinition* tlDef, bool forward, bool forceInsert, const std::string tlID):
-    GNEChange(0, forward),
+/// @brief constructor for creating an edge
+GNEChange_TLS::GNEChange_TLS(GNEJunction* junction, NBTrafficLightDefinition* tlDef, bool forward, bool forceInsert, const std::string tlID):
+    GNEChange(junction->getNet(), forward),
     myJunction(junction),
     myTlDef(tlDef),
     myForceInsert(forceInsert) {
+    assert(myNet);
     myJunction->incRef("GNEChange_TLS");
     if (myTlDef == 0) {
         assert(forward);
@@ -75,7 +75,8 @@ GNEChange_TLS::~GNEChange_TLS() {
 }
 
 
-void GNEChange_TLS::undo() {
+void
+GNEChange_TLS::undo() {
     if (myForward) {
         myJunction->removeTrafficLight(myTlDef);
     } else {
@@ -84,7 +85,8 @@ void GNEChange_TLS::undo() {
 }
 
 
-void GNEChange_TLS::redo() {
+void
+GNEChange_TLS::redo() {
     if (myForward) {
         myJunction->addTrafficLight(myTlDef, myForceInsert);
     } else {
@@ -93,19 +95,21 @@ void GNEChange_TLS::redo() {
 }
 
 
-FXString GNEChange_TLS::undoName() const {
+FXString
+GNEChange_TLS::undoName() const {
     if (myForward) {
-        return ("Undo create traffic light");
+        return ("Undo create " + toString(SUMO_TAG_TRAFFIC_LIGHT)).c_str();
     } else {
-        return ("Undo delete traffic light");
+        return ("Undo delete " + toString(SUMO_TAG_TRAFFIC_LIGHT)).c_str();
     }
 }
 
 
-FXString GNEChange_TLS::redoName() const {
+FXString
+GNEChange_TLS::redoName() const {
     if (myForward) {
-        return ("Redo create traffic light");
+        return ("Redo create " + toString(SUMO_TAG_TRAFFIC_LIGHT)).c_str();
     } else {
-        return ("Redo delete traffic light");
+        return ("Redo delete " + toString(SUMO_TAG_TRAFFIC_LIGHT)).c_str();
     }
 }

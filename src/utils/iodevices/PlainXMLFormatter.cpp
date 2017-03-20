@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    2012
-/// @version $Id: PlainXMLFormatter.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: PlainXMLFormatter.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Static storage of an output device and its base (abstract) implementation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -59,15 +59,12 @@ PlainXMLFormatter::writeHeader(std::ostream& into, const SumoXMLTag& rootElement
 
 bool
 PlainXMLFormatter::writeXMLHeader(std::ostream& into, const std::string& rootElement,
-                                  const std::string& attrs, const std::string& comment) {
+                                  const std::map<SumoXMLAttr, std::string>& attrs) {
     if (myXMLStack.empty()) {
         OptionsCont::getOptions().writeXMLHeader(into);
-        if (comment != "") {
-            into << comment << "\n";
-        }
         openTag(into, rootElement);
-        if (attrs != "") {
-            into << " " << attrs;
+        for (std::map<SumoXMLAttr, std::string>::const_iterator it = attrs.begin(); it != attrs.end(); ++it) {
+            writeAttr(into, it->first, it->second);
         }
         into << ">\n";
         myHavePendingOpener = false;

@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVisualizationSettings.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GUIVisualizationSettings.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Stores the information about how to visualize structures
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -43,6 +43,26 @@
 // static members
 // ===========================================================================
 bool GUIVisualizationSettings::UseMesoSim = false;
+
+/* -------------------------------------------------------------------------
+ * color constants for link states
+ * ----------------------------------------------------------------------- */
+const RGBColor SUMO_color_TL_GREEN_MAJOR(0, 255, 0);
+const RGBColor SUMO_color_TL_GREEN_MINOR(0, 179, 0);
+const RGBColor SUMO_color_TL_RED(255, 0, 0);
+const RGBColor SUMO_color_TL_REDYELLOW(255, 128, 0);
+const RGBColor SUMO_color_TL_YELLOW_MAJOR(255, 255, 0);
+const RGBColor SUMO_color_TL_YELLOW_MINOR(255, 255, 0);
+const RGBColor SUMO_color_TL_OFF_BLINKING(128, 64, 0);
+const RGBColor SUMO_color_TL_OFF_NOSIGNAL(0, 255, 255);
+const RGBColor SUMO_color_MAJOR(255, 255, 255);
+const RGBColor SUMO_color_MINOR(51, 51, 51);
+const RGBColor SUMO_color_EQUAL(128, 128, 128);
+const RGBColor SUMO_color_STOP(128, 0, 128);
+const RGBColor SUMO_color_ALLWAY_STOP(0, 0, 192);
+const RGBColor SUMO_color_ZIPPER(192, 128, 64);
+const RGBColor SUMO_color_DEADEND(0, 0, 0);
+
 
 // ===========================================================================
 // member method definitions
@@ -334,7 +354,7 @@ GUIVisualizationSettings::GUIVisualizationSettings()
     scheme.addColor(RGBColor(0,   0, 255, 255),  2.6 /* SUMOVTypeParameter::getDefaultAccel() */);
     scheme.setAllowsNegativeValues(true);
     vehicleColorer.addScheme(scheme);
-    scheme = GUIColorScheme("by time gap", RGBColor(255, 255, 0, 255), "0");
+    scheme = GUIColorScheme("by time gap on lane", RGBColor(255, 255, 0, 255), "0");
     scheme.addColor(RGBColor(179, 179, 179, 255), -1);
     scheme.addColor(RGBColor(0, 255, 255, 255), 1);
     scheme.addColor(RGBColor(0,   0, 255, 255), 2);
@@ -348,6 +368,12 @@ GUIVisualizationSettings::GUIVisualizationSettings()
     vehicleColorer.addScheme(scheme);
     scheme = GUIColorScheme("by electricity consumption", RGBColor::GREEN);
     scheme.addColor(RGBColor::RED, (SUMOReal)5);
+    vehicleColorer.addScheme(scheme);
+    scheme = GUIColorScheme("by time loss", RGBColor::BLUE);
+    scheme.addColor(RGBColor::CYAN, (SUMOReal)10);
+    scheme.addColor(RGBColor::GREEN, (SUMOReal)60);
+    scheme.addColor(RGBColor::YELLOW, (SUMOReal)180);
+    scheme.addColor(RGBColor::RED, (SUMOReal)900);
     vehicleColorer.addScheme(scheme);
     vehicleColorer.addScheme(GUIColorScheme("random", RGBColor::YELLOW, "", true));
 
@@ -972,6 +998,45 @@ SUMOReal
 GUIVisualizationSizeSettings::getExaggeration(const GUIVisualizationSettings& s, SUMOReal factor) const {
     /// @note should look normal-sized at zoom 1000
     return (constantSize && !s.drawForSelecting) ? MAX2((SUMOReal)exaggeration, exaggeration * factor / s.scale) : exaggeration;
+}
+
+
+const RGBColor&
+GUIVisualizationSettings::getLinkColor(const LinkState& ls) {
+    switch (ls) {
+        case LINKSTATE_TL_GREEN_MAJOR:
+            return SUMO_color_TL_GREEN_MAJOR;
+        case LINKSTATE_TL_GREEN_MINOR:
+            return SUMO_color_TL_GREEN_MINOR;
+        case LINKSTATE_TL_RED:
+            return SUMO_color_TL_RED;
+        case LINKSTATE_TL_REDYELLOW:
+            return SUMO_color_TL_REDYELLOW;
+        case LINKSTATE_TL_YELLOW_MAJOR:
+            return SUMO_color_TL_YELLOW_MAJOR;
+        case LINKSTATE_TL_YELLOW_MINOR:
+            return SUMO_color_TL_YELLOW_MINOR;
+        case LINKSTATE_TL_OFF_BLINKING:
+            return SUMO_color_TL_OFF_BLINKING;
+        case LINKSTATE_TL_OFF_NOSIGNAL:
+            return SUMO_color_TL_OFF_NOSIGNAL;
+        case LINKSTATE_MAJOR:
+            return SUMO_color_MAJOR;
+        case LINKSTATE_MINOR:
+            return SUMO_color_MINOR;
+        case LINKSTATE_EQUAL:
+            return SUMO_color_EQUAL;
+        case LINKSTATE_STOP:
+            return SUMO_color_STOP;
+        case LINKSTATE_ALLWAY_STOP:
+            return SUMO_color_ALLWAY_STOP;
+        case LINKSTATE_ZIPPER:
+            return SUMO_color_ZIPPER;
+        case LINKSTATE_DEADEND:
+            return SUMO_color_DEADEND;
+        default:
+            throw ProcessError("No color defined for LinkState '" + std::string(ls, 1) + "'");
+    }
 }
 
 /****************************************************************************/

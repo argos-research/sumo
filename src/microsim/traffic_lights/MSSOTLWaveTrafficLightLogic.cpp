@@ -3,12 +3,12 @@
 /// @author  Riccardo Belletti
 /// @author  Anna Chiara Bellini
 /// @date    Sep 2013
-/// @version $Id: MSSOTLWaveTrafficLightLogic.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSSOTLWaveTrafficLightLogic.cpp 22627 2017-01-18 12:56:36Z behrisch $
 ///
 // The class for SOTL Platoon logics
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright 2001-2009 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2010-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Thu, 13 Dec 2012
-/// @version $Id: MSStateHandler.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSStateHandler.h 22644 2017-01-19 15:51:57Z namdre $
 ///
 // Parser and output filter for routes and vehicles state saving and loading
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -33,7 +33,7 @@
 #endif
 
 #include <utils/common/SUMOTime.h>
-#include <utils/xml/SUMOSAXHandler.h>
+#include "MSRouteHandler.h"
 
 
 // ===========================================================================
@@ -49,7 +49,7 @@ class MESegment;
  * @class MSStateHandler
  * @brief Parser and output filter for routes and vehicles state saving and loading
  */
-class MSStateHandler : public SUMOSAXHandler {
+class MSStateHandler : public MSRouteHandler {
 public:
     /// standard constructor
     MSStateHandler(const std::string& file, const SUMOTime offset);
@@ -91,6 +91,8 @@ protected:
     void myEndElement(int element);
     //@}
 
+    /// Ends the processing of a vehicle
+    void closeVehicle();
 
 private:
     const SUMOTime myOffset;
@@ -99,8 +101,15 @@ private:
     std::pair<int, int> myEdgeAndLane;
     int myQueIndex;
 
-    /// @brief The currently parsed vehicle type
-    SUMOVTypeParameter* myCurrentVType;
+    /// @brief cached attrs (used when loading vehicles)
+    SUMOSAXAttributes* myAttrs;
+
+    /// @brief the last object that potentially carries parameters
+    Parameterised* myLastParameterised;
+
+    /// @brief vehicles that shall be removed when loading state
+    std::set<std::string> myVehiclesToRemove;
+
 
 private:
     /// @brief Invalidated copy constructor

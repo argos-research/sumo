@@ -5,7 +5,7 @@
 @author  Yun-Pang Floetteroed
 @author  Michael Behrisch
 @date    2008-03-28
-@version $Id: Assignment.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: Assignment.py 22608 2017-01-17 06:28:54Z behrisch $
 
 This script is for executing the traffic assignment.
 Three assignment models are available:
@@ -16,7 +16,7 @@ Three assignment models are available:
 The c-logit model are set as default.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -157,7 +157,7 @@ def main():
     else:
         foutroute = open('routes.rou.xml', 'w')
         print("""<?xml version="1.0"?>
-<!-- generated on %s by $Id: Assignment.py 20433 2016-04-13 08:00:14Z behrisch $ -->
+<!-- generated on %s by $Id: Assignment.py 22608 2017-01-17 06:28:54Z behrisch $ -->
 <routes>""" % starttime, file=foutroute)
 
     # for counter in range (0, len(matrices)):

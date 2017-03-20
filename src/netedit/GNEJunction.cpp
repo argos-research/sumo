@@ -2,13 +2,13 @@
 /// @file    GNEJunction.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEJunction.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEJunction.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A class for visualizing and editing junctions in netedit (adapted from
 // GUIJunctionWrapper)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -67,7 +67,7 @@
 // method definitions
 // ===========================================================================
 GNEJunction::GNEJunction(NBNode& nbn, GNENet* net, bool loaded) :
-    GNENetElement(net, nbn.getID(), GLO_JUNCTION, SUMO_TAG_JUNCTION),
+    GNENetElement(net, nbn.getID(), GLO_JUNCTION, SUMO_TAG_JUNCTION, ICON_JUNCTION),
     myNBNode(nbn),
     myOrigPos(nbn.getPosition()),
     myAmCreateEdgeSource(false),
@@ -76,7 +76,6 @@ GNEJunction::GNEJunction(NBNode& nbn, GNENet* net, bool loaded) :
     myHasValidLogic(loaded),
     myAmTLSSelected(false) {
     updateGeometry();
-    rebuildCrossings(false);
 }
 
 
@@ -84,7 +83,7 @@ GNEJunction::~GNEJunction() {
     if (myAmResponsible) {
         delete &myNBNode;
     }
-    rebuildCrossings(true);
+    dropGNECrossings();
 }
 
 
@@ -98,23 +97,22 @@ GNEJunction::updateGeometry() {
         myBoundary.add(myNBNode.getShape().getBoxBoundary());
     }
     myMaxSize = MAX2(myBoundary.getWidth(), myBoundary.getHeight());
+    rebuildGNECrossings();
 }
 
 
 void
-GNEJunction::rebuildCrossings(bool deleteOnly) {
-    for (std::vector<GNECrossing*>::const_iterator it = myCrossings.begin(); it != myCrossings.end(); it++) {
-        (*it)->decRef();
-        if ((*it)->unreferenced()) {
-            delete *it;
-        }
-    }
-    myCrossings.clear();
-    if (!deleteOnly) {
+GNEJunction::rebuildGNECrossings() {
+    // drop existent GNECrossings
+    dropGNECrossings();
+    // rebuild GNECrossings only if create crossings and walkingAreas in net is enabled
+    if (myNet->getNetBuilder()->haveNetworkCrossings() == true) {
+        // build new NBNode::Crossings and walking areas and create GNECrossings
+        myNBNode.buildCrossingsAndWalkingAreas();
         const std::vector<NBNode::Crossing>& crossings = myNBNode.getCrossings();
         for (std::vector<NBNode::Crossing>::const_iterator it = crossings.begin(); it != crossings.end(); it++) {
-            myCrossings.push_back(new GNECrossing(*this, (*it).id));
-            myCrossings.back()->incRef();
+            myGNECrossings.push_back(new GNECrossing(this, (*it).id));
+            myGNECrossings.back()->incRef();
         }
     }
 }
@@ -199,6 +197,20 @@ GNEJunction::drawGL(const GUIVisualizationSettings& s) const {
                 }
                 glPopMatrix();
             }
+            // Check if a  buuble must be drawed over junction
+            if (myNet->getViewNet()->showJunctionAsBubbles()) {
+                setColor(s, true);
+                // recognize full transparency and simply don't draw
+                GLfloat color[4];
+                glGetFloatv(GL_CURRENT_COLOR, color);
+                if (color[3] != 0) {
+                    glPushMatrix();
+                    Position pos = myNBNode.getPosition();
+                    glTranslated(pos.x(), pos.y(), getType() + 0.05);
+                    GLHelper::drawFilledCircle(4 * exaggeration, 32);
+                    glPopMatrix();
+                }
+            }
         }
         if (drawBubble) {
             setColor(s, true);
@@ -221,12 +233,12 @@ GNEJunction::drawGL(const GUIVisualizationSettings& s) const {
             glColor3d(1, 1, 1);
             const SUMOReal halfWidth = 32 / s.scale;
             const SUMOReal halfHeight = 64 / s.scale;
-            GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getGif(GNETEXTURE_TLS), -halfWidth, -halfHeight, halfWidth, halfHeight);
+            GUITexturesHelper::drawTexturedBox(GUITextureSubSys::getTexture(GNETEXTURE_TLS), -halfWidth, -halfHeight, halfWidth, halfHeight);
             glPopMatrix();
         }
         // draw crossings
         if (s.editMode != GNE_MODE_TLS) {
-            for (std::vector<GNECrossing*>::const_iterator it = myCrossings.begin(); it != myCrossings.end(); it++) {
+            for (std::vector<GNECrossing*>::const_iterator it = myGNECrossings.begin(); it != myGNECrossings.end(); it++) {
                 (*it)->drawGL(s);
             }
         }
@@ -248,42 +260,84 @@ GNEJunction::getNBNode() const {
 }
 
 
-std::vector<GNEEdge*>
+
+void
+GNEJunction::addIncomingGNEEdge(GNEEdge* edge) {
+    // Check if incoming edge was already inserted
+    std::vector<GNEEdge*>::iterator i = std::find(myGNEIncomingEdges.begin(), myGNEIncomingEdges.end(), edge);
+    if (i != myGNEIncomingEdges.end()) {
+        throw InvalidArgument("Incoming " + toString(SUMO_TAG_EDGE) + " with ID '" + edge->getID() + "' was already inserted into " + toString(getTag()) + " with ID " + getID() + "'");
+    } else {
+        // Add edge into containers
+        myGNEIncomingEdges.push_back(edge);
+        myGNEEdges.push_back(edge);
+    }
+}
+
+
+void
+GNEJunction::addOutgoingGNEEdge(GNEEdge* edge) {
+    // Check if outgoing edge was already inserted
+    std::vector<GNEEdge*>::iterator i = std::find(myGNEOutgoingEdges.begin(), myGNEOutgoingEdges.end(), edge);
+    if (i != myGNEOutgoingEdges.end()) {
+        throw InvalidArgument("Outgoing " + toString(SUMO_TAG_EDGE) + " with ID '" + edge->getID() + "' was already inserted into " + toString(getTag()) + " with ID " + getID() + "'");
+    } else {
+        // Add edge into containers
+        myGNEOutgoingEdges.push_back(edge);
+        myGNEEdges.push_back(edge);
+    }
+}
+
+
+void
+GNEJunction::removeIncomingGNEEdge(GNEEdge* edge) {
+    // Check if incoming edge was already inserted
+    std::vector<GNEEdge*>::iterator i = std::find(myGNEIncomingEdges.begin(), myGNEIncomingEdges.end(), edge);
+    if (i == myGNEIncomingEdges.end()) {
+        throw InvalidArgument("Incoming " + toString(SUMO_TAG_EDGE) + " with ID '" + edge->getID() + "' doesn't found into " + toString(getTag()) + " with ID " + getID() + "'");
+    } else {
+        // remove edge from containers
+        myGNEIncomingEdges.erase(i);
+        myGNEEdges.erase(std::find(myGNEEdges.begin(), myGNEEdges.end(), edge));
+    }
+}
+
+
+void
+GNEJunction::removeOutgoingGNEEdge(GNEEdge* edge) {
+    // Check if outgoing edge was already inserted
+    std::vector<GNEEdge*>::iterator i = std::find(myGNEOutgoingEdges.begin(), myGNEOutgoingEdges.end(), edge);
+    if (i == myGNEOutgoingEdges.end()) {
+        throw InvalidArgument("Outgoing " + toString(SUMO_TAG_EDGE) + " with ID '" + edge->getID() + "' doesn't found into " + toString(getTag()) + " with ID " + getID() + "'");
+    } else {
+        // remove edge from containers
+        myGNEOutgoingEdges.erase(i);
+        myGNEEdges.erase(std::find(myGNEEdges.begin(), myGNEEdges.end(), edge));
+    }
+}
+
+
+const std::vector<GNEEdge*>&
 GNEJunction::getGNEEdges() const {
-    std::vector<GNEEdge*> edges;
-    // iterate over incoming edges
-    for (std::vector<NBEdge*>::const_iterator i = myNBNode.getIncomingEdges().begin(); i != myNBNode.getIncomingEdges().end(); i++) {
-        edges.push_back(myNet->retrieveEdge((*i)->getID()));
-    }
-    // iterate over outgoing edges
-    for (std::vector<NBEdge*>::const_iterator i = myNBNode.getOutgoingEdges().begin(); i != myNBNode.getOutgoingEdges().end(); i++) {
-        edges.push_back(myNet->retrieveEdge((*i)->getID()));
-    }
-    return edges;
+    return myGNEEdges;
 }
 
 
-std::vector<GNEEdge*>
+const std::vector<GNEEdge*>&
 GNEJunction::getGNEIncomingEdges() const {
-    std::vector<GNEEdge*> incomingEdges;
-    // iterate over incoming edges
-    for (std::vector<NBEdge*>::const_iterator i = myNBNode.getIncomingEdges().begin(); i != myNBNode.getIncomingEdges().end(); i++) {
-        incomingEdges.push_back(myNet->retrieveEdge((*i)->getID()));
-    }
-    return incomingEdges;
+    return myGNEIncomingEdges;
 }
 
 
-std::vector<GNEEdge*>
+const std::vector<GNEEdge*>&
 GNEJunction::getGNEOutgoingEdges() const {
-    std::vector<GNEEdge*> outgoingEdges;
-    // iterate over outgoing edges
-    for (std::vector<NBEdge*>::const_iterator i = myNBNode.getOutgoingEdges().begin(); i != myNBNode.getOutgoingEdges().end(); i++) {
-        outgoingEdges.push_back(myNet->retrieveEdge((*i)->getID()));
-    }
-    return outgoingEdges;
+    return myGNEOutgoingEdges;
 }
 
+const std::vector<GNECrossing*>&
+GNEJunction::getGNECrossings() const {
+    return myGNECrossings;
+}
 
 void
 GNEJunction::markAsCreateEdgeSource() {
@@ -337,22 +391,17 @@ GNEJunction::updateShapesAndGeometries() {
     // First declare three sets with all affected GNEJunctions, GNEEdges and GNEConnections
     std::set<GNEJunction*> affectedJunctions;
     std::set<GNEEdge*> affectedEdges;
-    // Fill sets
-    std::vector<GNEEdge*> GNEEdges = getGNEEdges();             // @Improve efficiency
-    std::vector<GNEEdge*> edgesNeighbor;
     // Iterate over GNEEdges
-    for (std::vector<GNEEdge*>::const_iterator i = GNEEdges.begin(); i != GNEEdges.end(); i++) {
+    for (std::vector<GNEEdge*>::const_iterator i = myGNEEdges.begin(); i != myGNEEdges.end(); i++) {
         // Add source and destiny junctions
-        affectedJunctions.insert((*i)->getGNEJunctionSource()); // @Improve efficiency
-        affectedJunctions.insert((*i)->getGNEJunctionDest());   // @Improve efficiency
+        affectedJunctions.insert((*i)->getGNEJunctionSource());
+        affectedJunctions.insert((*i)->getGNEJunctionDestiny());
         // Obtain neighbors of Junction source
-        edgesNeighbor = (*i)->getGNEJunctionSource()->getGNEEdges();    // @Improve efficiency
-        for (std::vector<GNEEdge*>::const_iterator j = edgesNeighbor.begin(); j != edgesNeighbor.end(); j++) {
+        for (std::vector<GNEEdge*>::const_iterator j = (*i)->getGNEJunctionSource()->getGNEEdges().begin(); j != (*i)->getGNEJunctionSource()->getGNEEdges().end(); j++) {
             affectedEdges.insert(*j);
         }
         // Obtain neighbors of Junction destiny
-        edgesNeighbor = (*i)->getGNEJunctionDest()->getGNEEdges();  // @Improve efficiency
-        for (std::vector<GNEEdge*>::const_iterator j = edgesNeighbor.begin(); j != edgesNeighbor.end(); j++) {
+        for (std::vector<GNEEdge*>::const_iterator j = (*i)->getGNEJunctionDestiny()->getGNEEdges().begin(); j != (*i)->getGNEJunctionDestiny()->getGNEEdges().end(); j++) {
             affectedEdges.insert(*j);
         }
     }
@@ -360,33 +409,26 @@ GNEJunction::updateShapesAndGeometries() {
     for (std::set<GNEJunction*>::iterator i = affectedJunctions.begin(); i != affectedJunctions.end(); i++) {
         // Check that Node doesn't have a custom shape
         if ((*i)->getNBNode()->hasCustomShape() == false) {
-            // Set new shape depending of the representation
-            if (myNet->getViewNet()->showJunctionAsBubbles() == true) {
-                // Only save Position to draw bubble
-                (*i)->getNBNode()->myPoly.clear();
-                (*i)->getNBNode()->myPoly.push_back((*i)->getNBNode()->getPosition());
-            } else {
-                // Compute polygon
-                (*i)->getNBNode()->computeNodeShape(-1);
-            }
-            // Update geometry of Junction
-            (*i)->updateGeometry();
+            // Compute polygon
+            (*i)->getNBNode()->sortEdges(false);
+            (*i)->getNBNode()->computeNodeShape(-1);
         }
+        // Update geometry of Junction
+        (*i)->updateGeometry();
     }
     // Iterate over affected Edges
     for (std::set<GNEEdge*>::iterator i = affectedEdges.begin(); i != affectedEdges.end(); i++) {
-        if (myNet->getViewNet()->showJunctionAsBubbles() == true) {
-            // Only compute lane shapes
-            (*i)->getNBEdge()->computeLaneShapes();
-        } else {
-            // Compute full edge shape because this funcion is related to computeNodeShape
-            (*i)->getNBEdge()->computeEdgeShape();
-        }
+        // Compute full edge shape because this funcion is related to computeNodeShape
+        (*i)->getNBEdge()->computeEdgeShape();
         // Update edge geometry
         (*i)->updateGeometry();
     }
+    // Finally update geometry of this edge
+    updateGeometry();
     // Update view to show the new shapes
-    myNet->getViewNet()->update();
+    if (myNet->getViewNet()) {
+        myNet->getViewNet()->update();
+    }
 }
 
 
@@ -428,7 +470,7 @@ GNEJunction::setLogicValid(bool valid, GNEUndoList* undoList, const std::string&
         undoList->add(new GNEChange_Attribute(this, GNE_ATTR_MODIFICATION_STATUS, status), true);
         invalidateTLS(undoList);
     } else {
-        rebuildCrossings(false);
+        rebuildGNECrossings();
     }
 }
 
@@ -497,6 +539,19 @@ GNEJunction::isLogicValid() {
 }
 
 
+void
+GNEJunction::dropGNECrossings() {
+    // delete all GNECrossing
+    for (std::vector<GNECrossing*>::const_iterator it = myGNECrossings.begin(); it != myGNECrossings.end(); it++) {
+        (*it)->decRef();
+        if ((*it)->unreferenced()) {
+            delete *it;
+        }
+    }
+    myGNECrossings.clear();
+}
+
+
 std::string
 GNEJunction::getAttribute(SumoXMLAttr key) const {
     switch (key) {
@@ -524,7 +579,7 @@ GNEJunction::getAttribute(SumoXMLAttr key) const {
         case SUMO_ATTR_KEEP_CLEAR:
             return myNBNode.getKeepClear() ? "true" : "false";
         default:
-            throw InvalidArgument("junction attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -545,7 +600,7 @@ GNEJunction::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoList
             undoList->add(new GNEChange_Attribute(this, key, value), true);
             break;
         case SUMO_ATTR_TYPE: {
-            undoList->p_begin("change junction type");
+            undoList->p_begin("change " + toString(getTag()) + " type");
             if (NBNode::isTrafficLight(SUMOXMLDefinitions::NodeTypes.get(value))) {
                 if (!getNBNode()->isTLControlled()) {
                     // create new traffic light
@@ -565,7 +620,7 @@ GNEJunction::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoList
             break;
         }
         case SUMO_ATTR_TLID: {
-            undoList->p_begin("change tls id");
+            undoList->p_begin("change " + toString(SUMO_TAG_TRAFFIC_LIGHT) + " id");
             // junction is already controlled, remove from previous tls
             const std::set<NBTrafficLightDefinition*> tls = myNBNode.getControllingTLS();
             for (std::set<NBTrafficLightDefinition*>::iterator it = tls.begin(); it != tls.end(); it++) {
@@ -603,7 +658,7 @@ GNEJunction::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoList
             break;
         }
         default:
-            throw InvalidArgument("junction attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -623,8 +678,7 @@ GNEJunction::isValid(SumoXMLAttr key, const std::string& value) {
             break;
         case SUMO_ATTR_SHAPE: {
             bool ok = true;
-            PositionVector shape = GeomConvHelper::parseShapeReporting(
-                                       value, "user-supplied position", 0, ok, true);
+            PositionVector shape = GeomConvHelper::parseShapeReporting(value, "user-supplied position", 0, ok, true);
             return ok;
             break;
         }
@@ -639,7 +693,7 @@ GNEJunction::isValid(SumoXMLAttr key, const std::string& value) {
             return value == "true" || value == "false";
             break;
         default:
-            throw InvalidArgument("junction attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -674,8 +728,8 @@ GNEJunction::setAttribute(SumoXMLAttr key, const std::string& value) {
             if (myLogicStatus == GUESSED && value != GUESSED) {
                 // clear guessed connections. previous connections will be restored
                 myNBNode.invalidateIncomingConnections();
-                std::vector<GNEEdge*> incomingEdges = getGNEIncomingEdges();
-                for (std::vector<GNEEdge*>::iterator i = incomingEdges.begin(); i != incomingEdges.end(); i++) {
+                // Clear GNEConnections of incoming edges
+                for (std::vector<GNEEdge*>::iterator i = myGNEIncomingEdges.begin(); i != myGNEIncomingEdges.end(); i++) {
                     (*i)->clearGNEConnections();
                 }
             }
@@ -701,7 +755,7 @@ GNEJunction::setAttribute(SumoXMLAttr key, const std::string& value) {
             myNBNode.setKeepClear(value == "true");
             break;
         default:
-            throw InvalidArgument("junction attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -797,20 +851,6 @@ GNEJunction::removeTrafficLight(NBTrafficLightDefinition* tlDef) {
         tlCont.extract(tlDef);
     }
     myNBNode.removeTrafficLight(tlDef);
-}
-
-void
-GNEJunction::updateCrossingAttributes(NBNode::Crossing crossing) {
-    EdgeSet edgeSet(crossing.edges.begin(), crossing.edges.end());
-    for (std::vector<NBNode::Crossing>::iterator it = myNBNode.myCrossings.begin(); it != myNBNode.myCrossings.end(); ++it) {
-        EdgeSet edgeSet2((*it).edges.begin(), (*it).edges.end());
-        if (edgeSet == edgeSet2) {
-            (*it).width = crossing.width;
-            (*it).priority = crossing.priority;
-            myNet->refreshElement(this);
-            break;
-        }
-    }
 }
 
 /****************************************************************************/

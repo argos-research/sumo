@@ -7,12 +7,12 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Fri, 30.01.2009
-/// @version $Id: MSDevice_Transportable.cpp 20768 2016-05-20 08:38:44Z behrisch $
+/// @version $Id: MSDevice_Transportable.cpp 22702 2017-01-26 07:03:12Z namdre $
 ///
 // A device which is used to keep track of persons and containers riding with a vehicle
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -32,6 +32,7 @@
 #include <config.h>
 #endif
 
+#include <microsim/output/MSStopOut.h>
 #include <microsim/MSNet.h>
 #include <microsim/MSEdge.h>
 #include <microsim/pedestrians/MSPerson.h>
@@ -91,6 +92,13 @@ MSDevice_Transportable::notifyMove(SUMOVehicle& veh, SUMOReal /*oldPos*/, SUMORe
                             MSNet::getInstance()->getPersonControl().erase(transportable);
                         }
                     }
+                    if (MSStopOut::active()) {
+                        if (myAmContainer) {
+                            MSStopOut::getInstance()->unloadedContainers(&veh, 1);
+                        } else {
+                            MSStopOut::getInstance()->unloadedPersons(&veh, 1);
+                        }
+                    }
                     i = myTransportables.erase(i);
                 } else {
                     ++i;
@@ -141,6 +149,26 @@ MSDevice_Transportable::notifyLeave(SUMOVehicle& veh, SUMOReal /*lastPos*/,
 void
 MSDevice_Transportable::addTransportable(MSTransportable* transportable) {
     myTransportables.push_back(transportable);
+    if (MSStopOut::active()) {
+        if (myAmContainer) {
+            MSStopOut::getInstance()->loadedContainers(&myHolder, 1);
+        } else {
+            MSStopOut::getInstance()->loadedPersons(&myHolder, 1);
+        }
+    }
+}
+
+
+void
+MSDevice_Transportable::removeTransportable(MSTransportable* transportable) {
+    myTransportables.erase(std::find(myTransportables.begin(), myTransportables.end(), transportable));
+    if (MSStopOut::active() && myHolder.isStopped()) {
+        if (myAmContainer) {
+            MSStopOut::getInstance()->loadedContainers(&myHolder, 1);
+        } else {
+            MSStopOut::getInstance()->loadedPersons(&myHolder, 1);
+        }
+    }
 }
 
 

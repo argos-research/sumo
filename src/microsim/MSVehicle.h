@@ -10,12 +10,12 @@
 /// @author  Michael Behrisch
 /// @author  Axel Wegener
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSVehicle.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: MSVehicle.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Representation of a vehicle in the micro simulation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -62,6 +62,7 @@ class MSVehicleTransfer;
 class MSAbstractLaneChangeModel;
 class MSStoppingPlace;
 class MSChargingStation;
+class MSParkingArea;
 class MSPerson;
 class MSDevice;
 class MSEdgeWeightsStorage;
@@ -274,7 +275,7 @@ public:
      * @param[in] route The new route to pass
      * @return Whether the new route was accepted
      */
-    bool replaceRoute(const MSRoute* route, bool onInit = false, int offset = 0);
+    bool replaceRoute(const MSRoute* route, bool onInit = false, int offset = 0, bool addStops = true);
 
 
     /** @brief Returns whether the vehicle wil pass the given edge
@@ -536,6 +537,19 @@ public:
         return myWaitingTime;
     }
 
+    /** @brief Returns the SUMOTime lost (speed was lesser maximum speed)
+     *
+     * @note Intentional stopping does not count towards this time.
+    // @note speedFactor is included so time loss can never be negative.
+    // The value is that of a driver who compares his travel time when
+    // the road is clear (which includes speed factor) with the actual travel time.
+    // @note includes time lost due to low departSpeed and decelerating/accelerating for planned stops
+     * @return The time the vehicle lost due to various effects
+     */
+    SUMOTime getTimeLoss() const {
+        return myTimeLoss;
+    }
+
 
     /** @brief Returns the SUMOTime waited (speed was lesser than 0.1m/s) within the last t millisecs
      *
@@ -565,6 +579,12 @@ public:
 
     SUMOReal getAccumulatedWaitingSeconds() const {
         return STEPS2TIME(getAccumulatedWaitingTime());
+    }
+
+    /** @brief Returns the time loss in seconds
+     */
+    SUMOReal getTimeLossSeconds() const {
+        return STEPS2TIME(myTimeLoss);
     }
 
 
@@ -662,9 +682,9 @@ public:
     /// @name strategical/tactical lane choosing methods
     /// @{
 
-    // TODO: improve documentation, refs. #2604
+    //
     /** @struct LaneQ
-     * @brief A structure representing the best lanes for continuing the route
+     * @brief A structure representing the best lanes for continuing the current route starting at 'lane'
      */
     struct LaneQ {
         /// @brief The described lane
@@ -681,13 +701,16 @@ public:
         int bestLaneOffset;
         /// @brief Whether this lane allows to continue the drive
         bool allowsContinuation;
-        /// @brief Consecutive lane that can be followed without a lane change (contribute to length and occupation)
-        std::vector<MSLane*> bestContinuations; // XXX: Why "best"?, refs. #2604
+        /* @brief Longest sequence of (normal-edge) lanes that can be followed without a lane change
+         * The 'length' attribute is the sum of these lane lengths
+         * (There may be alternative sequences that have equal length)
+         * It is the 'best' in the strategic sense of reducing required lane-changes
+         */
+        std::vector<MSLane*> bestContinuations;
     };
 
-    // TODO: improve documentation ("best"?), refs. #2604
     /** @brief Returns the description of best lanes to use in order to continue the route
-     * @return The best lanes structure holding matching the current vehicle position and state ahead
+     * @return The LaneQ for all lanes of the current edge
      */
     const std::vector<LaneQ>& getBestLanes() const;
 
@@ -711,21 +734,23 @@ public:
     void updateBestLanes(bool forceRebuild = false, const MSLane* startLane = 0);
 
 
-    // TODO: improve documentation, refs. #2604
-    /** @brief Returns the subpart of best lanes that describes the vehicle's current lane and their successors
-     * @return The best lane information for the vehicle's current lane
+    /** @brief Returns the best sequence of lanes to continue the route starting at myLane
+     * @return The bestContinuations of the LaneQ for myLane (see LaneQ)
      */
     const std::vector<MSLane*>& getBestLanesContinuation() const;
 
 
-    // TODO: improve documentation, refs. #2604
-    /** @brief Returns the subpart of best lanes that describes the given lane and their successors
-     * @return The best lane information for the given lane
+    /** @brief Returns the best sequence of lanes to continue the route starting at the given lane
+     * @return The bestContinuations of the LaneQ for the given lane (see LaneQ)
      */
     const std::vector<MSLane*>& getBestLanesContinuation(const MSLane* const l) const;
 
-    // TODO: improve documentation (which is the "best"?), refs. #2604
-    /// @brief returns the current offset from the best lane
+    /* @brief returns the current signed offset from the lane that is most
+     * suited for continuing the current route (in the strategic sense of reducing lane-changes)
+     * - 0 if the vehicle is one it's best lane
+     * - negative if the vehicle should change to the right
+     * - positive if the vehicle should change to the left
+     */
     int getBestLaneOffset() const;
 
     /// @brief update occupation from MSLaneChanger
@@ -784,6 +809,8 @@ public:
         MSStoppingPlace* busstop;
         /// @brief (Optional) container stop if one is assigned to the stop
         MSStoppingPlace* containerstop;
+        /// @brief (Optional) parkingArea if one is assigned to the stop
+        MSParkingArea* parkingarea;
         /// @brief (Optional) charging station if one is assigned to the stop
         MSChargingStation* chargingStation;
         /// @brief The stopping position start
@@ -811,6 +838,10 @@ public:
         /// @brief The time at which the vehicle is able to load another container
         SUMOTime timeToLoadNextContainer;
 
+        void write(OutputDevice& dev) const;
+
+        /// @brief return halting position for upcoming stop;
+        SUMOReal getEndPos(const SUMOVehicle& veh) const;
     };
 
 
@@ -822,6 +853,14 @@ public:
      */
     bool addStop(const SUMOVehicleParameter::Stop& stopPar, std::string& errorMsg, SUMOTime untilOffset = 0);
 
+    /** @brief replace the current parking area stop with a new stop with merge duration
+     */
+    bool replaceParkingArea(MSParkingArea* parkingArea, std::string& errorMsg);
+
+
+    /** @brief get the current parking area stop
+     */
+    MSParkingArea* getNextParkingArea();
 
     /** @brief Returns whether the vehicle has to stop somewhere
      * @return Whether the vehicle has to stop somewhere
@@ -893,13 +932,13 @@ public:
      */
     std::pair<const MSVehicle* const, SUMOReal> getLeader(SUMOReal dist = 0) const;
 
-    /** @brief Returns the time gap in seconds to the leader of the vehicle looking for a fixed distance.
+    /** @brief Returns the time gap in seconds to the leader of the vehicle on the same lane.
      *
      * If the distance is too big -1 is returned.
      * The gap returned takes the minGap into account.
      * @return The time gap in seconds; -1 if no leader was found or speed is 0.
      */
-    SUMOReal getTimeGap() const;
+    SUMOReal getTimeGapOnLane() const;
 
 
     /// @name Emission retrieval
@@ -970,6 +1009,9 @@ public:
      * @param[in] container The container to add
      */
     void addContainer(MSTransportable* container);
+
+    /// @brief removes a person or container
+    void removeTransportable(MSTransportable* t);
 
     /// @brief retrieve riding persons
     const std::vector<MSTransportable*>& getPersons() const;
@@ -1214,42 +1256,12 @@ public:
          */
         SUMOReal changeRequestRemainingSeconds(const SUMOTime currentTime) const;
 
-        /** @brief Sets whether the safe velocity shall be regarded
-         * @param[in] value Whether the safe velocity shall be regarded
-         */
-        void setConsiderSafeVelocity(bool value);
-
-
-        /** @brief Sets whether the maximum acceleration shall be regarded
-         * @param[in] value Whether the maximum acceleration shall be regarded
-         */
-        void setConsiderMaxAcceleration(bool value);
-
-
-        /** @brief Sets whether the maximum deceleration shall be regarded
-         * @param[in] value Whether the maximum deceleration shall be regarded
-         */
-        void setConsiderMaxDeceleration(bool value);
-
-
-        /** @brief Sets whether junction priority rules shall be respected
-         * @param[in] value Whether junction priority rules be respected
-         */
-        void setRespectJunctionPriority(bool value);
-
-
         /** @brief Returns whether junction priority rules shall be respected
          * @return Whether junction priority rules be respected
          */
         inline bool getRespectJunctionPriority() const {
             return myRespectJunctionPriority;
         }
-
-
-        /** @brief Sets whether red lights shall be a reason to brake
-         * @param[in] value Whether red lights shall be a reason to brake
-         */
-        void setEmergencyBrakeRedLight(bool value);
 
 
         /** @brief Returns whether red lights shall be a reason to brake
@@ -1259,6 +1271,10 @@ public:
             return myEmergencyBrakeRedLight;
         }
 
+        /** @brief Sets speed-constraining behaviors
+         * @param[in] value a bitset controlling the different modes
+         */
+        void setSpeedMode(int speedMode);
 
         /** @brief Sets lane changing behavior
          * @param[in] value a bitset controlling the different modes
@@ -1290,6 +1306,14 @@ public:
         bool isVTDControlled() const;
 
         bool isVTDAffected(SUMOTime t) const;
+
+        void setSignals(int signals) {
+            myTraCISignals = signals;
+        }
+
+        int getSignals() const {
+            return myTraCISignals;
+        }
 
     private:
         /// @brief The velocity time line to apply
@@ -1343,6 +1367,9 @@ public:
         //@}
         ///* @brief flags for determining the priority of traci lane change requests
         TraciLaneChangePriority myTraciLaneChangePriority;
+
+        // @brief the signals set via TraCI
+        int myTraCISignals;
 
     };
 
@@ -1433,6 +1460,9 @@ protected:
     SUMOTime myWaitingTime;
     WaitingTimeCollector myWaitingTimeCollector;
 
+    /// @brief the time loss due to writing with less than maximum speed
+    SUMOTime myTimeLoss;
+
     /// @brief This Vehicles driving state (pos and speed)
     State myState;
 
@@ -1444,8 +1474,18 @@ protected:
     const MSEdge* myLastBestLanesEdge;
     const MSLane* myLastBestLanesInternalLane;
 
-    std::vector<std::vector<LaneQ> > myBestLanes; // XXX: Documentation?, refs. #2604
+    /* @brief Complex data structure for keeping and updating LaneQ:
+     * Each element of the outer vector corresponds to an upcoming edge on the vehicles route
+     * The first element corresponds to the current edge and is returned in getBestLanes()
+     * The other elements are only used as a temporary structure in updateBestLanes();
+     */
+    std::vector<std::vector<LaneQ> > myBestLanes;
+
+    /* @brief iterator to speed up retrival of the current lane's LaneQ in getBestLaneOffset() and getBestLanesContinuation()
+     * This is updated in updateOccupancyAndCurrentBestLane()
+     */
     std::vector<LaneQ>::iterator myCurrentLaneInBestLanes;
+
     static std::vector<MSLane*> myEmptyLaneVector;
     static std::vector<MSTransportable*> myEmptyTransportableVector;
 

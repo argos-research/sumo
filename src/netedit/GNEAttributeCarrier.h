@@ -2,12 +2,12 @@
 /// @file    GNEAttributeCarrier.h
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEAttributeCarrier.h 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNEAttributeCarrier.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Abstract Base class for gui objects which carry attributes
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -36,6 +36,7 @@
 #include <utils/xml/SUMOXMLDefinitions.h>
 #include <utils/common/ToString.h>
 #include <utils/common/TplConvert.h>
+#include <utils/gui/images/GUIIcons.h>
 #include "GNEReferenceCounter.h"
 
 
@@ -61,8 +62,9 @@ class GNEAttributeCarrier : public GNEReferenceCounter {
 public:
     /**@brief Constructor
      * @param[in] tag SUMO Tag assigned to this type of object
+     * @param[in] icon GUIIcon associated to the type of object
      */
-    GNEAttributeCarrier(SumoXMLTag tag);
+    GNEAttributeCarrier(SumoXMLTag tag, GUIIcon icon);
 
     /// @brief Destructor
     virtual ~GNEAttributeCarrier() {};
@@ -91,8 +93,14 @@ public:
     /// @brief how should this attribute carrier be called
     virtual std::string getDescription();
 
-    /// @brief get Tag assigned to this object
+    /// @brief get XML Tag assigned to this object
     SumoXMLTag getTag() const;
+
+    /// @brief get FXIcon assigned to this object
+    FXIcon* getIcon() const;
+
+    /// @brief get GUI icon assigned to this object
+    GUIIcon getGUIIcon() const;
 
     /// @brief get vector of attributes
     std::vector<SumoXMLAttr> getAttrs() const;
@@ -100,51 +108,56 @@ public:
     /// @brief function to support debugging
     const std::string getID() const;
 
-    /// @brief get parent's tag of a certain additional element
-    static SumoXMLTag getParentType(SumoXMLTag tag);
+    /// @brief get type of attribute
+    static std::string getAttributeType(SumoXMLTag tag, SumoXMLAttr attr);
 
     /// @brief get all editable attributes for tag and their default values.
-    static const std::vector<std::pair <SumoXMLAttr, std::string> >& allowedAttributes(SumoXMLTag tag);
+    static const std::vector<std::pair<SumoXMLAttr, std::string> >& allowedAttributes(SumoXMLTag tag);
 
-    /// @brief get all editable for tag.
-    static const std::vector<SumoXMLTag>& allowedTags();
-
-    /// @brief get all editable tags for netElements
-    static const std::vector<SumoXMLTag>& allowedNetElementTags();
-
-    /// @brief get all editable tags for additionals
-    static const std::vector<SumoXMLTag>& allowedAdditionalTags();
+    /// @brief get all editable for tag (net or additional).
+    static const std::vector<SumoXMLTag>& allowedTags(bool net);
 
     /// @brief whether an attribute is numerical (int or float)
-    static bool isNumerical(SumoXMLAttr attr);
+    static bool isNumerical(SumoXMLTag tag, SumoXMLAttr attr);
 
     /// @brief whether an attribute is numerical or type int
-    static bool isInt(SumoXMLAttr attr);
+    static bool isInt(SumoXMLTag tag, SumoXMLAttr attr);
 
     /// @brief whether an attribute is numerical of type float
-    static bool isFloat(SumoXMLAttr attr);
+    static bool isFloat(SumoXMLTag tag, SumoXMLAttr attr);
 
-    /// @brief whether an attribute is of type bool
-    static bool isBool(SumoXMLAttr attr);
+    /// @brief whether an attribute is time
+    static bool isTime(SumoXMLTag tag, SumoXMLAttr attr);
+
+    /// @brief whether an attribute is of type bool for a certain tag
+    static bool isBool(SumoXMLTag tag, SumoXMLAttr attr);
 
     /// @brief whether an attribute is of type string
-    static bool isString(SumoXMLAttr attr);
+    static bool isString(SumoXMLTag tag, SumoXMLAttr attr);
 
     /// @brief whether an attribute is of type bool
-    static bool isList(SumoXMLAttr attr);
+    static bool isList(SumoXMLTag tag, SumoXMLAttr attr);
 
-    /// @brief whether an attribute is unique (may not be edited for a multi-selection)
-    /// @note unique attributes don't have a default value
-    static bool isUnique(SumoXMLAttr attr);
+    /// @brief whether an attribute is unique (may not be edited for a multi-selection and don't have a default value)
+    static bool isUnique(SumoXMLTag tag, SumoXMLAttr attr);
 
     /// @brief whether an attribute is Discrete
     static bool isDiscrete(SumoXMLTag tag, SumoXMLAttr attr);
 
-    /// @brief check if a element with certain tag has another additional element as parent
-    static bool hasParent(SumoXMLTag tag);
+    /// @brief whether an attribute is only Positive (i.e. cannot take negative values)
+    static bool isPositive(SumoXMLTag tag, SumoXMLAttr attr);
 
-    /// @brief check if a element with certain tag has a certain attribute
+    /// @brief whether an attribute is a probability (i.e. oly can values between [0, 1])
+    static bool isProbability(SumoXMLTag tag, SumoXMLAttr attr);
+
+    /// @brief whether an attribute is non editable
+    static bool isNonEditable(SumoXMLTag tag, SumoXMLAttr attr);
+
+    /// @brief check if an element with certain tag has a certain attribute
     static bool hasAttribute(SumoXMLTag tag, SumoXMLAttr attr);
+
+    /// @brief check if attribute of an element has a default avlue
+    static bool hasDefaultValue(SumoXMLTag tag, SumoXMLAttr attr);
 
     /// @brief return a list of discrete choices for this attribute or an empty vector
     static const std::vector<std::string>& discreteChoices(SumoXMLTag tag, SumoXMLAttr attr);
@@ -213,14 +226,14 @@ private:
     /// @brief method for setting the attribute and nothing else (used in GNEChange_Attribute)
     virtual void setAttribute(SumoXMLAttr key, const std::string& value) = 0;
 
-    /// @brief the xml tag to which this carrier corresponds
+    /// @brief the xml tag to which this attribute carrier corresponds
     const SumoXMLTag myTag;
 
-    /// @brief map with the allowed attributes
-    static std::map<SumoXMLTag, std::vector<std::pair <SumoXMLAttr, std::string> > > _allowedAttributes;
+    /// @brief icon associated to this AC
+    GUIIcon myIcon;
 
-    /// @brief vector with the allowed tags
-    static std::vector<SumoXMLTag> myAllowedTags;
+    /// @brief map with the allowed attributes and their default values
+    static std::map<SumoXMLTag, std::vector<std::pair <SumoXMLAttr, std::string> > > _allowedAttributes;
 
     /// @brief vector with the allowed tags of netElements
     static std::vector<SumoXMLTag> myAllowedNetElementTags;
@@ -228,17 +241,32 @@ private:
     /// @brief vector with the allowed tags of additionals
     static std::vector<SumoXMLTag> myAllowedAdditionalTags;
 
-    /// @brief set with the numerical attributes of type Int
-    static std::set<SumoXMLAttr> myNumericalIntAttrs;
+    /// @brief map with the numerical attributes of type Int
+    static std::map<SumoXMLTag, std::set<SumoXMLAttr> > myNumericalIntAttrs;
 
-    /// @brief set with the numerical attributes of type Float
-    static std::set<SumoXMLAttr> myNumericalFloatAttrs;
+    /// @brief map with the numerical attributes of type Float
+    static std::map<SumoXMLTag, std::set<SumoXMLAttr> > myNumericalFloatAttrs;
 
-    /// @brief set with the attributes of type list
-    static std::set<SumoXMLAttr> myListAttrs;
+    /// @brief map with the attributes of type time
+    static std::map<SumoXMLTag, std::set<SumoXMLAttr> > myTimeAttrs;
 
-    /// @brief set with the unique attributes (i.e. attributes without default values)
-    static std::set<SumoXMLAttr> myUniqueAttrs;
+    /// @brief map with the boolean attributes
+    static std::map<SumoXMLTag, std::set<SumoXMLAttr> > myBoolAttrs;
+
+    /// @brief map with the attributes of type list
+    static std::map<SumoXMLTag, std::set<SumoXMLAttr> > myListAttrs;
+
+    /// @brief map with the unique attributes (i.e. attributes without default values)
+    static std::map<SumoXMLTag, std::set<SumoXMLAttr> > myUniqueAttrs;
+
+    /// @brief map with the non-editable attributes
+    static std::map<SumoXMLTag, std::set<SumoXMLAttr> > myNonEditableAttrs;
+
+    /// @brief map with the positive attributes
+    static std::map<SumoXMLTag, std::set<SumoXMLAttr> > myPositiveAttrs;
+
+    /// @brief map with the probability attributes
+    static std::map<SumoXMLTag, std::set<SumoXMLAttr> > myProbabilityAttrs;
 
     /// @brief map with the allowed tags of additionals with parent and their parent
     static std::map<SumoXMLTag, SumoXMLTag> myAllowedAdditionalWithParentTags;
@@ -248,6 +276,9 @@ private:
 
     /// @brief map with the definition of attributes
     static std::map<SumoXMLTag, std::map<SumoXMLAttr, std::string> > myAttrDefinitions;
+
+    /// @brief maximum number of attributes of all tags
+    static int myMaxNumAttribute;
 
 private:
     /// @brief Invalidated assignment operator

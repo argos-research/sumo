@@ -5,13 +5,13 @@
 /// @author  Walter Bamberger
 /// @author  Michael Behrisch
 /// @date    July 2010
-/// @version $Id: AGFreeTime.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: AGFreeTime.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Generates trips related to after-work activities
 // like visiting the family or party.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2010-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2010-2017 DLR (http://www.dlr.de/) and contributors
 // activitygen module
 // Copyright 2010 TUM (Technische Universitaet Muenchen, http://www.tum.de/)
 /****************************************************************************/

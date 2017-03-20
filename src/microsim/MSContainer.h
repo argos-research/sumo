@@ -3,12 +3,12 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Thu, 12 Jun 2014
-/// @version $Id: MSContainer.h 20768 2016-05-20 08:38:44Z behrisch $
+/// @version $Id: MSContainer.h 22680 2017-01-23 15:28:43Z namdre $
 ///
 // The class for modelling container-movements
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -145,6 +145,9 @@ public:
 
         /// Returns the speed of the container
         SUMOReal getSpeed() const;
+
+        /// @brief the edges of the current stage
+        ConstMSEdgeVector getEdges() const;
 
         /// Returns the current stage description as a string
         std::string getStageDescription() const {

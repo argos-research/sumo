@@ -6,12 +6,12 @@
 /// @author  Jakob Erdmann
 /// @author  Christoph Sommer
 /// @date    Sept 2002
-/// @version $Id: TraCIServerAPI_Polygon.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: TraCIServerAPI_Polygon.cpp 22804 2017-02-01 07:00:08Z namdre $
 ///
 // APIs for getting/setting polygon values via TraCI
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

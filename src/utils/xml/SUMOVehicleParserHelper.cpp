@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Mon, 07.04.2008
-/// @version $Id: SUMOVehicleParserHelper.cpp 21802 2016-10-26 11:11:13Z namdre $
+/// @version $Id: SUMOVehicleParserHelper.cpp 22950 2017-02-15 08:24:07Z namdre $
 ///
 // Helper methods for parsing vehicle attributes
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2008-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -172,7 +172,8 @@ SUMOVehicleParserHelper::parseFlowAttributes(const SUMOSAXAttributes& attrs, con
             if (ret->repetitionEnd == SUMOTime_MAX) {
                 ret->repetitionNumber = std::numeric_limits<int>::max();
             } else {
-                ret->repetitionNumber = MAX2(1, (int)(((SUMOReal)(ret->repetitionEnd - ret->depart)) / ret->repetitionOffset + 0.5));
+                const SUMOReal repLength = (SUMOReal)(ret->repetitionEnd - ret->depart);
+                ret->repetitionNumber = (int)ceil(repLength / ret->repetitionOffset);
             }
         }
     }

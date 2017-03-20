@@ -2,14 +2,14 @@
 /// @file    GNEReferenceCounter.h
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEReferenceCounter.h 21786 2016-10-25 10:56:00Z namdre $
+/// @version $Id: GNEReferenceCounter.h 22839 2017-02-03 15:31:17Z palcraft $
 ///
 // A class that counts references to itself
 // We may wish to keep references to junctions/nodes either in the network or in the undoList
 // to clean up properly we have to resort to reference counting
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -46,10 +46,10 @@
  */
 class GNEReferenceCounter {
 public:
-    /// constructor
+    //// @brief constructor
     GNEReferenceCounter(): myCount(0) {}
 
-    /// destructor
+    //// @brief destructor
     ~GNEReferenceCounter() {
         if (myCount) {
             // cannot print id here, it already got destructed

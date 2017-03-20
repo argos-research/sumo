@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Sept 2002
-/// @version $Id: PositionVector.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: PositionVector.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A list of positions
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -117,6 +117,31 @@ PositionVector::overlapsWith(const AbstractPoly& poly, SUMOReal offset) const {
 }
 
 
+SUMOReal
+PositionVector::getOverlapWith(const PositionVector& poly, SUMOReal zThreshold) const {
+    SUMOReal result = 0;
+    // this points within poly
+    for (const_iterator i = begin(); i != end() - 1; i++) {
+        if (poly.around(*i)) {
+            Position closest = poly.positionAtOffset2D(poly.nearest_offset_to_point2D(*i));
+            if (fabs(closest.z() - (*i).z()) < zThreshold) {
+                result = MAX2(result, poly.distance2D(*i));
+            }
+        }
+    }
+    // polys points within this
+    for (const_iterator i = poly.begin(); i != poly.end() - 1; i++) {
+        if (around(*i)) {
+            Position closest = positionAtOffset2D(nearest_offset_to_point2D(*i));
+            if (fabs(closest.z() - (*i).z()) < zThreshold) {
+                result = MAX2(result, distance2D(*i));
+            }
+        }
+    }
+    return result;
+}
+
+
 bool
 PositionVector::intersects(const Position& p1, const Position& p2) const {
     if (size() < 2) {
@@ -190,6 +215,7 @@ PositionVector::operator[](int index) {
 
 Position
 PositionVector::positionAtOffset(SUMOReal pos, SUMOReal lateralOffset) const {
+    assert(size() != 0);
     const_iterator i = begin();
     SUMOReal seenLength = 0;
     do {
@@ -199,7 +225,11 @@ PositionVector::positionAtOffset(SUMOReal pos, SUMOReal lateralOffset) const {
         }
         seenLength += nextLength;
     } while (++i != end() - 1);
-    return back();
+    if (lateralOffset == 0 || size() < 2) {
+        return back();
+    } else {
+        return positionAtOffset(*(end() - 2), *(end() - 1), (*(end() - 2)).distanceTo(*(end() - 1)), lateralOffset);
+    }
 }
 
 
@@ -620,6 +650,9 @@ PositionVector::getSubpart(SUMOReal beginOffset, SUMOReal endOffset) const {
     }
     // append end
     ret.push_back_noDoublePos(endPos);
+    if (ret.size() == 1) {
+        ret.push_back(endPos);
+    }
     return ret;
 }
 
@@ -657,6 +690,9 @@ PositionVector::getSubpart2D(SUMOReal beginOffset, SUMOReal endOffset) const {
     }
     // append end
     ret.push_back_noDoublePos(endPos);
+    if (ret.size() == 1) {
+        ret.push_back(endPos);
+    }
     return ret;
 }
 
@@ -938,10 +974,12 @@ PositionVector::move2side(SUMOReal amount) {
                 Position offsets2 = sideOffset(me, to, amount);
                 PositionVector l1(from - offsets, me - offsets);
                 PositionVector l2(me - offsets2, to - offsets2);
-                shape.push_back(l1.intersectionPosition2D(l2[0], l2[1], 100));
-                if (shape.back() == Position::INVALID) {
+                Position meNew  = l1.intersectionPosition2D(l2[0], l2[1], 100);
+                if (meNew == Position::INVALID) {
                     throw InvalidArgument("no line intersection");
                 }
+                meNew = meNew + Position(0, 0, me.z());
+                shape.push_back(meNew);
             }
             // copy original z value
             shape.back().set(shape.back().x(), shape.back().y(), me.z());
@@ -1209,6 +1247,60 @@ PositionVector::getOrthogonal(const Position& p, SUMOReal extend, SUMOReal& dist
     if (p.distanceTo2D(base) > NUMERICAL_EPS) {
         result.push_back(p);
         result.push_back(base);
+    }
+    return result;
+}
+
+
+PositionVector
+PositionVector::smoothedZFront(SUMOReal dist) const {
+    PositionVector result = *this;
+    const SUMOReal z0 = (*this)[0].z();
+    // the z-delta of the first segment
+    const SUMOReal dz = (*this)[1].z() - z0;
+    // if the shape only has 2 points it is as smooth as possible already
+    if (size() > 2 && dz != 0) {
+        dist = MIN2(dist, length());
+        // check wether we need to insert a new point at dist
+        Position pDist = positionAtOffset(dist);
+        int iLast = indexOfClosest(pDist);
+        // prevent close spacing to reduce impact of rounding errors in z-axis
+        if (pDist.distanceTo2D((*this)[iLast]) > POSITION_EPS * 20) {
+            iLast = result.insertAtClosest(pDist);
+        }
+        SUMOReal dist2 = result.offsetAtIndex2D(iLast);
+        const SUMOReal dz2 = result[iLast].z() - z0;
+        SUMOReal seen = 0;
+        for (int i = 1; i < iLast; ++i) {
+            seen += result[i].distanceTo2D(result[i - 1]);
+            result[i].set(result[i].x(), result[i].y(), z0 + dz2 * seen / dist2);
+        }
+    }
+    return result;
+
+}
+
+
+SUMOReal
+PositionVector::offsetAtIndex2D(int index) const {
+    if (index < 0 || index >= (int)size()) {
+        return GeomHelper::INVALID_OFFSET;
+    }
+    SUMOReal seen = 0;
+    for (int i = 1; i <= index; ++i) {
+        seen += (*this)[i].distanceTo2D((*this)[i - 1]);
+    }
+    return seen;
+}
+
+
+SUMOReal
+PositionVector::getMaxGrade() const {
+    SUMOReal result = 0;
+    for (int i = 1; i < (int)size(); ++i) {
+        const Position& p1 = (*this)[i - 1];
+        const Position& p2 = (*this)[i];
+        result = MAX2(result, (SUMOReal)fabs((p1.z() - p2.z()) / p1.distanceTo2D(p2)));
     }
     return result;
 }

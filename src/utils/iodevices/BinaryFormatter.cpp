@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    2012
-/// @version $Id: BinaryFormatter.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: BinaryFormatter.cpp 22623 2017-01-18 09:53:08Z behrisch $
 ///
 // Static storage of an output device and its base (abstract) implementation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -57,7 +57,7 @@ BinaryFormatter::BinaryFormatter() {
 void
 BinaryFormatter::writeStaticHeader(std::ostream& into) {
     FileHelpers::writeByte(into, BF_BYTE);
-    FileHelpers::writeByte(into, 1);
+    FileHelpers::writeByte(into, 2);
     FileHelpers::writeByte(into, BF_STRING);
     FileHelpers::writeString(into, VERSION_STRING);
     writeStringList(into, SUMOXMLDefinitions::Tags.getStrings());
@@ -81,22 +81,16 @@ BinaryFormatter::writeStringList(std::ostream& into, const std::vector<std::stri
 bool
 BinaryFormatter::writeXMLHeader(std::ostream& into,
                                 const std::string& rootElement,
-                                const std::string& /* attrs */,
-                                const std::string& /* comment */) {
+                                const std::map<SumoXMLAttr, std::string>& attrs) {
     if (myXMLStack.empty()) {
-        FileHelpers::writeByte(into, BF_BYTE);
-        FileHelpers::writeByte(into, 1);
-        FileHelpers::writeByte(into, BF_STRING);
-        FileHelpers::writeString(into, VERSION_STRING);
-        writeStringList(into, SUMOXMLDefinitions::Tags.getStrings());
-        writeStringList(into, SUMOXMLDefinitions::Attrs.getStrings());
-        writeStringList(into, SUMOXMLDefinitions::NodeTypes.getStrings());
-        writeStringList(into, SUMOXMLDefinitions::EdgeFunctions.getStrings());
+        writeStaticHeader(into);
         writeStringList(into, std::vector<std::string>());
         writeStringList(into, std::vector<std::string>());
-
         if (SUMOXMLDefinitions::Tags.hasString(rootElement)) {
             openTag(into, rootElement);
+            for (std::map<SumoXMLAttr, std::string>::const_iterator it = attrs.begin(); it != attrs.end(); ++it) {
+                writeAttr(into, it->first, it->second);
+            }
             return true;
         }
     }
@@ -116,7 +110,9 @@ void
 BinaryFormatter::openTag(std::ostream& into, const SumoXMLTag& xmlElement) {
     myXMLStack.push_back(xmlElement);
     FileHelpers::writeByte(into, BF_XML_TAG_START);
-    FileHelpers::writeByte(into, static_cast<unsigned char>(xmlElement));
+    const int tagNum = (int)xmlElement;
+    FileHelpers::writeByte(into, static_cast<unsigned char>(tagNum % 256));
+    FileHelpers::writeByte(into, static_cast<unsigned char>(tagNum / 256));
 }
 
 
@@ -124,7 +120,6 @@ bool
 BinaryFormatter::closeTag(std::ostream& into) {
     if (!myXMLStack.empty()) {
         FileHelpers::writeByte(into, BF_XML_TAG_END);
-        FileHelpers::writeByte(into, static_cast<unsigned char>(myXMLStack.back()));
         myXMLStack.pop_back();
         return true;
     }
@@ -203,8 +198,7 @@ void BinaryFormatter::writePosition(std::ostream& into, const Position& val) {
 
 template<>
 void BinaryFormatter::writeAttr(std::ostream& into, const SumoXMLAttr attr, const Position& val) {
-    FileHelpers::writeByte(into, BF_XML_ATTRIBUTE);
-    FileHelpers::writeByte(into, static_cast<unsigned char>(attr));
+    BinaryFormatter::writeAttrHeader(into, attr);
     writePosition(into, val);
 }
 

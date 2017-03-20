@@ -2,12 +2,12 @@
 /// @file    GUIMEVehicleControl.h
 /// @author  Jakob Erdmann
 /// @date    Okt 2012
-/// @version $Id: GUIMEVehicleControl.cpp 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: GUIMEVehicleControl.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The class responsible for building and deletion of meso vehicles (gui-version)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

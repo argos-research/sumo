@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBEdgeCont.cpp 21714 2016-10-17 11:21:44Z namdre $
+/// @version $Id: NBEdgeCont.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Storage for edges, including some functionality operating on multiple edges
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -188,7 +188,15 @@ NBEdgeCont::ignoreFilterMatch(NBEdge* edge) {
     // check whether the edge is a named edge to keep
     if (!myRemoveEdgesAfterJoining && myEdges2Keep.size() != 0) {
         if (find(myEdges2Keep.begin(), myEdges2Keep.end(), edge->getID()) == myEdges2Keep.end()) {
-            return true;
+            // explicit whitelisting may be combined additively with other filters
+            if (myVehicleClasses2Keep == 0 && myVehicleClasses2Remove == 0
+                    && myTypes2Keep.size() == 0 && myTypes2Remove.size() == 0
+                    && myPrunningBoundary.size() == 0) {
+                return true;
+            }
+        } else {
+            // explicit whitelisting overrides other filters
+            return false;
         }
     }
     // check whether the edge is a named edge to remove
@@ -506,6 +514,8 @@ NBEdgeCont::splitAt(NBDistrictCont& dc,
         }
     }
     // erase the splitted edge
+    patchRoundabouts(edge, one, two, myRoundabouts);
+    patchRoundabouts(edge, one, two, myGuessedRoundabouts);
     erase(dc, edge);
     insert(one, true);
     insert(two, true);
@@ -513,6 +523,20 @@ NBEdgeCont::splitAt(NBDistrictCont& dc,
     return true;
 }
 
+
+void
+NBEdgeCont::patchRoundabouts(NBEdge* orig, NBEdge* part1, NBEdge* part2, std::set<EdgeSet>& roundabouts) {
+    for (std::set<EdgeSet>::iterator it = roundabouts.begin(); it != roundabouts.end(); ++it) {
+        EdgeSet roundaboutSet = *it;
+        if (roundaboutSet.count(orig) > 0) {
+            roundabouts.erase(roundaboutSet);
+            roundaboutSet.erase(orig);
+            roundaboutSet.insert(part1);
+            roundaboutSet.insert(part2);
+            roundabouts.insert(roundaboutSet);
+        }
+    }
+}
 
 
 // ----- container access methods
@@ -609,20 +633,24 @@ NBEdgeCont::computeLanes2Edges() {
 void
 NBEdgeCont::recheckLanes() {
     for (EdgeCont::iterator i = myEdges.begin(); i != myEdges.end(); i++) {
-        i->second->recheckLanes();
+        NBEdge* edge = i->second;
+        edge->recheckLanes();
         // check opposites
-        if (i->second->getNumLanes() > 0) {
-            const std::string& oppositeID = i->second->getLanes().back().oppositeID;
+        if (edge->getNumLanes() > 0) {
+            const std::string& oppositeID = edge->getLanes().back().oppositeID;
             if (oppositeID != "" && oppositeID != "-") {
-                const NBEdge* oppEdge = retrieve(oppositeID.substr(0, oppositeID.rfind("_")));
-                if (oppEdge == 0) {
-                    throw ProcessError("Unknown opposite lane '" + oppositeID + "' for edge '" + i->second->getID() + "'!");
+                NBEdge* oppEdge = retrieve(oppositeID.substr(0, oppositeID.rfind("_")));
+                if (oppEdge == 0 || oppEdge->getLaneID(oppEdge->getNumLanes() - 1) != oppositeID) {
+                    WRITE_WARNING("Removing unknown opposite lane '" + oppositeID + "' for edge '" + edge->getID() + "'.");
+                    edge->getLaneStruct(edge->getNumLanes() - 1).oppositeID = "";
+                    continue;
                 }
-                if (fabs(oppEdge->getLoadedLength() - i->second->getLoadedLength()) > POSITION_EPS) {
-                    throw ProcessError("Opposite lane '" + oppositeID + "' differs in length from edge '" + i->second->getID() + "'!");
+                if (fabs(oppEdge->getLoadedLength() - edge->getLoadedLength()) > POSITION_EPS) {
+                    throw ProcessError("Opposite lane '" + oppositeID + "' (length " + toString(oppEdge->getLoadedLength()) + ") differs in length from edge '" + edge->getID() + "' (length "
+                                       + toString(edge->getLoadedLength()) + ")!");
                 }
-                if (oppEdge->getFromNode() != i->second->getToNode() || oppEdge->getToNode() != i->second->getFromNode()) {
-                    throw ProcessError("Opposite lane '" + oppositeID + "' does not connect the same nodes as edge '" + i->second->getID() + "'!");
+                if (oppEdge->getFromNode() != edge->getToNode() || oppEdge->getToNode() != edge->getFromNode()) {
+                    throw ProcessError("Opposite lane '" + oppositeID + "' does not connect the same nodes as edge '" + edge->getID() + "'!");
                 }
             }
         }
@@ -782,21 +810,23 @@ NBEdgeCont::guessOpposites() {
 void
 NBEdgeCont::recheckLaneSpread() {
     for (EdgeCont::iterator i = myEdges.begin(); i != myEdges.end(); ++i) {
-        std::string oppositeID;
-        if ((*i).first[0] == '-') {
-            oppositeID = (*i).first.substr(1);
+        NBEdge* opposite = getOppositeByID(i->first);
+        if (opposite != 0) {
+            i->second->setLaneSpreadFunction(LANESPREAD_RIGHT);
+            opposite->setLaneSpreadFunction(LANESPREAD_RIGHT);
         } else {
-            oppositeID = "-" + (*i).first;
-        }
-        if (myEdges.find(oppositeID) != myEdges.end()) {
-            (*i).second->setLaneSpreadFunction(LANESPREAD_RIGHT);
-            myEdges.find(oppositeID)->second->setLaneSpreadFunction(LANESPREAD_RIGHT);
-        } else {
-            (*i).second->setLaneSpreadFunction(LANESPREAD_CENTER);
+            i->second->setLaneSpreadFunction(LANESPREAD_CENTER);
         }
     }
 }
 
+
+NBEdge*
+NBEdgeCont::getOppositeByID(const std::string& edgeID) const {
+    const std::string oppositeID = edgeID[0] == '-' ? edgeID.substr(1) :  "-" + edgeID;
+    EdgeCont::const_iterator it = myEdges.find(oppositeID);
+    return it != myEdges.end() ? it->second : (NBEdge*)0;
+}
 
 
 // ----- other
@@ -1097,23 +1127,87 @@ NBEdgeCont::guessSidewalks(SUMOReal width, SUMOReal minSpeed, SUMOReal maxSpeed,
 
 
 int
-NBEdgeCont::mapToNumericalIDs() {
-    IDSupplier idSupplier("", getAllNames());
-    EdgeVector toChange;
+NBEdgeCont::remapIDs(bool numericaIDs, bool reservedIDs) {
+    std::vector<std::string> avoid = getAllNames();
+    std::set<std::string> reserve;
+    if (reservedIDs) {
+        NBHelpers::loadPrefixedIDsFomFile(OptionsCont::getOptions().getString("reserved-ids"), "edge:", reserve);
+        avoid.insert(avoid.end(), reserve.begin(), reserve.end());
+    }
+    IDSupplier idSupplier("", avoid);
+    std::set<NBEdge*, Named::ComparatorIdLess> toChange;
     for (EdgeCont::iterator it = myEdges.begin(); it != myEdges.end(); it++) {
-        try {
-            TplConvert::_str2int(it->first);
-        } catch (NumberFormatException&) {
-            toChange.push_back(it->second);
+        if (numericaIDs) {
+            try {
+                TplConvert::_str2long(it->first);
+            } catch (NumberFormatException&) {
+                toChange.insert(it->second);
+            }
+        }
+        if (reservedIDs && reserve.count(it->first) > 0) {
+            toChange.insert(it->second);
         }
     }
-    for (EdgeVector::iterator it = toChange.begin(); it != toChange.end(); ++it) {
+    for (std::set<NBEdge*, Named::ComparatorIdLess>::iterator it = toChange.begin(); it != toChange.end(); ++it) {
         NBEdge* edge = *it;
         myEdges.erase(edge->getID());
         edge->setID(idSupplier.getNext());
         myEdges[edge->getID()] = edge;
     }
     return (int)toChange.size();
+}
+
+
+void
+NBEdgeCont::checkOverlap(SUMOReal threshold, SUMOReal zThreshold) const {
+    for (EdgeCont::const_iterator it = myEdges.begin(); it != myEdges.end(); it++) {
+        const NBEdge* e1 = it->second;
+        Boundary b1 = e1->getGeometry().getBoxBoundary();
+        b1.grow(e1->getTotalWidth());
+        PositionVector outline1 = e1->getCCWBoundaryLine(*e1->getFromNode());
+        outline1.append(e1->getCCWBoundaryLine(*e1->getToNode()));
+        // check is symmetric. only check once per pair
+        for (EdgeCont::const_iterator it2 = it; it2 != myEdges.end(); it2++) {
+            const NBEdge* e2 = it2->second;
+            if (e1 == e2) {
+                continue;
+            }
+            Boundary b2 = e2->getGeometry().getBoxBoundary();
+            b2.grow(e2->getTotalWidth());
+            if (b1.overlapsWith(b2)) {
+                PositionVector outline2 = e2->getCCWBoundaryLine(*e2->getFromNode());
+                outline2.append(e2->getCCWBoundaryLine(*e2->getToNode()));
+                const SUMOReal overlap = outline1.getOverlapWith(outline2, zThreshold);
+                if (overlap > threshold) {
+                    WRITE_WARNING("Edge '" + e1->getID() + "' overlaps with edge '" + e2->getID() + "' by " + toString(overlap) + ".");
+                }
+            }
+        }
+    }
+}
+
+
+void
+NBEdgeCont::checkGrade(SUMOReal threshold) const {
+    for (EdgeCont::const_iterator it = myEdges.begin(); it != myEdges.end(); it++) {
+        const NBEdge* edge = it->second;
+        for (int i = 0; i < (int)edge->getNumLanes(); i++) {
+            const SUMOReal grade = edge->getLaneShape(i).getMaxGrade();
+            if (grade > threshold) {
+                WRITE_WARNING("Edge '" + edge->getID() + "' has a grade of " + toString(grade * 100) + "%.");
+                break;
+            }
+        }
+        const std::vector<NBEdge::Connection>& connections = edge->getConnections();
+        for (std::vector<NBEdge::Connection>::const_iterator it_con = connections.begin(); it_con != connections.end(); ++it_con) {
+            const NBEdge::Connection& c = *it_con;
+            const SUMOReal grade = MAX2(c.shape.getMaxGrade(), c.viaShape.getMaxGrade());
+            if (grade > threshold) {
+                WRITE_WARNING("Connection '" + c.getDescription(edge) + "' has a grade of " + toString(grade * 100) + "%.");
+                break;
+            }
+        }
+    }
 }
 
 /****************************************************************************/

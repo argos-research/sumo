@@ -2,7 +2,7 @@
 /// @file    GNEViewParent.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEViewParent.h 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNEViewParent.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A single child window which contains a view of the edited network (adapted
 // from GUISUMOViewParent)
@@ -10,7 +10,7 @@
 // structures than to write everything from scratch.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -47,11 +47,14 @@
 class GUISUMOAbstractView;
 class GNENet;
 class GNEApplicationWindow;
+class GNEFrame;
 class GNEInspectorFrame;
 class GNESelectorFrame;
 class GNEConnectorFrame;
 class GNETLSEditorFrame;
 class GNEAdditionalFrame;
+class GNECrossingFrame;
+class GNEDeleteFrame;
 
 // ===========================================================================
 // class declarations
@@ -95,6 +98,9 @@ public:
     /// @brief Destructor
     ~GNEViewParent();
 
+    /// @brief hide all frames
+    void hideAllFrames();
+
     /// @brief get frame for GNE_MODE_INSPECT
     GNEInspectorFrame* getInspectorFrame() const;
 
@@ -110,6 +116,12 @@ public:
     /// @brief get frame for GNE_MODE_ADDITIONAL
     GNEAdditionalFrame* getAdditionalFrame() const;
 
+    /// @brief get frame for GNE_MODE_CROSSING
+    GNECrossingFrame* getCrossingFrame() const;
+
+    /// @brief get frame for GNE_MODE_DELETE
+    GNEDeleteFrame* getDeleteFrame() const;
+
     /// @brief show frames area if at least a GNEFrame is showed
     /// @note this function is called in GNEFrame::Show();
     void showFramesArea();
@@ -118,8 +130,8 @@ public:
     /// @note this function is called in GNEFrame::Show();
     void hideFramesArea();
 
-    /// @brief get width of the Frames Area
-    int getFramesAreaWidth();
+    /// @brief get App (GUIMainWindow)
+    GUIMainWindow* getApp() const;
 
     /// @name FOX-callbacks
     /// @{
@@ -137,6 +149,9 @@ public:
 
     /// @brief Called when user releases a key
     long onKeyRelease(FXObject* o, FXSelector sel, void* data);
+
+    /// @brief Called when user change the splitter between FrameArea and ViewNet
+    long onCmdUpdateFrameAreaWidth(FXObject*, FXSelector, void*);
     /// @}
 
     /// @brief true if the object is selected (may include extra logic besides calling gSelected)
@@ -156,20 +171,8 @@ private:
     /// @brief Splitter to divide ViewNet und GNEFrames
     FXSplitter* myFramesSplitter;
 
-    /// @brief the panel for GNE_MODE_INSPECT
-    GNEInspectorFrame* myInspectorFrame;
-
-    /// @brief the panel for GNE_MODE_SELECT
-    GNESelectorFrame* mySelectorFrame;
-
-    /// @brief the panel for GNE_MODE_CONNECT
-    GNEConnectorFrame* myConnectorFrame;
-
-    /// @brief the panel for GNE_MODE_TLS
-    GNETLSEditorFrame* myTLSEditorFrame;
-
-    /// @brief the panel for GNE_MODE_ADDITIONAL
-    GNEAdditionalFrame* myAdditionalFrame;
+    /// @brief map with the Frames
+    std::map<int, GNEFrame*> myGNEFrames;
 };
 
 

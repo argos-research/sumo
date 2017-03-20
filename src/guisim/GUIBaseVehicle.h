@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIBaseVehicle.h 21505 2016-09-19 14:37:59Z namdre $
+/// @version $Id: GUIBaseVehicle.h 22613 2017-01-17 10:34:41Z namdre $
 ///
 // A MSVehicle extended by some values for usage within the gui
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -341,6 +341,12 @@ protected:
 
     static void drawLinkItem(const Position& pos, SUMOTime arrivalTime, SUMOTime leaveTime, SUMOReal exagerate);
 
+    /// @brief A shortcut to myVehicle.myType
+    inline const MSVehicleType& getVType() const {
+        return myVehicle.getVehicleType();
+    }
+
+
 protected:
     /// The mutex used to avoid concurrent updates of the vehicle buffer
     mutable MFXMutex myLock;
@@ -354,9 +360,6 @@ protected:
 private:
     /// @brief The vehicle to which all calls should be delegated
     MSBaseVehicle& myVehicle;
-
-    /// @brief A shortcut to myVehicle.myType
-    const MSVehicleType& myVType;
 
     MSDevice_Vehroutes* myRoutes;
 

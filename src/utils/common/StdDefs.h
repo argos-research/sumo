@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 29.04.2005
-/// @version $Id: StdDefs.h 20550 2016-04-26 10:57:45Z namdre $
+/// @version $Id: StdDefs.h 22797 2017-01-31 14:53:07Z namdre $
 ///
 //
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2005-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2005-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -32,8 +32,7 @@
 #else
 #include <config.h>
 #endif
-
-#include <utils/xml/SUMOXMLDefinitions.h>
+#include <string>
 
 /* avoiding compiler warning unreferenced parameter */
 #define UNUSED_PARAMETER(x)  ((void)(x))
@@ -55,10 +54,6 @@ const SUMOReal SUMO_const_halfLaneAndOffset = (SUMOReal)(3.2 / 2. + .1);
 
 /// @brief the speed threshold at which vehicles are considered as halting
 const SUMOReal SUMO_const_haltingSpeed = (SUMOReal) 0.1;
-
-/* @brief map from LinkState to color constants (see above)
- */
-const RGBColor& getLinkColor(const LinkState& ls);
 
 
 /* -------------------------------------------------------------------------
@@ -111,6 +106,12 @@ ISNAN(T a) {
     volatile T d = a;
     return d != d;
 }
+
+
+/// the precision for floating point outputs
+extern int gPrecision;
+extern int gPrecisionGeo; // for lon,lat
+
 
 /// @brief global utility flags for debugging
 extern bool gDebugFlag1;

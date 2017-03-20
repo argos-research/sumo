@@ -2,12 +2,12 @@
 /// @file    GNECrossing.cpp
 /// @author  Jakob Erdmann
 /// @date    June 2011
-/// @version $Id: GNECrossing.cpp 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNECrossing.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A class for visualizing Inner Lanes (used when editing traffic lights)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -47,6 +47,9 @@
 #include "GNECrossing.h"
 #include "GNEJunction.h"
 #include "GNEUndoList.h"
+#include "GNENet.h"
+#include "GNEEdge.h"
+#include "GNEViewNet.h"
 #include "GNEChange_Attribute.h"
 
 #ifdef CHECK_MEMORY_LEAKS
@@ -56,11 +59,10 @@
 // ===========================================================================
 // method definitions
 // ===========================================================================
-GNECrossing::GNECrossing(GNEJunction& parentJunction, const std::string& id) :
-    GNENetElement(parentJunction.getNet(), id, GLO_CROSSING, SUMO_TAG_CROSSING),
+GNECrossing::GNECrossing(GNEJunction* parentJunction, const std::string& id) :
+    GNENetElement(parentJunction->getNet(), id, GLO_CROSSING, SUMO_TAG_CROSSING, ICON_CROSSING),
     myParentJunction(parentJunction),
-    myCrossing(parentJunction.getNBNode()->getCrossing(id)),
-    myShape(myCrossing.shape) {
+    myCrossing(parentJunction->getNBNode()->getCrossingRef(id)) {
     // Update geometry
     updateGeometry();
 }
@@ -71,48 +73,72 @@ GNECrossing::~GNECrossing() {}
 
 void
 GNECrossing::updateGeometry() {
-    int segments = (int) myShape.size() - 1;
-    if (segments >= 0) {
-        myShapeRotations.reserve(segments);
-        myShapeLengths.reserve(segments);
-        for (int i = 0; i < segments; ++i) {
-            const Position& f = myShape[i];
-            const Position& s = myShape[i + 1];
-            myShapeLengths.push_back(f.distanceTo2D(s));
-            myShapeRotations.push_back((SUMOReal) atan2((s.x() - f.x()), (f.y() - s.y())) * (SUMOReal) 180.0 / (SUMOReal) PI);
+    // Clear Shape rotations and segments
+    myShapeRotations.clear();
+    myShapeLengths.clear();
+    // only rebuild shape if junction's shape isn't in Buuble mode
+    if (myParentJunction->getNBNode()->getShape().size() > 0) {
+        // Obtain segments of size and calculate it
+        int segments = (int) myCrossing.shape.size() - 1;
+        if (segments >= 0) {
+            myShapeRotations.reserve(segments);
+            myShapeLengths.reserve(segments);
+            for (int i = 0; i < segments; ++i) {
+                const Position& f = myCrossing.shape[i];
+                const Position& s = myCrossing.shape[i + 1];
+                myShapeLengths.push_back(f.distanceTo2D(s));
+                myShapeRotations.push_back((SUMOReal) atan2((s.x() - f.x()), (f.y() - s.y())) * (SUMOReal) 180.0 / (SUMOReal) PI);
+            }
         }
     }
 }
 
 
+GNEJunction*
+GNECrossing::getParentJunction() const {
+    return myParentJunction;
+}
+
+
+NBNode::Crossing&
+GNECrossing::getNBCrossing() const {
+    return myCrossing;
+}
+
+
 void
 GNECrossing::drawGL(const GUIVisualizationSettings& s) const {
-    if (!s.drawCrossingsAndWalkingareas) {
-        return;
-    }
-    glPushMatrix();
-    glPushName(getGlID());
-    glTranslated(0, 0, GLO_JUNCTION + 0.1); // must draw on top of junction
-
-    if (myCrossing.priority) {
-        glColor3d(0.9, 0.9, 0.9);
-    } else {
-        glColor3d(0.1, 0.1, 0.1);
-    }
-    glTranslated(0, 0, .2);
-    // @todo: duplicate eliminate duplicate code with GNELane::drawCrossties(0.5, 1.0, myCrossing.width * 0.5);
-    {
+    // only draw if option drawCrossingsAndWalkingareas is enabled and size of shape is greather than 0
+    if (s.drawCrossingsAndWalkingareas == true && myShapeRotations.size() > 0 && myShapeLengths.size() > 0) {
+        // push first draw matrix
+        glPushMatrix();
+        // push name
+        glPushName(getGlID());
+        // must draw on top of junction
+        glTranslated(0, 0, GLO_JUNCTION + 0.1);
+        // set color depending of priority
+        if (myCrossing.priority) {
+            glColor3d(0.9, 0.9, 0.9);
+        } else {
+            glColor3d(0.1, 0.1, 0.1);
+        }
+        // traslate to front
+        glTranslated(0, 0, .2);
+        // set default values
         SUMOReal length = 0.5;
         SUMOReal spacing = 1.0;
         SUMOReal halfWidth = myCrossing.width * 0.5;
+        // push second draw matrix
         glPushMatrix();
         // draw on top of of the white area between the rails
         glTranslated(0, 0, 0.1);
-        int e = (int) myShape.size() - 1;
-        for (int i = 0; i < e; ++i) {
+        for (int i = 0; i < (int)myCrossing.shape.size() - 1; ++i) {
+            // push three draw matrix
             glPushMatrix();
-            glTranslated(myShape[i].x(), myShape[i].y(), 0.0);
+            // traslete and rotate
+            glTranslated(myCrossing.shape[i].x(), myCrossing.shape[i].y(), 0.0);
             glRotated(myShapeRotations[i], 0, 0, 1);
+            // draw crossing
             for (SUMOReal t = 0; t < myShapeLengths[i]; t += spacing) {
                 glBegin(GL_QUADS);
                 glVertex2d(-halfWidth, -t);
@@ -121,14 +147,18 @@ GNECrossing::drawGL(const GUIVisualizationSettings& s) const {
                 glVertex2d(halfWidth, -t);
                 glEnd();
             }
+            // pop three draw matrix
             glPopMatrix();
         }
+        // pop second draw matrix
+        glPopMatrix();
+        // traslate to back
+        glTranslated(0, 0, -.2);
+        // pop name
+        glPopName();
+        // pop draw matrix
         glPopMatrix();
     }
-
-    glTranslated(0, 0, -.2);
-    glPopName();
-    glPopMatrix();
 }
 
 
@@ -141,8 +171,7 @@ GNECrossing::getPopUpMenu(GUIMainWindow& app, GUISUMOAbstractView& parent) {
 
 
 GUIParameterTableWindow*
-GNECrossing::getParameterWindow(GUIMainWindow& app,
-                                GUISUMOAbstractView&) {
+GNECrossing::getParameterWindow(GUIMainWindow& app, GUISUMOAbstractView&) {
     GUIParameterTableWindow* ret =
         new GUIParameterTableWindow(app, *this, 2);
     // add items
@@ -154,7 +183,7 @@ GNECrossing::getParameterWindow(GUIMainWindow& app,
 
 Boundary
 GNECrossing::getCenteringBoundary() const {
-    Boundary b = myShape.getBoxBoundary();
+    Boundary b = myCrossing.shape.getBoxBoundary();
     b.grow(10);
     return b;
 }
@@ -176,7 +205,7 @@ GNECrossing::getAttribute(SumoXMLAttr key) const {
             return toString(myCrossing.edges);
             break;
         default:
-            throw InvalidArgument("junction attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -188,14 +217,14 @@ GNECrossing::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoList
     }
     switch (key) {
         case SUMO_ATTR_ID:
+            throw InvalidArgument("Modifying attribute '" + toString(key) + "' of " + toString(getTag()) + " isn't allowed");
         case SUMO_ATTR_EDGES:
-            throw InvalidArgument("modifying crossing attribute '" + toString(key) + "' not allowed");
         case SUMO_ATTR_WIDTH:
         case SUMO_ATTR_PRIORITY:
             undoList->add(new GNEChange_Attribute(this, key, value), true);
             break;
         default:
-            throw InvalidArgument("crossing attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -204,14 +233,24 @@ bool
 GNECrossing::isValid(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
-        case SUMO_ATTR_EDGES:
             return false;
+        case SUMO_ATTR_EDGES: {
+            std::vector<std::string> NBEdgeIDs;
+            SUMOSAXAttributes::parseStringVector(value, NBEdgeIDs);
+            // Obtain NBEdges of GNENet and check if exists
+            for (std::vector<std::string>::iterator i = NBEdgeIDs.begin(); i != NBEdgeIDs.end(); i++) {
+                if (myNet->retrieveEdge((*i), false) == NULL) {
+                    return false;
+                }
+            }
+            return true;
+        }
         case SUMO_ATTR_WIDTH:
             return isPositive<SUMOReal>(value);
         case SUMO_ATTR_PRIORITY:
-            return value == "true" || value == "false";
+            return ((value == "true") || (value == "false"));
         default:
-            throw InvalidArgument("crossing attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -223,18 +262,29 @@ void
 GNECrossing::setAttribute(SumoXMLAttr key, const std::string& value) {
     switch (key) {
         case SUMO_ATTR_ID:
-        case SUMO_ATTR_EDGES:
-            throw InvalidArgument("modifying crossing attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument("Modifying attribute '" + toString(key) + "' of " + toString(getTag()) + " isn't allowed");
+        case SUMO_ATTR_EDGES: {
+            // remove edges of crossing
+            myCrossing.edges.clear();
+            std::vector<std::string> NBEdgeIDs;
+            SUMOSAXAttributes::parseStringVector(value, NBEdgeIDs);
+            // Obtain NBEdges of GNENet and insert it in the crossing
+            for (std::vector<std::string>::iterator i = NBEdgeIDs.begin(); i != NBEdgeIDs.end(); i++) {
+                myCrossing.edges.push_back(myNet->retrieveEdge(*i)->getNBEdge());
+            }
+            break;
+        }
         case SUMO_ATTR_WIDTH:
+            // Change width an refresh element
             myCrossing.width = parse<SUMOReal>(value);
-            myParentJunction.updateCrossingAttributes(myCrossing);
+            myNet->refreshElement(this);
             break;
         case SUMO_ATTR_PRIORITY:
-            myCrossing.priority = value == "true";
-            myParentJunction.updateCrossingAttributes(myCrossing);
+            myCrossing.priority = parse<bool>(value);
             break;
         default:
-            throw InvalidArgument("crossing attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
+
 /****************************************************************************/

@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    06 Jul 2006
-/// @version $Id: Command_SaveTLSSwitches.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: Command_SaveTLSSwitches.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Writes information about the green durations of a tls
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -50,7 +50,7 @@ Command_SaveTLSSwitches::Command_SaveTLSSwitches(const MSTLLogicControl::TLSLogi
         OutputDevice& od)
     : myOutputDevice(od), myLogics(logics) {
     MSNet::getInstance()->getEndOfTimestepEvents()->addEvent(this, 0, MSEventControl::ADAPT_AFTER_EXECUTION);
-    myOutputDevice.writeXMLHeader("tls-switches");
+    myOutputDevice.writeXMLHeader("tls-switches", "tlsswitches_file.xsd");
 }
 
 

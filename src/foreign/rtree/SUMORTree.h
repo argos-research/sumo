@@ -2,12 +2,12 @@
 /// @file    SUMORTree.h
 /// @author  Daniel Krajzewicz
 /// @date    27.10.2008
-/// @version $Id: SUMORTree.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: SUMORTree.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A RT-tree for efficient storing of SUMO's GL-objects
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

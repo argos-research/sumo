@@ -35,10 +35,12 @@ GNEViewNet.h GNEViewNet.cpp \
 GNEViewParent.h GNEViewParent.cpp \
 GNEDialog_About.h GNEDialog_About.cpp \
 GNEDialog_Wizard.h GNEDialog_Wizard.cpp \
+GNEDialog_AllowDisallow.h GNEDialog_AllowDisallow.cpp \
 GNEAdditionalDialog.h GNEAdditionalDialog.cpp \
 GNEChange.h GNEChange.cpp \
 GNEChange_Junction.h GNEChange_Junction.cpp \
 GNEChange_Edge.h GNEChange_Edge.cpp \
+GNEChange_Crossing.h GNEChange_Crossing.cpp \
 GNEChange_Lane.h GNEChange_Lane.cpp \
 GNEChange_Connection.h GNEChange_Connection.cpp \
 GNEChange_Attribute.h GNEChange_Attribute.cpp \
@@ -53,9 +55,10 @@ GNESelectorFrame.h GNESelectorFrame.cpp \
 GNEConnectorFrame.h GNEConnectorFrame.cpp \
 GNETLSEditorFrame.h GNETLSEditorFrame.cpp \
 GNEAdditionalFrame.h GNEAdditionalFrame.cpp \
+GNECrossingFrame.h GNECrossingFrame.cpp \
+GNEDeleteFrame.h GNEDeleteFrame.cpp \
 GNEAdditionalHandler.h GNEAdditionalHandler.cpp \
 GNEAdditional.h GNEAdditional.cpp \
-GNEAdditionalSet.h GNEAdditionalSet.cpp \
 GNEChargingStation.h GNEChargingStation.cpp \
 GNEStoppingPlace.h GNEStoppingPlace.cpp \
 GNEBusStop.h GNEBusStop.cpp \
@@ -68,15 +71,23 @@ GNEDetectorEntry.h GNEDetectorEntry.cpp \
 GNEDetectorExit.h GNEDetectorExit.cpp \
 GNERerouter.h GNERerouter.cpp \
 GNERerouterDialog.h GNERerouterDialog.cpp \
+GNERerouterIntervalDialog.h GNERerouterIntervalDialog.cpp \
 GNERouteProbe.h GNERouteProbe.cpp \
 GNEVaporizer.h GNEVaporizer.cpp \
 GNECalibrator.h GNECalibrator.cpp \
+GNECalibratorFlow.h GNECalibratorFlow.cpp \
+GNECalibratorRoute.h GNECalibratorRoute.cpp \
 GNECalibratorDialog.h GNECalibratorDialog.cpp \
-GNEVariableSpeedSignal.h GNEVariableSpeedSignal.cpp \
-GNEVariableSpeedSignalDialog.h GNEVariableSpeedSignalDialog.cpp \
-GNEReferenceCounter.h \
-GNEEvent_NetworkLoaded.h
-
+GNECalibratorFlowDialog.h GNECalibratorFlowDialog.cpp \
+GNECalibratorRouteDialog.h GNECalibratorRouteDialog.cpp \
+GNEVariableSpeedSign.h GNEVariableSpeedSign.cpp \
+GNEVariableSpeedSignDialog.h GNEVariableSpeedSignDialog.cpp \
+GNEClosingLaneReroute.h GNEClosingLaneReroute.cpp \
+GNEClosingReroute.h GNEClosingReroute.cpp \
+GNEDestProbReroute.h GNEDestProbReroute.cpp \
+GNERouteProbReroute.h GNERouteProbReroute.cpp \
+GNERerouterInterval.h GNERerouterInterval.cpp \
+GNEReferenceCounter.h GNEEvent_NetworkLoaded.h
 
 netedit_LDADD = ../netimport/libnetimport.a \
 ../netimport/vissim/libvissimimport.a \

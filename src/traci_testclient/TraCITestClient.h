@@ -5,12 +5,12 @@
 /// @author  Axel Wegener
 /// @author  Michael Behrisch
 /// @date    2008/04/07
-/// @version $Id: TraCITestClient.h 21204 2016-07-20 07:42:26Z behrisch $
+/// @version $Id: TraCITestClient.h 22797 2017-01-31 14:53:07Z namdre $
 ///
 /// A test execution class
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -37,7 +37,6 @@
 #include <vector>
 
 #include <foreign/tcpip/socket.h>
-#include <utils/common/SUMOTime.h>
 #include <utils/traci/TraCIAPI.h>
 
 

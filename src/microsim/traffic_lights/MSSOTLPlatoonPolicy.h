@@ -3,12 +3,12 @@
 /// @author  Gianfilippo Slager
 /// @author  Federico Caselli
 /// @date    Feb 2010
-/// @version $Id: MSSOTLPlatoonPolicy.h 20113 2016-03-01 13:22:42Z martintaraz $
+/// @version $Id: MSSOTLPlatoonPolicy.h 22627 2017-01-18 12:56:36Z behrisch $
 ///
 // The class for SOTL Platoon logics
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright 2001-2009 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2010-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

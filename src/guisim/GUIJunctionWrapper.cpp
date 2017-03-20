@@ -6,12 +6,12 @@
 /// @author  Laura Bieker
 /// @author  Andreas Gaubatz
 /// @date    Mon, 1 Jul 2003
-/// @version $Id: GUIJunctionWrapper.cpp 21574 2016-09-29 07:45:02Z namdre $
+/// @version $Id: GUIJunctionWrapper.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // }
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

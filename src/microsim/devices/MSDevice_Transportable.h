@@ -6,12 +6,12 @@
 /// @author  Melanie Weber
 /// @author  Andreas Kendziorra
 /// @date    Fri, 30.01.2009
-/// @version $Id: MSDevice_Transportable.h 21184 2016-07-18 07:12:20Z behrisch $
+/// @version $Id: MSDevice_Transportable.h 22702 2017-01-26 07:03:12Z namdre $
 ///
 // A device which is used to keep track of persons and containers riding with a vehicle
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -112,6 +112,13 @@ public:
      * @param[in] transportable The passenger / container to add.
      */
     void addTransportable(MSTransportable* transportable);
+
+
+    /** @brief Remove a passenger (TraCI)
+     *
+     * @param[in] transportable The passenger / container to remove.
+     */
+    void removeTransportable(MSTransportable* transportable);
 
 
     /** @brief Return the number of passengers / containers

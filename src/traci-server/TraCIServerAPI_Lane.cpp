@@ -6,12 +6,12 @@
 /// @author  Laura Bieker
 /// @author  Mario Krumnow
 /// @date    07.05.2009
-/// @version $Id: TraCIServerAPI_Lane.cpp 21514 2016-09-22 13:00:49Z namdre $
+/// @version $Id: TraCIServerAPI_Lane.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // APIs for getting/setting lane values via TraCI
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2009-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

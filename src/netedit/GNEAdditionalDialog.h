@@ -2,12 +2,12 @@
 /// @file    GNEAdditionalDialog.h
 /// @author  Pablo Alvarez Lopez
 /// @date    April 2016
-/// @version $Id: GNEAdditionalDialog.h 21320 2016-08-23 11:11:18Z behrisch $
+/// @version $Id: GNEAdditionalDialog.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 /// A abstract class for editing additional elements
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -31,6 +31,7 @@
 #endif
 
 #include <fx.h>
+#include <vector>
 
 
 // ===========================================================================
@@ -52,11 +53,14 @@ class GNEAdditionalDialog : public FXDialogBox {
     FXDECLARE_ABSTRACT(GNEAdditionalDialog)
 
 public:
-    // Constructor
+    /// @brief constructor
     GNEAdditionalDialog(GNEAdditional* parent, int width, int height);
 
-    // destructor
+    /// @brief destructor
     ~GNEAdditionalDialog();
+
+    /// @brief change additional dialog header
+    void changeAdditionalDialogHeader(const std::string& newHeader);
 
     /// @name FOX-callbacks
     /// @{
@@ -87,13 +91,6 @@ protected:
     FXButton* myResetButton;
 
 private:
-    /// @brief update data table
-    /// @note must be implemented in all childs
-    virtual void updateTable() = 0;
-
-    /// @brief frame for buttons (Not accesible for childs)
-    FXHorizontalFrame* myButtonFrame;
-
     /// @brief Invalidated copy constructor
     GNEAdditionalDialog(const GNEAdditionalDialog&);
 

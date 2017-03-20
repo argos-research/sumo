@@ -4,12 +4,12 @@
 /// @author  Tamas Kurczveil
 /// @author  Pablo Alvarez Lopez
 /// @date    20-12-13
-/// @version $Id: MSBatteryExport.cpp 20576 2016-04-28 08:31:00Z palcraft $
+/// @version $Id: MSBatteryExport.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Realises dumping Battery Data
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

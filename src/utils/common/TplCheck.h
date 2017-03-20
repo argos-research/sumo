@@ -2,12 +2,12 @@
 /// @file    TplCheck.h
 /// @author  Pablo Alvarez Lopez
 /// @date    May 2016
-/// @version $Id: TplCheck.h 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: TplCheck.h 22796 2017-01-31 14:28:20Z namdre $
 ///
 // Some methods for check type of dates
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -112,7 +112,6 @@ public:
                     return false;
                 }
             } else if (data.at(i) < '0' || data.at(i) > '9') {
-                std::cout << i << " " << data.at(i) << std::endl;
                 return false;
             }
         }

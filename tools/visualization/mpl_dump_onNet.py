@@ -5,7 +5,7 @@
 @author  Michael Behrisch
 @author  Jakob Erdmann
 @date    2007-10-25
-@version $Id: mpl_dump_onNet.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: mpl_dump_onNet.py 22608 2017-01-17 06:28:54Z behrisch $
 
 
 This script reads a network and a dump file and
@@ -15,7 +15,7 @@ This script reads a network and a dump file and
 matplotlib has to be installed for this purpose
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2007-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

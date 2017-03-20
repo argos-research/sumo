@@ -7,7 +7,7 @@
 /// @author  Michael Behrisch
 /// @author  Felix Brack
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: NLHandler.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: NLHandler.cpp 22335 2016-12-20 09:16:49Z namdre $
 ///
 // The XML-Handler for network loading
 /****************************************************************************/
@@ -170,6 +170,12 @@ NLHandler::myStartElement(int element,
             case SUMO_TAG_CONTAINER_STOP:
                 myTriggerBuilder.parseAndBuildStoppingPlace(myNet, attrs, (SumoXMLTag)element);
                 break;
+            case SUMO_TAG_PARKING_SPACE:
+                myTriggerBuilder.parseAndAddLotEntry(attrs);
+                break;
+            case SUMO_TAG_PARKING_AREA:
+                myTriggerBuilder.parseAndBeginParkingArea(myNet, attrs);
+                break;
             case SUMO_TAG_ACCESS:
                 myTriggerBuilder.addAccess(myNet, attrs);
                 break;
@@ -266,6 +272,9 @@ NLHandler::myEndElement(int element) {
         case SUMO_TAG_E3DETECTOR:
         case SUMO_TAG_ENTRY_EXIT_DETECTOR:
             endE3Detector();
+            break;
+        case SUMO_TAG_PARKING_AREA:
+            myTriggerBuilder.endParkingArea();
             break;
         case SUMO_TAG_NET:
             // build junction graph

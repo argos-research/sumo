@@ -6,12 +6,12 @@
 /// @author  Walter Bamberger
 /// @author  Laura Bieker
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NIXMLEdgesHandler.cpp 21268 2016-07-29 13:32:04Z namdre $
+/// @version $Id: NIXMLEdgesHandler.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Importer for network edges stored in XML
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -381,6 +381,8 @@ void NIXMLEdgesHandler::addSplit(const SUMOSAXAttributes& attrs) {
         if (attrs.hasAttribute(SUMO_ATTR_SPEED) && myOptions.getBool("speed-in-kmh")) {
             e.speed /= (SUMOReal) 3.6;
         }
+        e.idBefore = attrs.getOpt(SUMO_ATTR_ID_BEFORE, 0, ok, std::string(""));
+        e.idAfter = attrs.getOpt(SUMO_ATTR_ID_AFTER, 0, ok, std::string(""));
         if (!ok) {
             return;
         }
@@ -534,7 +536,7 @@ NIXMLEdgesHandler::myEndElement(int element) {
                 e->invalidateConnections(true);
             }
 
-            std::string edgeid = e->getID();
+            std::string firstID = "";
             SUMOReal seen = 0;
             for (i = mySplits.begin(); i != mySplits.end(); ++i) {
                 const Split& exp = *i;
@@ -543,13 +545,17 @@ NIXMLEdgesHandler::myEndElement(int element) {
                     if (myNodeCont.insert(exp.node)) {
                         myNodeCont.markAsSplit(exp.node);
                         //  split the edge
-                        std::string pid = e->getID();
+                        std::string idBefore = exp.idBefore == "" ? e->getID() : exp.idBefore;
+                        std::string idAfter = exp.idAfter == "" ? exp.node->getID() : exp.idAfter;
+                        if (firstID == "") {
+                            firstID = idBefore;
+                        }
                         myEdgeCont.splitAt(myDistrictCont, e, exp.pos - seen, exp.node,
-                                           pid, exp.node->getID(), e->getNumLanes(), (int) exp.lanes.size(), exp.speed);
+                                           idBefore, idAfter, e->getNumLanes(), (int) exp.lanes.size(), exp.speed);
                         seen = exp.pos;
                         std::vector<int> newLanes = exp.lanes;
-                        NBEdge* pe = myEdgeCont.retrieve(pid);
-                        NBEdge* ne = myEdgeCont.retrieve(exp.node->getID());
+                        NBEdge* pe = myEdgeCont.retrieve(idBefore);
+                        NBEdge* ne = myEdgeCont.retrieve(idAfter);
                         // reconnect lanes
                         pe->invalidateConnections(true);
                         //  new on right
@@ -596,7 +602,7 @@ NIXMLEdgesHandler::myEndElement(int element) {
                 }
             }
             // patch lane offsets
-            e = myEdgeCont.retrieve(edgeid);
+            e = myEdgeCont.retrieve(firstID);
             if (mySplits.front().pos != 0) {
                 // add a dummy split at the beginning to ensure correct offset
                 Split start;

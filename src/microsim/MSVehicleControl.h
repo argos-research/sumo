@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Wed, 10. Dec 2003
-/// @version $Id: MSVehicleControl.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSVehicleControl.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // The class responsible for building and deletion of vehicles
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -425,8 +425,14 @@ public:
     /// @}
 
     /// @brief avoid counting a vehicle twice if it was loaded from state and route input
-    void discountStateLoaded() {
-        myLoadedVehNo--;
+    void discountStateLoaded(bool removed = false) {
+        if (removed) {
+            myRunningVehNo--;
+            myDiscarded++;
+            myEndedVehNo++;
+        } else {
+            myLoadedVehNo--;
+        }
     }
 
 

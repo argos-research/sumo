@@ -2,12 +2,12 @@
 /// @file    GNEVaporizer.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNEVaporizer.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEVaporizer.h 22876 2017-02-07 13:40:22Z palcraft $
 ///
 ///
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -51,11 +51,10 @@ public:
      * @param[in] id The storage of gl-ids to get the one for this lane representation from
      * @param[in] viewNet pointer to GNEViewNet of this additional element belongs
      * @param[in] edge edge in which this vaporizer is placed
-     * @param[in] startTime
-     * @param[in] end
-     * @param[in] blocked set initial blocking state of item
+     * @param[in] startTime start time of vaporizer
+     * @param[in] end end time of vaporizer
      */
-    GNEVaporizer(const std::string& id, GNEViewNet* viewNet, GNEEdge* edge, SUMOTime startTime, SUMOTime end, bool blocked);
+    GNEVaporizer(const std::string& id, GNEViewNet* viewNet, GNEEdge* edge, SUMOReal startTime, SUMOReal end);
 
     /// @brief Destructor
     ~GNEVaporizer();
@@ -76,23 +75,23 @@ public:
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element
      */
-    void writeAdditional(OutputDevice& device, const std::string&);
+    void writeAdditional(OutputDevice& device) const;
 
     /// @brief remove reference to edge
     /// @note this function will be called automatically in destructor of GNEEdge
     void removeEdgeReference();
 
     /// @brief get start time
-    SUMOTime getStartTime() const;
+    SUMOReal getStartTime() const;
 
     /// @brief get end
-    SUMOTime getEnd() const;
+    SUMOReal getEnd() const;
 
     /// @brief set start time
-    void setStartTime(SUMOTime startTime);
+    void setStartTime(SUMOReal startTime);
 
     /// @brief set end
-    void setEndTime(SUMOTime end);
+    void setEndTime(SUMOReal end);
 
     /// @name inherited from GUIGlObject
     /// @{
@@ -132,10 +131,10 @@ public:
 
 protected:
     /// @brief start time of vaporizer
-    SUMOTime myStartTime;
+    SUMOReal myStartTime;
 
     /// @brief end time in which this vaporizer is placed
-    SUMOTime myEnd;
+    SUMOReal myEnd;
 
 private:
     /// @brief set attribute after validation

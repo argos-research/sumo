@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Walter Bamberger
 /// @date    Mon, 17 Dec 2001
-/// @version $Id: OptionsCont.cpp 21217 2016-07-22 10:57:44Z behrisch $
+/// @version $Id: OptionsCont.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A storage for options (typed value containers)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -73,7 +73,7 @@ OptionsCont::getOptions() {
 
 OptionsCont::OptionsCont()
     : myAddresses(), myValues(), myDeprecatedSynonymes(), myHaveInformedAboutDeprecatedDivider(false) {
-    myCopyrightNotices.push_back("Copyright (C) 2001-2016 DLR and contributors; http://sumo.dlr.de");
+    myCopyrightNotices.push_back("Copyright (C) 2001-2017 DLR and contributors; http://sumo.dlr.de");
 }
 
 
@@ -339,12 +339,17 @@ OptionsCont::relocateFiles(const std::string& configuration) const {
             StringTokenizer st((*i)->getString(), ";, ", true);
             std::string conv;
             while (st.hasNext()) {
-                if (conv.length() != 0) {
-                    conv += ',';
-                }
                 std::string tmp = st.next();
+                // Test whether this is a whitespace string and disregard item if so.
+                // This may stem, e.g., from separating filenames by ', ' in the configuration file
+                if (tmp.find_first_not_of("\t ") == std::string::npos) {
+                    continue;
+                }
                 if (!FileHelpers::isAbsolute(tmp)) {
                     tmp = FileHelpers::getConfigurationRelative(configuration, tmp);
+                }
+                if (conv.length() != 0) {
+                    conv += ',';
                 }
                 conv += StringUtils::urlDecode(tmp);
             }
@@ -757,8 +762,9 @@ OptionsCont::printHelp(std::ostream& os) {
 
 
 void
-OptionsCont::writeConfiguration(std::ostream& os, bool filled,
-                                bool complete, bool addComments) const {
+OptionsCont::writeConfiguration(std::ostream& os, const bool filled,
+                                const bool complete, const bool addComments,
+                                const bool maskDoubleHyphen) const {
     os << "<?xml version=\"1.0\"" << SUMOSAXAttributes::ENCODING << "?>\n\n";
     os << "<configuration xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://sumo.dlr.de/xsd/" << myAppName << "Configuration.xsd\">" << std::endl << std::endl;
     for (std::vector<std::string>::const_iterator i = mySubTopics.begin(); i != mySubTopics.end(); ++i) {
@@ -781,12 +787,12 @@ OptionsCont::writeConfiguration(std::ostream& os, bool filled,
             }
             // add the comment if wished
             if (addComments) {
-                os << "        <!-- " << StringUtils::escapeXML(o->getDescription()) << " -->" << std::endl;
+                os << "        <!-- " << StringUtils::escapeXML(o->getDescription(), maskDoubleHyphen) << " -->" << std::endl;
             }
             // write the option and the value (if given)
             os << "        <" << *j << " value=\"";
             if (o->isSet() && (filled || o->isDefault())) {
-                os << o->getValueString();
+                os << StringUtils::escapeXML(o->getValueString(), maskDoubleHyphen);
             }
             if (complete) {
                 std::vector<std::string> synonymes = getSynonymes(*j);
@@ -873,7 +879,7 @@ OptionsCont::writeXMLHeader(std::ostream& os) {
     time(&rawtime);
     strftime(buffer, 80, "<!-- generated on %c by ", localtime(&rawtime));
     os << buffer << myFullName << "\n";
-    writeConfiguration(os, true, false, false);
+    writeConfiguration(os, true, false, false, true);
     os << "-->\n\n";
 }
 

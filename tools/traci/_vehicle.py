@@ -9,12 +9,12 @@
 @author  Laura Bieker
 @author  Daniel Krajzewicz
 @date    2011-03-09
-@version $Id: _vehicle.py 21846 2016-10-31 07:42:35Z namdre $
+@version $Id: _vehicle.py 22929 2017-02-13 14:38:39Z behrisch $
 
 Python implementation of the TraCI interface.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2011-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2011-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -72,6 +72,7 @@ def _readNextTLS(result):
 _RETURN_VALUE_FUNC = {tc.VAR_SPEED:           Storage.readDouble,
                       tc.VAR_SPEED_WITHOUT_TRACI: Storage.readDouble,
                       tc.VAR_POSITION: lambda result: result.read("!dd"),
+                      tc.VAR_POSITION3D: lambda result: result.read("!ddd"),
                       tc.VAR_ANGLE:           Storage.readDouble,
                       tc.VAR_ROAD_ID:         Storage.readString,
                       tc.VAR_LANE_ID:         Storage.readString,
@@ -107,6 +108,8 @@ _RETURN_VALUE_FUNC = {tc.VAR_SPEED:           Storage.readDouble,
                       tc.VAR_SLOPE:           Storage.readDouble,
                       tc.VAR_WIDTH:           Storage.readDouble,
                       tc.VAR_HEIGHT:          Storage.readDouble,
+                      tc.VAR_LINE:            Storage.readString,
+                      tc.VAR_VIA:             Storage.readStringList,
                       tc.VAR_MINGAP:          Storage.readDouble,
                       tc.VAR_SHAPECLASS:      Storage.readString,
                       tc.VAR_ACCEL:           Storage.readDouble,
@@ -158,8 +161,8 @@ class VehicleDomain(Domain):
 
     def getSpeedWithoutTraCI(self, vehID):
         """getSpeedWithoutTraCI(string) -> double
-
-        .
+        Returns the speed that the vehicle would drive if not speed-influencing
+        command such as setSpeed or slowDown was given.
         """
         return self._getUniversal(tc.VAR_SPEED_WITHOUT_TRACI, vehID)
 
@@ -169,6 +172,13 @@ class VehicleDomain(Domain):
         Returns the position of the named vehicle within the last step [m,m].
         """
         return self._getUniversal(tc.VAR_POSITION, vehID)
+
+    def getPosition3D(self, vehID):
+        """getPosition3D(string) -> (double, double, double)
+
+        Returns the position of the named vehicle within the last step [m,m,m].
+        """
+        return self._getUniversal(tc.VAR_POSITION3D, vehID)
 
     def getAngle(self, vehID):
         """getAngle(string) -> double
@@ -299,8 +309,9 @@ class VehicleDomain(Domain):
 
     def getPersonNumber(self, vehID):
         """getPersonNumber(string) -> integer
-
-        .
+        Returns the total number of persons which includes those defined
+        using attribute 'personNumber' as well as <person>-objects which are riding in
+        this vehicle.
         """
         return self._getUniversal(tc.VAR_PERSON_NUMBER, vehID)
 
@@ -329,6 +340,10 @@ class VehicleDomain(Domain):
         return self._connection._checkResult(tc.CMD_GET_VEHICLE_VARIABLE, tc.VAR_EDGE_EFFORT, vehID).readDouble()
 
     def isRouteValid(self, vehID):
+        """isRouteValid(string) -> bool
+        Returns whether the current vehicle route is connected for the vehicle
+        class of the given vehicle.
+        """
         return self._getUniversal(tc.VAR_ROUTE_VALID, vehID)
 
     def getSignals(self, vehID):
@@ -421,6 +436,20 @@ class VehicleDomain(Domain):
         """
         return self._getUniversal(tc.VAR_HEIGHT, vehID)
 
+    def getLine(self, vehID):
+        """getLine(string) -> string
+
+        Returns the line information of this vehicle.
+        """
+        return self._getUniversal(tc.VAR_LINE, vehID)
+
+    def getVia(self, vehID):
+        """getVia(string) -> list(string)
+
+        Returns the ids of via edges for this vehicle
+        """
+        return self._getUniversal(tc.VAR_VIA, vehID)
+
     def getMinGap(self, vehID):
         """getMinGap(string) -> double
 
@@ -500,7 +529,7 @@ class VehicleDomain(Domain):
     def getDrivingDistance(self, vehID, edgeID, pos, laneID=0):
         """getDrivingDistance(string, string, double, integer) -> double
 
-        .
+        Return the distance to the given edge and position along the vehicles route.
         """
         self._connection._beginMessage(tc.CMD_GET_VEHICLE_VARIABLE, tc.DISTANCE_REQUEST,
                                        vehID, 1 + 4 + 1 + 4 + len(edgeID) + 8 + 1 + 1)
@@ -513,7 +542,7 @@ class VehicleDomain(Domain):
     def getDrivingDistance2D(self, vehID, x, y):
         """getDrivingDistance2D(string, double, double) -> integer
 
-        .
+        Return the distance to the given network position along the vehicles route.
         """
         self._connection._beginMessage(
             tc.CMD_GET_VEHICLE_VARIABLE, tc.DISTANCE_REQUEST, vehID, 1 + 4 + 1 + 8 + 8 + 1)
@@ -718,24 +747,26 @@ class VehicleDomain(Domain):
         self._connection._string += struct.pack("!Bd", tc.TYPE_DOUBLE, effort)
         self._connection._sendExact()
 
+    LAST_TRAVEL_TIME_UPDATE = -1
+
     def rerouteTraveltime(self, vehID, currentTravelTimes=True):
         """rerouteTraveltime(string, bool) -> None Reroutes a vehicle. If
         currentTravelTimes is True (default) then the current traveltime of the
-        edges is loaded and used for rerouting. If currentTravelTimes is False,
-        travel times loaded from a weight file are used. In the absence of loaded
-        weights, the minimum travel time is used (speed limit). 
+        edges is loaded and used for rerouting. If currentTravelTimes is False
+        custom travel times are used. The various functions and options for
+        customizing travel times are described at http://sumo.dlr.de/wiki/Simulation/Routing
 
         When rerouteTravelTime has been called once with option
         currentTravelTimes=True, all edge weights are set to the current travel
         times at the time of that call (even for subsequent simulation steps). 
-        To speed up rerouting of many vehicles with currentTravelTimes=True,
-        only the first vehicle should set this option to True in each simulation
-        step (setting the edge weights is expensive for large networks).
         """
         if currentTravelTimes:
-            for edge in self._connection.edge.getIDList():
-                self._connection.edge.adaptTraveltime(
-                    edge, self._connection.edge.getTraveltime(edge))
+            time = self._connection.simulation.getCurrentTime()
+            if time != self.LAST_TRAVEL_TIME_UPDATE:
+                self.LAST_TRAVEL_TIME_UPDATE = time
+                for edge in self._connection.edge.getIDList():
+                    self._connection.edge.adaptTraveltime(
+                        edge, self._connection.edge.getTraveltime(edge))
         self._connection._beginMessage(
             tc.CMD_SET_VEHICLE_VARIABLE, tc.CMD_REROUTE_TRAVELTIME, vehID, 1 + 4)
         self._connection._string += struct.pack("!Bi", tc.TYPE_COMPOUND, 0)
@@ -807,14 +838,6 @@ class VehicleDomain(Domain):
         self._connection._sendDoubleCmd(
             tc.CMD_SET_VEHICLE_VARIABLE, tc.VAR_SPEED_FACTOR, vehID, factor)
 
-    def setSpeedDeviation(self, vehID, deviation):
-        """setSpeedDeviation(string, double) -> None
-
-        Sets the maximum speed deviation for this vehicle.
-        """
-        self._connection._sendDoubleCmd(
-            tc.CMD_SET_VEHICLE_VARIABLE, tc.VAR_SPEED_DEVIATION, vehID, deviation)
-
     def setEmissionClass(self, vehID, clazz):
         """setEmissionClass(string, string) -> None
 
@@ -838,6 +861,30 @@ class VehicleDomain(Domain):
         """
         self._connection._sendDoubleCmd(
             tc.CMD_SET_VEHICLE_VARIABLE, tc.VAR_HEIGHT, vehID, height)
+
+    def setLine(self, vehID, line):
+        """setHeight(string, string) -> None
+
+        Sets the line information for this vehicle.
+        """
+        self._connection._sendStringCmd(
+            tc.CMD_SET_VEHICLE_VARIABLE, tc.VAR_LINE, vehID, line)
+
+    def setVia(self, vehID, edgeList):
+        """
+        setVia(string, list) ->  None
+
+        changes the via edges to the given edges list (to be used during
+        subsequent rerouting calls).
+
+        Note: a single edgeId as argument is allowed as shorthand for a list of length 1
+        """
+        if isinstance(edgeList, str):
+            edgeList = [edgeList]
+        self._connection._beginMessage(tc.CMD_SET_VEHICLE_VARIABLE, tc.VAR_VIA, vehID,
+                                       1 + 4 + sum(map(len, edgeList)) + 4 * len(edgeList))
+        self._connection._packStringList(edgeList)
+        self._connection._sendExact()
 
     def setMinGap(self, vehID, minGap):
         """setMinGap(string, double) -> None
@@ -896,7 +943,7 @@ class VehicleDomain(Domain):
             tc.CMD_SET_VEHICLE_VARIABLE, tc.VAR_LANECHANGE_MODE, vehID, lcm)
 
     def setSpeedMode(self, vehID, sm):
-        """setLaneChangeMode(string, integer) -> None
+        """setSpeedMode(string, integer) -> None
 
         Sets the vehicle's speed mode as a bitset.
         """
@@ -954,10 +1001,10 @@ class VehicleDomain(Domain):
         the given value (for drawing). If keepRoute is set to 1, the closest position
         within the existing route is taken. If keepRoute is set to 0, the vehicle may move to
         any edge in the network but it's route then only consists of that edge.
-        If keepRoute is set to 2 the vehicle has all the freedom of keepRoute=1
+        If keepRoute is set to 2 the vehicle has all the freedom of keepRoute=0
         but in addition to that may even move outside the road network.
         edgeID and lane are optional placement hints to resovle ambiguities'''
-        self._connection._beginMessage(tc.CMD_SET_VEHICLE_VARIABLE, tc.VAR_MOVE_TO_VTD,
+        self._connection._beginMessage(tc.CMD_SET_VEHICLE_VARIABLE, tc.MOVE_TO_XY,
                                        vehID, 1 + 4 + 1 + 4 + len(edgeID) + 1 + 4 + 1 + 8 + 1 + 8 + 1 + 8 + 1 + 1)
         self._connection._string += struct.pack("!Bi", tc.TYPE_COMPOUND, 6)
         self._connection._packString(edgeID)

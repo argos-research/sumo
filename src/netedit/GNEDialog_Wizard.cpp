@@ -2,12 +2,12 @@
 /// @file    GNEDialog_Wizard.cpp
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEDialog_Wizard.cpp 21044 2016-06-28 09:07:49Z palcraft $
+/// @version $Id: GNEDialog_Wizard.cpp 22917 2017-02-11 14:48:06Z palcraft $
 ///
 // The "About" - dialog for NETEDIT, (adapted from GUIDialog_AboutSUMO)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -37,6 +37,7 @@
 #include <utils/gui/images/GUIIconSubSys.h>
 #include <utils/gui/windows/GUIAppEnum.h>
 #include <utils/common/ToString.h>
+#include <utils/gui/div/GUIDesigns.h>
 #include "GNEDialog_Wizard.h"
 
 #ifdef CHECK_MEMORY_LEAKS
@@ -70,12 +71,11 @@ FXIMPLEMENT(GNEDialog_Wizard::InputFloat, FXHorizontalFrame, InputFloatMap, ARRA
 // method definitions
 // ===========================================================================
 GNEDialog_Wizard::GNEDialog_Wizard(FXWindow* parent,  const char* name, int width, int height) :
-    FXDialogBox(parent, name, DECOR_CLOSE | DECOR_TITLE, 0, 0, width, height) {
+    FXDialogBox(parent, name, GUIDesignDialogBox, 0, 0, width, height) {
     OptionsCont& oc = OptionsCont::getOptions();
-    FXVerticalFrame* contentFrame = new FXVerticalFrame(this, LAYOUT_FILL_X | LAYOUT_FILL_Y);
+    FXVerticalFrame* contentFrame = new FXVerticalFrame(this, GUIDesignContentsFrame);
 
-    FXTabBook* tabbook = new FXTabBook(
-        contentFrame, 0, 0, TABBOOK_LEFTTABS | PACK_UNIFORM_WIDTH | PACK_UNIFORM_HEIGHT | LAYOUT_FILL_X | LAYOUT_FILL_Y | LAYOUT_RIGHT);
+    FXTabBook* tabbook = new FXTabBook(contentFrame, 0, 0, GUIDesignTabBook);
 
     const std::vector<std::string>& topics = oc.getSubTopics();
     for (std::vector<std::string>::const_iterator it_topic = topics.begin(); it_topic != topics.end(); it_topic++) {
@@ -89,22 +89,24 @@ GNEDialog_Wizard::GNEDialog_Wizard(FXWindow* parent,  const char* name, int widt
         const std::vector<std::string> entries = oc.getSubTopicsEntries(topic);
         for (std::vector<std::string>::const_iterator it_opt = entries.begin(); it_opt != entries.end(); it_opt++) {
             std::string name = *it_opt;
-            std::string type = oc.getTypeName(name);
-            if (type == "STR" || type == "FILE") {
-                new InputString(tabContent, name);
-            } else if (type == "BOOL") {
-                new InputBool(tabContent, name);
-            } else if (type == "INT") {
-                new InputInt(tabContent, name);
-            } else if (type == "FLOAT") {
-                new InputFloat(tabContent, name);
+            if (name != "geometry.remove" && name != "edges.join" && name != "geometry.split" && name != "ramps.guess" && name != "ramps.set") {
+                std::string type = oc.getTypeName(name);
+                if (type == "STR" || type == "FILE") {
+                    new InputString(tabContent, name);
+                } else if (type == "BOOL") {
+                    new InputBool(tabContent, name);
+                } else if (type == "INT") {
+                    new InputInt(tabContent, name);
+                } else if (type == "FLOAT") {
+                    new InputFloat(tabContent, name);
+                }
+                // @todo missing types (type INT[] is only used in microsim)
             }
-            // @todo missing types (type INT[] is only used in microsim)
         }
     }
 
     // ok-button
-    new FXButton(contentFrame, "OK\t\tContine with the import.", 0, this, ID_ACCEPT, LAYOUT_FIX_WIDTH | LAYOUT_CENTER_X | JUSTIFY_CENTER_X | FRAME_THICK | FRAME_RAISED, 0, 0, 50, 30);
+    new FXButton(contentFrame, "OK\t\tContine with the import.", GUIIconSubSys::getIcon(ICON_ACCEPT), this, ID_ACCEPT, GUIDesignButtonOK);
 }
 
 

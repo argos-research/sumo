@@ -2,12 +2,12 @@
 /// @file    GNEConnection.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Jun 2016
-/// @version $Id: GNEConnection.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEConnection.cpp 22915 2017-02-10 14:05:44Z palcraft $
 ///
 // A class for visualizing connections between lanes
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -71,9 +71,8 @@ int NUM_POINTS = 5;
 // ===========================================================================
 
 GNEConnection::GNEConnection(GNELane* from, GNELane* to) :
-    GNENetElement(from->getNet(),
-                  std::string(":") + from->getMicrosimID() + "->" + to->getMicrosimID(),
-                  GLO_CONNECTION, SUMO_TAG_CONNECTION),
+    GNENetElement(from->getNet(), from->getMicrosimID() + " -> " + to->getMicrosimID(),
+                  GLO_CONNECTION, SUMO_TAG_CONNECTION, ICON_CONNECTION),
     myFromLane(from),
     myToLane(to),
     myLinkState(LINKSTATE_TL_OFF_NOSIGNAL),
@@ -312,7 +311,7 @@ GNEConnection::getAttribute(SumoXMLAttr key) const {
         case SUMO_ATTR_VISIBILITY_DISTANCE:
             return toString(nbCon.visibility);
         default:
-            throw InvalidArgument("connection attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -333,7 +332,7 @@ GNEConnection::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndoLi
             undoList->p_add(new GNEChange_Attribute(this, key, value));
             break;
         default:
-            throw InvalidArgument("connection attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -359,7 +358,7 @@ GNEConnection::isValid(SumoXMLAttr key, const std::string& value) {
         case SUMO_ATTR_VISIBILITY_DISTANCE:
             return isPositive<SUMOReal>(value);
         default:
-            throw InvalidArgument("connection attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -386,7 +385,7 @@ GNEConnection::setAttribute(SumoXMLAttr key, const std::string& value) {
             nbCon.visibility = parse<SUMOReal>(value);
             break;
         default:
-            throw InvalidArgument("connection attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 

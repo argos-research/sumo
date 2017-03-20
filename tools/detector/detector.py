@@ -4,12 +4,12 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2007-06-28
-@version $Id: detector.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: detector.py 22929 2017-02-13 14:38:39Z behrisch $
 
 <documentation missing>
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2007-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -116,7 +116,7 @@ class DetectorReader(handler.ContentHandler):
             for group in groupList:
                 group.clearFlow()
 
-    def readFlows(self, flowFile, det="Detector", flow="qPKW", speed=None, time=None, timeVal=None):
+    def readFlows(self, flowFile, det="Detector", flow="qPKW", speed=None, time=None, timeVal=None, timeMax=None):
         detIdx = -1
         flowIdx = -1
         speedIdx = -1
@@ -134,7 +134,13 @@ class DetectorReader(handler.ContentHandler):
                     if time in flowDef:
                         timeIdx = flowDef.index(time)
                 elif flowIdx != -1:
-                    if timeIdx == -1 or timeVal is None or float(flowDef[timeIdx]) == timeVal:
+                    if timeIdx == -1 or timeVal is None:
+                        timeIsValid = True
+                    else:
+                        curTime = float(flowDef[timeIdx])
+                        timeIsValid = (timeMax is None and curTime == timeVal) or (
+                            curTime >= timeVal and curTime < timeMax)
+                    if timeIsValid:
                         hadFlow = True
                         if speedIdx != -1:
                             self.addFlow(

@@ -2,12 +2,12 @@
 /// @file    METriggeredCalibrator.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Tue, May 2005
-/// @version $Id: METriggeredCalibrator.cpp 20775 2016-05-20 14:31:04Z namdre $
+/// @version $Id: METriggeredCalibrator.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Calibrates the flow on a segment to a specified one
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

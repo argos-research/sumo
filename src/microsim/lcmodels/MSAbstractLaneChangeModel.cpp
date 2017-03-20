@@ -6,7 +6,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Fri, 29.04.2005
-/// @version $Id: MSAbstractLaneChangeModel.cpp 21373 2016-08-31 08:20:28Z luecken $
+/// @version $Id: MSAbstractLaneChangeModel.cpp 21962 2016-11-10 13:26:34Z namdre $
 ///
 // Interface for lane-change models
 /****************************************************************************/
@@ -192,6 +192,9 @@ MSAbstractLaneChangeModel::endLaneChangeManeuver(const MSMoveReminder::Notificat
     myNoPartiallyOccupatedByShadow.clear();
     myVehicle.switchOffSignal(MSVehicle::VEH_SIGNAL_BLINKER_RIGHT | MSVehicle::VEH_SIGNAL_BLINKER_LEFT);
     myVehicle.fixPosition();
+    if (myAmOpposite) {
+        changedToOpposite();
+    }
 }
 
 

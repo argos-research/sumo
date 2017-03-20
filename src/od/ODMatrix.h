@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Yun-Pang Floetteroed
 /// @date    05. Apr. 2006
-/// @version $Id: ODMatrix.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: ODMatrix.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // An O/D (origin/destination) matrix
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2006-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2006-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -175,10 +175,12 @@ public:
      * @param[in] dev The stream to write the generated vehicle trips to
      * @param[in] noVtype Whether vtype information shall not be written
      * @param[in] prefix A prefix for the flow names
+     * @param[in] asProbability Write probability to spawn per second instead of number of vehicles
      */
     void writeFlows(const SUMOTime begin, const SUMOTime end,
                     OutputDevice& dev, const bool noVtype,
-                    const std::string& prefix);
+                    const std::string& prefix,
+                    bool asProbability = false);
 
 
     /** @brief Returns the number of loaded vehicles

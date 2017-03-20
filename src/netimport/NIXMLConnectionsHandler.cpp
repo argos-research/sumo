@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Thu, 17 Oct 2002
-/// @version $Id: NIXMLConnectionsHandler.cpp 21714 2016-10-17 11:21:44Z namdre $
+/// @version $Id: NIXMLConnectionsHandler.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Importer for edge connections stored in XML
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

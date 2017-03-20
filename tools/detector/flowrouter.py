@@ -4,7 +4,7 @@
 @author  Michael Behrisch
 @author  Daniel Krajzewicz
 @date    2007-06-28
-@version $Id: flowrouter.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: flowrouter.py 22929 2017-02-13 14:38:39Z behrisch $
 
 This script does flow routing similar to the dfrouter.
 It has three mandatory parameters, the SUMO net (.net.xml), a file
@@ -13,7 +13,7 @@ of the detectors (source, sink, inbetween) itself or read it from
 the detectors file.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2007-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -423,17 +423,16 @@ class Net:
                 continue
             assert len(srcEdge.target.outEdges) == 1
             edge = srcEdge.target.outEdges[0]
-            vtype = ' type="%s"' % options.vtype if options.vtype else ""
             if len(srcEdge.routes) == 1:
-                print('    <flow id="src_%s%s"%s route="%s.0%s" number="%s" begin="%s" end="%s"/>' % (
-                    edge.label, suffix, vtype, edge.label, suffix, srcEdge.flow, begin, end), file=emitOut)
+                print('    <flow id="src_%s%s" %s route="%s.0%s" number="%s" begin="%s" end="%s"/>' % (
+                    edge.label, suffix, options.params, edge.label, suffix, srcEdge.flow, begin, end), file=emitOut)
             else:
                 ids = " ".join(["%s.%s%s" % (edge.label, id, suffix)
                                 for id in range(len(srcEdge.routes))])
                 probs = " ".join([str(route.frequency)
                                   for route in srcEdge.routes])
-                print('    <flow id="src_%s%s"%s number="%s" begin="%s" end="%s">' % (
-                    edge.label, suffix, vtype, srcEdge.flow, begin, end), file=emitOut)
+                print('    <flow id="src_%s%s" %s number="%s" begin="%s" end="%s">' % (
+                    edge.label, suffix, options.params, srcEdge.flow, begin, end), file=emitOut)
                 print('        <routeDistribution routes="%s" probabilities="%s"/>' % (
                     ids, probs), file=emitOut)
                 print('    </flow>', file=emitOut)
@@ -524,11 +523,11 @@ class NetDetectorFlowReader(handler.ContentHandler):
                         sinks.add(det.lane[:det.lane.rfind("_")])
         return sources, sinks
 
-    def readFlows(self, flowFile, t=None):
+    def readFlows(self, flowFile, t=None, tMax=None):
         if t is None:
             return self._detReader.readFlows(flowFile, flow=options.flowcol)
         else:
-            return self._detReader.readFlows(flowFile, flow=options.flowcol, time="Time", timeVal=t)
+            return self._detReader.readFlows(flowFile, flow=options.flowcol, time="Time", timeVal=t, timeMax=tMax)
 
     def clearFlows(self):
         self._detReader.clearFlows()
@@ -564,7 +563,8 @@ optParser.add_option("-o", "--routes-output", dest="routefile",
                      help="write routes to FILE", metavar="FILE")
 optParser.add_option("-e", "--emitters-output", dest="emitfile",
                      help="write emitters to FILE and create files per emitter (needs -o)", metavar="FILE")
-optParser.add_option("-y", "--vtype", help="vType to use", metavar="STRING")
+optParser.add_option("-y", "--params", help="vehicle / flow params to use (vType, departPos etc.)",
+                     default='departSpeed="max" departPos="last" departLane="best"', metavar="STRING")
 optParser.add_option("-t", "--trimmed-output", dest="trimfile",
                      help="write edges of trimmed network to FILE", metavar="FILE")
 optParser.add_option("-p", "--flow-poi-output", dest="flowpoifile",
@@ -622,7 +622,8 @@ if net.detectSourceSink(sources, sinks):
             if options.verbose:
                 print("Reading flows")
             for flow in options.flowfiles:
-                haveFlows = reader.readFlows(flow, start)
+                haveFlows = reader.readFlows(
+                    flow, start, start + options.interval)
             if haveFlows:
                 if options.verbose:
                     print("Calculating routes")

@@ -2,12 +2,12 @@
 /// @file    GNEDetectorE3.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetectorE3.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEDetectorE3.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 ///
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -30,34 +30,38 @@
 #include <config.h>
 #endif
 
-#include "GNEAdditionalSet.h"
+#include "GNEAdditional.h"
 
 // ===========================================================================
 // class declarations
 // ===========================================================================
-class GNEDetectorE3EntryExit;
+
 class GNELane;
+class GNEDetectorEntry;
+class GNEDetectorExit;
 
 // ===========================================================================
 // class definitions
 // ===========================================================================
 /**
  * @class GNEDetectorE3
- * ------------
+ * Class for multy Entry/multy Exits detectors
  */
-class GNEDetectorE3 : public GNEAdditionalSet {
+class GNEDetectorE3 : public GNEAdditional {
+    /// @brief declare friend class (needed to manage Entry/Exit childs)
+    friend class GNEChange_Additional;
+
 public:
     /**@brief GNEDetectorE3 Constructor
      * @param[in] id The storage of gl-ids to get the one for this lane representation from
-     * @param[in] viewNet pointer to GNEViewNet of this additionalSet element belongs
+     * @param[in] viewNet pointer to GNEViewNet of this additional element belongs
      * @param[in] pos position (center) of the detector in the map
      * @param[in] freq the aggregation period the values the detector collects shall be summed up.
      * @param[in] filename The path to the output file
      * @param[in] timeThreshold The time-based threshold that describes how much time has to pass until a vehicle is recognized as halting
      * @param[in] speedThreshold The speed-based threshold that describes how slow a vehicle has to be to be recognized as halting
-     * @param[in] blocked set initial blocking state of item
      */
-    GNEDetectorE3(const std::string& id, GNEViewNet* viewNet, Position pos, int freq, const std::string& filename, SUMOTime timeThreshold, SUMOReal speedThreshold, bool blocked);
+    GNEDetectorE3(const std::string& id, GNEViewNet* viewNet, Position pos, SUMOReal freq, const std::string& filename, const SUMOReal timeThreshold, SUMOReal speedThreshold);
 
     /// @brief GNEDetectorE3 6Destructor
     ~GNEDetectorE3();
@@ -75,10 +79,34 @@ public:
     /// @brief updated geometry changes in the attributes of additional
     void commmitAdditionalGeometryMoved(SUMOReal oldPosx, SUMOReal oldPosy, GNEUndoList* undoList);
 
-    /**@brief writte additionalSet element into a xml file
-     * @param[in] device device in which write parameters of additionalSet element
+    /**@brief writte additionals element into a xml file
+     * @param[in] device device in which write parameters of additional element
      */
-    void writeAdditional(OutputDevice& device, const std::string& currentDirectory);
+    void writeAdditional(OutputDevice& device) const;
+
+    /// @brief gererate a new ID for an Entry detector child
+    std::string generateEntryID();
+
+    /// @brief gererate a new ID for an Exit detector child
+    std::string generateExitID();
+
+    /// @brief add an Entry child
+    void addEntryChild(GNEDetectorEntry* entry);
+
+    /// @brief delete an Entry child
+    void removeEntryChild(GNEDetectorEntry* entry);
+
+    /// @brief add an Exit child
+    void addExitChild(GNEDetectorExit* exit);
+
+    /// @brief delete an Exit child
+    void removeExitChild(GNEDetectorExit* exit);
+
+    /// @brief get number of entry childs
+    int getNumberOfEntryChilds() const;
+
+    /// @brief get number of exit childs
+    int getNumberOfExitChilds() const;
 
     /// @name inherited from GUIGlObject
     /// @{
@@ -101,7 +129,7 @@ public:
      */
     std::string getAttribute(SumoXMLAttr key) const;
 
-    /* @brief method for setting the attribute and letting the object perform additionalSet changes
+    /* @brief method for setting the attribute and letting the object perform additional changes
      * @param[in] key The attribute key
      * @param[in] value The new value
      * @param[in] undoList The undoList on which to register changes
@@ -118,23 +146,29 @@ public:
 
 protected:
     /// @brief frequency of E3 detector
-    int myFreq;
+    SUMOReal myFreq;
 
     /// @brief fielname of E3 detector
     std::string myFilename;
 
     /// @brief The time-based threshold that describes how much time has to pass until a vehicle is recognized as halting
-    SUMOTime myTimeThreshold;
+    SUMOReal myTimeThreshold;
 
     /// @brief The speed-based threshold that describes how slow a vehicle has to be to be recognized as halting
     SUMOReal mySpeedThreshold;
 
     /// @brief vector with the GNEDetectorE3EntryExits of the detector
-    std::vector<GNEDetectorE3EntryExit*> myGNEDetectorE3EntryExits;
+    std::vector<GNEDetectorEntry*> myGNEDetectorEntrys;
+
+    /// @brief vector with the GNEDetectorE3EntryExits of the detector
+    std::vector<GNEDetectorExit*> myGNEDetectorExits;
 
 private:
     /// @brief set attribute after validation
     void setAttribute(SumoXMLAttr key, const std::string& value);
+
+    /// @brief update Connection's geometry
+    void updateGeometryConnections();
 
     /// @brief Invalidated copy constructor.
     GNEDetectorE3(const GNEDetectorE3&);

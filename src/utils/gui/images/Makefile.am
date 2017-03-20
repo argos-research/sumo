@@ -1,6 +1,6 @@
 noinst_LIBRARIES = libguiutilsimages.a
 
-EXTRA_DIST = allow_rotation.xpm \
+EXTRA_DIST = dlr.xpm allow_rotation.xpm empty.xpm \
 app_breakpoints.xpm app_finder.xpm \
 app_selector.xpm app_table.xpm app_tlstracker.xpm app_tracker.xpm \
 camera.xpm close_gaps.xpm closing.xpm colorwheel.xpm \
@@ -29,10 +29,16 @@ step.xpm stop.xpm view1.xpm view2.xpm view3.xpm \
 windows_cascade.xpm windows_tile_horizontally.xpm windows_tile_vertically.xpm \
 yellow_edge.xpm yellow_person.xpm yellow_vehicle.xpm \
 yes.xpm lock.xpm add.xpm remove.xpm \
+accept.xpm cancel.xpm correct.xpm error.xpm reset.xpm warning.xpm \
+junction.xpm edge.xpm lane.xpm connection.xpm prohibition.xpm crossing.xpm \
 lanebike.xpm lanebus.xpm lanepedestrian.xpm \
+cleanjunctions.xpm computejunctions.xpm joinjunctions.xpm options.xpm \
+busstop.xpm chargingstation.xpm containerstop.xpm e1.xpm \
+e2.xpm e3.xpm e3entry.xpm e3exit.xpm rerouter.xpm routeprobe.xpm \
+vaporizer.xpm variablespeedsign.xpm calibrator.xpm \
 GNETexture_Rerouter.cpp GNETexture_RerouterSelected.cpp \
 GNETexture_RouteProbe.cpp GNETexture_RouteProbeSelected.cpp \
-GNETexture_VariableSpeedSignal.cpp GNETexture_VariableSpeedSignalSelected.cpp \
+GNETexture_VariableSpeedSign.cpp GNETexture_VariableSpeedSignSelected.cpp \
 GNETexture_Vaporizer.cpp GNETexture_VaporizerSelected.cpp \
 GNETexture_E1.cpp GNETexture_E2.cpp \
 GNETexture_E3.cpp GNETexture_E3Selected.cpp \
@@ -41,7 +47,16 @@ GNETexture_Lock.cpp GNETexture_LockSelected.cpp \
 GNETexture_Empty.cpp GNETexture_EmptySelected.cpp \
 GNETexture_NotMoving.cpp GNETexture_NotMovingSelected.cpp \
 GNETexture_LaneBus.cpp GNETexture_LaneBike.cpp \
-GNETexture_LanePedestrian.cpp GNETexture_TLS.cpp
+GNETexture_LanePedestrian.cpp GNETexture_TLS.cpp \
+modeadditional.xpm modeconnection.xpm modecreateedge.xpm modecrossing.xpm \
+modedelete.xpm modeinspect.xpm modemove.xpm modeselect.xpm modetrafficlight.xpm \
+vclass_ignoring.xpm vclass_private.xpm vclass_emergency.xpm vclass_authority.xpm \
+vclass_army.xpm vclass_vip.xpm vclass_passenger.xpm vclass_hov.xpm \
+vclass_taxi.xpm vclass_bus.xpm vclass_coach.xpm vclass_delivery.xpm \
+vclass_truck.xpm vclass_trailer.xpm vclass_tram.xpm vclass_rail_urban.xpm \
+vclass_rail.xpm vclass_rail_electric.xpm vclass_motorcycle.xpm vclass_moped.xpm \
+vclass_bicycle.xpm vclass_pedestrian.xpm vclass_evehicle.xpm vclass_ship.xpm \
+vclass_custom1.xpm vclass_custom2.xpm
 
 libguiutilsimages_a_SOURCES = GUIIconSubSys.cpp GUIIconSubSys.h \
 GUITextureSubSys.cpp GUITextureSubSys.h \

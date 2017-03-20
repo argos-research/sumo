@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: RODUAFrame.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: RODUAFrame.cpp 22909 2017-02-10 12:17:30Z namdre $
 ///
 // Sets and checks options for dua-routing
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -135,6 +135,9 @@ RODUAFrame::addDUAOptions() {
     oc.doRegister("logit.theta", new Option_Float(SUMOReal(-1)));
     oc.addSynonyme("logit.theta", "lTheta", true);
     oc.addDescription("logit.theta", "Processing", "Use FLOAT as logit's theta (negative values mean auto-estimation)");
+
+    oc.doRegister("persontrip.walkfactor", new Option_Float(SUMOReal(0.9)));
+    oc.addDescription("persontrip.walkfactor", "Processing", "Use FLOAT as a factor on pedestrian maximum speed during intermodal routing");
 
 }
 

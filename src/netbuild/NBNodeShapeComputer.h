@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    2004-01-12
-/// @version $Id: NBNodeShapeComputer.h 21545 2016-09-27 12:26:01Z namdre $
+/// @version $Id: NBNodeShapeComputer.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // This class computes shapes of junctions
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

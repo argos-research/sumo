@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NIFrame.cpp 21744 2016-10-18 13:02:24Z namdre $
+/// @version $Id: NIFrame.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Sets and checks options for netimport
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -158,6 +158,8 @@ NIFrame::fillOptions() {
     oc.doRegister("speed-in-kmh", new Option_Bool(false));
     oc.addDescription("speed-in-kmh", "Processing", "vmax is parsed as given in km/h (some)");
 
+    oc.doRegister("construction-date", new Option_String());
+    oc.addDescription("construction-date", "Processing", "Use YYYY-MM-DD date to determine the readiness of features under construction");
 
 
     // register xml options
@@ -258,6 +260,12 @@ NIFrame::fillOptions() {
     oc.doRegister("osm.layer-elevation", new Option_Float(0));
     oc.addDescription("osm.layer-elevation", "Processing", "Reconstruct (relative) elevation based on layer data. Each layer is raised by FLOAT m");
 
+    oc.doRegister("osm.layer-elevation.max-grade", new Option_Float(10));
+    oc.addDescription("osm.layer-elevation.max-grade", "Processing", "Maximum grade threshold in % at 50km/h when reconstrucing elevation based on layer data. The value is scaled according to road speed.");
+
+    oc.doRegister("osm.oneway-spread-right", new Option_Bool(false));
+    oc.addDescription("osm.oneway-spread-right", "Processing", "Whether one-way roads should be spread to the side instead of centered");
+
     // register opendrive options
     oc.doRegister("opendrive.import-all-lanes", new Option_Bool(false));
     oc.addDescription("opendrive.import-all-lanes", "Processing", "Imports all lane types");
@@ -319,9 +327,15 @@ NIFrame::checkOptions() {
             }
         }
     }
-    if (oc.isSet("opendrive-files") && oc.isDefault("tls.left-green.time")) {
-        // legacy behavior. see #2114
-        oc.set("tls.left-green.time", "0");
+    if (oc.isSet("opendrive-files")) {
+        if (oc.isDefault("tls.left-green.time")) {
+            // legacy behavior. see #2114
+            oc.set("tls.left-green.time", "0");
+        }
+        if (oc.isDefault("rectangular-lane-cut")) {
+            // a better interpretation of imported geometries
+            oc.set("rectangular-lane-cut", "true");
+        }
     }
     return ok;
 }

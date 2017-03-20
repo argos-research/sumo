@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    2004
-/// @version $Id: OutputDevice.cpp 21201 2016-07-19 11:57:22Z behrisch $
+/// @version $Id: OutputDevice.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Static storage of an output device and its base (abstract) implementation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2004-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2004-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -94,7 +94,8 @@ OutputDevice::getDevice(const std::string& name) {
                 time_t rawtime;
                 char buffer [80];
                 time(&rawtime);
-                strftime(buffer, 80, "%F-%H-%M-%S", localtime(&rawtime));
+                struct tm* timeinfo = localtime(&rawtime);
+                strftime(buffer, 80, "%Y-%m-%d-%H-%M-%S", timeinfo);
                 prefix.replace(metaTimeIndex, 4, std::string(buffer));
             }
             name2 = FileHelpers::prependToLastPathComponent(prefix, name);
@@ -117,11 +118,7 @@ OutputDevice::createDeviceByOption(const std::string& optionName,
     }
     OutputDevice& dev = OutputDevice::getDevice(OptionsCont::getOptions().getString(optionName));
     if (rootElement != "") {
-        if (schemaFile != "") {
-            dev.writeXMLHeader(rootElement, "xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:noNamespaceSchemaLocation=\"http://sumo.dlr.de/xsd/" + schemaFile + "\"");
-        } else {
-            dev.writeXMLHeader(rootElement);
-        }
+        dev.writeXMLHeader(rootElement, schemaFile);
     }
     return true;
 }
@@ -230,8 +227,13 @@ OutputDevice::setPrecision(int precision) {
 
 bool
 OutputDevice::writeXMLHeader(const std::string& rootElement,
-                             const std::string& attrs, const std::string& comment) {
-    return myFormatter->writeXMLHeader(getOStream(), rootElement, attrs, comment);
+                             const std::string& schemaFile,
+                             std::map<SumoXMLAttr, std::string> attrs) {
+    if (schemaFile != "") {
+        attrs[SUMO_ATTR_XMLNS] = "http://www.w3.org/2001/XMLSchema-instance";
+        attrs[SUMO_ATTR_SCHEMA_LOCATION] = "http://sumo.dlr.de/xsd/" + schemaFile;
+    }
+    return myFormatter->writeXMLHeader(getOStream(), rootElement, attrs);
 }
 
 

@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIEdge.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: GUIEdge.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A road/street connecting two junctions (gui-version)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -214,8 +214,14 @@ public:
         return mySegmentColors;
     }
 
+    RGBColor getMesoColor() const {
+        return myMesoColor;
+    }
+
     /// The color of the segments (cached)
     mutable std::vector<RGBColor> mySegmentColors;
+
+
 
 private:
     /// @brief invalidated copy constructor
@@ -228,6 +234,8 @@ private:
 private:
     /// The mutex used to avoid concurrent updates of myPersons/ myContainers
     mutable MFXMutex myLock;
+
+    mutable RGBColor myMesoColor;
 
 };
 

@@ -2,11 +2,11 @@
 /// @file    MSSOTLHiLevelTrafficLightLogic.cpp
 /// @author  Alessio Bonfietti
 /// @date    Jun 2013
-/// @version $Id: MSSOTLHiLevelTrafficLightLogic.cpp 21217 2016-07-22 10:57:44Z behrisch $
+/// @version $Id: MSSOTLHiLevelTrafficLightLogic.cpp 22627 2017-01-18 12:56:36Z behrisch $
 ///
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright 2001-2013 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2013-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

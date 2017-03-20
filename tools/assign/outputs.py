@@ -4,12 +4,12 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2007-12-25
-@version $Id: outputs.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: outputs.py 22608 2017-01-17 06:28:54Z behrisch $
 
 This script is for generating the outputs from the choosed traffic assignment.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2007-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2007-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -158,7 +158,7 @@ def outputMatrix(startVertices, endVertices, estMatrix, daytimeindex):
 def linkChoicesOutput(net, startVertices, endVertices, matrixPshort, linkChoiceMap, odPairsMap, outputdir, starttime):
     foutchoice = open(os.path.join(outputdir, "linkchoices.xml"), 'w')
     print("""<?xml version="1.0"?>
-<!-- generated on %s by $Id: outputs.py 20433 2016-04-13 08:00:14Z behrisch $ -->
+<!-- generated on %s by $Id: outputs.py 22608 2017-01-17 06:28:54Z behrisch $ -->
 <edgechoices>""" % starttime, file=foutchoice)
     for e in net._detectedEdges:
         if len(linkChoiceMap[e.detected]) > 0:

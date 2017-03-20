@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Aug 2003
-/// @version $Id: GUIInstantInductLoop.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GUIInstantInductLoop.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The gui-version of the MSInstantInductLoop
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2003-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2003-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -5,12 +5,12 @@
 /// @author  Sascha Krieg
 /// @author  Michael Behrisch
 /// @date    Mon, 9 Jul 2001
-/// @version $Id: RORouteHandler.cpp 21790 2016-10-25 12:37:24Z behrisch $
+/// @version $Id: RORouteHandler.cpp 22909 2017-02-10 12:17:30Z namdre $
 ///
 // Parser and container for routes during their loading
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -485,6 +485,9 @@ RORouteHandler::closeVehicle() {
         // fix the type id in case we used a distribution
         myVehicleParameter->vtypeid = type->id;
     }
+    if (type->vehicleClass == SVC_PEDESTRIAN) {
+        WRITE_WARNING("Vehicle type '" + type->id + "' with vClass=pedestrian should only be used for persons and not for vehicle '" + myVehicleParameter->id + "'.");
+    }
     // get the route
     RORouteDef* route = myNet.getRouteDef(myVehicleParameter->routeid);
     if (route == 0) {
@@ -623,11 +626,21 @@ RORouteHandler::addStop(const SUMOSAXAttributes& attrs) {
         stop.endPos = containerstop->endPos;
         stop.startPos = containerstop->startPos;
         edge = myNet.getEdge(stop.lane.substr(0, stop.lane.rfind('_')));
+    } // try to parse the assigned parking area
+    else if (stop.parkingarea != "") {
+        const SUMOVehicleParameter::Stop* parkingarea = myNet.getParkingArea(stop.parkingarea);
+        if (parkingarea == 0) {
+            myErrorOutput->inform("Unknown parking area '" + stop.parkingarea + "'" + errorSuffix);
+        }
+        stop.lane = parkingarea->lane;
+        stop.endPos = parkingarea->endPos;
+        stop.startPos = parkingarea->startPos;
+        edge = myNet.getEdge(stop.lane.substr(0, stop.lane.rfind('_')));
     } else {
         // no, the lane and the position should be given
         stop.lane = attrs.getOpt<std::string>(SUMO_ATTR_LANE, 0, ok, "");
         if (!ok || stop.lane == "") {
-            myErrorOutput->inform("A stop must be placed on a bus stop, a container stop or a lane" + errorSuffix);
+            myErrorOutput->inform("A stop must be placed on a bus stop, a container stop, a parking area or a lane" + errorSuffix);
             return;
         }
         edge = myNet.getEdge(stop.lane.substr(0, stop.lane.rfind('_')));
@@ -717,8 +730,9 @@ RORouteHandler::addPersonTrip(const SUMOSAXAttributes& attrs) {
             throw InvalidArgument("Unknown person mode '" + mode + "'.");
         }
     }
+    SUMOReal walkFactor = attrs.getOpt<SUMOReal>(SUMO_ATTR_WALKFACTOR, id, ok, OptionsCont::getOptions().getFloat("persontrip.walkfactor"));
     if (ok) {
-        myActivePerson->addTrip(from, to, modeSet, types, departPos, arrivalPos, busStop);
+        myActivePerson->addTrip(from, to, modeSet, types, departPos, arrivalPos, busStop, walkFactor);
     }
     return ok;
 }

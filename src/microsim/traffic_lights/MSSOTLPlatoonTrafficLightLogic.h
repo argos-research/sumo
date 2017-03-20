@@ -2,12 +2,12 @@
 /// @file    MSSOTLPlatoonTrafficLightLogic.h
 /// @author  Gianfilippo Slager
 /// @date    2010-02-25
-/// @version $Id: MSSOTLPlatoonTrafficLightLogic.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSSOTLPlatoonTrafficLightLogic.h 22627 2017-01-18 12:56:36Z behrisch $
 ///
 // The class for SOTL Platoon logics
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright 2001-2009 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2010-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

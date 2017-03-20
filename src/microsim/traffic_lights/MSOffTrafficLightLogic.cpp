@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    08.05.2007
-/// @version $Id: MSOffTrafficLightLogic.cpp 21202 2016-07-19 13:40:35Z behrisch $
+/// @version $Id: MSOffTrafficLightLogic.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A traffic lights logic which represents a tls in an off-mode
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

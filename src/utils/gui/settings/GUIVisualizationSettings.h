@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: GUIVisualizationSettings.h 21824 2016-10-27 13:03:52Z behrisch $
+/// @version $Id: GUIVisualizationSettings.h 22796 2017-01-31 14:28:20Z namdre $
 ///
 // Stores the information about how to visualize structures
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -324,6 +324,12 @@ public:
 
     /** @brief Comparison operator */
     bool operator==(const GUIVisualizationSettings& vs2);
+
+
+    /* @brief map from LinkState to color constants  */
+    static const RGBColor& getLinkColor(const LinkState& ls);
+
+
 };
 
 

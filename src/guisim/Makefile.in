@@ -99,13 +99,13 @@ am__v_AR_1 =
 libguisim_a_AR = $(AR) $(ARFLAGS)
 libguisim_a_LIBADD =
 am_libguisim_a_OBJECTS = GUIBusStop.$(OBJEXT) GUIContainer.$(OBJEXT) \
-	GUIContainerStop.$(OBJEXT) GUIDetectorWrapper.$(OBJEXT) \
-	GUIE3Collector.$(OBJEXT) GUIEdge.$(OBJEXT) \
-	GUIEventControl.$(OBJEXT) GUIInductLoop.$(OBJEXT) \
-	GUIInstantInductLoop.$(OBJEXT) GUIJunctionWrapper.$(OBJEXT) \
-	GUILane.$(OBJEXT) GUILaneSpeedTrigger.$(OBJEXT) \
-	GUIPerson.$(OBJEXT) GUINet.$(OBJEXT) \
-	GUITrafficLightLogicWrapper.$(OBJEXT) \
+	GUIContainerStop.$(OBJEXT) GUIParkingArea.$(OBJEXT) \
+	GUIDetectorWrapper.$(OBJEXT) GUIE3Collector.$(OBJEXT) \
+	GUIEdge.$(OBJEXT) GUIEventControl.$(OBJEXT) \
+	GUIInductLoop.$(OBJEXT) GUIInstantInductLoop.$(OBJEXT) \
+	GUIJunctionWrapper.$(OBJEXT) GUILane.$(OBJEXT) \
+	GUILaneSpeedTrigger.$(OBJEXT) GUIPerson.$(OBJEXT) \
+	GUINet.$(OBJEXT) GUITrafficLightLogicWrapper.$(OBJEXT) \
 	GUITriggeredRerouter.$(OBJEXT) GUICalibrator.$(OBJEXT) \
 	GUIChargingStation.$(OBJEXT) GUIBaseVehicle.$(OBJEXT) \
 	GUIVehicle.$(OBJEXT) GUIVehicleControl.$(OBJEXT) \
@@ -343,6 +343,7 @@ noinst_LIBRARIES = libguisim.a
 libguisim_a_SOURCES = GUIBusStop.cpp GUIBusStop.h \
 GUIContainer.cpp GUIContainer.h \
 GUIContainerStop.cpp GUIContainerStop.h \
+GUIParkingArea.cpp GUIParkingArea.h \
 GUIDetectorWrapper.cpp GUIDetectorWrapper.h \
 GUIE3Collector.cpp GUIE3Collector.h GUIEdge.cpp GUIEdge.h \
 GUIEventControl.cpp GUIEventControl.h \
@@ -429,6 +430,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GUILane.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GUILaneSpeedTrigger.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GUINet.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GUIParkingArea.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GUIPerson.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GUITrafficLightLogicWrapper.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/GUITransportableControl.Po@am__quote@

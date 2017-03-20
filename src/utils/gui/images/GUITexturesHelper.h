@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Sept 2006
-/// @version $Id: GUITexturesHelper.h 21640 2016-10-09 20:28:52Z palcraft $
+/// @version $Id: GUITexturesHelper.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Global storage for textures; manages and draws them
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2006-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2006-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -48,17 +48,18 @@ public:
     /// @brief return maximum number of pixels in x and y direction
     static int getMaxTextureSize();
 
-    /// Adds a texture to use
+    /// @brief Adds a texture to use
     static GUIGlID add(FXImage* i);
 
-    /// Draws a named texture as a box with the given size
+    /// @brief Draws a named texture as a box with the given size
     static void drawTexturedBox(int which, SUMOReal size);
 
-    /// Draws a named texture as a rectangle with the given sizes
+    /// @brief Draws a named texture as a rectangle with the given sizes
     static void drawTexturedBox(int which, SUMOReal sizeX1, SUMOReal sizeY1, SUMOReal sizeX2, SUMOReal sizeY2);
 
-    /// @brief return texture id for the given filename (initialize on first use)
-    // @note return -1 on failure
+    /**@brief return texture id for the given filename (initialize on first use)
+     * @note return -1 on failure
+     */
     static int getTextureID(const std::string& filename, const bool mirrorX = false);
 
     /// @brief clears loaded textures

@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Sun, 09 Jun 2002
-/// @version $Id: TplConvert.h 21201 2016-07-19 11:57:22Z behrisch $
+/// @version $Id: TplConvert.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Some conversion methods (from strings to other)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -191,7 +191,7 @@ public:
     }
     //@}
 
-    /// @name Conversion to basic type long
+    /// @name Conversion to basic type long integer (at least 64 bit)
     //@{
     /// @brief converts a char-type array into the long value described by it
     /// @throw an EmptyData - exception if the given string is empty
@@ -224,6 +224,13 @@ public:
             throw EmptyData();
         }
         return ret * sgn;
+    }
+
+    /// @brief converts a string into the long value described by it by calling the char-type converter, which
+    /// @throw an EmptyData - exception if the given string is empty
+    /// @throw NumberFormatException - exception when the string does not contain a long integer
+    static long long int _str2long(const std::string& sData) {
+        return _2long(sData.c_str());
     }
 
     /// @brief converts a char-type array with a hex value into the long value described by it

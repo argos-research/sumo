@@ -2,12 +2,12 @@
 /// @file    MSPhasedTrafficLightLogic.cpp
 /// @author  Daniel Krajzewicz
 /// @date    Sept 2002
-/// @version $Id: MSPhasedTrafficLightLogic.cpp 21316 2016-08-22 13:08:50Z behrisch $
+/// @version $Id: MSPhasedTrafficLightLogic.cpp 22627 2017-01-18 12:56:36Z behrisch $
 ///
 // The base class for traffic light logic with phases
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright 2001-2009 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2010-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

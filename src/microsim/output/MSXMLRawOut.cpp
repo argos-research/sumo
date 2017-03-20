@@ -6,12 +6,12 @@
 /// @author  Bjoern Hendriks
 /// @author  Michael Behrisch
 /// @date    Mon, 10.05.2004
-/// @version $Id: MSXMLRawOut.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSXMLRawOut.cpp 22797 2017-01-31 14:53:07Z namdre $
 ///
 // Realises dumping the complete network state
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -64,7 +64,7 @@ MSXMLRawOut::write(OutputDevice& of, const MSEdgeControl& ec,
     for (MSEdgeVector::const_iterator e = edges.begin(); e != edges.end(); ++e) {
         writeEdge(of, **e, timestep);
     }
-    of.setPrecision(OUTPUT_ACCURACY);
+    of.setPrecision(gPrecision);
     of.closeTag();
 }
 

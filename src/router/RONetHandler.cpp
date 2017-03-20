@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Yun-Pang Floetteroed
 /// @date    Sept 2002
-/// @version $Id: RONetHandler.cpp 21206 2016-07-20 08:08:35Z behrisch $
+/// @version $Id: RONetHandler.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The handler for SUMO-Networks
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -91,6 +91,7 @@ RONetHandler::myStartElement(int element,
         case SUMO_TAG_BUS_STOP:
         case SUMO_TAG_TRAIN_STOP:
         case SUMO_TAG_CONTAINER_STOP:
+        case SUMO_TAG_PARKING_AREA:
             parseStoppingPlace(attrs, (SumoXMLTag)element);
             break;
         case SUMO_TAG_ACCESS:
@@ -339,6 +340,8 @@ RONetHandler::parseStoppingPlace(const SUMOSAXAttributes& attrs, const SumoXMLTa
     }
     if (element == SUMO_TAG_CONTAINER_STOP) {
         myNet.addContainerStop(id, myCurrentStoppingPlace);
+    } else if (element == SUMO_TAG_PARKING_AREA) {
+        myNet.addParkingArea(id, myCurrentStoppingPlace);
     } else {
         myNet.addBusStop(id, myCurrentStoppingPlace);
     }
@@ -359,7 +362,6 @@ RONetHandler::parseAccess(const SUMOSAXAttributes& attrs) {
     }
     myCurrentStoppingPlace->accessPos.insert(std::make_pair(lane, pos));
 }
-
 
 void
 RONetHandler::parseDistrict(const SUMOSAXAttributes& attrs) {

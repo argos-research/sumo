@@ -2,13 +2,13 @@
 /// @file    GNEJunction.h
 /// @author  Jakob Erdmann
 /// @date    Feb 2011
-/// @version $Id: GNEJunction.h 21788 2016-10-25 11:05:18Z namdre $
+/// @version $Id: GNEJunction.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A class for visualizing and editing junctions in netedit (adapted from
 // GUIJunctionWrapper)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -55,6 +55,7 @@ class GNEJunction : public GNENetElement {
 
     /// @brief Declare friend class
     friend class GNEChange_TLS;
+    friend class GNEChange_Crossing;
 
 public:
     /**@brief Constructor
@@ -107,14 +108,29 @@ public:
     /// @brief Return net build node
     NBNode* getNBNode() const;
 
-    /// @brief Return all GNEEdges vinculated with this Junction
-    std::vector<GNEEdge*> getGNEEdges() const;
+    /// @brief add incoming GNEEdge
+    void addIncomingGNEEdge(GNEEdge* edge);
 
-    /// @brief Return incoming GNEEdges
-    std::vector<GNEEdge*> getGNEIncomingEdges() const;
+    /// @brief add outgoing GNEEdge
+    void addOutgoingGNEEdge(GNEEdge* edge);
 
-    /// @brief Return incoming GNEEdges
-    std::vector<GNEEdge*> getGNEOutgoingEdges() const;
+    /// @brief remove incoming GNEEdge
+    void removeIncomingGNEEdge(GNEEdge* edge);
+
+    /// @brief remove outgoing GNEEdge
+    void removeOutgoingGNEEdge(GNEEdge* edge);
+
+    /// @brief Returns all GNEEdges vinculated with this Junction
+    const std::vector<GNEEdge*>& getGNEEdges() const;
+
+    /// @brief Returns incoming GNEEdges
+    const std::vector<GNEEdge*>& getGNEIncomingEdges() const;
+
+    /// @brief Returns incoming GNEEdges
+    const std::vector<GNEEdge*>& getGNEOutgoingEdges() const;
+
+    /// @brief Returns GNECrossings
+    const std::vector<GNECrossing*>& getGNECrossings() const;
 
     /// @brief marks as first junction in createEdge-mode
     void markAsCreateEdgeSource();
@@ -125,7 +141,7 @@ public:
     /// @brief notify the junction of being selected in tls-mode. (used to control drawing)
     void selectTLS(bool selected);
 
-    /**@brief Update the boundary of the junction */
+    /// @brief Update the boundary of the junction
     void updateGeometry();
 
     /**@brief reposition the node at pos and informs the edges
@@ -189,8 +205,7 @@ public:
      * @param[in] deletedConnection If a valid connection is given a replacement def with this connection removed
      *   but all other information intact will be computed instead of guessing a new tlDef
      * @note: this should always be called with an active command group */
-    void invalidateTLS(GNEUndoList* undoList,
-                       const NBConnection& deletedConnection = NBConnection::InvalidConnection);
+    void invalidateTLS(GNEUndoList* undoList, const NBConnection& deletedConnection = NBConnection::InvalidConnection);
 
     /// @brief removes the given edge from all pedestrian crossings
     void removeFromCrossings(GNEEdge* edge, GNEUndoList* undoList);
@@ -198,12 +213,21 @@ public:
     /// @brief whether this junction has a valid logic
     bool isLogicValid();
 
-    /// @brief modify the specified crossing (using friend privileges)
-    void updateCrossingAttributes(NBNode::Crossing crossing);
+    /// @brief drop crossings
+    void dropGNECrossings();
 
 private:
     /// @brief A reference to the represented junction
     NBNode& myNBNode;
+
+    /// @brief vector with the GNEEdges vinculated with this junction
+    std::vector<GNEEdge*> myGNEEdges;
+
+    /// @brief vector with the incomings GNEEdges vinculated with this junction
+    std::vector<GNEEdge*> myGNEIncomingEdges;
+
+    /// @brief vector with the outgoings GNEEdges vinculated with this junction
+    std::vector<GNEEdge*> myGNEOutgoingEdges;
 
     /// @brief restore point for undo
     Position myOrigPos;
@@ -231,7 +255,7 @@ private:
     bool myAmTLSSelected;
 
     /// @brief the built crossing objects
-    std::vector<GNECrossing*> myCrossings;
+    std::vector<GNECrossing*> myGNECrossings;
 
 private:
     /// @brief Invalidated copy constructor.
@@ -259,7 +283,7 @@ private:
     void removeTrafficLight(NBTrafficLightDefinition* tlDef);
 
     /// @brief rebuilds crossing objects for this junction
-    void rebuildCrossings(bool deleteOnly);
+    void rebuildGNECrossings();
 };
 
 

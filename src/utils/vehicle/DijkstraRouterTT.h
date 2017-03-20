@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 25 July 2005
-/// @version $Id: DijkstraRouterTT.h 21808 2016-10-26 13:13:07Z behrisch $
+/// @version $Id: DijkstraRouterTT.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Dijkstra shortest path algorithm using travel time
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -169,6 +169,9 @@ public:
             return false;
         }
         this->startQuery();
+#ifdef DijkstraRouterTT_DEBUG_QUERY
+        std::cout << "DEBUG: starting search for '" << vehicle->getID() << "' time: " << STEPS2TIME(msTime) << "\n";
+#endif
         const SUMOVehicleClass vClass = vehicle == 0 ? SVC_IGNORING : vehicle->getVClass();
         const SUMOReal time = STEPS2TIME(msTime);
         if (this->myBulkMode) {
@@ -198,7 +201,7 @@ public:
                 buildPathFrom(minimumInfo, into);
                 this->endQuery(num_visited);
 #ifdef DijkstraRouterTT_DEBUG_QUERY_PERF
-                std::cout << "visited " + toString(num_visited) + " edges (final path length: " + toString(into.size()) + ")\n";
+                std::cout << "visited " + toString(num_visited) + " edges (final path length=" + toString(into.size()) + " edges=" + toString(into) + ")\n";
 #endif
                 return true;
             }
@@ -240,7 +243,7 @@ public:
         }
         this->endQuery(num_visited);
 #ifdef DijkstraRouterTT_DEBUG_QUERY_PERF
-        std::cout << "visited " + toString(num_visited) + " edges (final path length: " + toString(into.size()) + ")\n";
+        std::cout << "visited " + toString(num_visited) + " edges (unsuccesful path length: " + toString(into.size()) + ")\n";
 #endif
         if (to != 0) {
             myErrorMsgHandler->inform("No connection between edge '" + from->getID() + "' and edge '" + to->getID() + "' found.");

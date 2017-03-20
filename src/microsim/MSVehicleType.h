@@ -5,12 +5,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 12 Mar 2001
-/// @version $Id: MSVehicleType.h 21657 2016-10-10 14:50:05Z namdre $
+/// @version $Id: MSVehicleType.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The car-following model and parameter
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

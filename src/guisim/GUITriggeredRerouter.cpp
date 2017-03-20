@@ -4,12 +4,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Mon, 25.07.2005
-/// @version $Id: GUITriggeredRerouter.cpp 21217 2016-07-22 10:57:44Z behrisch $
+/// @version $Id: GUITriggeredRerouter.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Reroutes vehicles passing an edge (gui version)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

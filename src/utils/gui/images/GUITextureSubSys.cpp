@@ -2,12 +2,12 @@
 /// @file    GUITextureSubSys.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Jul 2016
-/// @version $Id: GUITextureSubSys.cpp 21640 2016-10-09 20:28:52Z palcraft $
+/// @version $Id: GUITextureSubSys.cpp 22793 2017-01-31 13:33:09Z palcraft $
 ///
 // Helper for Gifs loading and usage
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -49,8 +49,8 @@
 #include "GNETexture_RouteProbeSelected.cpp"
 #include "GNETexture_Vaporizer.cpp"
 #include "GNETexture_VaporizerSelected.cpp"
-#include "GNETexture_VariableSpeedSignal.cpp"
-#include "GNETexture_VariableSpeedSignalSelected.cpp"
+#include "GNETexture_VariableSpeedSign.cpp"
+#include "GNETexture_VariableSpeedSignSelected.cpp"
 #include "GNETexture_NotMoving.cpp"
 #include "GNETexture_NotMovingSelected.cpp"
 #include "GNETexture_LaneBus.cpp"
@@ -95,8 +95,8 @@ GUITextureSubSys::GUITextureSubSys(FXApp* a) :
     myTextures[GNETEXTURE_TLS] = std::pair<bool, GUIGlID>(false, 0);
     myTextures[GNETEXTURE_VAPORIZER] = std::pair<bool, GUIGlID>(false, 0);
     myTextures[GNETEXTURE_VAPORIZERSELECTED] = std::pair<bool, GUIGlID>(false, 0);
-    myTextures[GNETEXTURE_VARIABLESPEEDSIGNAL] = std::pair<bool, GUIGlID>(false, 0);
-    myTextures[GNETEXTURE_VARIABLESPEEDSIGNALSELECTED] = std::pair<bool, GUIGlID>(false, 0);
+    myTextures[GNETEXTURE_VARIABLESPEEDSIGN] = std::pair<bool, GUIGlID>(false, 0);
+    myTextures[GNETEXTURE_VARIABLESPEEDSIGNSELECTED] = std::pair<bool, GUIGlID>(false, 0);
     myTextures[GNETEXTURE_LANEBIKE] = std::pair<bool, GUIGlID>(false, 0);
     myTextures[GNETEXTURE_LANEBUS] = std::pair<bool, GUIGlID>(false, 0);
     myTextures[GNETEXTURE_LANEPEDESTRIAN] = std::pair<bool, GUIGlID>(false, 0);
@@ -108,18 +108,17 @@ GUITextureSubSys::~GUITextureSubSys() {
 
 
 void
-GUITextureSubSys::init(FXApp* a) {
+GUITextureSubSys::initTextures(FXApp* a) {
     assert(myInstance == 0);
     myInstance = new GUITextureSubSys(a);
 }
 
 
 GUIGlID
-GUITextureSubSys::getGif(GUITexture which) {
+GUITextureSubSys::getTexture(GUITexture which) {
     // Obtain GLID and boolean associated to this texture
     std::map<GUITexture, std::pair<bool, GUIGlID> >::iterator i = myInstance->myTextures.find(which);
-
-    // If texture isn't loaded
+    // If texture isn't loaded, load it
     if (i->second.first == false) {
         switch (i->first) {
             case GNETEXTURE_E1 :
@@ -179,11 +178,11 @@ GUITextureSubSys::getGif(GUITexture which) {
             case GNETEXTURE_VAPORIZERSELECTED :
                 i->second.second = GUITexturesHelper::add(new FXGIFImage(myInstance->myApp, GNETexture_VaporizerSelected, IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP));
                 break;
-            case GNETEXTURE_VARIABLESPEEDSIGNAL :
-                i->second.second = GUITexturesHelper::add(new FXGIFImage(myInstance->myApp, GNETexture_VariableSpeedSignal, IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP));
+            case GNETEXTURE_VARIABLESPEEDSIGN :
+                i->second.second = GUITexturesHelper::add(new FXGIFImage(myInstance->myApp, GNETexture_VariableSpeedSign, IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP));
                 break;
-            case GNETEXTURE_VARIABLESPEEDSIGNALSELECTED :
-                i->second.second = GUITexturesHelper::add(new FXGIFImage(myInstance->myApp, GNETexture_VariableSpeedSignalSelected, IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP));
+            case GNETEXTURE_VARIABLESPEEDSIGNSELECTED :
+                i->second.second = GUITexturesHelper::add(new FXGIFImage(myInstance->myApp, GNETexture_VariableSpeedSignSelected, IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP));
                 break;
             case GNETEXTURE_LANEBIKE :
                 i->second.second = GUITexturesHelper::add(new FXGIFImage(myInstance->myApp, GNETexture_LaneBike, IMAGE_KEEP | IMAGE_SHMI | IMAGE_SHMP));
@@ -206,8 +205,9 @@ GUITextureSubSys::getGif(GUITexture which) {
 
 
 void
-GUITextureSubSys::reset() {
+GUITextureSubSys::resetTextures() {
     // Reset all textures
+    GUITexturesHelper::clearTextures();
     for (std::map<GUITexture, std::pair<bool, GUIGlID> >::iterator i = myInstance->myTextures.begin(); i != myInstance->myTextures.end(); i++) {
         i->second.first = false;
     }

@@ -5,12 +5,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    June 2006
-/// @version $Id: GUIPolygon.cpp 21316 2016-08-22 13:08:50Z behrisch $
+/// @version $Id: GUIPolygon.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // The GUI-version of a polygon
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

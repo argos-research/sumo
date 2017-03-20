@@ -5,12 +5,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    Tue, 28 Jul 2009
-/// @version $Id: MSCFModel_KraussPS.h 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: MSCFModel_KraussPS.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Krauss car-following model, changing accel and speed by slope
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

@@ -5,7 +5,7 @@
 @author  Jakob Erdmann
 @author  Michael Behrisch
 @date    2011-06-23
-@version $Id: __init__.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: __init__.py 22929 2017-02-13 14:38:39Z behrisch $
 
 Python interface to SUMO especially for parsing xml input and output files.
 
@@ -222,10 +222,13 @@ def _laneID2edgeID(laneID):
     return laneID[:laneID.rfind("_")]
 
 
-def writeXMLHeader(outf, script):
+def writeXMLHeader(outf, script, root=None):
     outf.write("""<?xml version="1.0"?>
 <!-- generated on %s by %s
   options: %s
 -->
 """ % (datetime.datetime.now(), script,
        (' '.join(sys.argv[1:]).replace('--', '<doubleminus>'))))
+    if root is not None:
+        outf.write(
+            '<%s xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://sumo.dlr.de/xsd/%s_file.xsd">\n' % (root, root))

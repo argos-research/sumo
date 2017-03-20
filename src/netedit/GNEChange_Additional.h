@@ -2,12 +2,12 @@
 /// @file    GNEChange_Additional.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEChange_Additional.h 21150 2016-07-12 12:28:35Z behrisch $
+/// @version $Id: GNEChange_Additional.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 /// A network change in which a additional element is created or deleted
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -39,6 +39,10 @@
 // ===========================================================================
 class GNEAdditional;
 class GNEViewNet;
+class GNEDetectorEntry;
+class GNEDetectorExit;
+class GNEDetectorE3;
+class GNELane;
 
 // ===========================================================================
 // class definitions
@@ -52,11 +56,10 @@ class GNEChange_Additional : public GNEChange {
 
 public:
     /**@brief Constructor for creating/deleting an additional element
-     * @param[in] net The net on which to apply changes
      * @param[in] additional The additional element to be created/deleted
      * @param[in] forward Whether to create/delete (true/false)
      */
-    GNEChange_Additional(GNENet* net, GNEAdditional* additional, bool forward);
+    GNEChange_Additional(GNEAdditional* additional, bool forward);
 
     /// @brief Destructor
     ~GNEChange_Additional();
@@ -77,8 +80,22 @@ public:
     /// @}
 
 private:
-    /// @brief full information regarding the additional element that is to be created/deleted
+    /**@brief full information regarding the additional element that is to be created/deleted
+     * @note we assume shared responsibility for the pointer (via reference counting)
+     */
     GNEAdditional* myAdditional;
+
+    /// @brief pointer to lane (used by additionals with lane parent)
+    GNELane* myLaneParent;
+
+    /// @brief pointer to E3 parent (used by Entry/exits)
+    GNEDetectorE3* myE3Parent;
+
+    /// @brief list of Entry detectors child (used by E3 Detector)
+    std::vector<GNEDetectorEntry*> myEntryChilds;
+
+    /// @brief list of Exit detectors child used (used by E3 Detector)
+    std::vector<GNEDetectorExit*> myExitChilds;
 };
 
 #endif

@@ -2,12 +2,12 @@
 /// @file    GNEChange_Attribute.h
 /// @author  Jakob Erdmann
 /// @date    Mar 2011
-/// @version $Id: GNEChange_Attribute.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEChange_Attribute.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A network change in which the attribute of some object is modified
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -55,7 +55,6 @@ public:
      * @param[in] ac The attribute-carrier to be modified
      * @param[in] key The attribute key
      * @param[in] value The new value
-     * @param[in] net Optionally the net on which to apply changes
      */
     GNEChange_Attribute(GNEAttributeCarrier* ac,
                         const SumoXMLAttr key,
@@ -87,7 +86,7 @@ public:
 
 private:
     /**@brief the net to which all operations shall be applied
-     * (we are not responsible for the pointer)
+     * @note we are not responsible for the pointer
      */
     GNEAttributeCarrier* myAC;
 

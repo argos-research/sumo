@@ -4,12 +4,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Jakob Erdmann
 /// @date    Tue, 17 Feb 2009
-/// @version $Id: SUMOVehicle.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: SUMOVehicle.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Abstract base class for vehicle representations
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -51,6 +51,7 @@ class MSLane;
 class MSDevice;
 class MSPerson;
 class MSTransportable;
+class MSParkingArea;
 class SUMOSAXAttributes;
 
 typedef std::vector<const MSEdge*> ConstMSEdgeVector;
@@ -164,10 +165,10 @@ public:
      * @param[in] check Whether the route should be checked for validity
      * @return Whether the new route was accepted
      */
-    virtual bool replaceRouteEdges(ConstMSEdgeVector& edges, bool onInit = false, bool check = false) = 0;
+    virtual bool replaceRouteEdges(ConstMSEdgeVector& edges, bool onInit = false, bool check = false, bool addStops = true) = 0;
 
     /// Replaces the current route by the given one
-    virtual bool replaceRoute(const MSRoute* route, bool onInit = false, int offset = 0) = 0;
+    virtual bool replaceRoute(const MSRoute* route, bool onInit = false, int offset = 0, bool addStops = true) = 0;
 
     /** @brief Performs a rerouting using the given router
      *
@@ -304,6 +305,21 @@ public:
      * @return Whether the stop could be added
      */
     virtual bool addStop(const SUMOVehicleParameter::Stop& stopPar, std::string& errorMsg, SUMOTime untilOffset = 0) = 0;
+
+
+    /**
+    * returns the next imminent stop in the stop queue
+    * @return the upcoming stop
+    */
+    virtual MSParkingArea* getNextParkingArea() = 0;
+
+    /** @brief Replaces a stop
+      *
+      * The stop replace the next stop into the sorted list.
+      * @param[in] stop The stop to add
+      * @return Whether the stop could be added
+      */
+    virtual bool replaceParkingArea(MSParkingArea* parkingArea, std::string& errorMsg) = 0;
 
     /** @brief Returns whether the vehicle is at a stop
      * @return Whether the has stopped

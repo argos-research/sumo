@@ -5,12 +5,12 @@
 /// @author  Jakob Erdmann
 /// @author  Michael Behrisch
 /// @date    30.05.2012
-/// @version $Id: TraCIAPI.cpp 21692 2016-10-15 14:38:47Z behrisch $
+/// @version $Id: TraCIAPI.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // C++ TraCI client API implementation
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2012-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -41,6 +41,9 @@
 // ===========================================================================
 // member definitions
 // ===========================================================================
+
+const SUMOReal TraCIAPI::DEPART_NOW = -3;
+
 // ---------------------------------------------------------------------------
 // TraCIAPI-methods
 // ---------------------------------------------------------------------------
@@ -78,6 +81,16 @@ TraCIAPI::connect(const std::string& host, int port) {
 
 void
 TraCIAPI::close() {
+    send_commandClose();
+    tcpip::Storage inMsg;
+    std::string acknowledgement;
+    check_resultState(inMsg, CMD_CLOSE, false, &acknowledgement);
+    closeSocket();
+}
+
+
+void
+TraCIAPI::closeSocket() {
     if (mySocket == 0) {
         return;
     }
@@ -234,7 +247,7 @@ TraCIAPI::send_commandMoveToXY(const std::string& vehicleID, const std::string& 
     content.writeDouble(angle);
     content.writeUnsignedByte(TYPE_BYTE);
     content.writeByte(keepRoute);
-    send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_MOVE_TO_VTD, vehicleID, content);
+    send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, MOVE_TO_XY, vehicleID, content);
 }
 
 void
@@ -465,6 +478,11 @@ TraCIAPI::readVariables(tcpip::Storage& inMsg, const std::string& objectID, int 
                 case TYPE_STRING:
                     v.string = inMsg.readString();
                     break;
+                case POSITION_2D:
+                    v.position.x = inMsg.readDouble();
+                    v.position.y = inMsg.readDouble();
+                    v.position.z = 0;
+                    break;
                 case POSITION_3D:
                     v.position.x = inMsg.readDouble();
                     v.position.y = inMsg.readDouble();
@@ -551,7 +569,7 @@ TraCIAPI::EdgeScope::getIDCount() const {
 }
 
 SUMOReal
-TraCIAPI::EdgeScope::getAdaptedTraveltime(const std::string& edgeID, SUMOTime time) const {
+TraCIAPI::EdgeScope::getAdaptedTraveltime(const std::string& edgeID, SUMOReal time) const {
     tcpip::Storage content;
     content.writeByte(TYPE_INTEGER);
     content.writeInt((int)time);
@@ -570,6 +588,7 @@ SUMOReal
 TraCIAPI::EdgeScope::getCO2Emission(const std::string& edgeID) const {
     return myParent.getDouble(CMD_GET_EDGE_VARIABLE, VAR_CO2EMISSION, edgeID);
 }
+
 
 SUMOReal
 TraCIAPI::EdgeScope::getCOEmission(const std::string& edgeID) const {
@@ -644,7 +663,7 @@ TraCIAPI::EdgeScope::getLastStepVehicleIDs(const std::string& edgeID) const {
 
 
 void
-TraCIAPI::EdgeScope::adaptTraveltime(const std::string& edgeID, SUMOReal time, SUMOTime begin, SUMOTime end) const {
+TraCIAPI::EdgeScope::adaptTraveltime(const std::string& edgeID, SUMOReal time, SUMOReal begin, SUMOReal end) const {
     tcpip::Storage content;
     content.writeByte(TYPE_COMPOUND);
     content.writeInt(3);
@@ -1488,9 +1507,6 @@ TraCIAPI::SimulationScope::convertRoad(SUMOReal x, SUMOReal y, bool isGeo) const
 }
 
 
-
-
-
 // ---------------------------------------------------------------------------
 // TraCIAPI::TrafficLightScope-methods
 // ---------------------------------------------------------------------------
@@ -1510,6 +1526,10 @@ TraCIAPI::TrafficLightScope::getCompleteRedYellowGreenDefinition(const std::stri
     myParent.send_commandGetVariable(CMD_GET_TL_VARIABLE, TL_COMPLETE_DEFINITION_RYG, tlsID);
     myParent.processGET(inMsg, CMD_GET_TL_VARIABLE, TYPE_COMPOUND);
     std::vector<TraCIAPI::TraCILogic> ret;
+
+    inMsg.readUnsignedByte();
+    inMsg.readInt();
+
     int logicNo = inMsg.readInt();
     for (int i = 0; i < logicNo; ++i) {
         inMsg.readUnsignedByte();
@@ -1550,15 +1570,24 @@ TraCIAPI::TrafficLightScope::getControlledLinks(const std::string& tlsID) const 
     myParent.send_commandGetVariable(CMD_GET_TL_VARIABLE, TL_CONTROLLED_LINKS, tlsID);
     myParent.processGET(inMsg, CMD_GET_TL_VARIABLE, TYPE_COMPOUND);
     std::vector<TraCIAPI::TraCILink> ret;
+
+    inMsg.readUnsignedByte();
+    inMsg.readInt();
+
     int linkNo = inMsg.readInt();
     for (int i = 0; i < linkNo; ++i) {
         inMsg.readUnsignedByte();
-        std::string from = inMsg.readString();
-        inMsg.readUnsignedByte();
-        std::string via = inMsg.readString();
-        inMsg.readUnsignedByte();
-        std::string to = inMsg.readString();
-        ret.push_back(TraCIAPI::TraCILink(from, via, to));
+        int no = inMsg.readInt();
+
+        for (int i1 = 0; i1 < no; ++i1) {
+            inMsg.readUnsignedByte();
+            inMsg.readInt();
+            std::string from = inMsg.readString();
+            std::string via = inMsg.readString();
+            std::string to = inMsg.readString();
+            ret.push_back(TraCIAPI::TraCILink(from, via, to));
+        }
+
     }
     return ret;
 }
@@ -1787,6 +1816,7 @@ TraCIAPI::VehicleTypeScope::setSpeedDeviation(const std::string& typeID, SUMORea
     tcpip::Storage inMsg;
     myParent.check_resultState(inMsg, CMD_SET_VEHICLETYPE_VARIABLE);
 }
+
 
 void
 TraCIAPI::VehicleTypeScope::setEmissionClass(const std::string& typeID, const std::string& clazz) const {
@@ -2026,6 +2056,26 @@ TraCIAPI::VehicleScope::getSlope(const std::string& vehID) const {
 }
 
 
+std::string
+TraCIAPI::VehicleScope::getLine(const std::string& typeID) const {
+    return myParent.getString(CMD_GET_VEHICLE_VARIABLE, VAR_LINE, typeID);
+}
+
+std::vector<std::string>
+TraCIAPI::VehicleScope::getVia(const std::string& vehicleID) const {
+    return myParent.getStringVector(CMD_GET_VEHICLE_VARIABLE, VAR_VIA, vehicleID);
+}
+
+std::string
+TraCIAPI::VehicleScope::getEmissionClass(const std::string& vehicleID) const {
+    return myParent.getString(CMD_GET_VEHICLE_VARIABLE, VAR_EMISSIONCLASS, vehicleID);
+}
+
+std::string
+TraCIAPI::VehicleScope::getShapeClass(const std::string& vehicleID) const {
+    return myParent.getString(CMD_GET_VEHICLE_VARIABLE, VAR_SHAPECLASS, vehicleID);
+}
+
 std::vector<TraCIAPI::VehicleScope::NextTLSData>
 TraCIAPI::VehicleScope::getNextTLS(const std::string& vehID) const {
     tcpip::Storage inMsg;
@@ -2188,6 +2238,51 @@ TraCIAPI::VehicleScope::setColor(const std::string& vehicleID, const TraCIColor&
     myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
 }
 
+void
+TraCIAPI::VehicleScope::setLine(const std::string& vehicleID, const std::string& line) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_STRING);
+    content.writeString(line);
+    myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_LINE, vehicleID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
+}
+
+void
+TraCIAPI::VehicleScope::setVia(const std::string& vehicleID, const std::vector<std::string>& via) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_STRINGLIST);
+    content.writeInt((int)via.size());
+    for (int i = 0; i < (int)via.size(); ++i) {
+        content.writeString(via[i]);
+    }
+    myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_VIA, vehicleID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
+}
+
+
+void
+TraCIAPI::VehicleScope::setShapeClass(const std::string& vehicleID, const std::string& clazz) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_STRING);
+    content.writeString(clazz);
+    myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_SHAPECLASS, vehicleID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
+}
+
+
+void
+TraCIAPI::VehicleScope::setEmissionClass(const std::string& vehicleID, const std::string& clazz) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_STRING);
+    content.writeString(clazz);
+    myParent.send_commandSetValue(CMD_SET_VEHICLE_VARIABLE, VAR_EMISSIONCLASS, vehicleID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_VEHICLE_VARIABLE);
+}
+
 
 // ---------------------------------------------------------------------------
 // // TraCIAPI::PersonScope-methods
@@ -2204,34 +2299,241 @@ TraCIAPI::PersonScope::getIDCount() const {
 }
 
 SUMOReal
-TraCIAPI::PersonScope::getSpeed(const std::string& typeID) const {
-    return myParent.getDouble(CMD_GET_PERSON_VARIABLE, VAR_SPEED, typeID);
+TraCIAPI::PersonScope::getSpeed(const std::string& personID) const {
+    return myParent.getDouble(CMD_GET_PERSON_VARIABLE, VAR_SPEED, personID);
 }
 
 TraCIAPI::TraCIPosition
-TraCIAPI::PersonScope::getPosition(const std::string& typeID) const {
-    return myParent.getPosition(CMD_GET_PERSON_VARIABLE, VAR_POSITION, typeID);
+TraCIAPI::PersonScope::getPosition(const std::string& personID) const {
+    return myParent.getPosition(CMD_GET_PERSON_VARIABLE, VAR_POSITION, personID);
 }
 
 std::string
-TraCIAPI::PersonScope::getRoadID(const std::string& typeID) const {
-    return myParent.getString(CMD_GET_PERSON_VARIABLE, VAR_ROAD_ID, typeID);
+TraCIAPI::PersonScope::getRoadID(const std::string& personID) const {
+    return myParent.getString(CMD_GET_PERSON_VARIABLE, VAR_ROAD_ID, personID);
 }
 
 std::string
-TraCIAPI::PersonScope::getTypeID(const std::string& typeID) const {
-    return myParent.getString(CMD_GET_PERSON_VARIABLE, VAR_TYPE, typeID);
+TraCIAPI::PersonScope::getTypeID(const std::string& personID) const {
+    return myParent.getString(CMD_GET_PERSON_VARIABLE, VAR_TYPE, personID);
 }
 
 SUMOReal
-TraCIAPI::PersonScope::getWaitingTime(const std::string& typeID) const {
-    return myParent.getDouble(CMD_GET_PERSON_VARIABLE, VAR_WAITING_TIME, typeID);
+TraCIAPI::PersonScope::getWaitingTime(const std::string& personID) const {
+    return myParent.getDouble(CMD_GET_PERSON_VARIABLE, VAR_WAITING_TIME, personID);
 }
 
 std::string
-TraCIAPI::PersonScope::getNextEdge(const std::string& typeID) const {
-    return myParent.getString(CMD_GET_PERSON_VARIABLE, VAR_NEXT_EDGE, typeID);
+TraCIAPI::PersonScope::getNextEdge(const std::string& personID) const {
+    return myParent.getString(CMD_GET_PERSON_VARIABLE, VAR_NEXT_EDGE, personID);
+}
+
+
+std::string
+TraCIAPI::PersonScope::getVehicle(const std::string& personID) const {
+    return myParent.getString(CMD_GET_PERSON_VARIABLE, VAR_VEHICLE, personID);
+}
+
+int
+TraCIAPI::PersonScope::getRemainingStages(const std::string& personID) const {
+    return myParent.getInt(CMD_GET_PERSON_VARIABLE, VAR_STAGES_REMAINING, personID);
+}
+
+int
+TraCIAPI::PersonScope::getStage(const std::string& personID, int nextStageIndex) const {
+    tcpip::Storage content;
+    content.writeByte(TYPE_INTEGER);
+    content.writeInt(nextStageIndex);
+    return myParent.getInt(CMD_GET_PERSON_VARIABLE, VAR_STAGE, personID, &content);
+}
+
+std::vector<std::string>
+TraCIAPI::PersonScope::getEdges(const std::string& personID, int nextStageIndex) const {
+    tcpip::Storage content;
+    content.writeByte(TYPE_INTEGER);
+    content.writeInt(nextStageIndex);
+    return myParent.getStringVector(CMD_GET_PERSON_VARIABLE, VAR_EDGES, personID, &content);
+}
+
+void
+TraCIAPI::PersonScope::removeStages(const std::string& personID) const {
+    // remove all stages after the current and then abort the current stage
+    while (getRemainingStages(personID) > 1) {
+        removeStage(personID, 1);
+    }
+    removeStage(personID, 0);
+}
+
+void
+TraCIAPI::PersonScope::add(const std::string& personID, const std::string& edgeID, SUMOReal pos, SUMOReal depart, const std::string typeID) {
+    if (depart > 0) {
+        depart *= 1000;
+    }
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_COMPOUND);
+    content.writeInt(4);
+    content.writeUnsignedByte(TYPE_STRING);
+    content.writeString(typeID);
+    content.writeUnsignedByte(TYPE_STRING);
+    content.writeString(edgeID);
+    content.writeUnsignedByte(TYPE_INTEGER);
+    content.writeInt((int)depart);
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(pos);
+    myParent.send_commandSetValue(CMD_SET_PERSON_VARIABLE, ADD, personID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_PERSON_VARIABLE);
+}
+
+void
+TraCIAPI::PersonScope::appendWaitingStage(const std::string& personID, SUMOReal duration, const std::string& description, const std::string& stopID) {
+    duration *= 1000;
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_COMPOUND);
+    content.writeInt(4);
+    content.writeUnsignedByte(TYPE_INTEGER);
+    content.writeInt(STAGE_WAITING);
+    content.writeUnsignedByte(TYPE_INTEGER);
+    content.writeInt((int)duration);
+    content.writeUnsignedByte(TYPE_STRING);
+    content.writeString(description);
+    content.writeUnsignedByte(TYPE_STRING);
+    content.writeString(stopID);
+    myParent.send_commandSetValue(CMD_SET_PERSON_VARIABLE, APPEND_STAGE, personID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_PERSON_VARIABLE);
+}
+
+void
+TraCIAPI::PersonScope::appendWalkingStage(const std::string& personID, const std::vector<std::string>& edges, SUMOReal arrivalPos, SUMOReal duration, SUMOReal speed, const std::string& stopID) {
+    if (duration > 0) {
+        duration *= 1000;
+    }
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_COMPOUND);
+    content.writeInt(6);
+    content.writeUnsignedByte(TYPE_INTEGER);
+    content.writeInt(STAGE_WALKING);
+    content.writeUnsignedByte(TYPE_STRINGLIST);
+    content.writeStringList(edges);
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(arrivalPos);
+    content.writeUnsignedByte(TYPE_INTEGER);
+    content.writeInt((int)duration);
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(speed);
+    content.writeUnsignedByte(TYPE_STRING);
+    content.writeString(stopID);
+    myParent.send_commandSetValue(CMD_SET_PERSON_VARIABLE, APPEND_STAGE, personID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_PERSON_VARIABLE);
+}
+
+void
+TraCIAPI::PersonScope::appendDrivingStage(const std::string& personID, const std::string& toEdge, const std::string& lines, const std::string& stopID) {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_COMPOUND);
+    content.writeInt(4);
+    content.writeUnsignedByte(TYPE_INTEGER);
+    content.writeInt(STAGE_DRIVING);
+    content.writeUnsignedByte(TYPE_STRING);
+    content.writeString(toEdge);
+    content.writeUnsignedByte(TYPE_STRING);
+    content.writeString(lines);
+    content.writeUnsignedByte(TYPE_STRING);
+    content.writeString(stopID);
+    myParent.send_commandSetValue(CMD_SET_PERSON_VARIABLE, APPEND_STAGE, personID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_PERSON_VARIABLE);
+}
+
+void
+TraCIAPI::PersonScope::removeStage(const std::string& personID, int nextStageIndex) const {
+    tcpip::Storage content;
+    content.writeByte(TYPE_INTEGER);
+    content.writeInt(nextStageIndex);
+    myParent.send_commandSetValue(CMD_SET_PERSON_VARIABLE, REMOVE_STAGE, personID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_PERSON_VARIABLE);
+}
+
+
+void
+TraCIAPI::PersonScope::setSpeed(const std::string& personID, SUMOReal speed) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(speed);
+    myParent.send_commandSetValue(CMD_SET_PERSON_VARIABLE, VAR_SPEED, personID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_PERSON_VARIABLE);
+}
+
+
+void
+TraCIAPI::PersonScope::setType(const std::string& personID, const std::string& typeID) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_STRING);
+    content.writeString(typeID);
+    myParent.send_commandSetValue(CMD_SET_PERSON_VARIABLE, VAR_TYPE, personID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_PERSON_VARIABLE);
+}
+
+void
+TraCIAPI::PersonScope::setLength(const std::string& personID, SUMOReal length) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(length);
+    myParent.send_commandSetValue(CMD_SET_PERSON_VARIABLE, VAR_LENGTH, personID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_PERSON_VARIABLE);
+}
+
+
+void
+TraCIAPI::PersonScope::setWidth(const std::string& personID, SUMOReal width) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(width);
+    myParent.send_commandSetValue(CMD_SET_PERSON_VARIABLE, VAR_WIDTH, personID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_PERSON_VARIABLE);
+}
+
+void
+TraCIAPI::PersonScope::setHeight(const std::string& personID, SUMOReal height) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(height);
+    myParent.send_commandSetValue(CMD_SET_PERSON_VARIABLE, VAR_HEIGHT, personID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_PERSON_VARIABLE);
+}
+
+void
+TraCIAPI::PersonScope::setMinGap(const std::string& personID, SUMOReal minGap) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_DOUBLE);
+    content.writeDouble(minGap);
+    myParent.send_commandSetValue(CMD_SET_PERSON_VARIABLE, VAR_MINGAP, personID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_PERSON_VARIABLE);
+}
+
+
+void
+TraCIAPI::PersonScope::setColor(const std::string& personID, const TraCIColor& c) const {
+    tcpip::Storage content;
+    content.writeUnsignedByte(TYPE_COLOR);
+    content.writeUnsignedByte(c.r);
+    content.writeUnsignedByte(c.g);
+    content.writeUnsignedByte(c.b);
+    content.writeUnsignedByte(c.a);
+    myParent.send_commandSetValue(CMD_SET_PERSON_VARIABLE, VAR_COLOR, personID, content);
+    tcpip::Storage inMsg;
+    myParent.check_resultState(inMsg, CMD_SET_PERSON_VARIABLE);
 }
 
 
 /****************************************************************************/
+

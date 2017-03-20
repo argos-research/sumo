@@ -2,12 +2,12 @@
 /// @file    GNETLSEditorFrame.h
 /// @author  Jakob Erdmann
 /// @date    May 2011
-/// @version $Id: GNETLSEditorFrame.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: GNETLSEditorFrame.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // The Widget for modifying traffic lights
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -54,19 +54,13 @@ class GNETLSEditorFrame : public GNEFrame {
 
 public:
     /**@brief Constructor
-     * @brief parent FXFrame in which this GNEFrame is placed
+     * @brief parent FXHorizontalFrame in which this GNEFrame is placed
      * @brief viewNet viewNet that uses this GNEFrame
      */
-    GNETLSEditorFrame(FXComposite* parent, GNEViewNet* viewNet);
+    GNETLSEditorFrame(FXHorizontalFrame* horizontalFrameParent, GNEViewNet* viewNet);
 
     /// @brief Destructor
     ~GNETLSEditorFrame();
-
-    /// @brief show Frame
-    void show();
-
-    /// @brief hide Frame
-    void hide();
 
     /// @brief edits the traffic light for the given junction
     /// @param[in] junction The junction of which the traffic light shall be edited
@@ -157,8 +151,68 @@ private:
     /// @brief font for the phase table
     FXFont* myTableFont;
 
+    /// @brief groupbox for current junction
+    FXGroupBox* myGroupBoxJunction;
+
     /// @brief the label that shows the current editing state
     FXLabel* myDescription;
+
+    /// @brief groupbox for TLS Definition buttons
+    FXGroupBox* myGroupBoxTLSDef;
+
+    /// @brief button for create new Traffic light program
+    FXButton* myNewTLProgram;
+
+    /// @brief button for delete traffic light program
+    FXButton* myDeleteTLProgram;
+
+    /// @brief groupbox for TLS attributes
+    FXGroupBox* myGroupBoxAttributes;
+
+    /// @brief matrix for attributes
+    FXMatrix* myAttributeMatrix;
+
+    /// @brief name label
+    FXLabel* myNameLabel;
+
+    /// @brief name text field
+    FXTextField* myNameTextField;
+
+    /// @brief program label
+    FXLabel* myProgramLabel;
+
+    /// @brief the comboBox for selecting the tl-definition to edit
+    FXComboBox* myProgramComboBox;
+
+    /// @brief offset label
+    FXLabel* myOffsetLabel;
+
+    /// @brief the control for modifying offset
+    FXTextField* myOffset;
+
+    /// @brief groupbox for phases
+    FXGroupBox* myGroupBoxPhases;
+
+    /// @brief table for selecting and rearranging phases and for changing duration
+    FXTable* myPhaseTable;
+
+    /// @brief label with the cycle duration
+    FXLabel* myCycleDuration;
+
+    /// @brief insert new phase button
+    FXButton* myInsertDuplicateButton;
+
+    /// @brief delete phase button
+    FXButton* myDeleteSelectedPhaseButton;
+
+    /// @brief groupbox for buttons modifications
+    FXGroupBox* myGroupBoxModifications;
+
+    /// @brief button for cancel modifications
+    FXButton* myDiscardModificationsButtons;
+
+    /// @brief button for save modifications
+    FXButton* mySaveModificationsButtons;
 
     /// @brief the junction of the tls is being modified
     GNEJunction* myCurrentJunction;
@@ -176,22 +230,9 @@ private:
     /// @brief the traffic light definition being edited
     NBLoadedSUMOTLDef* myEditedDef;
 
-    /// @brief the listbox for selecting the tl-definition to edit
-    FXListBox* myDefBox;
-
-    /// @brief the control for modifying offset
-    FXTextField* myOffset;
-
-    /// @brief label with the cycle duration
-    FXLabel* myCycleDuration;
-
-    /// @brief table for selecting and rearranging phases and for changing duration
-    FXTable* myPhaseTable;
-
     /// @brief index of the phase being shown
     int myPhaseIndex;
 
-private:
     /// @brief update descrition
     void updateDescription() const;
 
@@ -204,8 +245,9 @@ private:
     /// @brief initializes the definitions and corresponding listbox
     void initDefinitions();
 
-    /// @brief initialies the phase table
-    /// @param[in] index The index to select
+    /**@brief initialies the phase table
+     * @param[in] index The index to select
+     */
     void initPhaseTable(int index = 0);
 
     /// @brief the phase of the current traffic light

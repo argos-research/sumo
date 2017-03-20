@@ -3,12 +3,12 @@
 /// @author  Alessio Bonfietti
 /// @author  Riccardo Belletti
 /// @date    2014-03-20
-/// @version $Id: MSSOTLCongestionPolicy.h 20482 2016-04-18 20:49:42Z behrisch $
+/// @version $Id: MSSOTLCongestionPolicy.h 22627 2017-01-18 12:56:36Z behrisch $
 ///
 // The class for SOTL Congestion logics
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright 2001-2009 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2014-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

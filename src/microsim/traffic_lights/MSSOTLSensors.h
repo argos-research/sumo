@@ -3,12 +3,12 @@
 /// @author  Gianfilippo Slager
 /// @author  Anna Chiara Bellini
 /// @date    Feb 2010
-/// @version $Id: MSSOTLSensors.h 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSSOTLSensors.h 22627 2017-01-18 12:56:36Z behrisch $
 ///
 // The base abstract class for SOTL sensors
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright 2001-2009 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2010-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.

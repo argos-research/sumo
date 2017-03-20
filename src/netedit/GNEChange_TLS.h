@@ -2,7 +2,7 @@
 /// @file    GNEChange_TLS.h
 /// @author  Jakob Erdmann
 /// @date    July 2011
-/// @version $Id: GNEChange_TLS.h 20975 2016-06-15 13:02:40Z palcraft $
+/// @version $Id: GNEChange_TLS.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A network change in which a traffic light is created or deleted
 /****************************************************************************/
@@ -79,12 +79,14 @@ public:
 
 
 private:
-    /* we need the junction because it is the target of our change commands
-     * we assume shared responsiblity for the junction via reference counting */
+    /**@brief we need the junction because it is the target of our change commands
+     * @note we assume shared responsiblity for the junction via reference counting
+     */
     GNEJunction* myJunction;
 
-    /* the traffic light to be created/deleted. We assume no responsiblity for the pointer
-     * since it is hard to track by which NBnodes a tlDef is used (may be more than one). */
+    /**@brief the traffic light to be created/deleted. We assume no responsiblity for the pointer
+     * @note since it is hard to track by which NBnodes a tlDef is used (may be more than one).
+     */
     NBTrafficLightDefinition* myTlDef;
 
     /// @brief check if forceInsert is enabled

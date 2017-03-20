@@ -5,7 +5,7 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Tue, 20 Nov 2001
-/// @version $Id: NBHelpers.cpp 20433 2016-04-13 08:00:14Z behrisch $
+/// @version $Id: NBHelpers.cpp 22515 2017-01-09 10:13:33Z namdre $
 ///
 // Some mathematical helper methods
 /****************************************************************************/
@@ -106,6 +106,22 @@ NBHelpers::loadEdgesFromFile(const std::string& file, std::set<std::string>& int
         // maybe we're loading an edge-selection
         if (StringUtils::startsWith(name, "edge:")) {
             into.insert(name.substr(5));
+        }
+    }
+}
+
+
+void
+NBHelpers::loadPrefixedIDsFomFile(const std::string& file, const std::string prefix, std::set<std::string>& into) {
+    std::ifstream strm(file.c_str());
+    if (!strm.good()) {
+        throw ProcessError("Could not load IDs from '" + file + "'.");
+    }
+    while (strm.good()) {
+        std::string prefixedID;
+        strm >> prefixedID;
+        if (StringUtils::startsWith(prefixedID, prefix)) {
+            into.insert(prefixedID.substr(prefix.size()));
         }
     }
 }

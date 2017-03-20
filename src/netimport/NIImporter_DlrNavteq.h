@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Mon, 14.04.2008
-/// @version $Id: NIImporter_DlrNavteq.h 21492 2016-09-19 07:21:24Z behrisch $
+/// @version $Id: NIImporter_DlrNavteq.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Importer for networks stored in Elmar's format
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2008-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -351,6 +351,71 @@ protected:
         NamesHandler& operator=(const NamesHandler&);
 
     };
+
+
+    /**
+     * @class TimeRestrictionsHandler
+     * @brief Importer of street names in DLRNavteq's (aka elmar) format
+     *
+     * Being a LineHandler, this class retrieves each line from a LineReader
+     * and parses these information assuming they contain name definitions
+     * in DLRNavteq's format.
+     */
+    class TimeRestrictionsHandler : public LineHandler {
+    public:
+        /** @brief Constructor
+         * @param[in] file The name of the parsed file
+         * @param[filled] streetNames output container for read names
+         */
+        TimeRestrictionsHandler(NBEdgeCont& ec, NBDistrictCont& dc, time_t constructionTime);
+
+
+        /// @brief Destructor
+        ~TimeRestrictionsHandler();
+
+
+        /** @brief Parsing method
+         *
+         * Implementation of the LineHandler-interface called by a LineReader;
+         * interprets the retrieved information and stores the streetNames
+         * @param[in] result The read line
+         * @return Whether the parsing shall continue
+         * @exception ProcessError if something fails
+         * @see LineHandler::report
+         */
+        bool report(const std::string& result);
+
+        void printSummary();
+
+
+    protected:
+        /// @brief The edge container
+        NBEdgeCont& myEdgeCont;
+        NBDistrictCont& myDistrictCont;
+
+        /// @brief The date for which to build the network (in case some edges are still under construction)
+        time_t myConstructionTime;
+        time_t myCS_min;
+        time_t myCS_max;
+        int myConstructionEntries;
+        int myNotStarted;
+        int myUnderConstruction;
+        int myFinished;
+        int myRemovedEdges; // only counts those not already removed through other options
+
+
+    private:
+        /// @brief Invalidated copy constructor.
+        TimeRestrictionsHandler(const TimeRestrictionsHandler&);
+
+        /// @brief Invalidated assignment operator.
+        TimeRestrictionsHandler& operator=(const TimeRestrictionsHandler&);
+
+    };
+
+    static int readPrefixedInt(const std::string& s, const std::string& prefix, int fallBack = 0);
+    static time_t readTimeRec(const std::string& start, const std::string& duration);
+    static time_t readDate(const std::string& yyyymmdd);
 
 };
 

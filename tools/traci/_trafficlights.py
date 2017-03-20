@@ -3,12 +3,12 @@
 @file    trafficlights.py
 @author  Michael Behrisch
 @date    2011-03-16
-@version $Id: _trafficlights.py 20482 2016-04-18 20:49:42Z behrisch $
+@version $Id: _trafficlights.py 22608 2017-01-17 06:28:54Z behrisch $
 
 Python implementation of the TraCI interface.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2011-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2011-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

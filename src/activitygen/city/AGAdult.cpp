@@ -5,12 +5,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    July 2010
-/// @version $Id: AGAdult.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: AGAdult.cpp 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // Person in working age: can be linked to a work position.
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2010-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2010-2017 DLR (http://www.dlr.de/) and contributors
 // activitygen module
 // Copyright 2010 TUM (Technische Universitaet Muenchen, http://www.tum.de/)
 /****************************************************************************/

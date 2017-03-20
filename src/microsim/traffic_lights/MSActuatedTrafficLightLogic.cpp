@@ -6,12 +6,12 @@
 /// @author  Michael Behrisch
 /// @author  Laura Bieker
 /// @date    Sept 2002
-/// @version $Id: MSActuatedTrafficLightLogic.cpp 21496 2016-09-19 10:39:08Z behrisch $
+/// @version $Id: MSActuatedTrafficLightLogic.cpp 22840 2017-02-03 22:08:43Z luecken $
 ///
 // An actuated (adaptive) traffic light logic
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -72,7 +72,7 @@ MSActuatedTrafficLightLogic::MSActuatedTrafficLightLogic(MSTLLogicControl& tlcon
     MSSimpleTrafficLightLogic(tlcontrol, id, programID, phases, step, delay, parameter) {
 
     myMaxGap = TplConvert::_2SUMOReal(getParameter("max-gap", DEFAULT_MAX_GAP).c_str());
-    myPassingTime = TplConvert::_2SUMOReal(getParameter("passing-time", DEFAULT_PASSING_TIME).c_str());
+    myPassingTime = TplConvert::_2SUMOReal(getParameter("passing-time", DEFAULT_PASSING_TIME).c_str()); // passing-time seems obsolete... (Leo)
     myDetectorGap = TplConvert::_2SUMOReal(getParameter("detector-gap", DEFAULT_DETECTOR_GAP).c_str());
     myShowDetectors = TplConvert::_2bool(getParameter("show-detectors", "false").c_str());
     myFile = FileHelpers::checkForRelativity(getParameter("file", "NUL"), basePath);
@@ -105,8 +105,8 @@ MSActuatedTrafficLightLogic::init(NLDetectorBuilder& nb) {
             // Build the induct loop and set it into the container
             std::string id = "TLS" + myID + "_" + myProgramID + "_InductLoopOn_" + lane->getID();
             if (myInductLoops.find(lane) == myInductLoops.end()) {
-                myInductLoops[lane] = nb.createInductLoop(id, lane, ilpos, myVehicleTypes);
-                MSNet::getInstance()->getDetectorControl().add(SUMO_TAG_INDUCTION_LOOP, myInductLoops[lane], myFile, myFreq, myShowDetectors);
+                myInductLoops[lane] = nb.createInductLoop(id, lane, ilpos, myVehicleTypes, myShowDetectors);
+                MSNet::getInstance()->getDetectorControl().add(SUMO_TAG_INDUCTION_LOOP, myInductLoops[lane], myFile, myFreq);
             }
         }
     }
@@ -185,7 +185,7 @@ MSActuatedTrafficLightLogic::gapControl() {
                 if (myInductLoops.find(*j) == myInductLoops.end()) {
                     continue;
                 }
-                if (!MSGlobals::gUseMesoSim) {
+                if (!MSGlobals::gUseMesoSim) { // why not check outside the loop? (Leo)
                     const SUMOReal actualGap = static_cast<MSInductLoop*>(myInductLoops.find(*j)->second)->getTimestepsSinceLastDetection();
                     if (actualGap < myMaxGap) {
                         result = MIN2(result, actualGap);

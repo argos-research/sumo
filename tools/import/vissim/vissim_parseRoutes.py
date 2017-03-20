@@ -4,7 +4,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2009-05-27
-@version $Id: vissim_parseRoutes.py 20687 2016-05-10 11:27:00Z behrisch $
+@version $Id: vissim_parseRoutes.py 22608 2017-01-17 06:28:54Z behrisch $
 
 
 Parses routes given in the Vissim file (first parameter) as (in-)flows and 
@@ -17,7 +17,7 @@ The read routes are saved as <OUTPUT_PREFIX>.rou.xml
  option (see below).
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2009-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2009-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify

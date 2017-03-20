@@ -4,12 +4,12 @@
 /// @author  Michael Behrisch
 /// @author  Jakob Erdmann
 /// @date    Thu, 13 Dec 2012
-/// @version $Id: MSStateHandler.cpp 21182 2016-07-18 06:46:01Z behrisch $
+/// @version $Id: MSStateHandler.cpp 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // Parser and output filter for routes and vehicles state saving and loading
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 200122014 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2012-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -36,6 +36,7 @@
 
 #include <sstream>
 #include <utils/common/TplConvert.h>
+#include <utils/options/OptionsCont.h>
 #include <utils/iodevices/OutputDevice.h>
 #include <utils/xml/SUMOXMLDefinitions.h>
 #include <utils/xml/SUMOVehicleParserHelper.h>
@@ -44,7 +45,7 @@
 #include <microsim/MSLane.h>
 #include <microsim/MSGlobals.h>
 #include <microsim/MSNet.h>
-#include <microsim/MSInsertionControl.h>
+#include <microsim/MSVehicleTransfer.h>
 #include <microsim/MSRoute.h>
 #include "MSStateHandler.h"
 
@@ -60,15 +61,19 @@
 // method definitions
 // ===========================================================================
 MSStateHandler::MSStateHandler(const std::string& file, const SUMOTime offset) :
-    SUMOSAXHandler(file), myOffset(offset),
+    MSRouteHandler(file, true),
+    myOffset(offset),
     mySegment(0),
     myEdgeAndLane(0, -1),
-    myCurrentVType(0) {
+    myAttrs(0),
+    myLastParameterised(0) {
+    myAmLoadingState = true;
+    const std::vector<std::string> vehIDs = OptionsCont::getOptions().getStringVector("load-state.remove-vehicles");
+    myVehiclesToRemove.insert(vehIDs.begin(), vehIDs.end());
 }
 
 
 MSStateHandler::~MSStateHandler() {
-    delete myCurrentVType;
 }
 
 
@@ -79,6 +84,7 @@ MSStateHandler::saveState(const std::string& file, SUMOTime step) {
     out.writeAttr(SUMO_ATTR_VERSION, VERSION_STRING).writeAttr(SUMO_ATTR_TIME, time2string(step));
     MSRoute::dict_saveState(out);
     MSNet::getInstance()->getVehicleControl().saveState(out);
+    MSVehicleTransfer::getInstance()->saveState(out);
     if (MSGlobals::gUseMesoSim) {
         for (int i = 0; i < MSEdge::dictSize(); i++) {
             for (MESegment* s = MSGlobals::gMesoNet->getSegmentForEdge(*MSEdge::getAllEdges()[i]); s != 0; s = s->getNextSegment()) {
@@ -99,6 +105,7 @@ MSStateHandler::saveState(const std::string& file, SUMOTime step) {
 
 void
 MSStateHandler::myStartElement(int element, const SUMOSAXAttributes& attrs) {
+    MSRouteHandler::myStartElement(element, attrs);
     MSVehicleControl& vc = MSNet::getInstance()->getVehicleControl();
     switch (element) {
         case SUMO_TAG_SNAPSHOT: {
@@ -117,86 +124,17 @@ MSStateHandler::myStartElement(int element, const SUMOSAXAttributes& attrs) {
                         attrs.getFloat(SUMO_ATTR_TIME));
             break;
         }
-        case SUMO_TAG_ROUTE: {
-            const std::string id = attrs.getString(SUMO_ATTR_ID);
-            if (MSRoute::dictionary(id) == 0) {
-                ConstMSEdgeVector edges;
-                MSEdge::parseEdgesList(attrs.getString(SUMO_ATTR_EDGES), edges, id);
-                MSRoute* r = new MSRoute(id, edges, attrs.getBool(SUMO_ATTR_STATE),
-                                         0, std::vector<SUMOVehicleParameter::Stop>());
-                MSRoute::dictionary(id, r);
-            }
-            break;
-        }
-        case SUMO_TAG_ROUTE_DISTRIBUTION: {
-            const std::string id = attrs.getString(SUMO_ATTR_ID);
-            if (MSRoute::dictionary(id) == 0) {
-                RandomDistributor<const MSRoute*>* dist = new RandomDistributor<const MSRoute*>();
-                std::vector<std::string> routeIDs;
-                std::istringstream iss(attrs.getString(SUMO_ATTR_PROBS));
-                SUMOSAXAttributes::parseStringVector(attrs.getString(SUMO_ATTR_ROUTES), routeIDs);
-                for (std::vector<std::string>::const_iterator it = routeIDs.begin(); it != routeIDs.end(); ++it) {
-                    SUMOReal prob;
-                    iss >> prob;
-                    const MSRoute* r = MSRoute::dictionary(*it);
-                    assert(r != 0);
-                    dist->add(prob, r, false);
-                    r->addReference();
-                }
-                MSRoute::dictionary(id, dist, attrs.getBool(SUMO_ATTR_STATE));
-            }
-            break;
-        }
         case SUMO_TAG_VTYPE: {
-            myCurrentVType = SUMOVehicleParserHelper::beginVTypeParsing(attrs, getFileName());
-            break;
-        }
-        case SUMO_TAG_VTYPE_DISTRIBUTION: {
-            const std::string id = attrs.getString(SUMO_ATTR_ID);
-            if (vc.getVType(id) == 0) {
-                RandomDistributor<MSVehicleType*>* dist = new RandomDistributor<MSVehicleType*>();
-                std::vector<std::string> typeIDs;
-                std::istringstream iss(attrs.getString(SUMO_ATTR_PROBS));
-                SUMOSAXAttributes::parseStringVector(attrs.getString(SUMO_ATTR_VTYPES), typeIDs);
-                for (std::vector<std::string>::const_iterator it = typeIDs.begin(); it != typeIDs.end(); ++it) {
-                    SUMOReal prob;
-                    iss >> prob;
-                    MSVehicleType* t = vc.getVType(*it);
-                    assert(t != 0);
-                    dist->add(prob, t, false);
-                }
-                vc.addVTypeDistribution(id, dist);
-            }
+            myLastParameterised = myCurrentVType;
             break;
         }
         case SUMO_TAG_VEHICLE: {
-            SUMOVehicleParameter* p = new SUMOVehicleParameter();
-            p->id = attrs.getString(SUMO_ATTR_ID);
-            p->depart = string2time(attrs.getString(SUMO_ATTR_DEPART)) - myOffset;
-            p->routeid = attrs.getString(SUMO_ATTR_ROUTE);
-            p->vtypeid = attrs.getString(SUMO_ATTR_TYPE);
-            const MSRoute* route = MSRoute::dictionary(p->routeid);
-            const MSVehicleType* type = vc.getVType(p->vtypeid);
-            assert(route != 0);
-            assert(type != 0);
-            assert(vc.getVehicle(p->id) == 0);
-
-            SUMOVehicle* v = vc.buildVehicle(p, route, type, true);
-            vc.discountStateLoaded(); // already included (see SUMO_TAG_DELAY)
-            v->loadState(attrs, myOffset);
-            if (!vc.addVehicle(p->id, v)) {
-                throw ProcessError("Error: Could not build vehicle " + p->id + "!");
-            }
-            if (!v->hasDeparted()) {
-                // !!! the save did not keep the order in which the vehicles are checked for insertion
-                MSNet::getInstance()->getInsertionControl().add(v);
-            } else {
-                // vehicle already departed: disable pre-insertion rerouting and enable regular routing behavior
-                MSDevice_Routing* routingDevice = static_cast<MSDevice_Routing*>(v->getDevice(typeid(MSDevice_Routing)));
-                if (routingDevice != 0) {
-                    routingDevice->notifyEnter(*v, MSMoveReminder::NOTIFICATION_DEPARTED);
-                }
-            }
+            myLastParameterised = myVehicleParameter;
+            myAttrs = attrs.clone();
+            break;
+        }
+        case SUMO_TAG_VEHICLETRANSFER: {
+            MSVehicleTransfer::getInstance()->loadState(attrs, myOffset, vc);
             break;
         }
         case SUMO_TAG_SEGMENT: {
@@ -229,11 +167,18 @@ MSStateHandler::myStartElement(int element, const SUMOSAXAttributes& attrs) {
             }
             break;
         }
-        default:
-            // parse embedded vtype information
-            if (myCurrentVType != 0) {
-                SUMOVehicleParserHelper::parseVTypeEmbedded(*myCurrentVType, element, attrs);
+        case SUMO_TAG_PARAM: {
+            bool ok;
+            const std::string key = attrs.get<std::string>(SUMO_ATTR_KEY, 0, ok);
+            // circumventing empty string test
+            const std::string val = attrs.hasAttribute(SUMO_ATTR_VALUE) ? attrs.getString(SUMO_ATTR_VALUE) : "";
+            assert(myLastParameterised != 0);
+            if (myLastParameterised != 0) {
+                myLastParameterised->addParameter(key, val);
             }
+            break;
+        }
+        default:
             break;
     }
 }
@@ -241,16 +186,41 @@ MSStateHandler::myStartElement(int element, const SUMOSAXAttributes& attrs) {
 
 void
 MSStateHandler::myEndElement(int element) {
-    switch (element) {
-        case SUMO_TAG_VTYPE:
-            MSNet::getInstance()->getVehicleControl().addVType(MSVehicleType::build(*myCurrentVType));
-            delete myCurrentVType;
-            myCurrentVType = 0;
-            break;
-        default:
-            break;
+    MSRouteHandler::myEndElement(element);
+    if (element != SUMO_TAG_PARAM && myVehicleParameter == 0 && myCurrentVType == 0) {
+        myLastParameterised = 0;
     }
 }
+
+
+void
+MSStateHandler::closeVehicle() {
+    assert(myVehicleParameter != 0);
+    // the vehicle was already counted in MSVehicleControl::setState
+    MSVehicleControl& vc = MSNet::getInstance()->getVehicleControl();
+    // make a copy because myVehicleParameter is reset in closeVehicle()
+    const std::string vehID = myVehicleParameter->id;
+    if (myVehiclesToRemove.count(vehID) == 0) {
+        MSRouteHandler::closeVehicle();
+        // reset depart
+        vc.discountStateLoaded();
+        SUMOVehicle* v = vc.getVehicle(vehID);
+        v->loadState(*myAttrs, myOffset);
+        if (v->hasDeparted()) {
+            // vehicle already departed: disable pre-insertion rerouting and enable regular routing behavior
+            MSDevice_Routing* routingDevice = static_cast<MSDevice_Routing*>(v->getDevice(typeid(MSDevice_Routing)));
+            if (routingDevice != 0) {
+                routingDevice->notifyEnter(*v, MSMoveReminder::NOTIFICATION_DEPARTED);
+            }
+        }
+    } else {
+        vc.discountStateLoaded(true);
+        delete myVehicleParameter;
+        myVehicleParameter = 0;
+    }
+    delete myAttrs;
+}
+
 
 
 /****************************************************************************/

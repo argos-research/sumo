@@ -3,12 +3,12 @@
 /// @author  Robert Hilbrich
 /// @author  Michael Behrisch
 /// @date    Sept 2002
-/// @version $Id: ROPerson.h 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: ROPerson.h 22929 2017-02-13 14:38:39Z behrisch $
 ///
 // A person as used by router
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2002-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2002-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -69,7 +69,8 @@ public:
     virtual ~ROPerson();
 
     void addTrip(const ROEdge* const from, const ROEdge* const to, const SVCPermissions modeSet,
-                 const std::string& vTypes, const SUMOReal departPos, const SUMOReal arrivalPos, const std::string& busStop);
+                 const std::string& vTypes, const SUMOReal departPos, const SUMOReal arrivalPos, const std::string& busStop,
+                 SUMOReal walkFactor);
 
     void addRide(const ROEdge* const from, const ROEdge* const to, const std::string& lines, const std::string& destStop);
 
@@ -215,10 +216,10 @@ public:
     class PersonTrip : public PlanItem {
     public:
         PersonTrip()
-            : from(0), to(0), modes(SVC_PEDESTRIAN), dep(0), arr(0), busStop("") {}
+            : from(0), to(0), modes(SVC_PEDESTRIAN), dep(0), arr(0), busStop(""), walkFactor(1.0) {}
         PersonTrip(const ROEdge* const from, const ROEdge* const to, const SVCPermissions modeSet,
-                   const SUMOReal departPos, const SUMOReal arrivalPos, const std::string& busStop)
-            : from(from), to(to), modes(modeSet), dep(departPos), arr(arrivalPos), busStop(busStop) {}
+                   const SUMOReal departPos, const SUMOReal arrivalPos, const std::string& busStop, SUMOReal _walkFactor)
+            : from(from), to(to), modes(modeSet), dep(departPos), arr(arrivalPos), busStop(busStop), walkFactor(_walkFactor) {}
         /// @brief Destructor
         virtual ~PersonTrip() {
             for (std::vector<TripItem*>::const_iterator it = myTripItems.begin(); it != myTripItems.end(); ++it) {
@@ -254,6 +255,9 @@ public:
         SVCPermissions getModes() const {
             return modes;
         }
+        bool hasBusStopDest() const {
+            return busStop != "";
+        }
         virtual bool needsRouting() const {
             return myTripItems.empty();
         }
@@ -262,6 +266,9 @@ public:
             for (std::vector<TripItem*>::const_iterator it = myTripItems.begin(); it != myTripItems.end(); ++it) {
                 (*it)->saveAsXML(os);
             }
+        }
+        SUMOReal getWalkFactor() const {
+            return walkFactor;
         }
 
     private:
@@ -274,6 +281,8 @@ public:
         std::vector<TripItem*> myTripItems;
         /// @brief the vehicles which may be used for routing
         std::vector<ROVehicle*> myVehicles;
+        /// @brief walking speed factor
+        SUMOReal walkFactor;
 
     private:
         /// @brief Invalidated assignment operator

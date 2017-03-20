@@ -3,7 +3,7 @@
 @author  Daniel Krajzewicz
 @author  Michael Behrisch
 @date    2008-09-01
-@version $Id: netshiftadaptor.py 20433 2016-04-13 08:00:14Z behrisch $
+@version $Id: netshiftadaptor.py 22608 2017-01-17 06:28:54Z behrisch $
 
 
 This class performs a network reprojection
@@ -19,7 +19,7 @@ When "reproject" is called, all nodes' position
  they match positions within the first network.
 
 SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-Copyright (C) 2008-2016 DLR (http://www.dlr.de/) and contributors
+Copyright (C) 2008-2017 DLR (http://www.dlr.de/) and contributors
 
 This file is part of SUMO.
 SUMO is free software; you can redistribute it and/or modify
@@ -64,7 +64,7 @@ class NetShiftAdaptor:
         for e in self._net2._edges:
             for l in e._lanes:
                 shape = []
-                for p in l._shape:
+                for p in l.getShape3D():
                     x0 = p[0]
                     y0 = p[1]
                     b1 = (
@@ -75,6 +75,7 @@ class NetShiftAdaptor:
                         (x21 - x0) * (y22 - y0) - (x22 - x0) * (y21 - y0)) / b0
                     x = (b1 * x11 + b2 * x12 + b3 * x13)
                     y = (b1 * y11 + b2 * y12 + b3 * y13)
-                    shape.append((x, y))
-                l._shape = shape
+                    z = p[2]
+                    shape.append((x, y, z))
+                l.setShape(shape)
             e.rebuildShape()

@@ -2,12 +2,12 @@
 /// @file    GNEDetectorE2.h
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetectorE2.h 21131 2016-07-08 07:59:22Z behrisch $
+/// @version $Id: GNEDetectorE2.h 22876 2017-02-07 13:40:22Z palcraft $
 ///
 ///
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -58,10 +58,9 @@ public:
      * @param[in] timeThreshold The time-based threshold that describes how much time has to pass until a vehicle is recognized as halting
      * @param[in] speedThreshold The speed-based threshold that describes how slow a vehicle has to be to be recognized as halting
      * @param[in] speedThreshold The minimum distance to the next standing vehicle in order to make this vehicle count as a participant to the jam
-     * @param[in] blocked set initial blocking state of item
      */
     GNEDetectorE2(const std::string& id, GNELane* lane, GNEViewNet* viewNet, SUMOReal pos, SUMOReal length, SUMOReal freq, const std::string& filename,
-                  bool cont, SUMOTime timeThreshold, SUMOReal speedThreshold, SUMOReal jamThreshold, bool blocked);
+                  bool cont, const SUMOReal timeThreshold, SUMOReal speedThreshold, SUMOReal jamThreshold);
 
     /// @brief Destructor
     ~GNEDetectorE2();
@@ -76,7 +75,7 @@ public:
     /**@brief writte additional element into a xml file
      * @param[in] device device in which write parameters of additional element
      */
-    void writeAdditional(OutputDevice& device, const std::string&);
+    void writeAdditional(OutputDevice& device) const;
 
     /// @name inherited from GUIGlObject
     /// @{
@@ -118,7 +117,7 @@ protected:
     bool myCont;
 
     /// @brief The time-based threshold that describes how much time has to pass until a vehicle is recognized as halting
-    SUMOTime myTimeThreshold;
+    SUMOReal myTimeThreshold;
 
     /// @brief     The speed-based threshold that describes how slow a vehicle has to be to be recognized as halting
     SUMOReal mySpeedThreshold;

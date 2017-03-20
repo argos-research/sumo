@@ -2,12 +2,12 @@
 /// @file    GNEDetectorExit.cpp
 /// @author  Pablo Alvarez Lopez
 /// @date    Nov 2015
-/// @version $Id: GNEDetectorExit.cpp 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: GNEDetectorExit.cpp 22915 2017-02-10 14:05:44Z palcraft $
 ///
 ///
 /****************************************************************************/
-// SUMO, Simulation of Urban MObility; see http://sumo-sim.org/
-// Copyright (C) 2001-2013 DLR (http://www.dlr.de/) and contributors
+// SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -64,10 +64,11 @@
 // member method definitions
 // ===========================================================================
 
-GNEDetectorExit::GNEDetectorExit(const std::string& id, GNEViewNet* viewNet, GNELane* lane, SUMOReal pos, GNEDetectorE3* parent, bool blocked) :
-    GNEDetector(id, viewNet, SUMO_TAG_DET_EXIT, lane, pos, 0, "", blocked, parent) {
-    // Update geometry;
-    updateGeometry();
+GNEDetectorExit::GNEDetectorExit(GNEViewNet* viewNet, GNEDetectorE3* parent, GNELane* lane, SUMOReal pos) :
+    GNEDetector(parent->generateExitID(), viewNet, SUMO_TAG_DET_EXIT, ICON_E3EXIT, lane, pos, 0, ""),
+    myE3Parent(parent) {
+    // Update geometry
+    updateGeometryByParent();
     // Set colors
     myBaseColor = RGBColor(204, 0, 0, 255);
     myBaseColorSelected = RGBColor(204, 125, 0, 255);
@@ -79,6 +80,12 @@ GNEDetectorExit::~GNEDetectorExit() {}
 
 void
 GNEDetectorExit::updateGeometry() {
+    myE3Parent->updateGeometry();
+}
+
+
+void
+GNEDetectorExit::updateGeometryByParent() {
     // Clear all containers
     myShapeRotations.clear();
     myShapeLengths.clear();
@@ -101,9 +108,6 @@ GNEDetectorExit::updateGeometry() {
     // Set block icon rotation, and using their rotation for logo
     setBlockIconRotation(myLane);
 
-    // Update parent geometry
-    myAdditionalSetParent->updateGeometry();
-
     // Refresh element (neccesary to avoid grabbing problems)
     myViewNet->getNet()->refreshAdditional(this);
 }
@@ -115,17 +119,15 @@ GNEDetectorExit::getPositionInView() const {
 }
 
 
+GNEDetectorE3*
+GNEDetectorExit::getE3Parent() const {
+    return myE3Parent;
+}
+
+
 void
-GNEDetectorExit::writeAdditional(OutputDevice& device, const std::string&) {
-    // Write parameters
-    device.openTag(getTag());
-    device.writeAttr(SUMO_ATTR_LANE, myLane->getID());
-    device.writeAttr(SUMO_ATTR_POSITION, myPosition.x());
-    if (myBlocked) {
-        device.writeAttr(GNE_ATTR_BLOCK_MOVEMENT, myBlocked);
-    }
-    // Close tag
-    device.closeTag();
+GNEDetectorExit::writeAdditional(OutputDevice&) const {
+    // This additional cannot be writted calling this function because is writted by their E3Parent
 }
 
 
@@ -184,7 +186,7 @@ GNEDetectorExit::drawGL(const GUIVisualizationSettings& s) const {
     // Check if the distance is enought to draw details
     if (s.scale * exaggeration >= 10) {
         // Draw icon
-        drawDetectorIcon(GUITextureSubSys::getGif(GNETEXTURE_EXIT), 1.5, 1);
+        drawDetectorIcon(GUITextureSubSys::getTexture(GNETEXTURE_EXIT), 1.5, 1);
 
         // Show Lock icon depending of the Edit mode
         drawLockIcon(0.4);
@@ -209,7 +211,7 @@ GNEDetectorExit::getAttribute(SumoXMLAttr key) const {
         case GNE_ATTR_BLOCK_MOVEMENT:
             return toString(myBlocked);
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -228,7 +230,7 @@ GNEDetectorExit::setAttribute(SumoXMLAttr key, const std::string& value, GNEUndo
             updateGeometry();
             break;
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 
 }
@@ -254,7 +256,7 @@ GNEDetectorExit::isValid(SumoXMLAttr key, const std::string& value) {
         case GNE_ATTR_BLOCK_MOVEMENT:
             return canParse<bool>(value);
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 
@@ -277,7 +279,7 @@ GNEDetectorExit::setAttribute(SumoXMLAttr key, const std::string& value) {
             getViewNet()->update();
             break;
         default:
-            throw InvalidArgument(toString(getType()) + " attribute '" + toString(key) + "' not allowed");
+            throw InvalidArgument(toString(getTag()) + " doesn't have an attribute of type '" + toString(key) + "'");
     }
 }
 

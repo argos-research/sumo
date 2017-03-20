@@ -3,12 +3,12 @@
 /// @author  Daniel Krajzewicz
 /// @author  Michael Behrisch
 /// @date    Oct 2003
-/// @version $Id: MS_E2_ZS_CollectorOverLanes.h 21851 2016-10-31 12:20:12Z behrisch $
+/// @version $Id: MS_E2_ZS_CollectorOverLanes.h 22608 2017-01-17 06:28:54Z behrisch $
 ///
 // A detector which joins E2Collectors over consecutive lanes (backward)
 /****************************************************************************/
 // SUMO, Simulation of Urban MObility; see http://sumo.dlr.de/
-// Copyright (C) 2001-2016 DLR (http://www.dlr.de/) and contributors
+// Copyright (C) 2001-2017 DLR (http://www.dlr.de/) and contributors
 /****************************************************************************/
 //
 //   This file is part of SUMO.
@@ -181,7 +181,7 @@ protected:
      * @param[in] l The lane to return predecessors of
      * @return List of lanes predecessing the given one
      */
-    std::vector<MSLane*> getLanePredeccessorLanes(MSLane* l);
+    std::vector<MSLane*> getLanePredecessorLanes(MSLane* l);
 
 protected:
     /// @brief The position the collector starts at
