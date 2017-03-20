@@ -11,5 +11,5 @@
 ##############################
 
 cd /vagrant
-./configure
+./configure CXXFLAGS="--std=c++11"
 make -j4
