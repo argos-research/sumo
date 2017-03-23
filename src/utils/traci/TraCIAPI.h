@@ -595,7 +595,7 @@ public:
         SubscribedContextValues getContextSubscriptionResults();
         SubscribedValues getContextSubscriptionResults(const std::string& objID);
 
-        TraCIPosition convert2D(const std::string& edgeID, SUMOReal lanePos, int laneIndex) const;
+        TraCIPosition convert2D(const std::string& edgeID, SUMOReal pos, int laneIndex=0, bool toGeo=false) const;
 	std::tuple<std::string, SUMOReal, int> convertRoad(SUMOReal x, SUMOReal y, bool isGeo=false) const;
 
     private:
@@ -998,4 +998,3 @@ protected:
 #endif
 
 /****************************************************************************/
-

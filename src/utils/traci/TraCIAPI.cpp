@@ -1474,16 +1474,16 @@ TraCIAPI::SimulationScope::getContextSubscriptionResults(const std::string& objI
 }
 
 TraCIAPI::TraCIPosition
-TraCIAPI::SimulationScope::convert2D(const std::string& edgeID, SUMOReal lanePos, int laneIndex) const {
+TraCIAPI::SimulationScope::convert2D(const std::string& edgeID, SUMOReal pos, int laneIndex, bool toGeo) const {
     tcpip::Storage content;
     content.writeUnsignedByte(TYPE_COMPOUND);
     content.writeInt(2);
     content.writeUnsignedByte(POSITION_ROADMAP);
     content.writeString(edgeID);
-    content.writeDouble(lanePos);
+    content.writeDouble(pos);
     content.writeUnsignedByte(laneIndex);
     content.writeUnsignedByte(TYPE_UBYTE);
-    content.writeUnsignedByte(POSITION_2D);
+    content.writeUnsignedByte(toGeo ? POSITION_LON_LAT : POSITION_2D);
     return myParent.getPosition(CMD_GET_SIM_VARIABLE, POSITION_CONVERSION, "", &content);
 }
 
@@ -1492,7 +1492,7 @@ TraCIAPI::SimulationScope::convertRoad(SUMOReal x, SUMOReal y, bool isGeo) const
     tcpip::Storage content;
     content.writeUnsignedByte(TYPE_COMPOUND);
     content.writeInt(2);
-    content.writeUnsignedByte(POSITION_2D);
+    content.writeUnsignedByte(isGeo ? POSITION_LON_LAT : POSITION_2D);
     content.writeDouble(x);
     content.writeDouble(y);
     content.writeUnsignedByte(TYPE_UBYTE);
@@ -2536,4 +2536,3 @@ TraCIAPI::PersonScope::setColor(const std::string& personID, const TraCIColor& c
 
 
 /****************************************************************************/
-
