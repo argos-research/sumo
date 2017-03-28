@@ -1415,7 +1415,7 @@ TraCIServerAPI_Vehicle::processSet(TraCIServer& server, tcpip::Storage& inputSto
             if ((found && bestDistance <= maxRouteDistance) || mayLeaveNetwork) {
                 // optionally compute lateral offset
                 if (found && (MSGlobals::gLateralResolution > 0 || mayLeaveNetwork)) {
-                    const SUMOReal perpDist = lane->getShape().distance2D(pos, true);
+                    const SUMOReal perpDist = lane->getShape().distance2D(pos, false);
                     if (perpDist != GeomHelper::INVALID_OFFSET) {
                         lanePosLat = perpDist;
                         if (!mayLeaveNetwork) {
@@ -1588,7 +1588,7 @@ TraCIServerAPI_Vehicle::vtdMap(const Position& pos, SUMOReal maxRouteDistance, c
 
         // weight the lanes...
         const std::vector<MSLane*>& lanes = e->getLanes();
-        const bool perpendicular = true;
+        const bool perpendicular = false;
         for (std::vector<MSLane*>::const_iterator k = lanes.begin(); k != lanes.end(); ++k) {
             MSLane* lane = *k;
             SUMOReal off = lane->getShape().nearest_offset_to_point2D(pos, perpendicular);
@@ -1657,7 +1657,7 @@ TraCIServerAPI_Vehicle::vtdMap(const Position& pos, SUMOReal maxRouteDistance, c
     const LaneUtility& u = lane2utility.find(bestLane)->second;
     bestDistance = u.dist;
     *lane = bestLane;
-    lanePos = bestLane->getShape().nearest_offset_to_point2D(pos);
+    lanePos = bestLane->getShape().nearest_offset_to_point2D(pos, false);
     const MSEdge* prevEdge = u.prevEdge;
     if (u.onRoute) {
         const ConstMSEdgeVector& ev = v.getRoute().getEdges();
@@ -1882,4 +1882,3 @@ TraCIServerAPI_Vehicle::getSingularType(SUMOVehicle* const veh) {
 
 
 /****************************************************************************/
-
