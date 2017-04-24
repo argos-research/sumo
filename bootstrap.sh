@@ -15,7 +15,7 @@ cd /vagrant
 # fix automake
 aclocal
 automake --add-missing
-autoreconf
+autoreconf --force --install
 
 ./configure CXXFLAGS="--std=c++11"
 make -j2
