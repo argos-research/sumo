@@ -10,4 +10,4 @@
 ######################
 
 sudo apt-get update -q=2
-sudo apt-get install -q=2 make g++ libxerces-c-dev libfox-1.6-dev
+sudo apt-get install -q=2 make g++ libxerces-c-dev libfox-1.6-dev automake libtool
